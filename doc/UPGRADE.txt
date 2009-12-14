@@ -1,0 +1,16 @@
+0.0.5 -> 0.1.0
+---------------
+* ALTER TABLE `notification_methods` ADD `ack_able` BOOL NOT NULL ;
+* ALTER TABLE `notifications` CHANGE `notify_after_tries` `notify_after_tries` varchar(255) CHARACTER SET latin1 NOT NULL default '0' ; 
+* ALTER TABLE `notifications` ADD `let_notifier_handle` tinyint(1) NOT NULL ;
+* ALTER TABLE `notifications` ADD `reloop_delay` int(11) NOT NULL default '0' ;
+* ALTER TABLE `notification_stati` ADD `pid` int(11) NOT NULL default '0' ;
+* set 'ack_able' in notification_methods for every method
+* install perl module Proc::ProcessTable
+
+0.1.0 -> 0.1.1
+----------------
+* ALTER TABLE `contactgroups` ADD `view_only` BOOL NOT NULL DEFAULT '0';
+
+0.1.x -> 1.0.2/3
+* Due to the changed functionality a simple import script is not available; the simplest solution is to reenter the data

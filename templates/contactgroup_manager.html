@@ -1,0 +1,15 @@
+<form name="contact_form" method="post" action="index.php">
+<input type="hidden" name="id" value="{$ID}"/>
+<input type="hidden" name="action" value="contactgroups"/>
+<table cellpadding="5" cellspacing="0" border="0" width="990">
+<tr><td colspan="2" class="contacts_message">{$MESSAGE}</td></tr>
+<tr class="header"><td colspan="2">{$CONTACTGROUPS_HEADING_SELECT}<hr/></td></tr>
+<tr>
+<td>&nbsp;</td>
+<td>
+{$CONTACTGROUPS_EDIT_GROUPS_SELECT}
+<input type="submit" name="edit" value="{$CONTACTGROUPS_EDIT_BUTTON}"  style="visibility: hidden; display: none;" />{$CONTACTGROUPS_DELETE_BUTTON}
+</td>
+</tr>{$CONTACTGROUPS_MAIN_CONTENT}
+</table>
+</form>

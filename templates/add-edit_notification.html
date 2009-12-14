@@ -1,0 +1,54 @@
+<form name="add_edit_form" method="post" action="index.php">
+<input type="hidden" name="id" value="{$ID}"/>
+<input type="hidden" name="eid" id="eid" value=""/>
+<input type="hidden" name="action" id="action" value="{$ACTION}"/>
+<table cellpadding="5" cellspacing="0" border="0" width="990">
+<tr><td colspan="3" class="contacts_message">{$MESSAGE}</td></tr>
+<tr><td colspan="3" height="5"></td></tr>
+<tr class="header"><td colspan="3">{$HEADING_HOSTS_AND_SERVICES}<hr/></td></tr>
+<tr>
+<td>{$ADD_EDIT_INCLUDE_HOSTS}</td>
+<td>
+<input class="text" name="hosts_include" id="hosts_include" size="60" value="{$INCLUDE_HOSTS}"{$ONCHANGE_HOSTS_INCLUDE}/>
+</td>
+<td rowspan="4" valign="top" align="right">
+<div id="hs_preview" class="hs_preview"{$STYLE_HS_PREVIEW}></div>
+</td>
+</tr>
+<tr>
+<td>{$ADD_EDIT_EXCLUDE_HOSTS}</td>
+<td><input class="text" name="hosts_exclude" id="hosts_exclude" size="60" value="{$EXCLUDE_HOSTS}"{$ONCHANGE_HOSTS_EXCLUDE}/></td>
+</tr>
+<tr>
+<td>{$ADD_EDIT_INCLUDE_SERVICES}</td>
+<td><input class="text" name="services_include" id="services_include" size="60" value="{$INCLUDE_SERVICES}"{$ONCHANGE_SERVICES_INCLUDE}/></td>
+</tr>
+<tr>
+<td>{$ADD_EDIT_EXCLUDE_SERVICES}</td>
+<td><input class="text" name="services_exclude" id="services_exclude" size="60" value="{$EXCLUDE_SERVICES}"{$ONCHANGE_SERVICES_EXCLUDE}/></td>
+</tr>
+<!--
+<tr><td colspan="3" height="5"></td></tr>
+<tr class="grey"><td colspan="3">{$HEADING_TIME}</td></tr>
+<tr>
+<td>{$ADD_EDIT_TIMEZONE}</td>
+<td colspan="2">{$TIMEZONE_SELECT}</td>
+</tr>
+<tr><td colspan="3" height="5"></td></tr>
+<tr class="grey"><td colspan="3">{$ADD_EDIT_HEADING_OWNER}</td></tr>
+-->
+<tr>
+<td>{$ADD_EDIT_OWNER}</td>
+<td colspan="2">{$OWNER_SELECT}</td>
+</tr>
+<tr><td colspan="3" height="5"></td></tr>
+{$CONTACTS_METHODS}
+<tr>
+<td colspan="3" align="center">
+<div class="c1f"></div><div class="c2f"></div><div class="c3f"></div><div class="c4f"></div>
+<div class="c-bg"><input type="submit" name="submit" value="{$ADD_EDIT_SUBMIT}"/></div>
+<div class="c4f"></div><div class="c3f"></div><div class="c2f"></div><div class="c1f"></div>
+</td>
+</tr>
+</table>
+</form>

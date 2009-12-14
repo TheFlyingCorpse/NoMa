@@ -1,0 +1,57 @@
+#!/bin/bash
+# init file for noma
+# Bernd Erk (berk@netways.de) - 19/12/2007
+#
+# description: the NETWAYS NOtification MAnager
+#
+
+# source function library
+. /etc/init.d/functions
+
+RETVAL=0
+prog="noma_daemon.pl"
+nagios_bin="/usr/local/nagios/noma/notifier"
+RUNUSER="nagios"
+RUNGROUP="nagios"
+
+start() {
+	echo -n $"Starting $prog: "
+
+	daemon --user $RUNUSER $nagios_bin/$prog
+	RETVAL=$?
+	echo
+	return $RETVAL
+}
+
+stop() {
+	echo -n $"Stopping $prog: "
+	killproc $nagios_bin/$prog 2>/dev/null
+	RETVAL=$?
+	return $RETVAL
+}
+
+restart(){
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	restart
+        ;;
+  status)
+        status $prog
+	RETVAL=$?
+        ;;
+  *)
+	echo $"Usage: $0 {start|stop|restart}"
+	RETVAL=1
+esac
+
+exit $RETVAL

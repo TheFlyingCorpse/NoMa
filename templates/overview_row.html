@@ -1,0 +1,14 @@
+<tr class="{$ROW_CLASS}">
+<td>{$NOTIFICATION_RULE}</td>
+<td nowrap="nowrap">
+<img src="{$OVERVIEW_TOGGLE_ACTIVE_IMAGE}" border="0" {$OVERVIEW_TOGGLE_ACTIVE_JS}alt="{$OVERVIEW_TOGGLE_ACTIVE_ALT}" title="{$OVERVIEW_TOGGLE_ACTIVE_TOOLTIP}"/>
+<img src="{$OVERVIEW_EDIT_ENTRY_IMG}" border="0" {$OVERVIEW_EDIT_ENTRY_JS}alt="{$OVERVIEW_EDIT_ENTRY_ALT_TOOLTIP}" title="{$OVERVIEW_EDIT_ENTRY_ALT_TOOLTIP}"/>
+<img src="{$OVERVIEW_DELETE_ENTRY_IMG}" border="0" {$OVERVIEW_DELETE_ENTRY_JS}alt="{$OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP}" title="{$OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP}"/>
+</td>
+<td nowrap="nowrap"{$HOSTS_MOUSEOVER}>{$HOSTS}</td>
+<td nowrap="nowrap"{$SERVICES_MOUSEOVER}>{$SERVICES}</td>
+<td onmouseover="showLong('{$FULL_NAME}')" onmouseout="hideLong()">{$OWNER}</td>
+<td>{$NOTIFY_ON}</td>
+<td>{$NOTIFY_BY}</td>
+<td nowrap="nowrap">{$NOTIFY_USERS_AND_GROUPS}</td>
+</tr>

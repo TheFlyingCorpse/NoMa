@@ -1,0 +1,62 @@
+<form name="contact_form" method="post" action="index.php">
+<input type="hidden" name="id" value="{$ID}"/>
+<input type="hidden" name="action" value="contacts"/>
+<table cellpadding="5" cellspacing="0" border="0" width="990">
+<tr><td colspan="10" class="contacts_message">{$MESSAGE}</td></tr>{$ADMIN_CONTENT}
+<tr><td colspan="2" height="5"></td></tr>
+<tr class="header"><td colspan="2">{$CONTACTS_HEADING_NAME}<hr/></td></tr>
+<tr>
+<td>{$CONTACTS_FIRST_NAME}</td>
+<td><input class="text" name="first_name" size="40" value="{$FIRST_NAME}"/></td>
+</tr>
+<tr>
+<td>{$CONTACTS_LAST_NAME}</td>
+<td><input class="text" name="last_name" size="40" value="{$LAST_NAME}"/></td>
+</tr>{$PASSWORD_FIELDS}
+<tr><td colspan="2" height="5"></td></tr>
+<tr class="header"><td colspan="2">{$CONTACTS_HEADING_CONTACT}<hr/></td></tr>
+<tr>
+<td>{$CONTACTS_EMAIL}</td>
+<td><input class="text" name="email" size="40" value="{$EMAIL}"/></td>
+</tr>
+<tr>
+<td>{$CONTACTS_PHONE}</td>
+<td><input class="text" name="phone" size="40" value="{$PHONE}"/></td>
+</tr>
+<tr>
+<td>{$CONTACTS_MOBILE}</td>
+<td><input class="text" name="mobile" size="40" value="{$MOBILE}"/></td>
+</tr>
+<tr>
+<td>{$CONTACTS_RESTRICT_ALERTS}</td>
+<td><input class="text" name="restrict_alerts" type="checkbox" {$RESTRICT_ALERTS}/></td>
+</tr>
+<tr><td colspan="2" height="5"></td></tr>
+<tr class="header"><td colspan="2">{$CONTACTS_HEADING_TIME}<hr/></td></tr>
+<tr>
+<td>{$CONTACTS_TIMEPERIOD}</td>
+<td>{$TIMEPERIOD_SELECT}</td>
+</tr>
+<tr>
+<td>{$CONTACTS_TIMEZONE}</td>
+<td>{$TIMEZONE_SELECT}</td>
+</tr>
+<tr><td colspan="2" height="5"></td></tr>
+<tr><td colspan="2">{$CONTACTS_HEADING_HOLIDAYS}</td></tr>{$HOLIDAYS}
+<tr>
+<td>{$CONTACTS_HOLIDAYS_START}</td>
+<td><input class="text" name="holiday_start" size="40" value=""/></td>
+</tr>
+<tr>
+<td>{$CONTACTS_HOLIDAYS_END}</td>
+<td><input class="text" name="holiday_end" size="40" value=""/></td>
+</tr>
+<tr>
+<td colspan="2" align="center">
+<div class="c1f"></div><div class="c2f"></div><div class="c3f"></div><div class="c4f"></div>
+<div class="c-bg"><input type="submit" name="submit" value="{$CONTACTS_SUBMIT}"/></div>
+<div class="c4f"></div><div class="c3f"></div><div class="c2f"></div><div class="c1f"></div>
+</td>
+</tr>
+</table>
+</form>

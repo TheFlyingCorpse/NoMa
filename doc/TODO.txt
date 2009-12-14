@@ -1,0 +1,4 @@
+* bulk-activation and -deactivation of notifications
+* sort function in overview -> disable for actions
+* host-service preview: show only services for configured hosts
+* "what if?" to show who would be notified

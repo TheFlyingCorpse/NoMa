@@ -1,0 +1,73 @@
+0.0.4
+------
+* fixed admin checkbox in contact manager
+* fixed update of modifications regarding empty contacts, contact groups and methods
+* added host and service previews to notification manager
+
+0.0.5
+------
+* added scrolling to host and service previews
+* notifier: fixed false positives of recipient filter
+* added width parameter for host/service preview
+* SWITCHED ACTIVATE AND DEACTIVATE BUTTONS
+* changed source table for preview
+* added sorting to log viewer
+
+0.1.0
+------
+* fixed logout
+* added more session data
+* modified contacts, contactgroups and notifications to allow several empty fields
+* fixed host/service exclusion
+* fixed multiple notifications upon ACKNOWLEDGEMENT
+* fixed UP/OK on auto loops
+* fixed holidays
+
+0.1.1a
+------
+* fixed login bypass for http authentication
+* overview: added display of notifications for users being member of assigned contactgroup(s) (not if CG is defined in escalation(s))
+* reduced massive amount of unused db connections
+* added view-only groups for users who want to have a view on certain notifications whithout being notified
+* made logging of plugin output toggleable via config file notifier
+* added logging of host- and service output (toggleable via config file of notifier)
+* added additional messages to contact manager after adding new users
+
+
+1.0.2
+------
+* major rewrite
+* now runs as a daemon
+* fixed timezone support - daylight saving will be taken into account (but N.B. the DateTime::TimeZone perl library sometimes uses very
+  old timezone information - if necessary recompile it using the latest info)
+* threaded support - requires a bug-free thread implementation
+* each notification method has its own thread - voice calls will be sequential but will not block the other methods
+* status information (send "status" as a command and look in the debug log)
+* notifications queued via pipe or socket (using Nagios notification plugin "alert_via_noma")
+* improved logging
+* simplified method escalation
+* notifications start with 1
+* removed timezone from notifications - we now only care about the timezone that the contact is in
+* working hours can now be specified as multiple periods
+* various bugfixes
+* init scripts for daemon
+* thread pool for tcp connections should prevent memory exhaustion
+* watchdog thread restarts the daemon if there is a memory leak
+
+1.0.3
+------
+* updated documentation
+
+1.0.4
+------
+* removed configuration overrides
+
+current (1.0.5)
+----------------
+* added 'filter', 'key_find_user' and 'key_set_user' to ldap authentication and configuration
+* added complex filters which allow filtering by login name
+* fixed delayed filter preview for hosts and services
+* shortened host and service status in overview to reduce height of rows
+* fixed and centered paginator in log view
+* facelift
+* updated documentation

@@ -1,0 +1,78 @@
+#!/bin/bash
+# init file for noma
+# Bernd Erk (berk@netways.de) - 19/12/2007
+#
+# description: the NETWAYS NOtification MAnager
+#
+### BEGIN INIT INFO
+# Provides:          noma
+# Required-Start:    nagios
+# Required-Stop:     nagios
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 6
+# Short-Description: the NETWAYS NOtification MAnager
+# Description:       the NETWAYS NOtification MAnager
+### END INIT INFO
+# 
+
+# source function library
+#. /etc/init.d/functions
+
+. /etc/rc.status
+
+RETVAL=0
+prog="noma_daemon.pl"
+ME="NoMa"
+nagios_bin="/usr/share/nagios/noma/notifier"
+RUNUSER="nagios"
+RUNGROUP="nagios"
+
+start() {
+	echo -n $"Starting $prog: "
+
+	/sbin/startproc -u $RUNUSER $nagios_bin/$prog
+	RETVAL=$?
+	#echo
+	return $RETVAL
+}
+
+stop() {
+	echo -n $"Stopping $prog: "
+	killproc $nagios_bin/$prog 2>/dev/null
+	RETVAL=$?
+	return $RETVAL
+}
+
+restart(){
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	echo -n "Starting $ME"
+	start
+	rc_status -v
+	;;
+  stop)
+	echo -n "Stopping $ME"
+	stop
+	rc_status -v
+	;;
+  restart)
+	restart
+	rc_status
+        ;;
+  status)
+	echo -n "Checking for $ME"
+        /sbin/checkproc $prog
+	RETVAL=$?
+	rc_status -v
+        ;;
+  *)
+	echo $"Usage: $0 {start|stop|restart}"
+	RETVAL=1
+esac
+
+exit $RETVAL
+

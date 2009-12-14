@@ -1,0 +1,724 @@
+
+NETWAYS NoMa - Documentation
+
+2007-12-20 by Christian Doebler
+
+last update 2009-11-02 Christian Doebler
+
+
+
+Table of Contents
+==================
+
+1. Copyright
+
+2. Preface
+
+3. Installation
+
+  3.1 Preparation
+  3.2 Setting up the database
+  3.3 Installing the daemon
+
+4. Configuration
+
+  4.1 Configuring the frontend
+  4.2 Configuring the notifier
+  4.3 Configuring Nagios to use NoMa
+  4.4 Configuring the individual notifiers
+
+    4.4.1 sendEmail.pl
+    4.4.2 sendSMS.pl
+    4.4.3 sendVoice.pl
+
+5. The Frontend
+
+  5.1 Managing contacts
+
+    5.1.1 Adding contacts
+    5.1.2 Modifying contacts
+    5.1.3 Deleting contacts
+
+  5.2 Managing contactgroups
+
+    5.2.1 Adding contacts
+    5.2.2 Modifying contacts
+    5.2.3 Deleting contacts
+
+  5.3 Managing notifications
+
+    5.3.1 Adding notifications
+    5.3.2 Modifying notifications
+    5.3.3 Deleting notifications
+
+  5.4 Viewing logs
+
+6. Extending the notifier
+
+  6.1 Coding of notification plugins
+  6.2 Embedding of notification plugins into the application
+  6.3 Language files
+
+7. Advanced Features 
+
+  7.1 Timeperiods
+
+    7.1.1 Adding a time period
+
+  7.2 Timezone support
+
+  7.3 Debugging
+
+  7.4 Watchdog
+
+
+1. Copyright
+=============
+
+This software is Copyright (c) 2007 NETWAYS GmbH, Christian Doebler 
+                               <support@netways.de>
+
+(Except where explicitly superseded by other copyright notices)
+
+
+LICENSE:
+
+This work is made available to you under the terms of Version 2 of
+the GNU General Public License. A copy of that license should have
+been provided with this software, but in any event can be snarfed
+from http://www.fsf.org.
+
+This work is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301 or visit their web page on the internet at
+http://www.fsf.org.
+
+
+CONTRIBUTION SUBMISSION POLICY:
+
+(The following paragraph is not intended to limit the rights granted
+to you to modify and distribute this software under the terms of
+the GNU General Public License and is only of importance to you if
+you choose to contribute your changes and enhancements to the
+community by submitting them to NETWAYS GmbH.)
+
+By intentionally submitting any modifications, corrections or
+derivatives to this work, or any other work intended for use with
+this Software, to NETWAYS GmbH, you confirm that
+you are the copyright holder for those contributions and you grant
+NETWAYS GmbH a nonexclusive, worldwide, irrevocable,
+royalty-free, perpetual, license to use, copy, create derivative
+works based on those contributions, and sublicense and distribute
+those contributions and any derivatives thereof.
+
+Nagios and the Nagios logo are registered trademarks of Ethan Galstad.
+
+
+
+
+2. Preface
+===========
+
+NoMa, which stands for "Notification Manager", is an easily extensible
+tool to simplify the management of Nagios notifications.
+
+NoMa consists of a web frontend for managing notifications and contacts
+and viewing logs, etc. and a notifier script, which takes notifications
+from Nagios to process them as defined via the NoMa frontend.
+
+NoMa was sponsored by DeLaval.
+
+
+
+
+3. Installation
+================
+
+3.1 Preparation
+----------------
+
+To install Noma, you need the following software working properly:
+
+* a http server
+* PHP5
+* MySQL
+* Nagios with NDO
+
+Download the current NoMa-release from monitoringexchange.org or
+sourceforge.net and unpack it in a www path of your choice.
+
+
+3.2 Setting up the database
+----------------------------
+
+NOTE: To set up the database you might need administration rights.
+
+1. Create the NoMa database:
+   $ mysqladmin -u root -p create noma
+
+2. Login to the database and grant access rights:
+   NOTE: replace the very secret_password by your own one!
+   > mysql -u root -p noma
+   > grant select, insert, update, delete to noma_user identified by 'secret_password';
+   > flush privileges;
+
+3. import the NoMa database by using the file 'create_tables.sql' located
+   in your extracted archive's sub directory 'sql':
+   $ mysql -u root -p noma < create_tables.sql
+
+
+3.3 Installing the daemon
+----------------------------
+
+NoMa requires a daemon to be running.  Sample start scripts for Debian and Redhat
+are available in the notifier directory.  Note that you may have to alter
+paths and user variables in the script to match your system.
+
+For Debian:
+
+* cp noma_initscript.debian /etc/init.d/noma
+* update-rc.d noma defaults
+* /etc/init.d/noma start
+
+
+4. Configuration
+=================
+
+4.1 Configuring the frontend
+-----------------------------
+
+Configuration of the frontend is done in the file 'config.php' located
+in the NoMa sub directory 'config'.
+
+1. Setting the frontend language:
+   The language is set via the variable '$language'. Valid parameters
+   are 'en' and 'de' at the time.
+
+2. Setting the database credentials:
+   Database credentials are set via the array '$dbConf'.
+   Please define your database host, user, password and the name of your
+   database here. You can also set 'persistent' to '1' to enable
+   persistent connections.
+
+3. Setting up authentication:
+   User data is stored in the table 'contacts'.
+   NoMa can be used without any authentication but also supports
+   the following authentication methods:
+
+   * 'native'   -   store your passwords in the internal NoMa database
+
+                    Usernames and passwords are stored in the table 'contacts'.
+                    Passwords are encrypted using SHA1.
+
+   * 'http'     -   authenticate via http auth
+
+                    Set up your http server to use http authentication and
+                    add your users without passwords in the contacts table.
+
+                    If your usernames are passed as email (like when you
+                    are using kerberos tickets) you have to set
+                    'username_is_email' in '$http' to true.
+
+                    'check_local_user' in '$http' has to be set to true if
+                    you are using the same users for multiple frontends
+                    such as Nagios and NoMa. Otherwise a user can login
+                    to Nagios and can bypass the NoMa login afterwards.
+                    'check_local_user' checks the database for every user
+                    who tries to access NoMa.
+
+   * 'ldap'     -   authenticate via ldap
+
+                    Set up your ldap server to use ldap authentication and
+                    add your users without passwords in the contacts table.
+
+                    NoMa has to be configured correctly to work with
+                    ldap authentication. These settings are done via the
+                    array '$ldap' in your configuration file.
+
+4. Setting up the notification manager (add/edit/delete)
+   Notification management is set up via '$notifications':
+
+   * 'add_owner'      - automatically add the person, who is owner of a
+                        notification, when submitting a new notification
+                        or a notification update
+
+   * 'host_service_preview'
+                      - enable host and service preview when entering include-/
+                        exclude hosts and services
+                        this option requires NDO access to be set up via option
+                        '$dbNDO' (see below)
+
+   * 'preview_width'  - width (in pixels) of preview area (default: 250)
+
+   * 'preview_max_length'
+                      - maximum length of preview output (0 for infinite)
+                        if the output exceeds this value, it will be trimmed and
+                        '...' will be appended
+
+   * 'preview_scroll' - enable/disable scrolling for host and service preview
+                        (true/false)
+
+   * 'preview_max_height'
+                      - maximum height (in pixels) of preview area when scrolling is enabled
+
+5. Setting up NDO access for host and service previews
+   NDO-database credentials are set via the array '$dbNDO'.
+   Please define your database host, user, password and the name of your
+   database here. You can also set 'persistent' to '1' to enable
+   persistent connections.
+   Additionally, you need to define your NDO-table prefix via 'table_prefix'
+   which is usually 'nagios_'.
+
+6. Setting up the contactgroup manager
+   The contactgroup manager is set up via '$contactgroups':
+
+   * 'admin_only'     -    set this to true to grant access to the contactgroup
+                           manager to admins only
+
+7. Setting up the log viewer:
+   Log viewing is set up via '$logs':
+
+   * 'admin_only'      -   set this to true to grant viewing logs to admin
+                           users only
+
+   * 'pages_per_line'  -   define the maximum of displayed pages for the
+                           page navigation ('1 2 3 ... > >>') of the
+                           log viewer
+
+   * 'num_results'     -   define the drop down box of the log viewer enabling
+                           the users to select the number of results per page
+
+8. Setting up the overview page:
+   Set '$str_maxlen' to trim large columns on the overview page.
+
+   * 'overview_host'     -   maximum length of host definitions
+                             (minus 3 for '...')
+
+   * 'overview_service'  -   maximum length for service definitions
+                             (minus 3 for '...')
+
+
+4.2 Configuring the notifier
+-----------------------------
+
+The notifier has to be configured to access the database.
+Change settings in your 'noma_conf.pm', located in the sub directory
+'notifier'. 
+
+The notifier's configuration parameters are described below.
+
+4.2.1 db - the database setup for the notifier
+-----------------------------------------------
+
+host        - the database host; example: 'localhost'
+database	- the database name; example: 'noma'
+user		- the database user; example: 'noma_user'
+password	- the database password; example 'noma_secret'
+
+
+4.2.3 log - the logging setup for the notifier
+-----------------------------------------------
+
+pluginOutput		- log plugin output (0 = disabled | 1 = enabled)
+hostServiceOutput	- log host- and service output (0 = disabled | 1 = enabled)
+delimiter			- delimiter to separate logging strings; example: ' | '
+
+
+4.2.4 path - the path setup for the notifier
+---------------------------------------------
+
+cache			- not used
+pidfile			- stores the PID of the running process
+
+
+4.2.5 input - the input methods for the notifier
+-------------------------------------------------
+
+pipeEnabled		- enables the pipe method
+pipePath		- the pipe itself
+socketEnabled		- enables unix sockets
+socketAddress		- address of the socket. N.B. there is no security - do not allow
+			  access to non-trusted networks
+socketPort		- TCP port to listen on
+socketMaxConns		- how many connections to spawn (max. simultaneous connects)
+
+
+4.2.6 command - the command methods for the notifier
+-----------------------------------------------------
+
+These provide a mapping between the database and the actual notification commands.  Ensure that
+the scripts exist and are executable for the nagios user.
+
+
+4.2.7 notifier - attempts and retries for the notifier
+-------------------------------------------------------
+
+(Currently only useful for voice alerts)
+
+maxAttempts		- how often we try a notification before giving up
+timeToWait		- how many seconds to wait before retries
+
+
+4.2.3 debug - debugging for the notifier
+-----------------------------------------
+
+These provide various debugging and logging features.
+The watchdog restarts the daemon if too much memory is used - be careful not to set
+this too low, because pending retries will be lost on a restart.
+
+daemonize		- forks the notifier into the background (0 = disabled | 1 = enabled)
+watchdogEnabled		- start the watchdog thread (0 = disabled | 1 = enabled)
+watchdogMaxRSS		- restart if the used memory exceeds this value
+watchdogMaxVSS		- restart if total memory (including swapped out) exceeds this value
+watchdogMaxRuntime	- restart after this many seconds
+
+4.3 Configuring Nagios to use NoMa
+-----------------------------------
+
+To tell Nagios about the new notification methods, you have to add them
+to your misccommands.cfg or wherever you want to:
+
+define command{
+        command_name    host-notify-by-noma
+        command_line    <PATH-TO-NOMA>/notifier/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t $TIMET$
+        }
+
+define command{
+        command_name    service-notify-by-noma
+        command_line    <PATH-TO-NOMA>/notifier/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t $TIMET$
+        }
+
+With the option -p you can force the plugin to use the pipe instead of the unix socket.  You can also pass a unique ID with
+option -u (if not given, the plugin will generate one for you).
+
+
+Now change your contact definitions (maybe in contact.cfg) to use NoMa:
+
+define contact {
+        ...
+        service_notification_commands   service-notify-by-noma
+        host_notification_commands      host-notify-by-noma
+        ...
+        }
+
+4.4 Configuring the individual notifiers
+-----------------------------------------
+
+The various notifier scripts are configured in noma_conf.pm and need to be installed.
+
+
+4.4.1 sendEmail.pl
+-------------------
+
+You will want to customize the email text in this plugin
+
+
+4.4.2 sendSMS.pl
+-----------------
+
+This requires sendsms from smstools3 to be installed in /usr/local/bin
+
+
+4.4.3 sendVoice.pl
+-------------------
+
+The default is to call the script /usr/local/nagios/contrib/nagios2asterisk/voicecall.pl
+
+If you have a Starface PBX then exchange this for the voicecall_starface.pl script - you will also need
+the starface Module to be installed (not supplied in this archive)
+
+Both scripts require access to the manager interface of Asterisk and create an outgoing voicecall.
+See the help text inside the scripts for further configuration details
+
+
+
+5. The Frontend
+================
+
+5.1 Managing contacts
+----------------------
+
+5.1.1 Adding contacts
+      If you are using authentication, only admins are allowed to add
+      contacts. Adding of contacts is done via the 'Contacts'
+      link at the overview page.
+
+5.1.2 Modifying contacts
+      If you are using authentication, every user can edit his own
+      profile, only. Non-admin users can do this via the 'Profile'
+      link at the overview page.
+      Users who want to manage their holidays, can do this here.
+
+5.1.3 Deleting contacts
+      Only admins (if authentication is used) can delete contacts.
+      Just select a user on the 'Contacts' page and submit
+      by using 'Delete user'.
+
+      If a user is deleted, all his data will be lost. Notifications
+      owned by that user will be disabled and given to the user '[---]'.
+      Notifications owned by this user cannot be enabled until assigned
+      to an existing user!
+
+
+5.2 Managing contactgroups
+---------------------------
+
+5.2.1 Adding contactgroups
+      Contactsgroups can be added if 'create new' is selected in the
+      group selector of 'Contactgroups'. Simply type in the short name
+      and the name of the new contactgroup and hit the submit button.
+
+5.2.2 Modifying contactgroups
+      Contactgroups can be edited by selecting them in the upper
+      area of the contactgroup manager.
+
+      After selection, contactgroup data will appear. Here you can
+      change the short name, the name and the members of the selected
+      contactgroup.
+
+      After hitting the edit area's submit button, the selected
+      contactgroup will be updated.
+
+5.2.3 Deleting contactgroups
+      You can delete contactgroups by selecting them in the upper
+      area of the contactgroup manager. Now hit the 'delete' button,
+      which is right of the select box.
+
+
+5.3 Managing notifications
+---------------------------
+
+Be aware that active notifications that are being processed by NoMa
+may not take account of changes made after they are started.
+
+5.3.1 Adding notifications
+      Simply click on 'Notification' in your main navigation and define
+      your notification.
+
+      Hosts and Services are supposed to be comma-separated lists.
+      You can use the wildcard '*' to ease the definition of
+      multiple hosts with similar names.
+
+      Define the time of notification via the field labeled with
+      'Notify after' by a semicolon-separated list of numbers
+      and intervals.
+      Examples:
+      1;2;4-6          The assigned contact(s) will be notified when
+                       the first notification from Nagios is passed
+                       to the notifier and also after two, four,
+                       five and six notifications.
+      1;3;4;8          The assigned contact(s) will be notified one,
+                       three, four and eight times after the initial
+                       notification.
+
+      It is important to note that the counter increases by 1 each time
+      the daemon receives a notification from Nagios.  You should configure
+      your nagios to resend notifications regularly and make use of the
+      interval.
+
+      New notifications are never active! You have to activate them
+      via the small 'X' button on the left side of your notification's
+      row (overview).
+
+5.3.2 Modifying notifications
+      To modify a notification, click the little pen symbol left, on the
+      notification's row (overview).
+
+      In the modify dialogue, you also can configure contact escalations.
+      Simply hit the 'Add escalation' button and define your escalation
+      after a defined number of notifications.
+      If you want to remove an escalation, simply hit the corresponding
+      'Remove escalation' button.
+
+5.3.3 Deleting notifications
+      Deletion of notifications is done via the small trash icon, on
+      the left side of the notification's row (overview).
+
+
+5.4 Viewing logs
+-----------------
+
+The log viewer can be accessed via the link 'View logs' at the overview
+page.
+
+On the log viewer's page you can set a filter via 'Find', set the number
+of rows per page and browse through your notification logs.
+
+Handling is very simple.
+
+
+
+
+6. Extending the notifier
+==========================
+
+6.1 Coding of notification plugins
+-----------------------------------
+
+To code a notification plugin, you only have to mind, that the following
+(mostly Nagios-generated data) is passed in the following order:
+
+ 1. <FROM>               - the 'from' field is defined in the database
+                           table 'notification_methods', column 'from'
+
+ 2. <TO>                 - the 'to' field is the data contained in the
+                           column of your contact's information defined
+                           by 'contact_field' in the table
+                           'notification_methods'
+
+ 3. <CHECK-TYPE>         - the check type is either 'h' for host or 's'
+                           for service checks
+
+ 4. <DATETIME>           - this parameter contains date and time, as passed
+                           on by Nagios
+
+ 5. <STATUS>             - the result of the check
+                           Hostchecks: UP, UNREACHABLE, DOWN
+                           Servicechecks: OK, WARNING, CRITICAL, UNKNOWN
+
+ 6. <NOTIFICATION-TYPE>  - the notification type as passed on by Nagios
+
+ 7. <HOST-NAME>          - the host name as passed on by Nagios
+
+ 8. <HOST-ALIAS>         - the host's alias as passed on by Nagios
+
+ 9. <HOST-IP>            - the host's ip address as passed on by Nagios
+
+10. <OUTPUT>             - HOSTOUTPUT or SERVICEOUTPUT, depending on the
+                           check type, as passed on by Nagios
+
+11. [SERVICE]            - the service description as passed on by Nagios
+                           (only if check type is 's')
+
+
+Just let your plugin create messages out of these parameters and pass
+the generated messages to the sending application.
+Give back the return code of that application to the notifier.
+
+You can have a look at the example 'sendVoice.pl'.
+
+
+
+6.2 Embedding of notification plugins into the application
+-----------------------------------------------------------
+
+To make the notifier use your plugin, simply add a row to the table
+'notification_methods' and define method (as it should be displayed
+in the frontend), command (the name of your plugin as configured in
+noma_conf.pm), the column name of the table 'contacts' where the
+recipient's data is stored and the sender (e.g. an E-Mail address
+for the 'From:' info).  The on_fail field specifies which method will
+come next if a plugins returns an error.  This is currently only
+used by the voicecall plugin, to provide fallback to SMS or Email.
+
+
+
+6.3 Language files
+-------------------
+
+To enable as many users as possible to use NoMa, you are encouraged to
+send us language files! :)
+
+Just take a file out of the sub directory 'lang', copy it and substitute
+the data by an other language. Thanks!
+
+
+7. Advanced Features 
+=====================
+
+
+7.1 Timeperiods
+----------------
+
+Adding or changing timeperiods requires direct access to the database.
+
+A time period is comprised of 1 or more time slices.
+e.g. the "out of hours" period has the following slices;
+
+* Saturday and Sunday 00:00 - 24:00
+* Monday to Friday 00:00 - 08:00
+* Monday to Friday 18:00 - 24:00
+
+
+7.1.1 Adding a time period
+---------------------------
+
+To create a new time period we need to add it to the time_periods table
+
+* insert into time_periods values ('', 'weekends');
+
+* select * from time_periods;
+  +----+------------------------+
+  | id | description            |
+  +----+------------------------+
+  |  1 | 24x7                   |
+  |  2 | "Normal" Working Hours |
+  |  3 | out of hours           |
+  |  4 | weekends               |
+  +----+------------------------+
+
+Then we need to add at least one time slice for this period.
+
+* insert into time_slices values ('', '4', '65', '00:00:00', '24:00:00');
+
+where 4 is the ID we want to assign it to,
+and 65 is a binary field representing the days of the week for which this is valid;
+
+  Day             Binary Bit     Decimal
+  Sunday             1              1
+  Monday             2              2
+  Tuesday            3              4
+  Wednesday          4              8
+  Thursday           5              16
+  Friday             6              32
+  Saturday           7              64
+
+
+Example: Monday, Thursday = 2+16 = 18
+
+
+
+
+7.2 Timezone support
+---------------------
+
+NoMa makes use of the perl DateTime::TimeZone to provide proper timezone support
+(including winter / summer time) for contacts.
+
+The zone is set at the contact level and simplifies worldwide support for working hours.
+
+NOTE: the timezone (+?h) displayed in the webinterface is only indicative of the time difference
+assuming no daylight saving time, however the perl library will ensure correct handling of the
+time zones.
+
+Also be aware that daylight saving for various regions of the world changes occasionally (e.g.
+Western Australia) and you will need to ensure that your DateTime::TimeZone module is current
+if you have contacts in one of these zones.
+
+
+7.3 Debugging
+--------------
+
+NoMa provides basic debugging support.  Notification errors are logged into the database, but you
+can increase the logging by setting debug to 1 in noma_conf.pm (debugging will be to the file specified).
+
+On receiving the command "status", the notifier will dump some basic statistics to the statusfile.
+
+
+7.4 Watchdog
+-------------
+
+Some versions of the perl threading implementation leak memory.  To prevent this from getting out
+of hand there is a watchdog thread.  For configuration details see 4.2.3
+
+Be aware that a restart will cause pending retries (e.g. Voice alerts) to be lost.
+
+
+
+# EOF

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>NETWAYS NoMa</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<script src="script.js" type="text/javascript"></script>
+<!--[if lte IE 7]>
+<style type="text/css">
+/*<![CDATA[*/ 
+.longText { position: fixed; }
+* html .hs_preview {
+	height: expression( this.scrollHeight > {$MAX_HEIGHT_DEC} ? "{$MAX_HEIGHT}px" : "auto" );
+	max-height: {$MAX_HEIGHT}px;
+}
+/*]]>*/
+</style>
+<![endif]-->
+</head>
+<body>
+<div id="longText"></div>
+<div id="main-container">
+	<div id="header">
+		<div id="header-content">{$NAVIGATION_CONTENT}</div>
+	</div>
+	<div id="main-content">
+		{$MAIN_CONTENT}
+	</div>
+	<div id="footer">
+		NoMa{$VERSION}&#160;|&#160;<a href="http://www.netways.de/" target="_blank">www.netways.de</a><br/>
+		&#169;&#160;2007-2009&#160;NETWAYS&#160;GmbH.&#160;The&#160;Program&#160;is&#160;provided&#160;AS&#160;IS,&#160;without&#160;warranty.&#160;Licensed&#160;under&#160;GPLv3.<br/>
+		This&#160;program&#160;is&#160;free&#160;software;&#160;you&#160;can&#160;redistribute&#160;it&#160;and/or&#160;modify&#160;it&#160;under&#160;the&#160;terms&#160;of&#160;the&#160;GNU&#160;General&#160;Public&#160;License&#160;version&#160;3. 
+	</div>
+</div>
+</body>
+</html>
