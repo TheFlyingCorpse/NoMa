@@ -75,7 +75,7 @@ if (isset($p['action'])) {
 $authUser = null;
 if ($authentication_type) {
 	$authUser = getAuthUser();
-	if (empty($authUser)) unset($action);
+	if (empty($authUser)) $action = null;
 }
 
 

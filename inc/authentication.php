@@ -132,7 +132,9 @@ function getAuthUser () {
 
 		case 'ldap':
 		case 'native':
-			$authUser = $_SESSION['user'];
+			if (array_key_exists('user', $_SESSION)) {
+				$authUser = $_SESSION['user'];
+			}
 			break;
 
 		case 'http':

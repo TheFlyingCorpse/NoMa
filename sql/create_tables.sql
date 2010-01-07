@@ -47,7 +47,7 @@ CREATE TABLE `contacts` (
 
 INSERT INTO `contacts` VALUES 
 (1,0,'[---]','','','','','','','',0,0,NULL),
-(2,1,'nagiosadmin','Nagios','Administrator','admin@localhost','','','','',1,285,NULL);
+(2,1,'nagiosadmin','Nagios','Administrator','admin@localhost','','','','fe2d0a7a5b34951b6ec3c46184f1ed3eae19459d',1,285,NULL);
 
 
 DROP TABLE IF EXISTS `escalations_contacts`;

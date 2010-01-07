@@ -220,37 +220,43 @@ function getNavigationContent ($action, $admin = false) {
 
 	$navigation = array (
 		array(
-			'actions'		=> array('', 'overview', 'add_new', 'toggle_active'),
-			'admin_only'	=> false,
-			'title'			=> NAVIGATION_OVERVIEW,
+			'actions'				=> array('', 'overview', 'add_new', 'toggle_active'),
+			'admin_only'			=> false,
+			'auth_type_required'	=> false,
+			'title'					=> NAVIGATION_OVERVIEW,
 		),
 		array(
-			'actions'		=> array('add', 'edit', 'add_escalation', 'update'),
-			'admin_only'	=> false,
-			'title'			=> NAVIGATION_NOTIFICATION,
+			'actions'				=> array('add', 'edit', 'add_escalation', 'update'),
+			'admin_only'			=> false,
+			'auth_type_required'	=> false,
+			'title'					=> NAVIGATION_NOTIFICATION,
 		),
 		array(
-			'actions'		=> array('contacts'),
-			'admin_only'	=> false,
-			'title'			=> array(
-				'user'			=> NAVIGATION_PROFILE,
-				'admin'			=> NAVIGATION_CONTACTS,
+			'actions'				=> array('contacts'),
+			'admin_only'			=> false,
+			'auth_type_required'	=> false,
+			'title'					=> array(
+				'user'					=> NAVIGATION_PROFILE,
+				'admin'					=> NAVIGATION_CONTACTS,
 			),
 		),
 		array(
-			'actions'		=> array('contactgroups'),
-			'admin_only'	=> true,
-			'title'			=> NAVIGATION_CONTACTGROUPS,
+			'actions'				=> array('contactgroups'),
+			'admin_only'			=> true,
+			'auth_type_required'	=> false,
+			'title'					=> NAVIGATION_CONTACTGROUPS,
 		),
 		array(
-			'actions'		=> array('logs'),
-			'admin_only'	=> true,
-			'title'			=> NAVIGATION_LOGS,
+			'actions'				=> array('logs'),
+			'admin_only'			=> true,
+			'auth_type_required'	=> false,
+			'title'					=> NAVIGATION_LOGS,
 		),
 		array(
-			'actions'		=> array('logout'),
-			'admin_only'	=> false,
-			'title'			=> NAVIGATION_LOGOUT,
+			'actions'				=> array('logout'),
+			'admin_only'			=> false,
+			'auth_type_required'	=> true,
+			'title'					=> NAVIGATION_LOGOUT,
 		),
 	);
 
@@ -261,7 +267,10 @@ function getNavigationContent ($action, $admin = false) {
 	foreach ($navigation as $settings) {
 		if ($settings['actions'][0] == 'logout' && $authentication_type && $authentication_type == 'http' && !empty($_SESSION['user'])) {
 			continue;
-		} 
+		}
+		if (empty($authentication_type) && $settings['auth_type_required']) {
+			continue;
+		}
 		if (!$settings['admin_only'] || $admin) {
 			$active = (in_array($action, $settings['actions'])) ? 'class="active" ' : null;
 			$tplTmp = new nwTemplate(TEMPLATE_NAVIGATION_LINK);;

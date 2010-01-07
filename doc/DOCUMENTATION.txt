@@ -3,7 +3,7 @@ NETWAYS NoMa - Documentation
 
 2007-12-20 by Christian Doebler
 
-last update 2009-11-02 Christian Doebler
+last update 2010-01-07 Christian Doebler
 
 
 
@@ -440,6 +440,10 @@ See the help text inside the scripts for further configuration details
 
 5. The Frontend
 ================
+
+Authentication is disabled by default. If you set $authentication_type in
+config.php to 'native', you can login as 'nagiosadmin' by using the password
+'nagios'.
 
 5.1 Managing contacts
 ----------------------
