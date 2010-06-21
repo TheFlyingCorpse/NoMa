@@ -53,6 +53,7 @@ define('NAVIGATION_NOTIFICATION', 'Benachrichtigung');
 define('NAVIGATION_CONTACTS', 'Kontakte');
 define('NAVIGATION_PROFILE', 'Profil');
 define('NAVIGATION_CONTACTGROUPS', 'Kontaktgruppen');
+define('NAVIGATION_STATUS', 'Status');
 define('NAVIGATION_LOGS', 'Log');
 define('NAVIGATION_LOGOUT', 'ABMELDEN');
 
@@ -116,8 +117,9 @@ define('ADD_EDIT_CONFIRM_ADD_ESCALATION', 'Alle ungesicherten Daten gehen verlor
 define('ADD_EDIT_BUTTON_REMOVE_ESCALATION', 'Eskalation entfernen');
 define('ADD_EDIT_CONFIRM_REMOVE_ESCALATION', 'Diese Eskalation sicher entfernen?');
 define('ADD_EDIT_NOTIFY_AFTER_TRIES', 'Benachrichtigung nach:');
-define('ADD_EDIT_LET_NOTIFIER_HANDLE', 'Eskalationsvorgehen an notifier �bergeben:');
-define('ADD_EDIT_RELOOP_DELAY', 'Verz�gerung (in s) zwischen den Eskalationen:');
+define('ADD_EDIT_LET_NOTIFIER_HANDLE', 'Eskalationsvorgehen an notifier &uuml;bergeben:');
+define('ADD_EDIT_RELOOP_DELAY', 'Verz&ouml;gerung (in s) zwischen den Eskalationen:');
+define('ADD_EDIT_RELOOP_DELAY', 'Counter z&uuml;rucksetzen beim &Uuml;berlauf:');
 define('ADD_EDIT_NUM_NOTIFICATIONS', '(Anzahl der Benachrichtigungen)');
 define('ADD_EDIT_ESCALATION_DELETED', 'Eskalation wurde gel&ouml;scht.');
 define('ADD_EDIT_ESCALATION_ERROR', 'Fehler w&auml;hrend der Operation!');
@@ -148,6 +150,7 @@ define('CONTACTS_HEADING_HOLIDAYS' , 'Urlaub:');
 define('CONTACTS_NEW_USERNAME', 'Benutzer neu anlegen (username):');
 define('CONTACTS_FIRST_NAME', 'Vorname:');
 define('CONTACTS_LAST_NAME', 'Nachname:');
+define('CONTACTS_USERNAME', 'Login:');
 define('CONTACTS_PASSWORD', 'Passwort:');
 define('CONTACTS_PASSWORD_VERIFY', 'Passwort (Wiederholung):');
 define('CONTACTS_EMAIL', 'E-Mail:');

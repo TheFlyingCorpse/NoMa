@@ -506,8 +506,12 @@ may not take account of changes made after they are started.
       your notification.
 
       Hosts and Services are supposed to be comma-separated lists.
-      You can use the wildcard '*' to ease the definition of
-      multiple hosts with similar names.
+      You can use the wildcards '*' and '?' to ease the definition of
+      multiple hosts with similar names.  The names are case-insensitive.
+
+      Includes are parsed before excludes.
+
+
 
       Define the time of notification via the field labeled with
       'Notify after' by a semicolon-separated list of numbers

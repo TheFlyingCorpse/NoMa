@@ -82,6 +82,7 @@ foreach ($arrFilter as $element) {
 	// substitute characters for correctness of database query
 	$element = str_replace('%', '%%', $element);
 	$element = str_replace('*', '%', $element);
+	$element = str_replace('?', '_', $element);
 
 	// append element to where statement
 	$filter .= sprintf('%s%s like \'%s\'', $sep, $column, prepareDBValue($element));

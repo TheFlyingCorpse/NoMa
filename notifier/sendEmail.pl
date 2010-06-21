@@ -60,6 +60,10 @@
 use strict;
 use CGI;
 #use Email::Valid;
+use FindBin;
+use lib "$FindBin::Bin";
+use noma_conf;
+my $conf = conf();
 
 
 # check number of command-line parameters
@@ -71,7 +75,7 @@ exit 1 if ($numArgs != 10 && $numArgs != 11);
 my $from = $ARGV[0];
 my $to = $ARGV[1];
 my $check_type = $ARGV[2];
-my $datetime = $ARGV[3];
+my $datetimes = $ARGV[3];
 my $status = $ARGV[4];
 my $notification_type = $ARGV[5];
 my $host = $ARGV[6];
@@ -79,6 +83,10 @@ my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
 my $output = $ARGV[9];
 my $service = '';
+my $sendmail = "/usr/sbin/sendmail -t";
+my $subject = 'Subject: NoMa Alert';
+my $message = "$host/$service is $status\n$output\n";
+my $datetime = localtime($datetimes);
 
 $service = $ARGV[10] if ($numArgs == 11);
 
@@ -90,45 +98,21 @@ $service = $ARGV[10] if ($numArgs == 11);
 $from = "From: " . $from;
 $to = "To: " . $to;
 
-my $subject = 'Subject: ';
-my $message = '';
 
-if ($check_type eq 'h') {
-	$subject .= "NoMa: Host $host is $status!";
-	$message = "***** NoMa *****
+if ($check_type eq 'h')
+{
+    $subject = 'Subject: '.$conf->{sendemail}->{message}->{host}->{subject} if (defined( $conf->{sendemail}->{message}->{host}->{subject}));
+    $message = $conf->{sendemail}->{message}->{host}->{message} if (defined( $conf->{sendemail}->{message}->{host}->{message}));
 
-Notification Type: $notification_type
-Host: $host
-State: $status
-Address: $host_address
-Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host
-Info: $output
-
-Date/Time: $datetime";
-} elsif ($check_type eq 's') {
-	$subject .= "NoMa: $host - $service is $status!";
-	$message = "***** NoMa *****
-
-Notification Type: $notification_type
-
-Service: $service
-Host: $host
-Address: $host_address
-Link: http://localhost/nagios/cgi-bin/status.cgi?host=$host
-State: $status
-
-Date/Time: $datetime
-
-Additional Info:
-
-$output\n";
 } else {
-	exit 1;
+    $subject = 'Subject: '.$conf->{sendemail}->{message}->{service}->{subject} if (defined( $conf->{sendemail}->{message}->{service}->{subject}));
+    $message = $conf->{sendemail}->{message}->{service}->{message} if (defined( $conf->{sendemail}->{message}->{service}->{message}));
 }
 
+$sendmail = $conf->{sendemail}->{sendmail} if (defined($conf->{sendemail}->{sendmail}));
 
-my $sendmail = "/usr/sbin/sendmail -t";
-
+$subject =~ s/(\$\w+)/$1/gee;
+$message =~ s/(\$\w+)/$1/gee;
 
 open(SENDMAIL, "|$sendmail") or exit 1;
 print SENDMAIL $subject . "\n";

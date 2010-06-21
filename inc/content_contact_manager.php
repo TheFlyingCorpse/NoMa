@@ -72,6 +72,7 @@ function getContent () {
 	$templateContent->assign('CONTACTS_HEADING_ADMIN', CONTACTS_HEADING_ADMIN);
 	$templateContent->assign('CONTACTS_FIRST_NAME', CONTACTS_FIRST_NAME);
 	$templateContent->assign('CONTACTS_LAST_NAME', CONTACTS_LAST_NAME);
+	$templateContent->assign('CONTACTS_USERNAME', CONTACTS_USERNAME);
 	$templateContent->assign('CONTACTS_EMAIL', CONTACTS_EMAIL);
 	$templateContent->assign('CONTACTS_PHONE', CONTACTS_PHONE);
 	$templateContent->assign('CONTACTS_MOBILE', CONTACTS_MOBILE);
@@ -166,6 +167,7 @@ function getContent () {
 		$templateContent->assign('ID', $userData['id']);
 		$templateContent->assign('FIRST_NAME', $userData['first_name']);
 		$templateContent->assign('LAST_NAME', $userData['last_name']);
+		$templateContent->assign('USERNAME', $userData['username']);
 		$templateContent->assign('EMAIL', $userData['email']);
 		$templateContent->assign('PHONE', $userData['phone']);
 		$templateContent->assign('MOBILE', $userData['mobile']);

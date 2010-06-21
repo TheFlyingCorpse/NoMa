@@ -226,8 +226,12 @@ function getContent () {
 			$templateSubSubContent = new nwTemplate(TEMPLATE_ADD_EDIT_LET_NOTIFIER_HANDLE);
 			$templateSubSubContent->assign('ADD_EDIT_LET_NOTIFIER_HANDLE', ADD_EDIT_LET_NOTIFIER_HANDLE);
 			// $templateSubSubContent->assign('ADD_EDIT_RELOOP_DELAY', ADD_EDIT_RELOOP_DELAY);
+			$templateSubSubContent->assign('ADD_EDIT_ROLLOVER', ADD_EDIT_ROLLOVER);
 			if ($dbResult[0]['let_notifier_handle'] == '1') {
 				$templateSubSubContent->assign('CHECKED', ' checked="checked"');
+			}
+			if ($dbResult[0]['rollover'] == '1') {
+				$templateSubSubContent->assign('CHECKED_ROLLOVER', ' checked="checked"');
 			}
 			// $templateSubSubContent->assign('RELOOP_DELAY', $dbResult[0]['reloop_delay']);
 			$templateSubContent->assign('LET_NOTIFIER_HANDLE', $templateSubSubContent->getHTML());

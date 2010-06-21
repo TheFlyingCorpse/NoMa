@@ -74,6 +74,7 @@ function addNotification ($p) {
 	$notify_on_host_up = (($p['notify_on_host_up'] == 'on') ? '1' : '0');
 	$notify_on_host_down = (($p['notify_on_host_down'] == 'on') ? '1' : '0');
 	$let_notifier_handle = ($p['let_notifier_handle']);
+	$rollover = ($p['rollover']);
 
 
 	// perform securicy checks
@@ -121,7 +122,8 @@ function addNotification ($p) {
 		$notify_on_critical,
 		$notify_on_host_up,
 		$notify_on_host_down,
-		$let_notifier_handle
+		$let_notifier_handle,
+		$rollover
 	);
 	queryDB($query);
 
@@ -257,6 +259,7 @@ function updateNotification ($p) {
 	$notify_on_host_up = (($p['notify_on_host_up'][0] == 'on') ? '1' : '0');
 	$notify_on_host_down = (($p['notify_on_host_down'][0] == 'on') ? '1' : '0');
 	$let_notifier_handle = ($p['let_notifier_handle']);
+	$rollover = ($p['rollover']);
 
 
 	// perform securicy checks
@@ -268,7 +271,7 @@ function updateNotification ($p) {
 
 	// update notification
 	$query = sprintf(
-		'update notifications set username=\'%s\',hosts_include=\'%s\',hosts_exclude=\'%s\',services_include=\'%s\',services_exclude=\'%s\',notify_after_tries=\'%s\',on_ok=\'%s\',on_warning=\'%s\',on_unknown=\'%s\',on_host_unreachable=\'%s\',on_critical=\'%s\',on_host_up=\'%s\',on_host_down=\'%s\',let_notifier_handle=\'%s\' where id=\'%s\'',
+		'update notifications set username=\'%s\',hosts_include=\'%s\',hosts_exclude=\'%s\',services_include=\'%s\',services_exclude=\'%s\',notify_after_tries=\'%s\',on_ok=\'%s\',on_warning=\'%s\',on_unknown=\'%s\',on_host_unreachable=\'%s\',on_critical=\'%s\',on_host_up=\'%s\',on_host_down=\'%s\',let_notifier_handle=\'%s\',rollover=\'%s\' where id=\'%s\'',
 		$owner,
 		$hosts_include,
 		$hosts_exclude,
@@ -283,6 +286,7 @@ function updateNotification ($p) {
 		$notify_on_host_up,
 		$notify_on_host_down,
 		$let_notifier_handle,
+		$rollover,
 		$id
 	);
 	queryDB($query);

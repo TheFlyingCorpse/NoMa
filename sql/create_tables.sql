@@ -47,7 +47,7 @@ CREATE TABLE `contacts` (
 
 INSERT INTO `contacts` VALUES 
 (1,0,'[---]','','','','','','','',0,0,NULL),
-(2,1,'nagiosadmin','Nagios','Administrator','admin@localhost','','','','fe2d0a7a5b34951b6ec3c46184f1ed3eae19459d',1,285,NULL);
+(2,1,'nagiosadmin','Nagios','Administrator','admin@localhost','','','',sha1('nagiosadmin'),1,285,NULL);
 
 
 DROP TABLE IF EXISTS `escalations_contacts`;
@@ -108,7 +108,7 @@ CREATE TABLE `notification_logs` (
   `service` varchar(255) character set latin1 NOT NULL,
   `method` varchar(255) NOT NULL,
   `user` varchar(255) character set latin1 NOT NULL,
-  `result` varchar(255) NOT NULL,
+  `result` varchar(1023) NOT NULL,
   `unique_id` bigint(20) default NULL,
   `incident_id` bigint(20) default NULL,
   `notification_rule` int(11) default NULL,
@@ -164,6 +164,7 @@ CREATE TABLE `notifications` (
   `services_exclude` varchar(255) character set latin1 NOT NULL,
   `notify_after_tries` varchar(10) character set latin1 NOT NULL default '0',
   `let_notifier_handle` tinyint(1) NOT NULL,
+  `rollover` tinyint(1) default 0,
   `reloop_delay` int(11) NOT NULL default '0',
   `on_ok` tinyint(1) NOT NULL,
   `on_warning` tinyint(1) NOT NULL,
@@ -622,26 +623,6 @@ INSERT INTO `timezones` VALUES
 (371,'Pacific/Wallis',12),
 (372,'GMT',0);
 
-
-DROP TABLE IF EXISTS `tmp_active`;
-CREATE TABLE `tmp_active` (
-  `id` int(11) NOT NULL auto_increment,
-  `start` datetime NOT NULL,
-  `notify_id` bigint(20) NOT NULL,
-  `command` varchar(255) default NULL,
-  `dest` varchar(255) default NULL,
-  `from_user` varchar(255) default NULL,
-  `check_type` varchar(255) default NULL,
-  `status` varchar(255) default NULL,
-  `type` varchar(255) default NULL,
-  `host` varchar(255) default NULL,
-  `host_alias` varchar(255) default NULL,
-  `host_address` varchar(255) default NULL,
-  `service` varchar(255) default NULL,
-  `time_string` varchar(255) default NULL,
-  `output` varchar(4096) default NULL,
-  UNIQUE KEY `id` (`id`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `escalation_stati`;
 CREATE TABLE `escalation_stati` (

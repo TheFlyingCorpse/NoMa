@@ -17,11 +17,14 @@
 # DB query
 # TODO: implement cacheing
 # TODO: graceful recovery on SQL errors
+
+
 sub queryDB
 {
 
 
-    my ( $queryStr, $array ) = @_;
+    my ( $queryStr, $array, $nolog ) = @_;
+    my $debug_queries = $conf->{debug}->{queries};
 
     my $dbh = DBI->connect(
         'DBI:mysql:host='
@@ -31,7 +34,7 @@ sub queryDB
         $conf->{db}->{user}, $conf->{db}->{password}
     ) or return undef;
 
-    debug("QUERY: " . $queryStr) if (defined($debug_queries) and ($debug_queries != 0));
+    debug("QUERY: " . $queryStr) if (defined($debug_queries) and ($debug_queries != 0) and not defined($nolog));
     my $query = $dbh->prepare($queryStr) or return undef;
     $query->execute or return undef;
 
@@ -75,12 +78,17 @@ sub updateDB
     if ( !defined( queryDB($sql) ) )
     {
 
+	debug('Failed to query DB - serious error');
         # DB not available, cache the SQL
-        open( LOG, ">> $cache" );
-        print LOG "$sql\n";
-        close(LOG);
+        #open( LOG, ">> $cache" );
+        #print LOG "$sql\n";
+        #close(LOG);
     }
+    
+    # my $query = $dbh->prepare('select LAST_INSERT_ID') or return undef;
+    # $query->execute or return undef;
 
 }
 
 1;
+# vim: ts=4 sw=4 expandtab

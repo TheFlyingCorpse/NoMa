@@ -70,6 +70,8 @@ define('TEMPLATE_CONTACT_MANAGER_HOLIDAYS_ROW', TEMPLATE_DIR . 'contact_manager_
 
 define('TEMPLATE_LOG_VIEWER', TEMPLATE_DIR . 'log_viewer.html');
 define('TEMPLATE_LOG_VIEWER_ROW', TEMPLATE_DIR . 'log_viewer_row.html');
+define('TEMPLATE_STATUS_VIEWER', TEMPLATE_DIR . 'status_viewer.html');
+define('TEMPLATE_STATUS_VIEWER_ROW', TEMPLATE_DIR . 'status_viewer_row.html');
 
 define('TEMPLATE_CONTACTGROUP_MANAGER', TEMPLATE_DIR . 'contactgroup_manager.html');
 define('TEMPLATE_CONTACTGROUP_MANAGER_ADD', TEMPLATE_DIR . 'contactgroup_manager_add.html');

@@ -57,6 +57,8 @@ noma_daemon.pl  -  NETWAYS Notification Manager - Daemon
 
 =head1 OPTIONS
 
+This script uses a configuration file
+
 =head1 CAVEATS
 
 This script uses Thread Queues which may have memory leak problems in Perl versions
@@ -88,6 +90,7 @@ use lib "$FindBin::Bin".'/lib';
 use noma_conf;
 use thread_procs;
 use escalations;
+use bundler;
 use array_hash;
 use contacts;
 use database;
@@ -104,11 +107,13 @@ use IO::Socket;
 
 use DateTime;
 use DateTime::TimeZone;
+use Storable;
 
 # use Proc::ProcessTable;
 use DBI;
 
 our $processStart = time();
+our %suppressionHash;
 my $versionStr = 'current (1.0.5)';
 
 my %stati_service = (
@@ -137,8 +142,8 @@ my $status            = '';
 my $datetime          = '';
 my $output            = '';
 my $notification_type = '', my $verbose = undef;
-my $version           = undef;
-my $help              = undef;
+my $version           = undef;	# command option
+my $help              = undef;	# command option
 
 my $query               = '';
 my $notificationCounter = 0;
@@ -156,11 +161,10 @@ my $ignore        = 0;
 
 my $log_count = 0;
 my @triesPerID;
-my $max_notificationCounter = 0;
 my $additional_run          = 0;
 my $whoami     = 'notifier';
 
-my $conf  = conf();
+our $conf  = conf();
 my $cache = $conf->{path}->{cache};
 
 my $debug = $conf->{debug}->{logging};
@@ -233,7 +237,7 @@ if ( defined($daemonize) and $daemonize == 1)
     # don't check that we are already running - that is a job for the init script
     if (defined($pidfile))
     {
-        open (PID, ">$pidfile") or die "Can't create PIDfile";
+        open (PID, ">$pidfile") or die "Can't create PIDfile $pidfile";
         print PID "$$\n";
         close(PID);
     }
@@ -243,16 +247,21 @@ if ( defined($daemonize) and $daemonize == 1)
 	close(STDERR);
 }
 
-# delete any active notifications
-# TODO: OBACHT! this is undesirable, think of something better
-deleteFromActive();
 # TODO: read escalations in and push into Queue???
-deleteFromEscalations();
+# deleteFromEscalations();
+
+
+
+##############################################################################
+# THREAD CREATION
+##############################################################################
 
 # create queues for replies from notifier plugins, commands, and escalations
 my $msgq = Thread::Queue->new;
 my $cmdq = Thread::Queue->new;
 my $escq = Thread::Queue->new;
+my $dbquery = Thread::Queue->new;
+my $dbreply = Thread::Queue->new;
 
 # create a thread for each notification type
 
@@ -290,12 +299,18 @@ if ($conf->{debug}{watchdogEnabled})
 	  threads->new(\&spawnWatchdogThread, $conf->{debug});
 }
 
+if (0==1)
+{
+	$thread{'bundlerThread'} =
+   threads->new(\&spawnBundlerThread, \%queue, $conf->{notifier});
+}
+
 my $cmd;
 my $msg;
 
-#
-# BEGIN - GLOBAL LOOP
-#
+##############################################################################
+# GLOBAL LOOP
+##############################################################################
 do
 {
 
@@ -303,21 +318,21 @@ do
     {
         {
             debug( 'processing command ' . $cmd );
-            my ( $operation,
-                $host,         $incident_id, $host_alias,
-                $host_address, $service,     $check_type,
-                $status,       $datetime,    $notification_type,
-                $output
-            ) = parseCommand($cmd);
+#             my ( $operation,
+#                 $host,         $incident_id, $host_alias,
+#                 $host_address, $service,     $check_type,
+#                 $status,       $datetime,    $notification_type,
+#                 $output
+#             ) = parseCommand($cmd);
+            my %cmdh = parseCommand($cmd);
             next if ( !defined $host );
 
-            debug(
-                "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, output = $output"
-            );
+            debug(debugHash(%cmdh));
+#                 "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, output = $output"
 
             # hosts and services in lower case
-            $host = lc($host);
-            $service = lc($service) if ( $check_type eq 's' );
+            $cmdh{host} = lc($cmdh{host});
+            $cmdh{service} = lc($cmdh{service}) if ( $cmdh{check_type} eq 's' );
 
 ##############################################################################
             # GENERATE LIST OF CONTACTS TO NOTIFY
@@ -333,22 +348,26 @@ do
             # generate query and get list of possible users to notify
             my $query =
             'select id,hosts_include,hosts_exclude,services_include,services_exclude from notifications';
-            if ( $check_type eq 'h' )
+            if ( $cmdh{check_type} eq 'h' )
             {
-                $query .= ' where ' . $stati_host{$status} . '=\'1\'';
+                $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\'';
             } else
             {
-                $query .= ' where ' . $stati_service{$status} . '=\'1\'';
+                $query .= ' where ' . $stati_service{$cmdh{status}} . '=\'1\'';
             }
+
+            # only active rules!
+            $query .= ' and active=\'1\'';
             my %dbResult = queryDB($query);
 
             # filter out unneeded users by using exclude lists
             my @ids_all =
-            generateNotificationList( $check_type, $host, $service,
+            generateNotificationList( $cmdh{check_type}, $cmdh{host}, $cmdh{service},
                 %dbResult );
-            debug( 'IDs collected (unfiltered): ' . join( '|', @ids_all ) );
+            debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
 
 
+            next if (scalar(@ids_all) < 1);
 
             # We need to split the rules into 2 types
             # those that escalate internally - and normal rules
@@ -358,47 +377,53 @@ do
             my @contactsArr = ();
 
             # first handle normal rules
+            debug("now handling normal rules");
             ############ NORMAL RULES ####################
 
             # only consider "real" alerts
-            if ($operation eq 'notification')
+            if ($cmdh{operation} eq 'notification')
             {
                 @ids = getUnhandledRules(\@ids_all);
+                debug( 'Unhandled(normal) rule IDs (unfiltered): ' . join( '|', @ids ) );
 
 
-                $notificationCounter = getNotificationCounter($host, $service);
+                $notificationCounter = getNotificationCounter($cmdh{host}, $cmdh{service});
+                debug("Counter from notification_stati for $cmdh{host} / $cmdh{service} is $notificationCounter");
 
                 if ($notificationCounter > 0)
                 {
                     # notification already active
+                    debug('-> already active');
 
-                    ## escalation handled internally - ignore it here
+                    ## TODO: escalation handled internally - ignore it here
 
-                    if ($status eq 'OK' || $status eq 'UP')
+                    if ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
                     {
                         # clear counter
                         #
-                        clearNotificationCounter($host, $service);
+                        debug('  -> Clearing counter');
+                        clearNotificationCounter($cmdh{host}, $cmdh{service});
                     }
                     else
                     {
                         # increment counter
+                        debug('  -> Incrementing counter');
                         $notificationCounter =
-                            incrementNotificationCounter( $status, $host, $service,$check_type);
+                            incrementNotificationCounter( $cmdh{status}, $cmdh{host}, $cmdh{service},$cmdh{check_type});
                     }
                 } else {
                     # notification returned 0
-                    $notificationCounter =
-		                incrementNotificationCounter( $status, $host, $service,$check_type);
-		        }
-
-                debug( 'notification counter: ' . $notificationCounter );
-
-                # do we need to rollover the counter?
-                # - this is a global check
-                $notificationCounter = resetNotificationCounter($host, $service)
-                    if (counterExceededMax(\@ids, $notificationCounter));
-
+                    if ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
+                    {
+                        debug('Received recovery for a problem we never saw - ignoring');
+                    }
+                    else
+                    {
+                        debug('-> setting to active');
+                        $notificationCounter =
+                            incrementNotificationCounter( $cmdh{status}, $cmdh{host}, $cmdh{service},$cmdh{check_type});
+                    }
+                }
                 # no matches!?
                 my $idCount = @ids;
                 if ( $idCount < 1 )
@@ -408,16 +433,32 @@ do
                 }
                 else
                 {
+                    debug($idCount.' rules matched');
 
-                    # get contact data
-                    @contactsArr = getContacts(\@ids, $notificationCounter, $status, $incident_id);
+                    # do we need to rollover the counter?
+                    # the various rules may rollover at different times, so handle them individually
+                    foreach my $ruleid (@ids)
+                    {
+                        my @id_arr;
+                        push @id_arr, $ruleid;
+                        # - this is a local check
+                        if (counterExceededMax(\@id_arr, $notificationCounter))
+                        {
+                            debug('No more alerts possible, rolling over the counter');
+                            $notificationCounter = resetNotificationCounter($cmdh{host}, $cmdh{service});
+                        }
+
+                        # get contact data
+                        @contactsArr = (@contactsArr, getContacts(\@id_arr, $notificationCounter, $cmdh{status}, $cmdh{external_id}));
+                    }
                 }
             }
             # now handle escalation rules
-            debug("now handling escalation rules");
+            debug("now handling internal escalation rules");
             ############ ESCALATION RULES ####################
 
             @ids = getHandledRules(\@ids_all);
+            debug( 'Handled by NoMa(internal escalation) rule IDs (unfiltered): ' . join( '|', @ids ) );
 
             # the various rules may be at different stages, so handle them individually
             foreach my $esc_rule (@ids)
@@ -425,20 +466,25 @@ do
                 my @esc_arr;
                 push @esc_arr, $esc_rule;
                 debug("looking at rule $esc_rule");
-                $notificationCounter = getEscalationCounter($host, $service, $esc_rule);
+                $notificationCounter = getEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule);
 
                 if ($notificationCounter > 0)
                 {
                     # notification already active
                     debug("rule $esc_rule is currently escalating");
+                    incrementEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule);
+                    $notificationCounter += 1;
+
                     # is this a faked alert? otherwise ignore it!
-                    if ($operation eq 'escalation')
+                    if ($cmdh{operation} eq 'escalation')
                     {
                         debug("rule $esc_rule is faked - checking for overflow");
-                        $notificationCounter = resetEscalationCounter($host, $service, $esc_rule)
-                            if (counterExceededMax(\@esc_arr, $notificationCounter));
+                        # $notificationCounter = resetEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule)
+                        my $oflo = counterExceededMax(\@esc_arr, $notificationCounter);
+                        $notificationCounter = $oflo
+                            if ($oflo > 0);
 
-                        @contactsArr = (@contactsArr, getContacts(\@esc_arr, $notificationCounter, $status, $incident_id));
+                        @contactsArr = (@contactsArr, getContacts(\@esc_arr, $notificationCounter, $cmdh{status}, $cmdh{external_id}));
                     }
 
                 }
@@ -446,14 +492,14 @@ do
                 {
                     debug("creating a new escalation for rule $esc_rule");
                     # create status entry
-                    createEscalationCounter($esc_rule,
-                        $incident_id,  $host,        $host_alias,
-                        $host_address, $service,     $check_type,
-                        $status,       $datetime,    $notification_type,
-                        $output
-                    );
+                    createEscalationCounter($esc_rule, %cmdh);
+#                         $incident_id,  $host,        $host_alias,
+#                         $host_address, $service,     $check_type,
+#                         $status,       $datetime,    $notification_type,
+#                         $output
+#                     );
                     debug("adding contacts to array");
-                    @contactsArr = (@contactsArr, getContacts(\@esc_arr, 1, $status, $incident_id));
+                    @contactsArr = (@contactsArr, getContacts(\@esc_arr, 1, $cmdh{status}, $cmdh{external_id}));
                 }
 
             }
@@ -476,31 +522,42 @@ do
 
                 # insert into DB
                 createLog(
-                    '1', $id, $incident_id, $contact->{rule},
-                    $check_type_str{$check_type},          $status,
-                    $host,                $service,
+                    '1', $id, $cmdh{external_id}, $contact->{rule},
+                    $check_type_str{$cmdh{check_type}},          $cmdh{status},
+                    $cmdh{host},                $cmdh{service},
                     $method,           $contact->{mid}, $user,
                     'processing notification'
                 );
 
                 # TODO consider using timezones and converting time to user configurable format e.g. 
                 # M/D/YY for USA
-                # DD/MM/YYYY for UK
-                # DD.MM.YYYY for EU
+                # DD/MM/YYYY or DD.MM.YYYY for most of the World
                 # until this is implemented we just use what we were given
-                $queue{$cmd}->enqueue(prepareNotification($user, $method, $cmd, $dest, $from, $id, $datetime, $check_type, $status,
-                        $notification_type, $host, $host_alias, $host_address, $service, $output));
+		        # TODO do not queue here -> this is the job of the bundler thread
+                #$queue{$cmd}->enqueue(prepareNotification($user, $method, $cmd, $dest, $from, $id, $datetime, $check_type, $status,
+                #        $notification_type, $host, $host_alias, $host_address, $service, $output));
+                if (suppressionIsActive($cmd, $conf->{$cmd}->{suppression}))
+                {
+                    updateLog($id, ' was suppressed');
+                } else {
+# TODO: pass hashes?
+                    prepareNotification($cmdh{external_id}, $user, $method, $cmd, $dest, $from, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
+                        $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, $cmdh{service}, $cmdh{output}, $contact->{rule});
+                }
 
             }
 
         }
     }
 
+
+
     # check for notification results
     RESULTSLOOP: if ( $msg = $msgq->dequeue_nb )
     {
         # id= unique ID (per notification)
         my ( $id, $retval, @retstr ) = split( ';', $msg );
+# TODO: Storable::thaw
         my $retstr = join( ';', @retstr );
 
         debug(
@@ -515,6 +572,8 @@ do
 
             # sending was NOT successful
 
+            # foreach id;
+
             if (getRetryCounter($id) < $conf->{notifier}->{maxAttempts})
             {
                 # requeue notification and increment counter
@@ -525,7 +584,7 @@ do
                 # retrieve the contact data
 
                 # try to get next method (method escalation)
-                my ($nextMethod, $nextMethodName) = getNextMethod($id);
+                my ($nextMethod, $nextMethodName, $nextMethodCmd, $nextFrom, $nextTo) = getNextMethod($id);
 
                 if ($nextMethod eq '0')
                 {
@@ -539,27 +598,7 @@ do
                         $retstr .= ' - failed - no methods left';
                     }
 
-                    # now try to escalate
-                    # N.B. there may be more than 1 simultaneous notification
-                    # that attempts to escalate.
-                    #
-                    # 
-                    if (needToEscalateUniqueID($id))
-                    {
-                        $retstr .= '. Escalating';
-                        debug("escalating $id");
-                        updateLog( $id, $retstr );
-                        deleteFromActive($id);
-                        escalate($id);
-                    }
-                    else
-                    {
-                        # $retstr .= '. Not escalating';
-                        debug("not escalating $id");
-                        updateLog( $id, $retstr );
-                        deleteFromActive($id);
-                    }
-
+                    deleteFromActive($id);
 
                 }
                 else
@@ -574,7 +613,11 @@ do
                     }
 
                     updateLog( $id, $retstr );
-                    $queue{$nextMethodName}->enqueue(getNextMethodCmd($id, $nextMethod));
+                    # $queue{$nextMethodName}->enqueue(getNextMethodCmd($id, $nextMethod));
+                    # alter method for $id
+                    # TODO: really try next method -> code here is wrong? last_method referenced in log....
+                    $query = 'update tmp_active set method=\''.$nextMethodName.'\', notify_cmd=\''.$nextMethodCmd.'\', progress=\'0\', from_user=\''.$nextFrom.'\', dest=\''.$nextTo.'\', retries=\'0\' where notify_id=\''.$id.'\'';
+                    updateDB($query);
 
                 }
 
@@ -597,27 +640,43 @@ do
 
             # if this particular notification method was successful (e.g. email)
             # delete it from the tmp_active table
+            # but first retrieve the incident_id which created this notification
+            my $incident_id = getIncidentIDfromNotificationID($id);
             deleteFromActive($id);
 
-            # if the method is flagged as ACKable then additionally remove it from the status
-            # table (i.e. Voicealert)
-            if (notificationAcknowledgable($id))
-            {
-                # TODO feedback acknowledgement to nagios
-                deleteFromStati($id);
-            }
-            else
-            {
-                # pass to escalator
-                debug("ACK: escalating $id");
-                escalate($id);
-            }
+             # if the method is flagged as ACKable then additionally remove it from the status
+             # table (i.e. Voicealert)
+             if (notificationAcknowledgable($id))
+             {
+                 # TODO feedback acknowledgement to nagios
+                 deleteFromStati($id);
+                 deleteFromEscalations($incident_id);
+             }
+#             else
+#             {
+#                 # pass to escalator
+#                 debug("The ACK flag is not set for this method: internally escalating $id");
+#                 escalate($id);
+#             }
         }
 
     }
 
+    # check for bundling / send commands
+    # do this in the main loop to avoid any race conditions
+
+    sendNotifications(\%queue, $conf->{notifier});
+
+    # here we check if there are any events that we need to escalate ->
+    # i.e anything in the escalation_stati table
+    # We requeue the notifications in the future
+    escalate($cmdq, $conf->{escalator});
+
+
+
     # sleep for a bit
-    select( undef, undef, undef, 0.025 );
+    # select( undef, undef, undef, 0.025 );
+    sleep 1;
 
 } while (1);
 
@@ -635,6 +694,7 @@ exit 0;
 sub parseCommand
 {
     my $cmd = shift;
+    my %cmdh;
     my $sql;
     my @dbResult;
 
@@ -648,27 +708,33 @@ sub parseCommand
     if ( $cmd =~ /^notification;/i
         || $cmd =~ /^escalation;/i )
     {
-        my (
-            $operation,             $id,           $host,
-            $host_alias,        $host_address, $service,
-            $check_type,        $status,       $stime,
-            $notification_type, $output
+        (
+            $cmdh{operation},             $cmdh{external_id},           $cmdh{host},
+            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{service},
+            $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
+            $cmdh{notification_type}, $cmdh{output}
         ) = split( ';', $cmd );
 
-        if ( $id eq '' or $id < 1 ) { $id = unique_id(); }
+        if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
 
-        if ( ($stime =~ /\D/) or ($stime < 1000000000))
+        $cmdh{operation} = lc($cmdh{operation});
+
+        if ( ($cmdh{stime} =~ /\D/) or ($cmdh{stime} < 1000000000))
         {
-            debug("Invalid date $stime for notification - using now()");
-            $stime = now();
+            debug("Invalid date $cmdh{stime} for notification - using time()");
+            $cmdh{stime} = time();
         }
-        return (
-            lc($operation),
-            $host,         $id,       $host_alias,
-            $host_address, $service,  $check_type,
-            $status,       $stime, $notification_type,
-            $output
-        );
+
+    if ( $cmd =~ /^notification;/i)
+    {
+      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, service, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+            $cmdh{operation},             $cmdh{external_id},           $cmdh{host},
+            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{service},
+            $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
+            $cmdh{notification_type}, $cmdh{output});
+	  updateDB($sql);
+    }
+        return %cmdh;
     }
 
     if ( $cmd =~ /^status/i )
@@ -690,6 +756,13 @@ sub parseCommand
 
     }
 
+    if ( $cmd =~ /^suppress;([^;]*);*(.*)/i )
+    {
+
+        $suppressionHash{$1} = time();
+        createLog('1', unique_id(), unique_id(), 0, '(internal)','OK','localhost','NoMa','(none)', '0',$2, "All $1 alerts have been suppressed by $2");
+    }
+
     return undef;
 
 }
@@ -698,10 +771,11 @@ sub parseCommand
 # ignores internally escalated rules
 sub getNotificationCounter
 {
-    my ($host, $svc) = @_;
+    my ($host, $svc, $flag) = @_;
+    my $counter;
 
-    #my $counter = undef;
-    my $counter = 0;
+    $counter = 0 unless defined($flag);
+
     my $query = 'select counter from notification_stati where host=\''.$host.'\'';
 
     if (defined($svc) and $svc ne '')
@@ -725,32 +799,37 @@ sub getNotificationCounter
 }
 sub prepareNotification
 {
-	my ($user, $method, $short_cmd, $dest, $from, $id,
+	my ($incident_id, $user, $method, $short_cmd, $dest, $from, $id,
 	$datetime, $check_type, $status,
-	$notification_type, $host, $host_alias, $host_address, $service, $output) = @_;
+	$notification_type, $host, $host_alias, $host_address, $service, $output, $rule) = @_;
 
 	# start of the notification
 	my $start = time();
 
 	my $cmd = $conf->{command}->{$short_cmd};
 	# error if script is missing
+    my $error = undef;
 	unless ( -x $cmd )
 	{
-	    debug( 'Missing script: ' . $cmd );
-	    next;
+	    $error .= ' Missing or unexecutable script: ' . $cmd;
 	}
 
 	# error if something is missing
 	unless ( defined($cmd) )
 	{
-	    debug( 'Missing command for notification belonging to: ' . $user );
-	    next;
+	    $error .= ' Missing command for notification belonging to: ' . $user;
 	}
 	unless ( defined($dest) )
 	{
-	    debug( 'Missing destination for notification belonging to: ' . $user );
-	    next;
+	    $error .= ' Missing destination for notification belonging to: ' . $user;
 	}
+
+    if (defined($error))
+    {
+        debug($error);
+        updateLog($id, $error);
+        return 0;
+    }
 
 	# default 'from'
 	unless ( defined($from) )
@@ -759,35 +838,41 @@ sub prepareNotification
 	}
 
 	# create parameter (FROM DESTINATION CHECK-TYPE DATETIME STATUS NOTIFICATION-TYPE HOST-NAME HOST-ALIAS HOST-IP OUTPUT [SERVICE])
-	my $param = sprintf(
-"\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
-	    $from,  $dest,    $check_type,
-	    $datetime, $status,     $notification_type,
-	    $host,     $host_alias, $host_address,
-	    $output
-	);
-	$param .= " \"$service\"" if ( $check_type eq 's' );
+	# my $param = sprintf(
+#"\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+#	    $from,  $dest,    $check_type,
+#	    $datetime, $status,     $notification_type,
+#	    $host,     $host_alias, $host_address,
+#	    $output
+#	);
+#	$param .= " \"$service\"" if ( $check_type eq 's' );
+#
+#	debug("$whoami: BEFORE call - $method  $param");
 
-	debug("$whoami: BEFORE call - $method  $param");
+    # if there is a configured delay, add it to the start time
+    my $delay = $conf->{notifier}->{delay};
+    $delay = 0 unless defined($delay);
+
 
 	# insert the command into our active notification list
-	my $query = sprintf('insert into tmp_active (start, time_string, notify_id, command, dest, from_user, check_type, status, type, host, host_alias, host_address, service, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\') on duplicate key update command=\'%s\',dest=\'%s\',from_user=\'%s\'',
-		$start, $datetime, $id, $short_cmd, $dest, $from, $check_type, $status, $notification_type, $host, $host_alias, $host_address, $service, $output, $cmd, $dest, $from);
+	my $query = sprintf('insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) (select \'%s\',\'%s\',\'%s\', \'%s\',\'%s\',\'%s\', \'%s\', \'%s\', id,(stime+\'%s\') from tmp_commands where external_id = \'%s\')',
+		$user, $method, $short_cmd, $datetime, $id, $dest, $from, $rule, $delay, $incident_id);
     	
 	updateDB($query);
 
-	return("$id;$start;1;$param");
+	# return("$id;$start;1;$param");
+	return 1;
 
 }
 
 sub deleteFromActive
 {
-	my ($id) = @_;
+    my ($id) = @_;
 
-	my $query = 'delete from tmp_active';
+    my $query = 'delete from tmp_active';
     $query .= " where notify_id=$id" if $id;
 
-	updateDB($query);
+    updateDB($query);
 }
 
 
@@ -817,22 +902,30 @@ sub getNextMethod
     my ( $notify_id ) = @_;
     my $query;
     my $next_id;
+    my $method;
     my $command;
+    my $from;
+    my $tofield;
+    my $to;
 
     # get next escalation method
     $query =
       sprintf(
-'select id, command from notification_methods where id = (select m.on_fail from notification_methods m left join notification_logs as l on l.last_method=m.id where l.unique_id=\'%s\')',
+'select id, method, command, notification_methods.from as fromuser, contact_field from notification_methods where id = (select m.on_fail from notification_methods m left join notification_logs as l on l.last_method=m.id where l.unique_id=\'%s\')',
 	$notify_id);
     my %dbResult = queryDB($query);
 
-    ($next_id, $command) = ($dbResult{0}->{id}, $dbResult{0}->{command});
+    ($next_id, $method, $command, $from, $tofield) = ($dbResult{0}->{id}, $dbResult{0}->{method}, $dbResult{0}->{command}, $dbResult{0}->{fromuser}, $dbResult{0}->{contact_field});
     return (0, '/bin/true') if (!defined($next_id) or $next_id == 0);
+
+    $query = sprintf('select %s from contacts as c, notification_logs as l where c.username=l.user and l.unique_id=\'%s\'', $tofield, $notify_id);
+    %dbResult = queryDB($query);
+    $to = $dbResult{0}->{$tofield};
 
     $query = sprintf('update notification_logs set last_method=\'%s\' where unique_id=\'%s\'', $next_id, $notify_id);
     updateDB($query);
 
-    return ($next_id, $command);
+    return ($next_id, $method, $command, $from, $to);
 
 }
 
@@ -844,13 +937,10 @@ sub getRetryCounter
     my $query;
     my $counter;
 
-    $query =
-      sprintf(
-'select counter from notification_logs where unique_id = \'%s\'',
-	$notify_id);
+    $query = sprintf('select retries from tmp_active where notify_id = \'%s\'', $notify_id);
     my %dbResult = queryDB($query);
 
-    $counter = $dbResult{0}->{counter};
+    $counter = $dbResult{0}->{retries};
     return 0 if (!defined($counter));
 
     return $counter;
@@ -863,58 +953,21 @@ sub requeueNotification
 	my ( $id ) = @_;
 	my $query;
 	my %dbResult;
-	my $counter = 1;
-	my $start = time();
+	my $counter = 0;
+	my ($ss,$mm,$hh) = localtime();
 
 	# log the retry
-	updateLog($id, ' failed. Retrying. ');
+	updateLog($id, " failed ($hh:$mm:$ss). Retrying. ");
+
+    # if there is no configured retry delay, add 60 to the start time
+    my $wait = $conf->{notifier}->{timeToWait};
+    $wait = 60 unless defined($wait);
 
 	# increment counter
-	$query = sprintf('update notification_logs set counter=counter+1 where unique_id=\'%s\'', $id);
+	$query = sprintf('update tmp_active set retries=retries+1,
+                        stime=\'%s\', progress=\'0\' where notify_id=\'%s\'', 
+                        time()+$wait, $id);
 	updateDB($query);
-
-	$query = sprintf('select counter from notification_logs where unique_id=\'%s\'', $id);
-    	%dbResult = queryDB($query);
-
-	$counter = $dbResult{0}->{counter}
-		if ( defined( $dbResult{0}->{counter} ) );
-
-	# don't check timeperiods for retries -> a contact may be alerted outside the timeperiod
-	# retrieve the original data.
-	# from log: user, method,id,check_type,status,host,service,
-	#
-	# not from log:cmd, dest,from,datetime,notification type,host_alias,host_address,output
-	# requeue the command
-
-	# see tmp_active
-	$query = sprintf('select * from tmp_active where notify_id=\'%s\'', $id);
-    	%dbResult = queryDB($query);
-
-	my $cmd = $dbResult{0}->{command};
-	my $dest = $dbResult{0}->{dest};
-	my $from_user = $dbResult{0}->{from_user};
-	my $check_type = $dbResult{0}->{check_type};
-	my $status = $dbResult{0}->{status};
-	my $type = $dbResult{0}->{type};
-	my $host = $dbResult{0}->{host};
-	my $host_alias = $dbResult{0}->{host_alias};
-	my $host_address = $dbResult{0}->{host_address};
-	my $service = $dbResult{0}->{service};
-	my $time_string = $dbResult{0}->{time_string};
-	my $output = $dbResult{0}->{output};
-
-	my $longcmd = $conf->{command}->{$cmd};
-
-	my $param = sprintf(
-"\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
-	    $from_user, $dest, $check_type,
-	    $time_string, $status, $type,
-	    $host, $host_alias, $host_address,
-	    $output
-	);
-	$param .= " \"$service\"" if ( $check_type eq 's' );
-	
-	$queue{$cmd}->enqueue("$id;$start;$counter;$param");
 }
 
 sub getNextMethodCmd
@@ -998,28 +1051,18 @@ sub deleteFromStati
 
 }
 
-sub updateMaxNotificationCounter
+# return unique_id for a notification_id
+sub getIncidentIDfromNotificationID
 {
+    my ($id) = @_;
 
-	# TODO this function does nothing useful
-    my ( $dbResult_arr, $notificationCounter ) = @_;
+    my $query = 'select c.external_id as id from tmp_commands as c inner join tmp_active as t on c.id=t.command_id
+                    where t.notify_id=\''.$id.'\'';
 
-    # apply filter
-    foreach my $row (@$dbResult_arr)
-    {
-        next
-          if ( !defined( $row->{notify_after_tries} )
-            || $row->{notify_after_tries} eq '' );
-        my @notify_after_tries =
-          getArrayOfNums( $row->{notify_after_tries}, $notificationCounter );
-        my $max = getMaxFromArray( \@notify_after_tries );
-        $max_notificationCounter = $max if ( $max_notificationCounter < $max );
-    }
+    my %dbResult = queryDB($query);
+    return $dbResult{0}->{id};
 
 }
-
-
-
 
 ##############################################################################
 # MISC FUNCTIONS
@@ -1118,7 +1161,7 @@ sub incrementNotificationCounter
 
     my ( $status, $host, $service, $check_type ) = @_;
     my $notificationCounter =
-        getNotificationCounter( $host, $service);
+        getNotificationCounter($host, $service, 1);
 
     if ( defined($notificationCounter) )
     {
@@ -1143,7 +1186,7 @@ sub resetNotificationCounter
 
     my ( $host, $service ) = @_;
 
-    $query = 'update notification_stati set counter=1,
+    $query = 'update notification_stati set counter=1
         where host=\'' . $host . '\' and ' . 'service=\'' . $service . '\'';
 
     updateDB($query);
@@ -1233,7 +1276,9 @@ sub counterExceededMax
 {
     my ($ids, $counter) = @_;
 
-    my $query = 'select notify_after_tries from notifications where id in ('.join(',',@$ids).')';
+    my $query = 'select notify_after_tries from notifications where id in ('.join(',',@$ids).') and rollover=1';
+    $query .= ' union select e.notify_after_tries from escalations_contacts as e';
+    $query .= ' left join notifications as n on e.notification_id=n.id where notification_id in ('.join(',',@$ids).') and rollover=1';
 
 	my @dbResult = queryDB($query, '1');
 
@@ -1241,13 +1286,16 @@ sub counterExceededMax
 
 	foreach my $tries (@dbResult)
 	{
-        my @tryArr = sort {$b <=> $a} (getArrayOfNums($tries));
-		$maxval = $tryArr[0] if ($tryArr[0] > $maxval);
+        my $max = getMaxValue($tries->{notify_after_tries});
+		$maxval = $max if ($max > $maxval);
 	}
-    return 0 if ($maxval > $counter);
+    return 0 if ($maxval >= $counter);
+    return 0 if ($maxval == 0);
+    my $retval = $counter % $maxval;
+    $retval = $maxval if($retval == 0);
 
-    debug('notification counter rollover');
-    return 1;
+    debug("notification counter rollover: $counter exceeds $maxval -> continuing at $retval");
+    return $retval;
 }
 
 # vim: ts=4 sw=4 expandtab

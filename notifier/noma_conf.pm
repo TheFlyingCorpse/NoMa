@@ -39,13 +39,15 @@ sub conf {
 			sendemail		=> '/usr/local/nagios/noma/notifier/sendEmail.pl',
 			sendsms			=> '/usr/local/nagios/noma/notifier/sendSMS.pl',
 			voicecall		=> '/usr/local/nagios/noma/notifier/sendVoice.pl',
-			# dummy			=> '/bin/true',
+			dummy			=> '/bin/true',
 		},
 		
 		# notifier settings
 		notifier => {
 			maxAttempts		=> '5',		# how often we try a notification before giving up
 			timeToWait		=> '60',	# how many seconds to wait before retries
+			delay			=> 0,	    # delay this number of seconds (useful for bundling)
+			bundle			=> 0,       # set to 1 to bundle multiple alerts into a single notification
 		},
 
 		# escalation settings
@@ -53,17 +55,21 @@ sub conf {
 			internalEscalation	=> 0,		# GLOBAL FLAG: NoMa handles notification escalations
 								# and ignores further alerts (including OKs)
 								# setting to 0 will enable per rule settings ("let notifier handle")
-			timeToWait		=> '120',
+			timeToWait		=> '300',       # wait 5 mins before escalating to next rule
+            stopAfter       => '90',        # stop escalating after 90 minutes
 		},
 
 		# voice alerting settings
-		voice => {
+		voicecall => {
+			return_ack		=> 0,               # set to 1 to feed ACKs back to Icinga/Nagios
+			suppression		=> 0,               # add a global suppression menu option (value in minutes)
 			server			=> '192.168.1.1',	# address of the starface/asterisk server
 			callerID		=> '0',			# our caller ID (for point-to-multipoint / Mehrgerätanschlüße)
 			starface		=> '1',			# set to 1 to use the starface script, otherwise use the generic asterisk script
 			channel			=> 'Zap/g30',		# for Starface light
 			#channel		=> 'Srx/g31',		# for standard Starface
 			#channel		=> 'SIP',		# for SIP
+            suffix          => '',          # channel suffix
 			message	=> {
 				header		=> 'this is a message from nagios ',				# header for all alerts
 				host		=> 'the host $host is $status',					# host message
@@ -72,7 +78,7 @@ sub conf {
 		},
 			
 		# email alerting settings
-		email => {
+		sendemail => {
 			sendmail		=> '/usr/sbin/sendmail -t',					# location of mail binary
 			message	=> {
 				host => {
@@ -110,7 +116,7 @@ Date/Time: $datetime"',							# mail body
 
 		# miscellaneous settings
 		debug => {
-			logging			=> '0',		# general debugging
+			logging			=> '1',		# general debugging
 			queries			=> '0',		# log SQL queries
 			file			=> '/usr/local/nagios/var/noma_debug.log',	# file to log in
 			daemonize		=> '1',		# daemonize process

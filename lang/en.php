@@ -53,6 +53,7 @@ define('NAVIGATION_NOTIFICATION', 'Notification');
 define('NAVIGATION_CONTACTS', 'Contacts');
 define('NAVIGATION_PROFILE', 'Profile');
 define('NAVIGATION_CONTACTGROUPS', 'Contactgroups');
+define('NAVIGATION_STATUS', 'Status');
 define('NAVIGATION_LOGS', 'Logs');
 define('NAVIGATION_LOGOUT', 'LOGOUT');
 
@@ -118,6 +119,7 @@ define('ADD_EDIT_CONFIRM_REMOVE_ESCALATION', 'Do you really want to remove this 
 define('ADD_EDIT_NOTIFY_AFTER_TRIES', 'Notify after:');
 define('ADD_EDIT_LET_NOTIFIER_HANDLE', 'Let notifier handle escalations:');
 define('ADD_EDIT_RELOOP_DELAY', 'Delay (in s) between escalations:');
+define('ADD_EDIT_ROLLOVER', 'Rollover if the last rule is reached:');
 define('ADD_EDIT_NUM_NOTIFICATIONS', '(number of notifications)');
 define('ADD_EDIT_ESCALATION_DELETED', 'Escalation has been deleted.');
 define('ADD_EDIT_ESCALATION_ERROR', 'An error occurred!');
@@ -146,8 +148,9 @@ define('CONTACTS_HEADING_TIME' , 'Time:');
 define('CONTACTS_HEADING_ADMIN' , 'Admin functions:');
 define('CONTACTS_HEADING_HOLIDAYS' , 'Holidays:');
 define('CONTACTS_NEW_USERNAME', 'Add user (username):');
-define('CONTACTS_FIRST_NAME', 'First Name:');
-define('CONTACTS_LAST_NAME', 'Last Name:');
+define('CONTACTS_FIRST_NAME', 'First name:');
+define('CONTACTS_LAST_NAME', 'Last name:');
+define('CONTACTS_USERNAME', 'User login:');
 define('CONTACTS_PASSWORD', 'Password:');
 define('CONTACTS_PASSWORD_VERIFY', 'Password (verification):');
 define('CONTACTS_EMAIL', 'E-Mail:');

@@ -16,8 +16,9 @@
 
 sub getEscalationCounter
 {
-    my ($host, $svc, $rule) = @_;
-    my $counter;
+    my ($host, $svc, $rule, $flag) = @_;
+
+    $counter = 0 unless defined($flag);
 
     my $query = 'select counter from escalation_stati where'.
         ' host=\''.$host.'\''.
@@ -92,25 +93,18 @@ sub resetEscalationCounter
 
 sub createEscalationCounter
 {
-    my (
-        $esc_rule,
-        $incident_id, $host, $host_alias,
-        $host_address, $service,     $check_type,
-        $status,       $datetime,    $notification_type,
-        $output
-    ) = @_;
+    my ($esc_rule, %eventh) = @_;
+#        $incident_id, $host, $host_alias,
+#        $host_address, $service,     $check_type,
+#        $status,       $datetime,    $notification_type,
+#        $output
 
     my $query =
-            'insert into escalation_stati ('.
-            'notification_rule,starttime,counter,incident_id,host,'.
-            'host_alias,host_address,service,check_type,status,'.
-            'time_string,type,output'.
-            ') values ('.
-            "'$esc_rule','".time()."',".
-            "'1','$incident_id',".
-            "'$host','$host_alias','$host_address','$service',".
-            "'$check_type','$status','$datetime','$notification_type','$output'".
-            ')';
+            sprintf('insert into escalation_stati (notification_rule,starttime,counter,incident_id,host,host_alias,host_address,service,check_type,status,time_string,type,output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+            $esc_rule,time(),
+            '1',$eventh{external_id},
+            $eventh{host},$eventh{host_alias},$eventh{host_address},$eventh{service},
+            $eventh{check_type},$eventh{status},$eventh{stime},$eventh{notification_type},$eventh{output});
 
     updateDB($query);
 
@@ -122,6 +116,7 @@ sub deleteFromEscalations
 {
 	my ($id) = @_;
 
+	return unless (defined($id) and $id > 0);
 	my $query = 'delete from escalation_stati';
     $query .= " where incident_id=$id" if $id;
 
@@ -130,69 +125,36 @@ sub deleteFromEscalations
 
 sub escalate
 {
-    # given an unique_id, generate an escalation
+    my ($cmdq, $conf) = @_;
+    my $query;
+    my %dbResult;
+    my @dbResult;
+    my $wait = 60;
+    my $maxwait = 7200;
 
-    my ($unique_id) = @_;
+    $wait = $conf->{timeToWait}
+      if (defined($conf->{timeToWait}));
+    $maxwait = $conf->{stopAfter}
+      if (defined($conf->{stopAfter}));
 
 
-    # from the unique id we can retrieve
-    # the counter, rule, host, svc
-    #
+    # retrieve all incidents where an escalation exists in the stati table but no alerts are active
 
-    my $query = '
-        select counter,host,service,notification_rule from notification_logs where
-        unique_id=\''.$unique_id.'\'';
+    # $query = 'select id from escalation_stati where incident_id not in (select external_id from tmp_commands as c inner join tmp_active as a on a.command_id=c.id)';
+    $query = 'select distinct id from escalation_stati where incident_id not in (select external_id from tmp_commands as c inner join tmp_active as a on a.command_id=c.id) and (time_string+(counter*'.$wait.'))<unix_timestamp() and time_string>(unix_timestamp()-'.$maxwait.');';
 
-    my %dbResult = queryDB($query);
+    @dbResult = queryDB($query, 1, 1);
 
-    my $host = $dbResult{0}->{'host'};
-    my $svc = $dbResult{0}->{'service'};
-    my $rule = $dbResult{0}->{'notification_rule'};
-    my $counter = $dbResult{0}->{'counter'};
-
-    if (!(defined($counter)))
+    foreach my $res (@dbResult)
     {
-        # something went badly wrong
-        debug("error escalating $unique_id, counter not found");
-        return;
-    }
+      # increase the counter
+      # $query = "update escalation_stati set counter=counter+1 where id='".$res->{id}."'";
+      # %dbResult = updateDB($query);
 
-    if (getEscalationCounter($host, $svc, $rule) <= $counter)
-    {
-        # prevent multiple escalations when multiple methods are selected
-        # we parse results sequentially anyway so races cannot occur
-        incrementEscalationCounter($host, $svc, $rule);
+      $query = "select concat('escalation;',incident_id,';',host,';',host_alias,';',host_address,';',service,';',check_type,';',status,';',unix_timestamp(),';',type,';',output) as cmd from escalation_stati where id='".$res->{id}."'";
+      %dbResult = queryDB($query);
 
-        $query = '
-        select * from escalation_stati where'.
-            ' host=\''.$host.'\''.
-            ' and notification_rule=\''.$rule.'\'';
-
-        if (defined($svc) and $svc ne '')
-        {
-            # service alert
-            $query .= ' and service=\''.$svc.'\'';
-        }
-        else
-        {
-            $query .= ' and check_type=\'h\'';
-        }
-
-        my %dbResult = queryDB($query);
-
-        my $cmdline = 
-            $host.';'.
-            $dbResult{0}->{'host_alias'}.';'.
-            $dbResult{0}->{'host_address'}.';'.
-            $svc.';'.
-            $dbResult{0}->{'check_type'}.';'.
-            $dbResult{0}->{'status'}.';'.
-            $dbResult{0}->{'time_string'}.';'.
-            $dbResult{0}->{'type'}.';'.
-            $dbResult{0}->{'output'};
-
-
-        $escq->enqueue(time().';'.$dbResult{0}->{'time_string'}.';'.$cmdline);
+      $cmdq->enqueue($dbResult{0}{cmd});
     }
 }
 

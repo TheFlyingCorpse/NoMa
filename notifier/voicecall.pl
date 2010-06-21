@@ -279,7 +279,7 @@ print STDERR "connect succeeded\n" if $verbose;
 
 
 
-send_am("Originate", ("Channel: $channel/$number$suffix", "Context: $context", "Exten: s", "Priority: 1",
+send_am("Originate", ("Channel: $channel/$number$suffix", "Context: $context", "Callerid: Nagios_NoMa", "Exten: s", "Priority: 1",
                        "Variable: HOST=$host", "Variable: SVC=$service", "Variable: CONTACT=$contact", 
                        "Variable: MSG=$msg", "Variable: ID=$callid", "Timeout: 30000"));
 

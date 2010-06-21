@@ -214,9 +214,9 @@ function getContent () {
 	list($resultCount, $dbResult) = queryDB($query, true);
 
 
-	if (!empty($p['p'])) {
-		$p['p'] = 10;
-	}
+	// if (!empty($p['p'])) {
+	// 	$p['p'] = 10;
+	// }
 	// get page navigation
 	$templateContent->assign('PAGE_NAVIGATION', getPageNavi($allCount, $resultCount, $numresults, (int)$p['p'], $find));
 

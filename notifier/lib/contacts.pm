@@ -27,7 +27,7 @@ sub getContacts
     debug('trying to getUsersAndMethods');
     my %contacts_c =
     getUsersAndMethods( $ids, $notificationCounter, $status );
-    debug( debugHashUsers(%contacts_c) );
+    debug("Users from rules: ". debugHashUsers(%contacts_c) );
     my %contacts_cg =
     getUsersAndMethodsFromGroups( $ids, $notificationCounter,
         $status );
@@ -75,116 +75,38 @@ sub generateNotificationList
     {
 
         # generate host-include list
-        my @hosts = split( ',', $dbResult{$cnt}->{hosts_include} );
-        @hosts = map( { lc($_) } @hosts );
-
-        # check each host against the host, passed with command-line parameters
-        # and add it to the include list
-        for my $host (@hosts)
+        if (matchString( $dbResult{$cnt}->{hosts_include}, $notificationHost))
         {
-
-            $host =~ s/^\s+|\s+$//g;
-
-            if ( $host ne '' )
-            {
-
-                $host =~ s/\*/.*/g;
-
-                # only add host to list if it matches the passed one
-                if ( $notificationHost =~ m/^$host$/i )
-                {
-                    debug( "Step1: HostIncl: $host\t" . $dbResult{$cnt}->{id} );
-                    $hostList{ $dbResult{$cnt}->{id} } = 1;
-                }
-
-            }
-
+            debug( "Step1: HostIncl: $notificationHost\t" . $dbResult{$cnt}->{id} );
+            $hostList{ $dbResult{$cnt}->{id} } = 1;
         }
 
         # remove hosts to be excluded
-        @hosts = split( ',', $dbResult{$cnt}->{hosts_exclude} );
-        @hosts = map( { lc($_) } @hosts );
-
-        # check each host against the host, passed with command-line parameters
-        # and remove them from host list
-        for my $host (@hosts)
+        if (matchString( $dbResult{$cnt}->{hosts_exclude}, $notificationHost))
         {
-
-            $host =~ s/^\s+|\s+$//g;
-
-            if ( $host ne '' )
-            {
-
-                $host =~ s/\*/.*/g;
-
-                if ( $notificationHost =~ m/^$host$/i )
-                {
-                    debug( "Step1: HostExcl: $host\t" . $dbResult{$cnt}->{id} );
-                    undef( $hostList{ $dbResult{$cnt}->{id} } )
-                      if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
-                }
-
-            }
-
+            debug( "Step1: HostExcl: $notificationHost\t" . $dbResult{$cnt}->{id} );
+            undef( $hostList{ $dbResult{$cnt}->{id} } )
+                if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
         }
 
         if ( $check_type eq 's' )
         {
 
             # generate service-include list
-            my @services = split( ',', $dbResult{$cnt}->{services_include} );
-            @services = map( { lc($_) } @services );
-
-   # check each service against the service, passed with command-line parameters
-   # and add it to the include list
-            for my $service (@services)
+            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService))
             {
-
-                $service =~ s/^\s+|\s+$//g;
-
-                if ( $service ne '' )
-                {
-
-                    $service =~ s/\*/.*/g;
-
-                    # only add service to list if it matches the passed one
-                    if ( $notificationService =~ m/^$service$/i )
-                    {
-                        debug( "Step1: ServiceIncl: $service\t"
-                              . $dbResult{$cnt}->{id} );
-                        $serviceList{ $dbResult{$cnt}->{id} } = 1;
-                    }
-
-                }
-
+                debug( "Step1: ServiceIncl: $notificationService\t" . $dbResult{$cnt}->{id} );
+                $serviceList{ $dbResult{$cnt}->{id} } = 1;
             }
 
+
             # remove services to be excluded
-            @services = split( ',', $dbResult{$cnt}->{services_exclude} );
-            @services = map( { lc($_) } @services );
-
-      # check each host against the service, passed with command-line parameters
-      # and remove them from service list
-            for my $service (@services)
+            if (matchString( $dbResult{$cnt}->{services_exclude}, $notificationService))
             {
-
-                $service =~ s/^\s+|\s+$//g;
-
-                if ( $service ne '' )
-                {
-
-                    $service =~ s/\*/.*/g;
-
-                    if ( $notificationService =~ m/^$service$/i )
-                    {
-                        debug( "Step1: ServiceExcl: $service\t"
-                              . $dbResult{$cnt}->{id} );
-                        undef( $serviceList{ $dbResult{$cnt}->{id} } )
-                          if defined( $serviceList{ $dbResult{$cnt}->{id} } );
-                    }
-
-                }
-
+                debug( "Step1: ServiceExcl: $notificationService\t"
+                        . $dbResult{$cnt}->{id} );
+                undef( $serviceList{ $dbResult{$cnt}->{id} } )
+                    if defined( $serviceList{ $dbResult{$cnt}->{id} } );
             }
 
         }
@@ -193,7 +115,6 @@ sub generateNotificationList
         $cnt++;
 
     }
-
     # END   - generate include and exclude lists for hosts and services
 
     # BEGIN - collect all IDs to notify
@@ -201,26 +122,19 @@ sub generateNotificationList
     my @ids;
     while ( my ($hostIncl) = each(%hostList) )
     {
-        debug("Step2: HostIncl: $hostIncl");
         if ( $check_type eq 's' )
         {
-            $idList{$hostIncl} = 1
-              if ( defined( $serviceList{$hostIncl} )
-                && defined( $hostList{$hostIncl} ) );
+            if ( defined( $serviceList{$hostIncl} ) && defined( $hostList{$hostIncl} ) )
+            {
+                $idList{$hostIncl} = 1;
+                debug("Step2: SvcIncl: $hostIncl");
+            }
         } else
         {
-            $idList{$hostIncl} = 1 if ( defined( $hostList{$hostIncl} ) );
-        }
-    }
-    if ( $check_type eq 's' )
-    {
-        while ( my ($serviceIncl) = each(%serviceList) )
-        {
-            if ( defined( $serviceList{$serviceIncl} ) )
+            if ( defined( $hostList{$hostIncl} ) )
             {
-                debug("Step2: ServiceIncl: $serviceIncl");
-                $idList{$serviceIncl} = 1
-                  if ( defined( $hostList{$serviceIncl} ) );
+                $idList{$hostIncl} = 1;
+                debug("Step2: HostIncl: $hostIncl");
             }
         }
     }
@@ -234,6 +148,37 @@ sub generateNotificationList
     return @ids;
 
 }
+
+sub matchString
+{
+	# test a string against a comma separated list and return 1 if it matches
+	my ($matchList, $match) = @_;
+
+        my @items = split( ',', $matchList );
+        @items = map( { lc($_) } @items );
+
+        for my $item (@items)
+        {
+            # remove leading/trailing whitespace
+            $item =~ s/^\s+|\s+$//g;
+
+            if ( $item ne '' )
+            {
+
+		# Use * and ? as wildcards
+                $item =~ s/\*/.*/g;
+                $item =~ s/\./\./g;
+                $item =~ s/\?/./g;
+
+                # only add item to list if it matches the passed one
+                return 1 if ( $match =~ m/^$item$/i );
+
+            }
+
+        }
+	return 0;
+}
+
 
 sub getUsersAndMethods
 {
@@ -284,14 +229,12 @@ sub getUsersAndMethods
         @dbResult_arr = queryDB( $query, 1 );
 
         @dbResult_arr = ( @dbResult_arr, @dbResult_tmp_arr );
-	debug("Contacts Array: ".Dumper(@dbResult_arr));
-
-        updateMaxNotificationCounter( \@dbResult_arr, $notificationCounter );
+        # debug("Contacts Array: ".Dumper(@dbResult_arr));
 
         @dbResult_arr =
           filterNotificationsByEscalation( \@dbResult_arr, $notificationCounter,
             $status );
-	debug("Filtered Array: ".Dumper(@dbResult_arr));
+        # debug("Filtered Array: ".Dumper(@dbResult_arr));
         %dbResult = arrayToHash( \@dbResult_arr );
 
         %dbResult = () unless ( defined( $dbResult{0}->{username} ) );
@@ -357,9 +300,6 @@ sub getUsersAndMethodsFromGroups
         @dbResult_tmp_arr = queryDB( $query, 1 );
 
         @dbResult_arr = ( @dbResult_arr, @dbResult_tmp_arr );
-
-        updateMaxNotificationCounter( \@dbResult_arr, $notificationCounter );
-	debug("notification counter = $notificationCounter");
 
         @dbResult_arr =
           filterNotificationsByEscalation( \@dbResult_arr, $notificationCounter,
@@ -535,7 +475,43 @@ sub filterNotificationsByEscalation
 
 }
 
+sub getMaxValue
+{
+    # given a range string, return the maximum
+    # e.g. 1-4,7-8,12
+	my ($range) = @_;
 
+	$range =~ s/[^0-9,;-]//g;
+
+    return $range unless ($range =~ /[,;-]+/);
+
+    my $newmax = 1;
+    foreach my $crange (split(/[,;]/, $range))
+    {
+        debug("Expanding $crange");
+        $crange =~ /(\d*)-(\d*)/;
+
+        my $min = $1;
+        my $max = $2;
+
+        if ((not defined($min)) or ($min < 1))
+        {
+            debug("Invalid minimum value in range \"$crange\" - setting to 1");
+            $min = 1;
+        }
+
+        if ((not defined($max)) or ($max < $min))
+        {
+            debug("Invalid maximum value in range \"$crange\" - setting to 99999");
+            $max = 99999;
+        }
+
+
+        $newmax = $max if ($max > $newmax);
+    }
+
+    return $newmax;
+}
 
 
 1;

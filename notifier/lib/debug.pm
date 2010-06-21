@@ -52,7 +52,7 @@ sub debugHashUsers
     my @users = ();
     while ( my ( $key, $value ) = each %hash )
     {
-        push @users, $hash{$key}{'username'};
+        push @users, $hash{$key}{'username'}.' ('. $hash{$key}{'username'}.')';
     }
     $output = join(',', @users);
     $output = "EMPTY!\n" if ( $output eq '' );
@@ -63,23 +63,27 @@ sub debug
 {
 
     my ($msg) = @_;
+    my $debug = $conf->{debug}->{logging};
+    my $debug_file = $conf->{debug}->{file};
+    my $caller = (caller(1))[3];
+    $caller = 'main' unless defined($caller);
 
     if ( defined($debug) && $debug )
     {
 
+        $msg =~ s/\s*\n\s*/ /g;
         $msg .= "\n";
 
         if ( defined($debug_file) && $debug_file ne '' )
         {
 
             open( DEBUGFILE, ">> $debug_file" );
-            print DEBUGFILE $msg;
+            print DEBUGFILE '[' . localtime() . '] ' . $caller . ': ' . $msg;
             close(DEBUGFILE);
 
         } else
         {
-
-            print $msg;
+            print  '[' . localtime() . '] ' . $caller . ': ' . $msg;
 
         }
 

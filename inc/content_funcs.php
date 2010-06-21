@@ -247,6 +247,12 @@ function getNavigationContent ($action, $admin = false) {
 			'title'					=> NAVIGATION_CONTACTGROUPS,
 		),
 		array(
+			'actions'				=> array('status'),
+			'admin_only'			=> true,
+			'auth_type_required'	=> false,
+			'title'					=> NAVIGATION_STATUS,
+		),
+		array(
 			'actions'				=> array('logs'),
 			'admin_only'			=> true,
 			'auth_type_required'	=> false,

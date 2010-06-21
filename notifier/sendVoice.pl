@@ -72,7 +72,6 @@ if ($numArgs != 10 && $numArgs != 11)
 }
 
 my $debug = $conf->{debug}->{voice};
-my $debugFile = $conf->{debug}->{file};
 
 # get parameters
 my $from = $ARGV[0];
@@ -90,7 +89,7 @@ my $service = '';
 $service = $ARGV[10] if ($numArgs == 11);
 
 
-my $message = $conf->{voice}->{message}->{header};
+my $message = $conf->{voicecall}->{message}->{header};
 
 # ensure the number contains only digits
 $to =~ s/\+/00/g;
@@ -101,21 +100,27 @@ debugLog("$to\t$host\t$service\t$check_type\t$status\n");
 my $unique_id = md5_hex ( $host . "_" . $service . "_" . $datetime . "_" . $to );
 my $ret_str;
 
-my $scriptParams = "--number $to --callid $unique_id --host $host --asterisk " . $conf->{voice}->{server} . " --channel " . $conf->{voice}->{channel};
+my $scriptParams = "--number $to --callid $unique_id --host $host --asterisk " . $conf->{voicecall}->{server} . " --channel " . $conf->{voicecall}->{channel};
 
 if ($service eq '') {
-        $message .= $conf->{voice}->{message}->{host};
+        $message .= $conf->{voicecall}->{message}->{host};
 } else {
-        $message .= $conf->{voice}->{message}->{service};
+        $message .= $conf->{voicecall}->{message}->{service};
 	$scriptParams .= " --service $service";
 }
 
+if (defined($conf->{voicecall}->{suffix}))
+{
+	$scriptParams .= ' --suffix '.$conf->{voicecall}->{suffix};
+}
+
 my $scriptName = 'voicecall.pl';
-if (defined($conf->{voice}->{starface}) and $conf->{voice}->{starface} == '1')
+if (defined($conf->{voicecall}->{starface}) and $conf->{voicecall}->{starface} == '1')
 {
 	$scriptName = 'voicecall_starface.pl';
 }
 
+$message =~ s/(\$\w+)/$1/gee;
 $ret_str = `echo "$message" | $scriptPath/$scriptName $scriptParams`;
 
 
@@ -133,7 +138,7 @@ sub debugLog
 	my ($debugStr) = @_;
 
 	if (defined($debug)) {
-		open (DEBUGLOG, ">> $debugFile");
+		open (DEBUGLOG, ">> $debug");
 		print DEBUGLOG "$whoami: $debugStr\n";
 		close (DEBUGLOG);
 	}

@@ -66,7 +66,7 @@ exit 1 if ($numArgs != 10 && $numArgs != 11);
 my $from = $ARGV[0];
 my $to = $ARGV[1];
 my $check_type = $ARGV[2];
-my $datetime = $ARGV[3];
+my $datetimes = $ARGV[3];
 my $status = $ARGV[4];
 my $notification_type = $ARGV[5];
 my $host = $ARGV[6];
@@ -74,7 +74,7 @@ my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
 my $output = $ARGV[9];
 my $service = '';
-
+my $datetime = localtime($datetimes);
 $service = $ARGV[10] if ($numArgs == 11);
 
 

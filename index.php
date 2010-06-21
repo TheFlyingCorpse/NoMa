@@ -195,6 +195,18 @@ switch ($action) {
 
 		break;
 
+	case 'status':
+		if ($logs['admin_only']) { // link with logs access 
+			if (isAdmin()) {
+				$require = 'inc/content_status_viewer.php';
+			} else {
+				$require = 'inc/content_overview.php';
+			}
+		} else {
+			$require = 'inc/content_status_viewer.php';
+		}
+		break;
+
 	case 'logs':
 		if ($logs['admin_only']) {
 			if (isAdmin()) {
@@ -269,5 +281,8 @@ $html->assign('VERSION', $version);
 
 $html->assign('MAIN_CONTENT', getContent());
 $html->show();
+if (defined($_SERVER['TRACKING_ID'])) {
+    $html->assign('TRACKING_ID', '<script type="text/javascript">var gaJsHost=(("https:"==document.location.protocol)?"https://ssl.":"http://www.");document.write(unescape("%3Cscript src=\'"+gaJsHost+"google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script><script type="text/javascript">try{var pageTracker=_gat._getTracker("'.$_SERVER['TRACKING_ID'].'");pageTracker._trackPageview();}catch(err){}</script>');
+}
 
 ?>

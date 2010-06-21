@@ -157,9 +157,6 @@ sub getArrayOfNums
 
         }
 
-        $max_notificationCounter = $check_max
-          if ( $max_notificationCounter < $check_max );
-
     }
 
     return @ret_arr;
