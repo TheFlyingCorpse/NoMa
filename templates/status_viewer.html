@@ -1,0 +1,28 @@
+<form name="fform" action="index.php?action=status" method="post">
+<table cellpadding="5" cellspacing="0" border="0" width="990">
+<tr>
+<td colspan="4">
+{$LOG_VIEWER_FIND}&nbsp;&nbsp;&nbsp;
+<input type="hidden" name="order_by" value="{$ORDER_BY}"/>
+<input type="hidden" name="order_dir" value="{$ORDER_DIR}"/>
+<input type="hidden" name="p" value="{$PAGE}"/>
+<input class="text" name="find_value" value="{$FIND_VALUE}"/>&nbsp;&nbsp;&nbsp;
+<input type="submit" name="find" value="{$LOG_VIEWER_FIND_SUBMIT}"/>
+</td>
+<td colspan="5" align="right">
+{$LOG_VIEWER_NUM_RESULTS}&nbsp;{$NUM_RESULTS_SELECT}
+</td>
+</tr>
+<tr>
+<td nowrap="nowrap"><a href="{$LINK_SORT_TIMESTAMP}" class="header_link">{$LOG_VIEWER_HEADING_TIMESTAMP}</a>{$SORT_IMAGE_TIMESTAMP}</td>
+<td nowrap="nowrap"><a href="{$LINK_SORT_NOTIFICATION_RULE}" class="header_link">{$LOG_VIEWER_HEADING_NOTIFICATION_RULE}</a>{$SORT_IMAGE_NOTIFICATION_RULE}</td>
+<td nowrap="nowrap"><a href="{$LINK_SORT_CHECK_TYPE}" class="header_link">{$LOG_VIEWER_HEADING_CHECK_TYPE}</a>{$SORT_IMAGE_CHECK_TYPE}</td>
+<td nowrap="nowrap"><a href="{$LINK_SORT_HOST}" class="header_link">{$LOG_VIEWER_HEADING_HOST}</a>{$SORT_IMAGE_HOST}</td>
+<td nowrap="nowrap"><a href="{$LINK_SORT_SERVICE}" class="header_link">{$LOG_VIEWER_HEADING_SERVICE}</a>{$SORT_IMAGE_SERVICE}</td>
+<td nowrap="nowrap"><a href="{$LINK_SORT_CHECK_RESULT}" class="header_link">{$LOG_VIEWER_HEADING_CHECK_RESULT}</a>{$SORT_IMAGE_CHECK_RESULT}</td>
+<td nowrap="nowrap"><a href="{$LINK_SORT_METHOD}" class="header_link">{$LOG_VIEWER_HEADING_METHOD}</a>{$SORT_IMAGE_METHOD}</td>
+<td nowrap="nowrap"><a href="{$LINK_SORT_USER}" class="header_link">{$LOG_VIEWER_HEADING_USER}</a>{$SORT_IMAGE_USER}</td>
+<td nowrap="nowrap"><a href="{$LINK_SORT_RESULT}" class="header_link">{$LOG_VIEWER_HEADING_RESULT}</a>{$SORT_IMAGE_RESULT}</td>
+</tr>{$LOG_ROWS}{$PAGE_NAVIGATION}
+</table>
+</form>

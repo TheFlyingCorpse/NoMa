@@ -1,0 +1,80 @@
+Nomenclature
+=============
+
+
+alert
+------
+
+An incoming message from the monitoring system.
+
+command
+--------
+
+All alerts are passed to NoMa as commands of type "notification"
+Internally generated escalations are of type "escalation"
+
+
+
+
+escalation
+-----------
+
+Unfortunately used in multiple places to refer to different concepts...
+
+
+
+
+tmp_active
+-----------
+
+The currently active notifications.  May contain multiple notifications created from a single incoming alert.
+The command_id field refers to the initial alert(command) that caused this notification.
+
+When all notifications have been successfully processed or have failed then the entry will be deleted.
+
+
+mysql> describe tmp_active;
++-------------+--------------+------+-----+---------+----------------+---
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+---
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment | id
+| notify_id   | bigint(20)   | NO   |     | NULL    |                | unique for this notification
+| command_id  | int(11)      | YES  | MUL | NULL    |                | refers to id in tmp_command table
+| dest        | varchar(255) | YES  |     | NULL    |                | recipient of notification
+| from_user   | varchar(255) | YES  |     | NULL    |                | the from field if required
+| time_string | varchar(255) | YES  |     | NULL    |                | a badly defined time field
+| user        | varchar(255) | YES  |     | NULL    |                | which user owns the rule that generated this notification (careful, bundling!)
+| method      | varchar(255) | YES  |     | NULL    |                | the name of the ORIGINAL method e.g. "Voice + E-Mail fallback" 
+| notify_cmd  | varchar(255) | YES  |     | NULL    |                | the actual command to be used "voicecall"
+| retries     | int(11)      | YES  |     | 0       |                | number of initial retries of the command (e.g. 3)
+| rule        | int(11)      | YES  |     | 0       |                | which rule generated this notification
+| progress    | tinyint(1)   | YES  |     | 0       |                | is a command currently being run? 1=yes (to avoid double notifications)
+| esc_flag    | tinyint(1)   | YES  |     | 0       |                | is the internal escalator manging this command?
+| bundled     | int(11)      | YES  |     | 0       |                | >0 notification is bundled (with this ID) -1 is the bundle itself!
+| stime       | int(11)      | YES  |     | 0       |                | the unix time after which this command should be run (will initially be set to tmp_commands.stime + $$config{delay})
++-------------+--------------+------+-----+---------+----------------+
+
+
+
+
+tmp_commands
+-------------
+
+The incoming command (alert) as received via a pipe / socket.  The error checking is limited.
+
+
+time_periods / time_slices / timezones
+---------------------------------------
+
+Used to configure time windows (see DOCUMENTATION.txt).
+The timezone is referred to by the contacts table.
+
+N.B. the field in the notifications table is no longer used because timezones are considered
+to be contact specific
+
+
+
+notification_stati
+-------------------
+
+A counter for how often a host/service pair has generated an alert.
