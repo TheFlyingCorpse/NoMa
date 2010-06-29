@@ -577,6 +577,7 @@ do
             if (getRetryCounter($id) < $conf->{notifier}->{maxAttempts})
             {
                 # requeue notification and increment counter
+		debug("requeueing notification");
                 requeueNotification($id);
             }
             else

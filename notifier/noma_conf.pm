@@ -44,7 +44,7 @@ sub conf {
 		
 		# notifier settings
 		notifier => {
-			maxAttempts		=> '5',		# how often we try a notification before giving up
+			maxAttempts		=> '4',		# how often we retry a notification before giving up
 			timeToWait		=> '60',	# how many seconds to wait before retries
 			delay			=> 0,	    # delay this number of seconds (useful for bundling)
 			bundle			=> 0,       # set to 1 to bundle multiple alerts into a single notification
@@ -56,7 +56,7 @@ sub conf {
 								# and ignores further alerts (including OKs)
 								# setting to 0 will enable per rule settings ("let notifier handle")
 			timeToWait		=> '300',       # wait 5 mins before escalating to next rule
-            stopAfter       => '90',        # stop escalating after 90 minutes
+			stopAfter		=> '5400',        # stop escalating after 90 minutes
 		},
 
 		# voice alerting settings
