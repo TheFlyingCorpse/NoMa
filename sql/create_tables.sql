@@ -137,9 +137,9 @@ CREATE TABLE `notification_methods` (
 INSERT INTO `notification_methods` VALUES 
 (1,'E-Mail','sendemail','email','noma@netways.de',0,0),
 (2,'SMS','sendsms','mobile','',0,0),
-(3,'Voice','voicecall','phone','',0,0),
-(4,'Voice + E-Mail fallback','voicecall','phone','',1,0),
-(5,'Voice + SMS fallback','voicecall','phone','',2,0);
+(3,'Voice','voicecall','phone','',0,1),
+(4,'Voice + E-Mail fallback','voicecall','phone','',1,1),
+(5,'Voice + SMS fallback','voicecall','phone','',2,1);
 
 
 DROP TABLE IF EXISTS `notification_stati`;
