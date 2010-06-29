@@ -119,7 +119,7 @@ define('ADD_EDIT_CONFIRM_REMOVE_ESCALATION', 'Diese Eskalation sicher entfernen?
 define('ADD_EDIT_NOTIFY_AFTER_TRIES', 'Benachrichtigung nach:');
 define('ADD_EDIT_LET_NOTIFIER_HANDLE', 'Eskalationsvorgehen an notifier &uuml;bergeben:');
 define('ADD_EDIT_RELOOP_DELAY', 'Verz&ouml;gerung (in s) zwischen den Eskalationen:');
-define('ADD_EDIT_RELOOP_DELAY', 'Counter z&uuml;rucksetzen beim &Uuml;berlauf:');
+define('ADD_EDIT_ROLLOVER', 'Counter z&uuml;rucksetzen beim &Uuml;berlauf:');
 define('ADD_EDIT_NUM_NOTIFICATIONS', '(Anzahl der Benachrichtigungen)');
 define('ADD_EDIT_ESCALATION_DELETED', 'Eskalation wurde gel&ouml;scht.');
 define('ADD_EDIT_ESCALATION_ERROR', 'Fehler w&auml;hrend der Operation!');
@@ -185,7 +185,7 @@ define('LOG_VIEWER_OVERVIEW_LINK', '&Uuml;bersicht');
 define('LOG_VIEWER_HEADING', 'Benachrichtigungsverlauf');
 define('LOG_VIEWER_FIND', 'Suche:');
 define('LOG_VIEWER_NUM_RESULTS', 'Anzahl der Resultate pro Seite:');
-define('LOG_VIEWER_HEADING_RULE', 'Regel');
+define('LOG_VIEWER_HEADING_NOTIFICATION_RULE', 'Regel');
 define('LOG_VIEWER_HEADING_TIMESTAMP', 'Zeit');
 define('LOG_VIEWER_HEADING_CHECK_TYPE', 'Art des checks');
 define('LOG_VIEWER_HEADING_HOST', 'Host');

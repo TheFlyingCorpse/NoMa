@@ -217,7 +217,7 @@ define('CONTACTGROUPS_ADDING_FAILED', 'Could not add new group!');
 define('CONTACTGROUPS_GROUP_UPDATE', 'Group updated!');
 define('CONTACTGROUPS_UPDATE_FAILED', 'Could not update group!');
 define('CONTACTGROUPS_GROUP_DELETED', 'Group deleted!');
-define('CONTACTGROUPS_DELETE_FAILED', 'Coould not delete group!');
+define('CONTACTGROUPS_DELETE_FAILED', 'Could not delete group!');
 define('CONTACTGROUPS_EDIT_NAME_SHORT', 'Name (short):');
 define('CONTACTGROUPS_EDIT_NAME', 'Name:');
 define('CONTACTGROUP_CONFIRM_DEL', 'Do you really want to delete this contactgroup?');
