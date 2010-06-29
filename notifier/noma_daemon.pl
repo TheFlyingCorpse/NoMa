@@ -675,8 +675,8 @@ do
 
 
     # sleep for a bit
-    # select( undef, undef, undef, 0.025 );
-    sleep 1;
+    select( undef, undef, undef, 0.025 );
+    # sleep 1;
 
 } while (1);
 
