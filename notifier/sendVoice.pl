@@ -100,13 +100,13 @@ debugLog("$to\t$host\t$service\t$check_type\t$status\n");
 my $unique_id = md5_hex ( $host . "_" . $service . "_" . $datetime . "_" . $to );
 my $ret_str;
 
-my $scriptParams = "--number $to --callid $unique_id --host $host --asterisk " . $conf->{voicecall}->{server} . " --channel " . $conf->{voicecall}->{channel};
+my $scriptParams = "--number $to --callid $unique_id --host \"$host\" --asterisk " . $conf->{voicecall}->{server} . " --channel " . $conf->{voicecall}->{channel};
 
 if ($service eq '') {
         $message .= $conf->{voicecall}->{message}->{host};
 } else {
         $message .= $conf->{voicecall}->{message}->{service};
-	$scriptParams .= " --service $service";
+	$scriptParams .= " --service \"$service\"";
 }
 
 if (defined($conf->{voicecall}->{suffix}))
