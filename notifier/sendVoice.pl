@@ -55,6 +55,7 @@
 
 use strict;
 use Digest::MD5 qw(md5_hex);
+#use Data::Dumper;
 use FindBin;
 use lib "$FindBin::Bin";
 my $scriptPath = $FindBin::Bin;
@@ -63,6 +64,7 @@ use noma_conf;
 my $conf = conf();
 
 
+#debugLog("argv.... ". Dumper(\$ARGV));
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
 if ($numArgs != 10 && $numArgs != 11)
@@ -100,7 +102,8 @@ debugLog("$to\t$host\t$service\t$check_type\t$status\n");
 my $unique_id = md5_hex ( $host . "_" . $service . "_" . $datetime . "_" . $to );
 my $ret_str;
 
-my $scriptParams = "--number $to --callid $unique_id --host \"$host\" --asterisk " . $conf->{voicecall}->{server} . " --channel " . $conf->{voicecall}->{channel};
+my $asterisk = selectAppliance($conf->{voicecall}->{server}, $conf->{voicecall}->{channel}, $conf->{voicecall}->{check_command});
+my $scriptParams = "--number $to --callid $unique_id --host \"$host\" $asterisk";
 
 if ($service eq '') {
         $message .= $conf->{voicecall}->{message}->{host};
@@ -109,7 +112,7 @@ if ($service eq '') {
 	$scriptParams .= " --service \"$service\"";
 }
 
-if (defined($conf->{voicecall}->{suffix}))
+if (defined($conf->{voicecall}->{suffix}) and $conf->{voicecall}->{suffix} ne '')
 {
 	$scriptParams .= ' --suffix '.$conf->{voicecall}->{suffix};
 }
@@ -121,6 +124,7 @@ if (defined($conf->{voicecall}->{starface}) and $conf->{voicecall}->{starface} =
 }
 
 $message =~ s/(\$\w+)/$1/gee;
+#debugLog("commandline: echo \"$message\" | $scriptPath/$scriptName $scriptParams");
 $ret_str = `echo "$message" | $scriptPath/$scriptName $scriptParams`;
 
 
@@ -142,4 +146,49 @@ sub debugLog
 		print DEBUGLOG "$whoami: $debugStr\n";
 		close (DEBUGLOG);
 	}
+}
+
+sub selectAppliance
+{
+	my ($servers, $channels, $check_command) = @_;
+
+	my $server = '';
+	my $channel = '';
+
+	if (ref($servers) eq 'ARRAY'){
+		#It's an array reference...
+		#you can read it with $item->[1]
+		#or dereference it uisng @newarray = @{$item}
+		
+		# select one of the appliances - maybe one that works fine
+		# ...
+		for (my $i = 0; $i <= (scalar(@{$servers})-1); $i++) {
+			$server = $servers->[$i];
+			$channel = $channels->[$i];
+
+			$check_command =~ s/(\$\w+)/$1/gee;
+			system($check_command);
+			if ($? == -1) {
+				debugLog("failed to execute: $!\n");
+			}
+			elsif ($? & 127) {
+				debugLog(sprintf "check '%s' died with signal %d, %s coredump\n",
+				$check_command, ($? & 127),  ($? & 128) ? 'with' : 'without');
+			}
+			elsif ($? != 0) {
+				debugLog(sprintf "check '%s' exited with value %d\n", $check_command, $? >> 8);
+			}
+			else {
+				debugLog("server $server channel $channel seems to work fine - use it.");
+				last;
+			} 
+		}
+
+	} else {
+		#not an array in any way... just take it as it is
+		$server = $servers;
+		$channel = $channels;
+	}
+
+	return " --asterisk " . $server . " --channel " . $channel;
 }
