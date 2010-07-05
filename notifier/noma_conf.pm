@@ -37,7 +37,8 @@ sub conf {
 		# commands
 		command	=> {
 			sendemail		=> '/usr/local/nagios/noma/notifier/sendEmail.pl',
-			sendsms			=> '/usr/local/nagios/noma/notifier/sendSMS.pl',
+			#sendsms			=> '/usr/local/nagios/noma/notifier/sendSMS.pl',
+			sendsms			=> '/usr/local/icinga/noma/notifier/sendSMSfinder.pl',		# if you use iMultitech iSMS/SMSfinder
 			voicecall		=> '/usr/local/nagios/noma/notifier/sendVoice.pl',
 			dummy			=> '/bin/true',
 		},
@@ -77,6 +78,21 @@ sub conf {
 				header		=> 'this is a message from nagios ',				# header for all alerts
 				host		=> 'the host $host is $status',					# host message
 				service		=> 'the service $service on host $host is status $status',	# service message
+			},
+		},
+
+		# sms alerting settings
+		sms => {
+			#return_ack		=> 0,               # set to 1 to feed ACKs back to Icinga/Nagios
+			suppression		=> 0,               # add a global suppression menu option (value in minutes)
+			#server			=> '192.168.1.1',	# address of the SMS server
+			server			=> ['192.168.1.1', '192.168.1.2'],	# addresses of the SMS server farm
+			user			=> ['icinga', 'icinga'],	# user for iSMS/SMSfinder
+			pass			=> ['icinga', 'icinga'],	# pass for iSMS/SMSfinder
+			check_command		=> '/usr/local/icinga/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
+			message	=> {
+				host		=> 'NoMa: $host is $status! $datetime',			# host message
+				service		=> 'NoMa: $host - $service is $status! $datetime',	# service message
 			},
 		},
 			
@@ -130,6 +146,8 @@ Date/Time: $datetime"',							# mail body
 			watchdogMaxRuntime	=> undef,	# restart after this many seconds
 			voice			=> undef,	# logging voice alert errors
 			#voice			=> '/usr/local/icinga/var/voice_debug.log',	# logging voice alert errors
+			sms				=> undef,	# dont log sms alert errors
+			#sms				=> '/usr/local/icinga/var/sms_debug.log',	# logging sms alert errors
 		},
 
 	};
