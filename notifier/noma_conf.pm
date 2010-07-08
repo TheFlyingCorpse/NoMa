@@ -37,7 +37,8 @@ sub conf {
 		# commands
 		command	=> {
 			sendemail		=> '/usr/local/nagios/noma/notifier/sendEmail.pl',
-			sendsms			=> '/usr/local/nagios/noma/notifier/sendSMS.pl',
+			#sendsms			=> '/usr/local/nagios/noma/notifier/sendSMS.pl',
+			sendsms			=> '/usr/local/icinga/noma/notifier/sendSMSfinder.pl',		# if you use iMultitech iSMS/SMSfinder
 			voicecall		=> '/usr/local/nagios/noma/notifier/sendVoice.pl',
 			dummy			=> '/bin/true',
 		},
@@ -63,17 +64,35 @@ sub conf {
 		voicecall => {
 			return_ack		=> 0,               # set to 1 to feed ACKs back to Icinga/Nagios
 			suppression		=> 0,               # add a global suppression menu option (value in minutes)
-			server			=> '192.168.1.1',	# address of the starface/asterisk server
+			#server			=> '192.168.1.1',	# address of the starface/asterisk server
+			server			=> ['192.168.1.1', '192.168.1.2'],	# addresses of the starface/asterisk server farm
 			callerID		=> '0',			# our caller ID (for point-to-multipoint / Mehrgerätanschlüße)
 			starface		=> '1',			# set to 1 to use the starface script, otherwise use the generic asterisk script
-			channel			=> 'Zap/g30',		# for Starface light
+			#channel			=> 'Zap/g30',		# for Starface light
 			#channel		=> 'Srx/g31',		# for standard Starface
+			channel			=> ['Srx/g31', 'Srx/g31'],	# for standard Starface (array if more than one server, same order as servers above)
 			#channel		=> 'SIP',		# for SIP
+			check_command		=> '/usr/local/icinga/libexec/check_snmp -H $server -u $channel -l Starface -R "ISDN Channels: OK:1" -t 1 -o .1.3.6.1.4.1.32354.1.2.999.4.1.2.9.98.117.108.107.99.104.101.99.107.1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
             suffix          => '',          # channel suffix
 			message	=> {
 				header		=> 'this is a message from nagios ',				# header for all alerts
 				host		=> 'the host $host is $status',					# host message
 				service		=> 'the service $service on host $host is status $status',	# service message
+			},
+		},
+
+		# sms alerting settings
+		sms => {
+			#return_ack		=> 0,               # set to 1 to feed ACKs back to Icinga/Nagios
+			suppression		=> 0,               # add a global suppression menu option (value in minutes)
+			#server			=> '192.168.1.1',	# address of the SMS server
+			server			=> ['192.168.1.1', '192.168.1.2'],	# addresses of the SMS server farm
+			user			=> ['icinga', 'icinga'],	# user for iSMS/SMSfinder
+			pass			=> ['icinga', 'icinga'],	# pass for iSMS/SMSfinder
+			check_command		=> '/usr/local/icinga/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
+			message	=> {
+				host		=> 'NoMa: $host is $status! $datetime',			# host message
+				service		=> 'NoMa: $host - $service is $status! $datetime',	# service message
 			},
 		},
 			
@@ -126,6 +145,9 @@ Date/Time: $datetime"',							# mail body
 			watchdogMaxVSS		=> 1048576,	# virtual memory
 			watchdogMaxRuntime	=> undef,	# restart after this many seconds
 			voice			=> undef,	# logging voice alert errors
+			#voice			=> '/usr/local/icinga/var/voice_debug.log',	# logging voice alert errors
+			sms				=> undef,	# dont log sms alert errors
+			#sms				=> '/usr/local/icinga/var/sms_debug.log',	# logging sms alert errors
 		},
 
 	};
