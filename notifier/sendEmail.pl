@@ -52,7 +52,6 @@
 #
 #
 
-# TODO: Get message texts from noma_conf
 # TODO: URLize $service
 # TODO: Localize Date/Time Field
 
@@ -83,6 +82,8 @@ my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
 my $output = $ARGV[9];
 my $service = '';
+my $filename = '';
+my $file = '';
 my $sendmail = "/usr/sbin/sendmail -t";
 my $subject = 'Subject: NoMa Alert';
 my $message = "$host/$service is $status\n$output\n";
@@ -103,10 +104,32 @@ if ($check_type eq 'h')
 {
     $subject = 'Subject: '.$conf->{sendemail}->{message}->{host}->{subject} if (defined( $conf->{sendemail}->{message}->{host}->{subject}));
     $message = $conf->{sendemail}->{message}->{host}->{message} if (defined( $conf->{sendemail}->{message}->{host}->{message}));
+    $filename = $conf->{sendemail}->{message}->{host}->{filename} if (defined( $conf->{sendemail}->{message}->{host}->{filename}));
 
 } else {
     $subject = 'Subject: '.$conf->{sendemail}->{message}->{service}->{subject} if (defined( $conf->{sendemail}->{message}->{service}->{subject}));
     $message = $conf->{sendemail}->{message}->{service}->{message} if (defined( $conf->{sendemail}->{message}->{service}->{message}));
+    $filename = $conf->{sendemail}->{message}->{service}->{filename} if (defined( $conf->{sendemail}->{message}->{service}->{filename}));
+}
+
+if ($filename ne "")
+{
+    # this is a file to be included in the text - N.B. it is up to the user to ensure the encoding agrees with the rest of the message
+    # expand $service / $host etc.
+    $filename =~ s/(\$\w+)/$1/gee;
+    # print "got filename $filename\n";
+    if (-e $filename)
+    {
+        # read into $file
+        my $lt = $/;
+        undef $/;
+        if(open(FILE, "< $filename"))
+        {
+            $file = <FILE>;
+            close FILE;
+        }
+        $/ = $lt;
+    }
 }
 
 $sendmail = $conf->{sendemail}->{sendmail} if (defined($conf->{sendemail}->{sendmail}));
