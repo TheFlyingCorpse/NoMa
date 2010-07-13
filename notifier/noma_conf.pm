@@ -112,7 +112,7 @@ Address: $host_address
 Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host
 Info: $output
 
-Date/Time: $datetime"',							# mail body
+Date/Time: $datetime',							# mail body
                     # filename => '/tmp/message_for_$host.txt',           # optionally include contents of filename (as variable $file in message). WARNING: avoid _ directly after a variable name.
 				},
 				service => {
@@ -128,7 +128,7 @@ Address: $host_address
 Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service
 Info: $output
 
-Date/Time: $datetime"',							# mail body
+Date/Time: $datetime',							# mail body
                     # filename => '',           # optionally include contents of filename (as variable $file in message). WARNING: avoid _ directly after a variable name.
 				},
 			},
