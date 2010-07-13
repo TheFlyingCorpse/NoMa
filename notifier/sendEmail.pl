@@ -141,7 +141,9 @@ open(SENDMAIL, "|$sendmail") or exit 1;
 print SENDMAIL $subject . "\n";
 print SENDMAIL $from . "\n";
 print SENDMAIL $to . "\n";
-print SENDMAIL "Content-type: text/plain\n\n";
+print SENDMAIL "Content-type: text/plain; charset=utf-8\n";
+print SENDMAIL "Content-Transfer-Encoding: 8bit\n";
+print SENDMAIL "\n";
 print SENDMAIL $message . "\n";
 close(SENDMAIL);
 
