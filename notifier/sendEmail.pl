@@ -117,6 +117,7 @@ if ($filename ne "")
     # this is a file to be included in the text - N.B. it is up to the user to ensure the encoding agrees with the rest of the message
     # expand $service / $host etc.
     $filename =~ s/(\$\w+)/$1/gee;
+    $filename =~ s/[^\w-\.\/]/_/g;
     # print "got filename $filename\n";
     if (-e $filename)
     {
