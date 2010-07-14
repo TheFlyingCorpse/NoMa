@@ -367,7 +367,10 @@ do
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
 
 
-            next if (scalar(@ids_all) < 1);
+            unless ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
+            {
+                next if (scalar(@ids_all) < 1);
+            }
 
             # We need to split the rules into 2 types
             # those that escalate internally - and normal rules
