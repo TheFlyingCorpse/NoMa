@@ -102,12 +102,8 @@ debugLog("$to\t$host\t$service\t$check_type\t$status\n");
 my $unique_id = md5_hex ( $host . "_" . $service . "_" . $datetime . "_" . $to );
 my $ret_str;
 
-<<<<<<< HEAD
-my $scriptParams = "--number $to --callid $unique_id --host \"$host\" --asterisk " . $conf->{voicecall}->{server} . " --channel " . $conf->{voicecall}->{channel};
-=======
 my $asterisk = selectAppliance($conf->{voicecall}->{server}, $conf->{voicecall}->{channel}, $conf->{voicecall}->{check_command});
 my $scriptParams = "--number $to --callid $unique_id --host \"$host\" $asterisk";
->>>>>>> master
 
 if ($service eq '') {
         $message .= $conf->{voicecall}->{message}->{host};
@@ -116,11 +112,7 @@ if ($service eq '') {
 	$scriptParams .= " --service \"$service\"";
 }
 
-<<<<<<< HEAD
-if (defined($conf->{voicecall}->{suffix}) and ($conf->{voicecall}->{suffix} ne "")
-=======
 if (defined($conf->{voicecall}->{suffix}) and $conf->{voicecall}->{suffix} ne '')
->>>>>>> master
 {
 	$scriptParams .= ' --suffix '.$conf->{voicecall}->{suffix};
 }

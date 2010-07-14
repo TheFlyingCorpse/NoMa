@@ -557,7 +557,7 @@ do
 
     # check for notification results
     RESULTSLOOP: if ( $msg = $msgq->dequeue_nb )
-    {
+    {{
         # id= unique ID (per notification)
         my ( $id, $retval, @retstr ) = split( ';', $msg );
 # TODO: Storable::thaw
@@ -568,6 +568,21 @@ do
         );
 
         # retrieve details from DB
+
+        # check if this was a bundled alert, and split it, pushing the individual results back onto the queue
+
+        if (is_a_bundle($id))
+        {
+            debug("Bundled reply received");
+            foreach my $item (unbundle($id))
+            {
+                # push back onto queue
+                $msgq->enqueue_nb("$item;$retval;$retstr");
+            }
+
+            deleteFromActive($id);
+            last;
+        }
 
         # check whether sending was successful
         if ( $retval != 0 )
@@ -664,7 +679,7 @@ do
 #             }
         }
 
-    }
+    }}
 
     # check for bundling / send commands
     # do this in the main loop to avoid any race conditions
