@@ -173,11 +173,13 @@ function getContent () {
 		$templateContent->assign('MOBILE', $userData['mobile']);
 		$templateContent->assign('RESTRICT_ALERTS', ($userData['restrict_alerts']==1)?'checked="checked"':'');
 
-		// display delete button
-		$templateSubContentDelete = new nwTemplate(TEMPLATE_CONTACT_MANAGER_ADMIN_DELETE);
-		$templateSubContentDelete->assign('CONTACTS_DEL_BUTTON', CONTACTS_DEL_BUTTON);
-		$templateSubContentDelete->assign('CONTACTS_CONFIRM_DEL', CONTACTS_CONFIRM_DEL);
-		$templateSubContent->assign('CONTACTS_DEL_BUTTON', $templateSubContentDelete->getHTML());
+        if ($admin) {
+            // display delete button
+            $templateSubContentDelete = new nwTemplate(TEMPLATE_CONTACT_MANAGER_ADMIN_DELETE);
+            $templateSubContentDelete->assign('CONTACTS_DEL_BUTTON', CONTACTS_DEL_BUTTON);
+            $templateSubContentDelete->assign('CONTACTS_CONFIRM_DEL', CONTACTS_CONFIRM_DEL);
+            $templateSubContent->assign('CONTACTS_DEL_BUTTON', $templateSubContentDelete->getHTML());
+        }
 	}
 
 

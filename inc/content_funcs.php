@@ -217,6 +217,9 @@ function getContactGroupById ($id) {
 
 function getNavigationContent ($action, $admin = false) {
 	global $authentication_type;
+	global $logs;
+	global $contactgroups;
+	global $statuspage;
 
 	$navigation = array (
 		array(
@@ -242,19 +245,19 @@ function getNavigationContent ($action, $admin = false) {
 		),
 		array(
 			'actions'				=> array('contactgroups'),
-			'admin_only'			=> true,
+			'admin_only'			=> $contactgroups['admin_only'],
 			'auth_type_required'	=> false,
 			'title'					=> NAVIGATION_CONTACTGROUPS,
 		),
 		array(
 			'actions'				=> array('status'),
-			'admin_only'			=> true,
+			'admin_only'			=> $statuspage['admin_only'],
 			'auth_type_required'	=> false,
 			'title'					=> NAVIGATION_STATUS,
 		),
 		array(
 			'actions'				=> array('logs'),
-			'admin_only'			=> true,
+			'admin_only'			=> $logs['admin_only'],
 			'auth_type_required'	=> false,
 			'title'					=> NAVIGATION_LOGS,
 		),

@@ -118,6 +118,11 @@ $contactgroups = array (
 	'admin_only' => true,
 );
 
+// status page
+$statuspage = array (
+    'admin_only'        => true,
+);
+
 
 // log viewer
 $logs = array (

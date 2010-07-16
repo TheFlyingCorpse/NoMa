@@ -196,7 +196,7 @@ switch ($action) {
 		break;
 
 	case 'status':
-		if ($logs['admin_only']) { // link with logs access 
+		if ($statuspage['admin_only']) { // link with logs access 
 			if (isAdmin()) {
 				$require = 'inc/content_status_viewer.php';
 			} else {
