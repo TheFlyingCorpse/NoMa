@@ -92,9 +92,9 @@ $service = $ARGV[10] if ($numArgs == 11);
 
 my $message = '';
 if ($check_type eq 'h') {
-	$message .= $conf->{sms}->{message}->{host};
+	$message .= $conf->{sendsms}->{message}->{host};
 } elsif ($check_type eq 's') {
-	$message .= $conf->{sms}->{message}->{service};
+	$message .= $conf->{sendsms}->{message}->{service};
 } else {
 	debugLog("don't know if we handle a host or a service.\n");
 	exit 1;
@@ -104,7 +104,7 @@ $message =~ s/(\$\w+)/$1/gee;
 #debugLog("$to\t$host\t$service\t$check_type\t$status\n");
 my $ret_str;
 
-my ($server, $user, $pass) = selectAppliance($conf->{sms}->{server}, $conf->{sms}->{user}, $conf->{sms}->{pass}, $conf->{sms}->{check_command});
+my ($server, $user, $pass) = selectAppliance($conf->{sendsms}->{server}, $conf->{sendsms}->{user}, $conf->{sendsms}->{pass}, $conf->{sendsms}->{check_command});
 my $scriptParams = "-H $server -u $user -p $pass --noma -n $to -m '$message'";
 
 my $scriptName = 'sendsms.pl';

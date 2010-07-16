@@ -155,7 +155,7 @@ sub selectAppliance
 	my $server = '';
 	my $channel = '';
 
-	if (ref($servers) eq 'ARRAY'){
+	if (ref($servers) eq 'ARRAY' and defined($check_command)){
 		#It's an array reference...
 		#you can read it with $item->[1]
 		#or dereference it uisng @newarray = @{$item}
