@@ -48,7 +48,7 @@ sub sendNotifications
 
         # select everything
         push @toNotify, $index;
-        push @ids, $dbResult{$index}{id};
+        push @ids, $dbResult{$index}{notify_id};
     }
 
     if ($bundle)
