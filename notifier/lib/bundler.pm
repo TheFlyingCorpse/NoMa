@@ -103,19 +103,14 @@ sub sendNotifications
         }
 
 
-        # debug
-        print Dumper(%recipients);
-
 
         foreach my $user (keys %recipients)
         {
-            debug("testing $user");
 
             my $uref = $recipients{$user};
 
             foreach my $cmd (keys %$uref)
             {
-                debug("Now testing $user / $cmd");
                 # only bundle if more than 1 alert for a single destination is outstanding
                 if ($recipients{$user}{$cmd}{count} < 2)
                 {
@@ -139,7 +134,6 @@ sub sendNotifications
                     # queue notification "host + service is output"
                     my @tmp = ($recipients{$user}{$cmd}{notify_id});
                     setProgressFlag(\@tmp);
-                    debug("bundle < 2 queue");
                     $queue->{$cmd}->enqueue($recipients{$user}{$cmd}{notify_id}.';'.$recipients{$user}{$cmd}{stime}.';1;'.$param);
                 }
                 else
@@ -193,7 +187,6 @@ sub sendNotifications
 
                 my $start = time(); # what should the time be? earliest or latest?
                 # queue notification (concat notify_id '/'), "There are count messages: " + message
-                debug("bundle > 1 queue");
                 setProgressFlag([$notify_id]);
                 $queue->{$cmd}->enqueue("$notify_id;$start;1;$param");
                 debug("enqueue to $cmd: $notify_id;$start;1;$param");
