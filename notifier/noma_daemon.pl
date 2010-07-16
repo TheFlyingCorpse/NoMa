@@ -406,6 +406,7 @@ do
                         #
                         debug('  -> Clearing counter');
                         clearNotificationCounter($cmdh{host}, $cmdh{service});
+                        clearEscalationCounter($cmdh{host}, $cmdh{service});
                     }
                     else
                     {

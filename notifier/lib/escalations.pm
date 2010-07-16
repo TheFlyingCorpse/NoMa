@@ -91,6 +91,31 @@ sub resetEscalationCounter
 
 }
 
+
+sub clearEscalationCounter
+{
+
+    my ( $host, $svc ) = @_;
+
+    my $query = 'delete from escalation_stati
+			where host=\''.$host.'\'';
+                
+    if (defined($svc) and $svc ne '')
+    {
+        # service alert
+        $query .= ' and service=\''.$svc.'\'';
+    }
+    else
+    {
+        $query .= ' and check_type=\'h\'';
+    }
+
+    updateDB($query);
+
+}
+
+
+
 sub createEscalationCounter
 {
     my ($esc_rule, %eventh) = @_;
