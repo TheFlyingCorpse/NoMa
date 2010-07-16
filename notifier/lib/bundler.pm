@@ -37,7 +37,7 @@ sub sendNotifications
 
     # select notifications due to be executed that are not currently in progress and that have not already been bundled
     # N.B. a bundled notification will also appear here as a notification with a separate field.
-    my $query = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled <= \'0\' and a.stime <= \''.time().'\'';
+    my $query = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled = \'0\' and a.stime <= \''.time().'\'';
     %dbResult = queryDB($query, undef, 1);
 
     return unless (keys(%dbResult));
@@ -45,95 +45,185 @@ sub sendNotifications
 
     foreach my $index (keys %dbResult)
     {
-        # push @toNotify, $index if ($dbResult{$index}{stime} le (time()-$delay));
 
         # select everything
         push @toNotify, $index;
         push @ids, $dbResult{$index}{id};
     }
 
-    setProgressFlag(\@ids);
     if ($bundle)
     {
+
+
 
         # generate a list of contact/method pairs to notify
         foreach my $item (@toNotify)
         {
-            updateLog($dbResult{$item}{notify_id}, ", bundling");
 
-            ## collect the IDs to delete
-            #push @toDelete, $dbResult{$item}{notify_id};
-    
-            # bundle all messages to a particular destination by type
-            my $bunref = $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}};
-            $bunref->{count}++;
-            $bunref->{from_user} = $dbResult{$item}{from_user};
-            push @{ $bunref->{ids} }, $dbResult{$item}{notify_id};
+            # save all relevant data in case there is no bundling required
+            # N.B. set the count to 0 because we are counting in the next stage
+            $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{count} = 0;
+            $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{from_user} = $dbResult{$item}{from_user};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{dest} = $dbResult{$item}{dest};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{check_type} = $dbResult{$item}{check_type};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{stime} = $dbResult{$item}{stime};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{status} = $dbResult{$item}{status};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{notification_type} = $dbResult{$item}{notification_type};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host} = $dbResult{$item}{host};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{service} = $dbResult{$item}{service};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host_alias} = $dbResult{$item}{host_alias};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host_address} = $dbResult{$item}{host_address};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{output} = $dbResult{$item}{output};
+			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{notify_id} = $dbResult{$item}{notify_id};
 
-
-            # create a bundled message
-            # TODO: this should really be supported in the individual scripts
-            # TODO: make the text configurable
-            $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{message} .=
-                ' '.$dbResult{$item}{host}.'/'.$dbResult{$item}{service}.' is '.$dbResult{$item}{status}."\n";
         }
 
-        #foreach my $item (@toDelete)
-        #{
-        #    # delete the notifications from the tmp_active table because we have now bundled them
-        #    # TODO: acknowledgements are not possible
-        #    # TODO: consider flagging with a bundle ID
-        #    deleteFromActive($item);
-        #}
+        # now repeat the query without the time restriction to fetch any other notifications that have been queued
+
+        my $query2 = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled <= \'0\'';
+        my %res = queryDB($query2, undef, 1);
+
+        foreach my $index (keys %res)
+        {
+
+            # retrieve anything where the hash is already defined
+            if (defined($recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{count}))
+            {
+                # 
+                # updateLog($dbResult{$item}{notify_id}, ", bundling");
+                $recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{count}++;
+                push @{ $recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{ids} }, $res{$index}{notify_id};
+
+                # create a bundled message
+                # TODO: this should really be supported in the individual scripts
+                # TODO: make the text configurable
+                $recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{multi_message} .=
+                    ' '.$res{$index}{host}.'/'.$res{$index}{service}.' is '.$res{$index}{status}."\n";
+            }
+        }
 
 
-        
+        # debug
+        print Dumper(%recipients);
 
 
         foreach my $user (keys %recipients)
         {
+            debug("testing $user");
+
             my $uref = $recipients{$user};
 
             foreach my $cmd (keys %$uref)
             {
+                debug("Now testing $user / $cmd");
+                # only bundle if more than 1 alert for a single destination is outstanding
+                if ($recipients{$user}{$cmd}{count} < 2)
+                {
+                    #
+                    $param = sprintf(
+                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                        $recipients{$user}{$cmd}{from_user},
+                        $recipients{$user}{$cmd}{dest},
+                        $recipients{$user}{$cmd}{check_type},
+                        $recipients{$user}{$cmd}{stime},
+                        $recipients{$user}{$cmd}{status},
+                        $recipients{$user}{$cmd}{notification_type},
+                        $recipients{$user}{$cmd}{host},
+                        $recipients{$user}{$cmd}{host_alias},
+                        $recipients{$user}{$cmd}{host_address},
+                        $recipients{$user}{$cmd}{output});
 
+                    $param .= ' "'.$recipients{$user}{$cmd}{service}.'"' if ( $recipients{$user}{$cmd}{check_type} eq 's' );
+
+                    updateLog($recipients{$user}{$cmd}{notify_id}, ", single alert");
+                    # queue notification "host + service is output"
+                    my @tmp = ($recipients{$user}{$cmd}{notify_id});
+                    setProgressFlag(\@tmp);
+                    debug("bundle < 2 queue");
+                    $queue->{$cmd}->enqueue($recipients{$user}{$cmd}{notify_id}.';'.$recipients{$user}{$cmd}{stime}.';1;'.$param);
+                }
+                else
+                {
+
+                # create a new notify ID for this bundle
                 my $notify_id = unique_id();
 
-                addToBundle($notify_id, $recipients{$user}{$cmd}{ids});
+                # mark all the constituent parts as in_progress
+                my @tmp =  $recipients{$user}{$cmd}{ids};
+                addToBundle($notify_id, @tmp);
+                setProgressFlag(@tmp);
 
-                # TODO: add the bundled command to the tmp_active table
-                prepareNotification($notify_id, '(bundler)', 'Bundled', $cmd, $user, $recipients{$user}{$cmd}{from_user}, '12345', scalar(localtime()),
-'h', $status,'PROBLEM', 'multiple alerts',     'multiple alerts', '0.0.0.0', 'nosvc', $recipients{$user}{$cmd}{message}, '0');
 
+                $recipients{$user}{$cmd}{multi_message} = $recipients{$user}{$cmd}{count}." alerts: ".$recipients{$user}{$cmd}{multi_message};
+
+                my $now = time();
+                # create a fake command
+                $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, service, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+                    'NOTIFICATION',
+                    $notify_id,
+                    'multiple alerts',
+                    'multiple alerts',
+                    '127.0.0.1',
+                    'nosvc',
+                    'h',
+                    'WARNING',
+                    $now,
+                    'PROBLEM',
+                    $recipients{$user}{$cmd}{multi_message});
+                updateDB($sql);
+                
+                # add the bundled command to the tmp_active table as a new notification WITHOUT delay
+                prepareNotification($notify_id, '(bundler)', 'Bundled', $cmd, $user, $recipients{$user}{$cmd}{from_user}, $notify_id, $now,
+'h', 'WARNING','PROBLEM', 'multiple alerts',     'multiple alerts', '127.0.0.1', 'nosvc', $recipients{$user}{$cmd}{multi_message}, '0', 1);
+
+                # now create the actual alert
                 
                 $param = sprintf(
-            "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
-                    $recipients{$user}{$cmd}{from_user},  $user,    'PROBLEM',
-                    scalar(localtime()), 'WARNING',     'h',
-                    'multiple alerts',     'multiple alerts', '0.0.0.0',
-                    $recipients{$user}{$cmd}{message});
+                    "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                    $recipients{$user}{$cmd}{from_user},
+                    $user,
+                    'PROBLEM',
+                    $now,
+                    'WARNING', # TODO this may be wrong
+                    'h',
+                    'multiple alerts',
+                    'multiple alerts',
+                    '127.0.0.1',
+                    $recipients{$user}{$cmd}{multi_message});
 
                 my $start = time(); # what should the time be? earliest or latest?
                 # queue notification (concat notify_id '/'), "There are count messages: " + message
-                # $queue->{$cmd}->enqueue("$notify_id;$start;1;$param");
-                print "enqueue to $cmd: $notify_id;$start;1;$param\n";
+                debug("bundle > 1 queue");
+                setProgressFlag([$notify_id]);
+                $queue->{$cmd}->enqueue("$notify_id;$start;1;$param");
+                debug("enqueue to $cmd: $notify_id;$start;1;$param");
+                }
             }
         }
     } else {
 
+        # flag that we are processing an alert to avoid multiple voice alerts :-)
+        setProgressFlag(\@ids);
         foreach my $item (@toNotify)
         {
             $param = sprintf(
-        "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
-                 $dbResult{$item}{from_user},  $dbResult{$item}{dest}, $dbResult{$item}{check_type},
-                $dbResult{$item}{stime}, $dbResult{$item}{status},     $dbResult{$item}{notification_type},
-                $dbResult{$item}{host},     $dbResult{$item}{host_alias}, $dbResult{$item}{host_address},
+                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                $dbResult{$item}{from_user},
+                $dbResult{$item}{dest},
+                $dbResult{$item}{check_type},
+                $dbResult{$item}{stime},
+                $dbResult{$item}{status},
+                $dbResult{$item}{notification_type},
+                $dbResult{$item}{host},
+                $dbResult{$item}{host_alias},
+                $dbResult{$item}{host_address},
                 $dbResult{$item}{output});
 
             $param .= ' "'.$dbResult{$item}{service}.'"' if ( $dbResult{$item}{check_type} eq 's' );
 
             updateLog($dbResult{$item}{notify_id}, ", single alert");
             # queue notification "host + service is output"
+            debug("no bundle enqueue");
             $queue->{$dbResult{$item}{notify_cmd}}->enqueue($dbResult{$item}{notify_id}.';'.$dbResult{$item}{stime}.';1;'.$param);
         }
     }
@@ -166,10 +256,38 @@ sub addToBundle
 
     $list = join(',', @$arrptr);
     debug("adding $list to bundle $bunid\n");
-    foreach my $value (@$arrptr)
+    updateDB("update tmp_active set bundled='".$bunid."' where notify_id in (".$list.")");
+}
+
+# check if the ID is part of a bundle
+sub is_a_bundle
+{
+    my ($bunid) = @_;
+
+
+    # debug("Checking if $bunid is bundled\n");
+    my %dbResult = queryDB("select count(*) as count from tmp_active where bundled=\"".$bunid."\"");
+
+    return 0 unless (defined($dbResult{0}->{count}) and ($dbResult{0}->{count} > 0));
+    debug("$bunid is bundled (".$dbResult{0}->{count}." alerts)");
+    return 1;
+}
+
+# return a list of IDs that were in a bundle and remove the tag
+sub unbundle
+{
+    my ($bunid) = @_;
+    my @tmp;
+
+    my %dbResult = queryDB("select notify_id from tmp_active where bundled=\"".$bunid."\"");
+    updateDB("update tmp_active set bundled=\"0\" where bundled=\"".$bunid."\"");
+
+    foreach my $key (keys %dbResult)
     {
-        updateDB("update tmp_active set bundle='".$bunid."' where notify_id in (".$list.")");
+        push @tmp, $dbResult{$key}{notify_id};
     }
+    debug("unbundle returned ".join(',',@tmp));
+    return @tmp;
 }
 
 # set the progress flag
@@ -181,7 +299,7 @@ sub setProgressFlag
 
     $list = join(',', @$arrptr);
     debug("setting progress flag for $list");
-    updateDB("update tmp_active set progress='1' where id in (".$list.")");
+    updateDB("update tmp_active set progress='1' where notify_id in (".$list.")");
 }
 
 sub suppressionIsActive

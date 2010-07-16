@@ -676,7 +676,7 @@ CREATE TABLE `tmp_active` (
   `rule` int(11) default 0,
   `progress` tinyint(1) default 0,
   `esc_flag` tinyint(1) default 0,
-  `bundled` int(11) default 0,
+  `bundled` bigint(20) default 0,
   `stime` int(11) default 0,
   UNIQUE KEY `id` (`id`),
   FOREIGN KEY `command_id` (`command_id`) REFERENCES `tmp_commands`(`id`) ON DELETE CASCADE

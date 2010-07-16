@@ -18,6 +18,9 @@ use Thread::Queue;
 use IO::Select;
 use Fcntl qw(O_RDWR);
 use IO::Socket;
+use FindBin;
+use lib "$FindBin::Bin";
+use debug;
 
 
 # run a command notifier and return the result
@@ -34,9 +37,11 @@ sub spawnNotifierThread
         my ( $id, $start, $count, $param ) = split( ';', $msg, 4 );
 
 	# check for retries
+    debug("$name: $id received");
 
 	if ($count > 1)
 	{
+        debug("BUG in NoMa. This code should not be called (count=$count)");
 		# retry - check if it is old enough to be retried
 		
 		$timeToWait = $conf->{notifier}->{timeToWait};

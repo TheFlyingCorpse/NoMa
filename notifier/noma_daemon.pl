@@ -576,107 +576,111 @@ do
             debug("Bundled reply received");
             foreach my $item (unbundle($id))
             {
+                # delete the bundle from tmp active
+                # remove the bundle id
                 # push back onto queue
-                $msgq->enqueue_nb("$item;$retval;$retstr");
+                $msgq->enqueue("$item;$retval;$retstr");
             }
 
             deleteFromActive($id);
-            last;
-        }
-
-        # check whether sending was successful
-        if ( $retval != 0 )
-        {
-
-            # sending was NOT successful
-
-            # foreach id;
-
-            if (getRetryCounter($id) < $conf->{notifier}->{maxAttempts})
-            {
-                # requeue notification and increment counter
-		debug("requeueing notification");
-                requeueNotification($id);
-            }
-            else
-            {
-                # retrieve the contact data
-
-                # try to get next method (method escalation)
-                my ($nextMethod, $nextMethodName, $nextMethodCmd, $nextFrom, $nextTo) = getNextMethod($id);
-
-                if ($nextMethod eq '0')
-                {
-
-                    debug("no more methods for $id");
-                    if ( $retstr eq '' )
-                    {
-                        $retstr = ' failed - no methods left';
-                    } else
-                    {
-                        $retstr .= ' - failed - no methods left';
-                    }
-
-                    deleteFromActive($id);
-
-                }
-                else
-                {
-
-                    if ( $retstr eq '' )
-                    {
-                        $retstr = " failed\nTrying next method";
-                    } else
-                    {
-                        $retstr .= " - failed\nTrying next method";
-                    }
-
-                    updateLog( $id, $retstr );
-                    # $queue{$nextMethodName}->enqueue(getNextMethodCmd($id, $nextMethod));
-                    # alter method for $id
-                    # TODO: really try next method -> code here is wrong? last_method referenced in log....
-                    $query = 'update tmp_active set method=\''.$nextMethodName.'\', notify_cmd=\''.$nextMethodCmd.'\', progress=\'0\', from_user=\''.$nextFrom.'\', dest=\''.$nextTo.'\', retries=\'0\' where notify_id=\''.$id.'\'';
-                    updateDB($query);
-
-                }
-
-
-            }
+            deleteFromCommands($id);
         }
         else
         {
+            # check whether sending was successful
+            if ( $retval != 0 )
+            {
 
-            # sending was successful -> write to log
-            if ( $retstr eq '' )
-            {
-                $retstr = ' successful';
-            } else
-            {
-                $retstr .= ' - successful';
+                # sending was NOT successful
+
+                # foreach id;
+
+                if (getRetryCounter($id) < $conf->{notifier}->{maxAttempts})
+                {
+                    # requeue notification and increment counter
+            debug("requeueing notification $id");
+                    requeueNotification($id);
+                }
+                else
+                {
+                    # retrieve the contact data
+
+                    # try to get next method (method escalation)
+                    my ($nextMethod, $nextMethodName, $nextMethodCmd, $nextFrom, $nextTo) = getNextMethod($id);
+
+                    if ($nextMethod eq '0')
+                    {
+
+                        debug("no more methods for $id");
+                        if ( $retstr eq '' )
+                        {
+                            $retstr = ' failed - no methods left';
+                        } else
+                        {
+                            $retstr .= ' - failed - no methods left';
+                        }
+
+                        deleteFromActive($id);
+
+                    }
+                    else
+                    {
+
+                        if ( $retstr eq '' )
+                        {
+                            $retstr = " failed\nTrying next method";
+                        } else
+                        {
+                            $retstr .= " - failed\nTrying next method";
+                        }
+
+                        updateLog( $id, $retstr );
+                        # $queue{$nextMethodName}->enqueue(getNextMethodCmd($id, $nextMethod));
+                        # alter method for $id
+                        # TODO: really try next method -> code here is wrong? last_method referenced in log....
+                        $query = 'update tmp_active set method=\''.$nextMethodName.'\', notify_cmd=\''.$nextMethodCmd.'\', progress=\'0\', from_user=\''.$nextFrom.'\', dest=\''.$nextTo.'\', retries=\'0\' where notify_id=\''.$id.'\'';
+                        updateDB($query);
+
+                    }
+
+
+                }
             }
+            else
+            {
 
-            updateLog( $id, $retstr );
+                # sending was successful -> write to log
+                if ( $retstr eq '' )
+                {
+                    $retstr = ' successful';
+                } else
+                {
+                    $retstr .= ' - successful';
+                }
 
-            # if this particular notification method was successful (e.g. email)
-            # delete it from the tmp_active table
-            # but first retrieve the incident_id which created this notification
-            my $incident_id = getIncidentIDfromNotificationID($id);
-            deleteFromActive($id);
+                updateLog( $id, $retstr );
 
-             # if the method is flagged as ACKable then additionally remove it from the status
-             # table (i.e. Voicealert)
-             if (notificationAcknowledgable($id))
-             {
-                 # TODO feedback acknowledgement to nagios
-                 deleteFromStati($id);
-                 deleteFromEscalations($incident_id);
-             }
-#             else
-#             {
-#                 # pass to escalator
-#                 debug("The ACK flag is not set for this method: internally escalating $id");
-#                 escalate($id);
-#             }
+                # if this particular notification method was successful (e.g. email)
+                # delete it from the tmp_active table
+                # but first retrieve the incident_id which created this notification
+                my $incident_id = getIncidentIDfromNotificationID($id);
+                deleteFromActive($id);
+
+                 # if the method is flagged as ACKable then additionally remove it from the status
+                 # table (i.e. Voicealert)
+                 if (notificationAcknowledgable($id))
+                 {
+                     # TODO feedback acknowledgement to nagios
+                     deleteFromStati($id);
+                     deleteFromEscalations($incident_id);
+                 }
+    #             else
+    #             {
+    #                 # pass to escalator
+    #                 debug("The ACK flag is not set for this method: internally escalating $id");
+    #                 escalate($id);
+    #             }
+            }
         }
 
     }}
@@ -820,7 +824,7 @@ sub prepareNotification
 {
 	my ($incident_id, $user, $method, $short_cmd, $dest, $from, $id,
 	$datetime, $check_type, $status,
-	$notification_type, $host, $host_alias, $host_address, $service, $output, $rule) = @_;
+	$notification_type, $host, $host_alias, $host_address, $service, $output, $rule, $nodelay) = @_;
 
 	# start of the notification
 	my $start = time();
@@ -870,7 +874,7 @@ sub prepareNotification
 
     # if there is a configured delay, add it to the start time
     my $delay = $conf->{notifier}->{delay};
-    $delay = 0 unless defined($delay);
+    $delay = 0 unless (defined($delay) and not defined($nodelay));
 
 
 	# insert the command into our active notification list
@@ -890,6 +894,16 @@ sub deleteFromActive
 
     my $query = 'delete from tmp_active';
     $query .= " where notify_id=$id" if $id;
+
+    updateDB($query);
+}
+
+sub deleteFromCommands
+{
+    my ($id) = @_;
+
+    my $query = 'delete from tmp_commands';
+    $query .= " where external_id=$id" if $id;
 
     updateDB($query);
 }
