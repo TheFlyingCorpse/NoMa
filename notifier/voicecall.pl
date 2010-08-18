@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 # vim:expandtab:ts=8
-# $Id: version 1.0$
 
 =pod
 
@@ -66,13 +65,17 @@ Originates a call using the asterisk manager interface
 
 Number to call
 
+=item   B<--starface>
+
+Use Starface mode (for connection to a Starface PBX)
+
 =item   B<--context>
 
-asterisk context (default nagios)
+asterisk context (default nagios (voicealert for Starface))
 
 =item   B<--channel>
 
-asterisk channel (default mISDN/g:extern)
+asterisk channel (default mISDN/g:extern (Srx/g31 for Starface))
 
 =item   B<--suffix>
 
@@ -82,13 +85,21 @@ optional asterisk channel suffix (default blank)
 
 optional asterisk call ID (default random)
 
+=item   B<--caller>
+
+optional outgoing call ID (default chosen by PBX)
+
+=item   B<--calltimeout>
+
+optional timeout for outgoing call
+
 =item   B<--user>
 
-user for the asterisk manager interface (default nagios)
+user for the asterisk manager interface (default nagios (asterisk for Starface))
 
 =item   B<--pass>
 
-password for the asterisk manager interface (default nagios)
+password for the asterisk manager interface (default nagios (asterisk for Starface))
 
 =item   B<--port>
 
@@ -110,6 +121,14 @@ the name of the service from nagios used for acknowledgements (default blank)
 
 the name of the contact from nagios used for acknowledgements (default blank)
 
+=item   B<--message>
+
+the message to read out (defaults to stdin)
+
+=item   B<--comment>
+
+custom comment for nagios (default blank)
+
 =item   B<--timeout>
 
 how long to wait for the connection (default 30)
@@ -122,10 +141,23 @@ verbose messages to stderr
 
 =head1 DESCRIPTION
 
-This script is used to originate an outgoing call with asterisk using the
-management interface (TCP/5038).  The message should be piped to stdin.  
+This script is used to originate an outgoing call with asterisk or a Starface PBX
+using the management interface (TCP/5038).  The message should be piped to stdin or
+passed with the message parameter.  
 It requires a valid user to be configured for the manager...
 
+FOR STARFACE:
+
+In order to work a module needs to be installed in the Starface.
+A global include must be set under "Extended Settings,Macros,Global Includes"
+
+=begin text
+
+#include /etc/asterisk/dialplan/voicealert.conf
+
+=end text
+
+FOR ASTERISK:
 In order to work a user need to be configured in /etc/asterisk/manager.conf
 e.g.
 
@@ -184,6 +216,8 @@ exten => 4,n,UserEvent(end)
 
 =head1 HISTORY
 
+v1.5 Unified version
+v1.4 Customization for Starface
 v1.4 added timeouts
 v1.3 Extended documentation
 v1.2 Feedback via User Events
@@ -214,14 +248,20 @@ my $number = undef;
 my $verbose = undef;
 my $asterisk = "localhost";
 my $port = "5038";
-my $user = "nagios";
-my $pass = "nagios";
-my $context = "nagios";
-my $channel = "mISDN/g:extern";
+my $starface = undef;
+
+my $user = undef;
+my $pass = undef;
+my $context = undef;
+my $exten = "s";
+my $channel = undef;
+my $call_timeout = 30;
 my $suffix = "";
+my $caller = undef;
 my $contact = "Asterisk";
+my $comment = "";
 my $callid = int(rand(10**9));
-my $msg = "";
+my $msg = undef;
 our $sock = undef;
 
 # check the command line options
@@ -231,6 +271,7 @@ GetOptions('help|?' => \$help,
            't|timeout=i' => \$tout,
            'n|number=s' => \$number,
            'v|verbose' => \$verbose,
+           'starface' => \$starface,
            'context=s' => \$context,
            'user=s' => \$user,
            'pass=s' => \$pass,
@@ -239,19 +280,38 @@ GetOptions('help|?' => \$help,
            'h|host=s' => \$host,
            's|service=s' => \$service,
            'c|contact=s' => \$contact,
+           'message=s' => \$msg,
+           'comment=s' => \$comment,
            'C|channel=s' => \$channel,
+           'caller=s' => \$caller,
            'suffix=s' => \$suffix,
            'callid=s' => \$callid,
+           'calltimeout=i' => \$call_timeout,
+           'e|exten=s' => \$exten,
            'w|warn|warning=i' => \$warning,
            # 'c|crit|critical=i' => \$critical); # c option removed for backwards compatibility
            'crit|critical=i' => \$critical);
+
+if ($starface or ($scriptname eq 'voicecall_starface.pl'))
+{
+    $user = "asterisk" if not defined($user);
+    $pass = "asterisk" if not defined($pass);
+    $context = "voicealert" if not defined($context);
+    $channel = "Srx/g31" if not defined($channel);
+} else {
+    $user = "nagios" if not defined($user);
+    $pass = "nagios" if not defined($pass);
+    $context = "nagios" if not defined($context);
+    $channel = "mISDN/g:extern" if not defined($channel);
+}
+
 
 # if ($#ARGV!=0) {$help=1;} # wrong number of command line options
 # pod2usage( -verbose => 99, -sections => "NAME|COPYRIGHT|SYNOPSIS|OPTIONS") if $help;
 pod2usage(1) if $help;
 if ($version)
 {
-        print_revision($scriptname, '$Revision: 1.0$') if $version;
+        print_revision($scriptname, '1.5') if $version;
         exit 0;
 }
 
@@ -264,24 +324,46 @@ my ($exitcode, $exitmsg) = ('CRITICAL', "Timeout in notification script");
 $SIG{'ALRM'} = sub { nagexit($exitcode, $exitmsg) };
 alarm($tout);
 
-while (<>) {
-        $msg .= $_;
+unless ($msg)
+{
+    while (<>) {
+            $msg .= $_;
+    }
 }
 
 $msg =~ s/\n//g; # remove line breaks 
 $msg =~ s/([^0-9a-zA-Z \\]|\\[^n])//g; # remove unspoken characters (except for "\n")
 $msg =~ s/\\n/<break \/>/g; # replaces all occurrences of the string "\n" with a sentence break
+$msg =~ s/\_/<break \/>/g; # replaces all occurrences of the string "_" with a sentence break
 
 
 $sock = connect_am($asterisk, $port, $user, $pass) or nagexit('CRITICAL', "Connect failed");
 
 print STDERR "connect succeeded\n" if $verbose;
 
+if (( $channel ne '' ) and (!( $channel =~ /\/$/ ))) {
+        $channel .= '/';
+}
 
 
-send_am("Originate", ("Channel: $channel/$number$suffix", "Context: $context", "Callerid: Nagios_NoMa", "Exten: s", "Priority: 1",
-                       "Variable: HOST=$host", "Variable: SVC=$service", "Variable: CONTACT=$contact", 
-                       "Variable: MSG=$msg", "Variable: ID=$callid", "Timeout: 30000"));
+my @originate = (   "Channel: $channel$number$suffix",
+                    "Timeout: ".eval($call_timeout*1000),
+                    "Context: $context",
+                    "Exten: $exten",
+                    "Priority: 1",
+                    "Variable: HOST=".urlize($host),
+                    "Variable: SVC=".urlize($service),
+                    "Variable: CONTACT=".urlize($contact),
+                    "Variable: ID=$callid",
+                    "Variable: MSG=$msg",
+                    "Variable: PHONENUMBER=$number",
+                    "Variable: CUSTOMCOMMENT=$comment");
+
+if ( defined($caller) ) {
+        push (@originate, "CallerID: $caller");
+}
+
+send_am("Originate", @originate);
 
 
 my @reply = read_am();
@@ -299,7 +381,6 @@ if ($exitcode eq 'CRITICAL') { nagexit($exitcode, $exitmsg); }
 print STDERR "waiting for user event\n" if $verbose;
 
 # wait for the user event from asterisk; we set an alarm timeout in case user events are disabled
-# or the 
 
 # reset the timeout
 alarm($tout);
@@ -327,8 +408,14 @@ send_am("Logoff");
 nagexit($exitcode, $exitmsg);
 
 
+sub urlize {
+        my $url = shift;
 
+        $url =~ s/ /+/g;
+        $url =~ s/([^A-Za-z0-9+])/sprintf("%%%02X", ord($1))/seg;
 
+        return $url;
+}
 
 sub nagexit($$) {
         my $errlevel = shift;

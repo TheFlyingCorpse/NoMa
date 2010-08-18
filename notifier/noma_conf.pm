@@ -47,8 +47,9 @@ sub conf {
 		notifier => {
 			maxAttempts		=> '4',		# how often we retry a notification before giving up
 			timeToWait		=> '60',	# how many seconds to wait before retries
-			delay			=> 0,	    # delay this number of seconds (useful for bundling)
+			delay			=> 0,	    # delay notifications this number of seconds (for bundling)
 			bundle			=> 0,       # set to 1 to bundle multiple alerts into a single notification
+			ackPipe			=> '/var/log/nagios/rw/nagios.cmd',     #
 		},
 
 		# escalation settings
@@ -72,12 +73,17 @@ sub conf {
 			channel 		=> 'Srx/g31',		# for standard Starface
 			#channel			=> ['Srx/g31', 'Srx/g31'],	# for standard Starface (array if more than one server, same order as servers above)
 			#channel		=> 'SIP',		# for SIP
+            #international_prefix   => '',    # Replace + with this prefix. Defaults to 00 if not defined
 			check_command		=> '/usr/local/icinga/libexec/check_snmp -H $server -u $channel -l Starface -R "ISDN Channels: OK:1" -t 1 -o .1.3.6.1.4.1.32354.1.2.999.4.1.2.9.98.117.108.107.99.104.101.99.107.1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
             suffix          => '',          # channel suffix
 			message	=> {
 				header		=> 'this is a message from nagios ',				# header for all alerts
 				host		=> 'the host $host is $status',					# host message
 				service		=> 'the service $service on host $host is status $status',	# service message
+			},
+			bundled_message	=> {
+				header		=> 'this is a message from nagios ',				# header for all alerts
+				host		=> 'there are $count alerts. $output.',			# all messages
 			},
 		},
 

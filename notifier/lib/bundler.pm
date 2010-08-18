@@ -112,9 +112,11 @@ sub sendNotifications
             foreach my $cmd (keys %$uref)
             {
                 # only bundle if more than 1 alert for a single destination is outstanding
-                if ($recipients{$user}{$cmd}{count} < 2)
+                next unless defined($recipients{$user}{$cmd}{count});
+		if ($recipients{$user}{$cmd}{count} < 2 or $cmd ne 'voicecall')
                 {
                     #
+		    debug(" ---> Single alert ($cmd)\n");
                     $param = sprintf(
                 "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                         $recipients{$user}{$cmd}{from_user},
@@ -139,6 +141,7 @@ sub sendNotifications
                 else
                 {
 
+	    debug(" ---> Bundle alert\n");
                 # create a new notify ID for this bundle
                 my $notify_id = unique_id();
 
@@ -148,7 +151,7 @@ sub sendNotifications
                 setProgressFlag(@tmp);
 
 
-                $recipients{$user}{$cmd}{multi_message} = $recipients{$user}{$cmd}{count}." alerts: ".$recipients{$user}{$cmd}{multi_message};
+                # $recipients{$user}{$cmd}{multi_message} = $recipients{$user}{$cmd}{count}." alerts: ".$recipients{$user}{$cmd}{multi_message};
 
                 my $now = time();
                 # create a fake command
@@ -159,7 +162,7 @@ sub sendNotifications
                     'multiple alerts',
                     '127.0.0.1',
                     'nosvc',
-                    'h',
+                    's',
                     'WARNING',
                     $now,
                     'PROBLEM',
@@ -173,17 +176,18 @@ sub sendNotifications
                 # now create the actual alert
                 
                 $param = sprintf(
-                    "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                    "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                     $recipients{$user}{$cmd}{from_user},
                     $user,
                     'PROBLEM',
                     $now,
                     'WARNING', # TODO this may be wrong
-                    'h',
+                    's',
                     'multiple alerts',
                     'multiple alerts',
                     '127.0.0.1',
-                    $recipients{$user}{$cmd}{multi_message});
+                    $recipients{$user}{$cmd}{multi_message},
+                    $recipients{$user}{$cmd}{count});
 
                 my $start = time(); # what should the time be? earliest or latest?
                 # queue notification (concat notify_id '/'), "There are count messages: " + message
@@ -274,6 +278,7 @@ sub unbundle
 
     my %dbResult = queryDB("select notify_id from tmp_active where bundled=\"".$bunid."\"");
     updateDB("update tmp_active set bundled=\"0\" where bundled=\"".$bunid."\"");
+    updateDB("delete from tmp_commands where external_id=\"".$bunid."\"");
 
     foreach my $key (keys %dbResult)
     {

@@ -87,6 +87,7 @@ my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
 my $output = $ARGV[9];
 my $service = '';
+my $count = '';
 
 $service = $ARGV[10] if ($numArgs == 11);
 
@@ -94,7 +95,9 @@ $service = $ARGV[10] if ($numArgs == 11);
 my $message = $conf->{voicecall}->{message}->{header};
 
 # ensure the number contains only digits
-$to =~ s/\+/00/g;
+$int_prefix = "00";
+$int_prefix =  $conf->{voicecall}->{international_prefix} if (defined($conf->{voicecall}->{international_prefix}));
+$to =~ s/\+/$int_prefix/g;
 $to =~ s/[^\d]//g;
 
 debugLog("$to\t$host\t$service\t$check_type\t$status\n");
@@ -105,7 +108,11 @@ my $ret_str;
 my $asterisk = selectAppliance($conf->{voicecall}->{server}, $conf->{voicecall}->{channel}, $conf->{voicecall}->{check_command});
 my $scriptParams = "--number $to --callid $unique_id --host \"$host\" $asterisk";
 
-if ($service eq '') {
+if ($host eq 'multiple alerts') {
+	# bundled alerts
+        $message .= $conf->{voicecall}->{bundled_message}->{host};
+	$count = $service;
+} elsif ($service eq '') {
         $message .= $conf->{voicecall}->{message}->{host};
 } else {
         $message .= $conf->{voicecall}->{message}->{service};

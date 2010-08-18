@@ -144,7 +144,8 @@ sub spawnCommandPipeThread
 
     while ( $sel->can_read() )
     {
-        sysread PIPE, $input, 1024;
+        # sysread PIPE, $input, 1024;
+        $input = readline(*PIPE);
         $queue->enqueue($input);
     }
 

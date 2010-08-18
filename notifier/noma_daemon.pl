@@ -369,7 +369,11 @@ do
 
             unless ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
             {
-                next if (scalar(@ids_all) < 1);
+                if (scalar(@ids_all) < 1)
+		{
+			deleteFromCommands($cmdh{external_id});
+			next;
+		}
             }
 
             # We need to split the rules into 2 types
@@ -407,6 +411,7 @@ do
                         debug('  -> Clearing counter');
                         clearNotificationCounter($cmdh{host}, $cmdh{service});
                         clearEscalationCounter($cmdh{host}, $cmdh{service});
+                        deleteFromActiveByName($cmdh{host}, $cmdh{service});
                     }
                     else
                     {
@@ -492,7 +497,7 @@ do
                     }
 
                 }
-                else
+                elsif ($cmdh{status} ne 'OK' and $cmdh{status} ne 'UP')
                 {
                     debug("creating a new escalation for rule $esc_rule");
                     # create status entry
@@ -622,6 +627,7 @@ do
                         }
 
                         deleteFromActive($id);
+                        deleteFromCommands($id);
 
                     }
                     else
@@ -666,12 +672,14 @@ do
                 # but first retrieve the incident_id which created this notification
                 my $incident_id = getIncidentIDfromNotificationID($id);
                 deleteFromActive($id);
+                deleteFromCommands($id);
 
                  # if the method is flagged as ACKable then additionally remove it from the status
                  # table (i.e. Voicealert)
                  if (notificationAcknowledgable($id))
                  {
-                     # TODO feedback acknowledgement to nagios
+                     # feedback acknowledgement to nagios
+                     sendAckToPipe($incident_id);
                      deleteFromStati($id);
                      deleteFromEscalations($incident_id);
                  }
@@ -697,7 +705,8 @@ do
     escalate($cmdq, $conf->{escalator});
 
 
-
+    # remove any orphans from the tmp_command table
+    deleteOrphanCommands();
     # sleep for a bit
     select( undef, undef, undef, 0.025 );
     # sleep 1;
@@ -785,6 +794,8 @@ sub parseCommand
 
         $suppressionHash{$1} = time();
         createLog('1', unique_id(), unique_id(), 0, '(internal)','OK','localhost','NoMa','(none)', '0',$2, "All $1 alerts have been suppressed by $2");
+	deleteAllFromActive();
+	deleteAllFromCommands();
     }
 
     return undef;
@@ -893,20 +904,62 @@ sub deleteFromActive
 {
     my ($id) = @_;
 
-    my $query = 'delete from tmp_active';
-    $query .= " where notify_id=$id" if $id;
+    return if (!$id);
+    my $query = "delete from tmp_active where notify_id=$id";
 
     updateDB($query);
+}
+
+sub deleteAllFromActive
+{
+    my $query = "delete from tmp_active";
+    updateDB($query);
+}
+
+sub deleteFromActiveByName
+{
+    my ($host, $service) = @_;
+
+    my $query = 'select a.notify_id as notify_id from tmp_active as a left join notification_logs as l on a.notify_id=l.unique_id where l.host=\''.$host.'\' and l.service=\''.$service.'\'';
+    my %dbResult = queryDB($query);
+    foreach my $index (keys %dbResult)
+    {
+        deleteFromActive($dbResult{$index}{notify_id});
+    }
+
 }
 
 sub deleteFromCommands
 {
     my ($id) = @_;
+    my $query;
+    my %dbResult;
 
-    my $query = 'delete from tmp_commands';
-    $query .= " where external_id=$id" if $id;
+    return if (!$id);
+
+    $query = 'select count(a.notify_id) as count from tmp_active as a left join notification_logs as l on a.notify_id=l.unique_id where l.incident_id=(select incident_id from notification_logs where unique_id='.$id.')';
+    %dbResult = queryDB($query);
+
+    if(!($dbResult{0}->{count}>0))
+    {
+      $query = "delete from tmp_commands where external_id in (select incident_id from notification_logs where unique_id=$id)";
+    }
 
     updateDB($query);
+}
+
+
+
+sub deleteAllFromCommands
+{
+    my $query = "delete from tmp_commands";
+    updateDB($query);
+}
+
+sub deleteOrphanCommands
+{
+    my $query = "delete from tmp_commands where external_id not in (select distinct incident_id from notification_logs right join tmp_active on notification_logs.unique_id=tmp_active.notify_id)";
+    updateDB($query, 1);
 }
 
 
@@ -927,6 +980,40 @@ sub notificationAcknowledgable
     return 1 if (defined($ackable) && ($ackable>0));
     debug("notification not ackable");
     return 0;
+}
+
+sub sendAckToPipe
+{
+    my ($id) = @_;
+
+    my $file = $conf->{notifier}->{ackPipe};
+    return unless (defined($file) and $file ne '');
+    my $ackstr;
+    my $host;
+    my $svc;
+    my $contact;
+
+    my $query = "select host,service,user from notification_logs where incident_id=$id";
+    my %dbResult = queryDB($query);
+
+    $host = $dbResult{0}->{host};
+    $svc = $dbResult{0}->{service};
+    $contact = $dbResult{0}->{user};
+    if ($svc eq '')
+    {
+        $ackstr = "[".time()."] ACKNOWLEDGE_HOST_PROBLEM;$host;1;1;0;NoMa;Acknowledged by $contact\n";
+    } else {
+        $ackstr = "[".time()."] ACKNOWLEDGE_SVC_PROBLEM;$host;$svc;1;1;0;NoMa;Acknowledged by $contact\n";
+    }
+
+    if (!sysopen(PIPE, $file, O_WRONLY | O_APPEND | O_NONBLOCK))
+    {
+	debug("Failed to open Ack Pipe $file");
+	return;
+    }
+
+    debug("Writing $ackstr to $file");
+    syswrite(PIPE,$ackstr);
 }
 
 sub getNextMethod

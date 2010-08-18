@@ -72,10 +72,10 @@ sub queryDB
 # TODO: implement cacheing
 sub updateDB
 {
-    my ($sql) = @_;
+    my ($sql, $nolog) = @_;
     my $cache;
 
-    if ( !defined( queryDB($sql) ) )
+    if ( !defined( queryDB($sql, undef, $nolog) ) )
     {
 
 	debug('Failed to query DB - serious error');
