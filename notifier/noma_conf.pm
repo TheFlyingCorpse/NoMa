@@ -55,7 +55,7 @@ sub conf {
 		# escalation settings
 		escalator => {
 			internalEscalation	=> 0,		# GLOBAL FLAG: NoMa handles notification escalations
-								# and ignores further alerts (including OKs)
+								# and ignores further alerts
 								# setting to 0 will enable per rule settings ("let notifier handle")
 			timeToWait		=> '300',       # wait 5 mins before escalating to next rule
 			stopAfter		=> '5400',        # stop escalating after 90 minutes

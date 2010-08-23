@@ -50,7 +50,7 @@ mysql> describe tmp_active;
 | rule        | int(11)      | YES  |     | 0       |                | which rule generated this notification
 | progress    | tinyint(1)   | YES  |     | 0       |                | is a command currently being run? 1=yes (to avoid double notifications)
 | esc_flag    | tinyint(1)   | YES  |     | 0       |                | is the internal escalator manging this command?
-| bundled     | int(11)      | YES  |     | 0       |                | >0 notification is bundled (with this ID) -1 is the bundle itself!
+| bundled     | bigint(20)   | YES  |     | 0       |                | >0 notification is bundled (with this ID) -1 is the bundle itself!
 | stime       | int(11)      | YES  |     | 0       |                | the unix time after which this command should be run (will initially be set to tmp_commands.stime + $$config{delay})
 +-------------+--------------+------+-----+---------+----------------+
 
@@ -61,6 +61,25 @@ tmp_commands
 -------------
 
 The incoming command (alert) as received via a pipe / socket.  The error checking is limited.
+
+mysql> describe tmp_commands;
++-------------------+---------------+------+-----+---------+----------------+---
+| Field             | Type          | Null | Key | Default | Extra          |
++-------------------+---------------+------+-----+---------+----------------+---
+| id                | int(11)       | NO   | PRI | NULL    | auto_increment | id
+| operation         | varchar(255)  | YES  |     | NULL    |                | notification or escalation
+| external_id       | bigint(20)    | NO   |     | NULL    |                | unique for this command
+| host              | varchar(255)  | YES  |     | NULL    |                | the following fields are as received by NoMa
+| host_alias        | varchar(255)  | YES  |     | NULL    |                |
+| host_address      | varchar(255)  | YES  |     | NULL    |                |
+| service           | varchar(255)  | YES  |     | NULL    |                |
+| check_type        | varchar(255)  | YES  |     | NULL    |                |
+| status            | varchar(255)  | YES  |     | NULL    |                |
+| stime             | int(11)       | YES  |     | 0       |                |
+| notification_type | varchar(255)  | YES  |     | NULL    |                | 
+| output            | varchar(4096) | YES  |     | NULL    |                |
++-------------------+---------------+------+-----+---------+----------------+
+
 
 
 time_periods / time_slices / timezones
@@ -78,3 +97,60 @@ notification_stati
 -------------------
 
 A counter for how often a host/service pair has generated an alert.
+
+
+escalation_stati
+-------------------
+
+A counter for internal escalations
+
+
+notifications
+--------------
+
+The individual rules; more specifically the first stage
+of the rule.
+
+notifications_to...
+---------------------
+
+Mapping tables
+
+escalations_contacts and escalations_contacts_to...
+----------------------------------------------------
+
+Similar to notifications, but for the escalation.
+
+notification_methods
+--------------------
+
+Configures the individual methods.  It is possible to chain the methods with
+the on_fail field.  E.g. "Voice + E-Mail fallback" tries the command voicecall
+first then falls back to id 1 (E-Mail) - but note this can only work with
+methods that are ack_able and return a non-OK status if they fail.
+
+
+
+mysql> describe notification_methods;
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| id            | int(11)      | NO   | PRI | NULL    | auto_increment |
+| method        | varchar(255) | NO   |     | NULL    |                |
+| command       | varchar(255) | NO   |     | NULL    |                |
+| contact_field | varchar(255) | NO   |     | NULL    |                |
+| from          | varchar(255) | NO   |     | NULL    |                |
+| on_fail       | int(11)      | NO   |     | NULL    |                |
+| ack_able      | tinyint(1)   | NO   |     | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
+
+mysql> select * from notification_methods;
++----+-------------------------+-----------+---------------+-----------------+---------+----------+
+| id | method                  | command   | contact_field | from            | on_fail | ack_able |
++----+-------------------------+-----------+---------------+-----------------+---------+----------+
+|  1 | E-Mail                  | sendemail | email         | noma@netways.de |       0 |        0 |
+|  2 | SMS                     | sendsms   | mobile        |                 |       0 |        0 |
+|  3 | Voice                   | voicecall | phone         |                 |       0 |        1 |
+|  4 | Voice + E-Mail fallback | voicecall | phone         |                 |       1 |        1 |
+|  5 | Voice + SMS fallback    | voicecall | phone         |                 |       2 |        1 |
++----+-------------------------+-----------+---------------+-----------------+---------+----------+

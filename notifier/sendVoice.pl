@@ -62,6 +62,7 @@ my $scriptPath = $FindBin::Bin;
 my $whoami = $FindBin::Script;
 use noma_conf;
 my $conf = conf();
+my $scriptName = 'voicecall.pl';
 
 
 #debugLog("argv.... ". Dumper(\$ARGV));
@@ -79,7 +80,7 @@ my $debug = $conf->{debug}->{voice};
 my $from = $ARGV[0];
 my $to = $ARGV[1];
 my $check_type = $ARGV[2];	# we ignore this
-my $datetime = $ARGV[3];
+my $datetimes = $ARGV[3];
 my $status = $ARGV[4];
 my $notification_type = $ARGV[5];
 my $host = $ARGV[6];
@@ -88,6 +89,7 @@ my $host_address = $ARGV[8];
 my $output = $ARGV[9];
 my $service = '';
 my $count = '';
+my $datetime = localtime($datetimes);
 
 $service = $ARGV[10] if ($numArgs == 11);
 
@@ -95,14 +97,14 @@ $service = $ARGV[10] if ($numArgs == 11);
 my $message = $conf->{voicecall}->{message}->{header};
 
 # ensure the number contains only digits
-$int_prefix = "00";
+my $int_prefix = "00";
 $int_prefix =  $conf->{voicecall}->{international_prefix} if (defined($conf->{voicecall}->{international_prefix}));
 $to =~ s/\+/$int_prefix/g;
 $to =~ s/[^\d]//g;
 
 debugLog("$to\t$host\t$service\t$check_type\t$status\n");
 
-my $unique_id = md5_hex ( $host . "_" . $service . "_" . $datetime . "_" . $to );
+my $unique_id = md5_hex ( $host . "_" . $service . "_" . $datetimes . "_" . $to );
 my $ret_str;
 
 my $asterisk = selectAppliance($conf->{voicecall}->{server}, $conf->{voicecall}->{channel}, $conf->{voicecall}->{check_command});
@@ -124,10 +126,9 @@ if (defined($conf->{voicecall}->{suffix}) and $conf->{voicecall}->{suffix} ne ''
 	$scriptParams .= ' --suffix '.$conf->{voicecall}->{suffix};
 }
 
-my $scriptName = 'voicecall.pl';
 if (defined($conf->{voicecall}->{starface}) and $conf->{voicecall}->{starface} == '1')
 {
-	$scriptName = 'voicecall_starface.pl';
+	$scriptParams .= ' --starface';
 }
 
 $message =~ s/(\$\w+)/$1/gee;
