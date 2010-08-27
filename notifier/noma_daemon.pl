@@ -424,7 +424,8 @@ do
                     # notification returned 0
                     if ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
                     {
-                        debug('Received recovery for a problem we never saw - ignoring');
+                        debug('Received recovery for a problem we never saw - will try to match against notification no. 1');
+                        $notificationCounter = 1;
                     }
                     else
                     {
