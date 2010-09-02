@@ -959,7 +959,7 @@ sub deleteAllFromCommands
 
 sub deleteOrphanCommands
 {
-    my $query = "delete from tmp_commands where external_id not in (select distinct incident_id from notification_logs right join tmp_active on notification_logs.unique_id=tmp_active.notify_id)";
+    my $query = "delete from tmp_commands where external_id not in (select distinct incident_id from notification_logs right join tmp_active on notification_logs.unique_id=tmp_active.notify_id union select distinct incident_id from escalation_stati)";
     updateDB($query, 1);
 }
 
