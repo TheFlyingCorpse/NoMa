@@ -41,6 +41,7 @@ sub conf {
 			#sendsms			=> '/usr/local/icinga/noma/notifier/sendSMSfinder.pl',		# if you use iMultitech iSMS/SMSfinder
 			voicecall		=> '/usr/local/nagios/noma/notifier/sendVoice.pl',
 			dummy			=> '/bin/true',
+            nagios          => '/usr/local/nagios/noma/notifier/sendToNagios.pl',
 		},
 		
 		# notifier settings
