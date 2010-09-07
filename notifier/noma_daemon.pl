@@ -371,7 +371,7 @@ do
             {
                 if (scalar(@ids_all) < 1)
 		{
-			deleteFromCommands($cmdh{external_id});
+			# deleteFromCommands($cmdh{external_id});
 			next;
 		}
             }
@@ -628,7 +628,7 @@ do
                         }
 
                         deleteFromActive($id);
-                        deleteFromCommands($id);
+                        # deleteFromCommands($id);
 
                     }
                     else
@@ -673,7 +673,7 @@ do
                 # but first retrieve the incident_id which created this notification
                 my $incident_id = getIncidentIDfromNotificationID($id);
                 deleteFromActive($id);
-                deleteFromCommands($id);
+                # deleteFromCommands($id);
 
                  # if the method is flagged as ACKable then additionally remove it from the status
                  # table (i.e. Voicealert)
@@ -796,6 +796,7 @@ sub parseCommand
         $suppressionHash{$1} = time();
         createLog('1', unique_id(), unique_id(), 0, '(internal)','OK','localhost','NoMa','(none)', '0',$2, "All $1 alerts have been suppressed by $2");
 	deleteAllFromActive();
+	deleteAllFromEscalations();
 	deleteAllFromCommands();
     }
 
@@ -914,6 +915,12 @@ sub deleteFromActive
 sub deleteAllFromActive
 {
     my $query = "delete from tmp_active";
+    updateDB($query);
+}
+
+sub deleteAllFromEscalations
+{
+    my $query = "delete from escalation_stati";
     updateDB($query);
 }
 
