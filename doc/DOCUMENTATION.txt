@@ -273,7 +273,7 @@ in the NoMa sub directory 'config'.
 
    * 'preview_max_height'
                       - maximum height (in pixels) of preview area when
-			scrolling is enabled
+            scrolling is enabled
 
 5. Setting up NDO access for host and service previews
    NDO-database credentials are set via the array '$dbNDO'.
@@ -315,7 +315,7 @@ in the NoMa sub directory 'config'.
    Viewing is set up via '$statuspage':
 
    * 'admin_only'      -   set this to true to grant viewing the status page to
-			   admin users only
+               admin users only
 
 
 4.2 Configuring the notifier
@@ -331,36 +331,36 @@ The notifier's configuration parameters are described below.
 -----------------------------------------------
 
 host        - the database host; example: 'localhost'
-database	- the database name; example: 'noma'
-user		- the database user; example: 'noma_user'
-password	- the database password; example 'noma_secret'
+database    - the database name; example: 'noma'
+user        - the database user; example: 'noma_user'
+password    - the database password; example 'noma_secret'
 
 
 4.2.3 log - the logging setup for the notifier
 -----------------------------------------------
 
-pluginOutput		- log plugin output (0 = disabled | 1 = enabled)
-hostServiceOutput	- log host- and service output (0 = disabled | 1 = enabled)
-delimiter			- delimiter to separate logging strings; example: ' | '
+pluginOutput        - log plugin output (0 = disabled | 1 = enabled)
+hostServiceOutput   - log host- and service output (0 = disabled | 1 = enabled)
+delimiter           - delimiter to separate logging strings; example: ' | '
 
 
 4.2.4 path - the path setup for the notifier
 ---------------------------------------------
 
-cache			- not used
-pidfile			- stores the PID of the running process
+cache           - not used
+pidfile         - stores the PID of the running process
 
 
 4.2.5 input - the input methods for the notifier
 -------------------------------------------------
 
-pipeEnabled		- enables the pipe method
-pipePath		- the pipe itself
-socketEnabled		- enables unix sockets
-socketAddress		- address of the socket. N.B. there is no security -
-			  do not allow access to non-trusted networks
-socketPort		- TCP port to listen on
-socketMaxConns		- how many connections to spawn (max. simultaneous connects)
+pipeEnabled     - enables the pipe method
+pipePath        - the pipe itself
+socketEnabled       - enables unix sockets
+socketAddress       - address of the socket. N.B. there is no security -
+              do not allow access to non-trusted networks
+socketPort      - TCP port to listen on
+socketMaxConns      - how many connections to spawn (max. simultaneous connects)
 
 
 4.2.6 command - the command methods for the notifier
@@ -377,12 +377,12 @@ Most notifier commands always return success.  The big exception is voicecall, w
 success only if a call has been confirmed by the user with a keypress (can be overridden with
 the field ack_able in the notification_methods table).
 
-maxAttempts		- how often we try a notification before giving up
-timeToWait		- how many seconds to wait before retries
-delay			- delay notifications this number of seconds (for bundling)
-bundle			- set to 1 to bundle multiple voice alerts into a single notification
-ackPipe			- on receipt of an acknowledgement, this file will be written to using
-			  the standard Nagios command format.
+maxAttempts     - how often we try a notification before giving up
+timeToWait      - how many seconds to wait before retries
+delay           - delay notifications this number of seconds (for bundling)
+bundle          - set to 1 to bundle multiple voice alerts into a single notification
+ackPipe         - on receipt of an acknowledgement, this file will be written to using
+              the standard Nagios command format.
 
 
 4.2.7.1 bundling
@@ -405,10 +405,10 @@ received.  However some alerts only occur once but still need to be escalated.
 
 The internal escalator generates "fake alerts" which simulate incoming alerts.
 
-internalEscalation	- a global flag that causes all rules to escalate internally.  Setting
-			  this to 0 will enable per rule settings ("let notifier handle")
-timeToWait		- wait this number of seconds before escalating to the next rule
-stopAfter		- stop escalating after this number of seconds
+internalEscalation  - a global flag that causes all rules to escalate internally.  Setting
+              this to 0 will enable per rule settings ("let notifier handle")
+timeToWait      - wait this number of seconds before escalating to the next rule
+stopAfter       - stop escalating after this number of seconds
 
 Note that alerts which are never cleared with an OK will continue escalating until the "stopAfter"
 limit is reached and will stay in the escalation_stati table until they are deleted - you can
@@ -447,17 +447,17 @@ These provide various debugging and logging features.
 The watchdog restarts the daemon if too much memory is used - be careful not to set
 this too low, because pending retries will be lost on a restart.
 
-logging			- enables general debugging
-queries			- log (most) SQL queries
-file			- the file to log to (if unset will log to stdout)
-paramlog		- enable parameter logging
-voice			- enable logging of voice alert errors
-sms			- enable logging of sms alert errors
-daemonize		- forks the notifier into the background (0 = disabled | 1 = enabled)
-watchdogEnabled		- start the watchdog thread (0 = disabled | 1 = enabled)
-watchdogMaxRSS		- restart if the used memory exceeds this value
-watchdogMaxVSS		- restart if total memory (including swapped out) exceeds this value
-watchdogMaxRuntime	- restart after this many seconds
+logging         - enables general debugging
+queries         - log (most) SQL queries
+file            - the file to log to (if unset will log to stdout)
+paramlog        - enable parameter logging
+voice           - enable logging of voice alert errors
+sms         - enable logging of sms alert errors
+daemonize       - forks the notifier into the background (0 = disabled | 1 = enabled)
+watchdogEnabled     - start the watchdog thread (0 = disabled | 1 = enabled)
+watchdogMaxRSS      - restart if the used memory exceeds this value
+watchdogMaxVSS      - restart if total memory (including swapped out) exceeds this value
+watchdogMaxRuntime  - restart after this many seconds
 
 4.3 Configuring Nagios to use NoMa
 -----------------------------------
@@ -501,27 +501,27 @@ The email text can be customized in noma_conf.pm
 
 This notifier provides the following options:
 
-sendmail		- the mail sending binary
+sendmail        - the mail sending binary
 
 Host and service message texts can be individually configured:
 
-subject			- the subject line of the mail
-message			- the message body in utf-8 format
-filename		- the contents of this file will be read into the variable file
+subject         - the subject line of the mail
+message         - the message body in utf-8 format
+filename        - the contents of this file will be read into the variable file
 
 The parameters above can contain the following variables:
-$host			- name of the host generating an alarm
-$service		- name of the service on the host
-$file			- the contents of the file specified in "filename"
-$host_address		- host address as passed to NoMa
-$host_alias		- host alias as passed to NoMa
-$status			- status (WARNING/CRITICAL/OK/UNKNOWN/UNREACHABLE)
-$datetimes		- alert time in unix time format
-$datetime		- alert time converted to local time
-$output			- text output of the alert
-$notification_type	- type (PROBLEM/RECOVERY)
-$from			- mail sender
-$to			- mail recipient
+$host           - name of the host generating an alarm
+$service        - name of the service on the host
+$file           - the contents of the file specified in "filename"
+$host_address       - host address as passed to NoMa
+$host_alias     - host alias as passed to NoMa
+$status         - status (WARNING/CRITICAL/OK/UNKNOWN/UNREACHABLE)
+$datetimes      - alert time in unix time format
+$datetime       - alert time converted to local time
+$output         - text output of the alert
+$notification_type  - type (PROBLEM/RECOVERY)
+$from           - mail sender
+$to         - mail recipient
 
 4.4.2 sendSMS.pl
 -----------------
@@ -542,23 +542,23 @@ See the help text inside the script for further configuration details
 
 In a similar way to the options for sendemail, the following are supported:
 
-return_ack		- feeds acknowledgements back to Nagios or Icinga (the Asterisk normally
-			  takes care of this, but bundled alerts have to be handled by NoMa)
-suppression		- a value in minutes - if NoMa receives the suppression command in the
-			  format SUPPRESSION;method;name_to_log it will suppress any alerts for
-			  the method for this number of minutes.  Typically this is used to prevent
-			  excessive numbers of voicecalls/smses (e.g. the Asterisk/Starface could
-			  be configured to send SUPPRESSION;voicecall;username)
-server			- the PBX (if an array is given then it will try the servers sequentially
-callerID		- outgoing callerid (usually 0 uses the default)
-channel			- the outgoing channel (varies depending on the hardware)
-international_prefix	- what to replace a + sign with in numbers
-suffix			- a channel suffix if required
-bundled_message		- the message to use for bundled alerts. The variable $count is the number of
-			  alerts in the bundle.  N.B. a bundled alert is treated like a host alert
-message			- the texts to be spoken by the Text-to-Speech engine.  "header" is always
-			  read out at the beginning of the message.  Variable substitution is similar
-			  to that for sendEmail.pl
+return_ack      - feeds acknowledgements back to Nagios or Icinga (the Asterisk normally
+              takes care of this, but bundled alerts have to be handled by NoMa)
+suppression     - a value in minutes - if NoMa receives the suppression command in the
+              format SUPPRESSION;method;name_to_log it will suppress any alerts for
+              the method for this number of minutes.  Typically this is used to prevent
+              excessive numbers of voicecalls/smses (e.g. the Asterisk/Starface could
+              be configured to send SUPPRESSION;voicecall;username)
+server          - the PBX (if an array is given then it will try the servers sequentially
+callerID        - outgoing callerid (usually 0 uses the default)
+channel         - the outgoing channel (varies depending on the hardware)
+international_prefix    - what to replace a + sign with in numbers
+suffix          - a channel suffix if required
+bundled_message     - the message to use for bundled alerts. The variable $count is the number of
+              alerts in the bundle.  N.B. a bundled alert is treated like a host alert
+message         - the texts to be spoken by the Text-to-Speech engine.  "header" is always
+              read out at the beginning of the message.  Variable substitution is similar
+              to that for sendEmail.pl
 
 
 5. The Frontend
