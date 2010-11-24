@@ -61,6 +61,7 @@ function getContent () {
 	// init
 	$cols = array (
 		'n.id' => 'NOTIFICATION_RULE',
+		'n.hostgroups_include' => 'HOSTGROUP',
 		'n.hosts_include' => 'HOST',
 		'n.services_include' => 'SERVICE',
 		'n.username' => 'OWNER'
@@ -75,6 +76,7 @@ function getContent () {
 	$templateContent->assign('OVERVIEW_ADD_NEW_NOTIFICATION', OVERVIEW_ADD_NEW_NOTIFICATION);
 	$templateContent->assign('OVERVIEW_HEADING_NOTIFICATION_RULE', OVERVIEW_HEADING_NOTIFICATION_RULE);
 	$templateContent->assign('OVERVIEW_HEADING_ACTIONS', OVERVIEW_HEADING_ACTIONS);
+	$templateContent->assign('OVERVIEW_HEADING_HOSTGROUPS', OVERVIEW_HEADING_HOSTGROUPS);
 	$templateContent->assign('OVERVIEW_HEADING_HOSTS', OVERVIEW_HEADING_HOSTS);
 	$templateContent->assign('OVERVIEW_HEADING_SERVICES', OVERVIEW_HEADING_SERVICES);
 	$templateContent->assign('OVERVIEW_HEADING_OWNER', OVERVIEW_HEADING_OWNER);
@@ -293,6 +295,14 @@ function getContent () {
 			$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_ALT', OVERVIEW_TOGGLE_ACTIVE_ALT_DISABLED);
 			$templateSubContent->assign('OVERVIEW_EDIT_ENTRY_IMG', 'images/spacer.gif');
 			$templateSubContent->assign('OVERVIEW_DELETE_ENTRY_IMG', 'images/spacer.gif');
+		}
+		$data = list($long, $value, $short) = shorten($row['hostgroups_include'] . ' | ' .$row['hostgroups_exclude'], 'overview_hostgroup');
+		$templateSubContent->assign('HOSTGROUPS', $value);
+		if ($short) {
+			$templateSubContent->assign(
+				'HOSTGROUPS_MOUSEOVER',
+				' onmouseover="javascript:showLong(\'&lt;b&gt;+&lt;/b&gt;: ' . $row['hostgroups_include'] . '&lt;br/&gt;&lt;b&gt;-&lt;/b&gt;: ' . $row['hostgroups_exclude'] . '\');" onmouseout="javascript:hideLong();"'
+			);
 		}
 
 		$data = list($long, $value, $short) = shorten($row['hosts_include'] . ' | ' .$row['hosts_exclude'], 'overview_host');

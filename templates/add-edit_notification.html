@@ -7,6 +7,14 @@
 <tr><td colspan="3" height="5"></td></tr>
 <tr class="header"><td colspan="3">{$HEADING_HOSTS_AND_SERVICES}<hr/></td></tr>
 <tr>
+<td>{$ADD_EDIT_INCLUDE_HOSTGROUPS}</td>
+<td><input class="text" name="hostgroups_include" id="hostgroups_include" size="60" value="{$INCLUDE_HOSTGROUPS}"{$ONCHANGE_HOSTGROUPS_INCLUDE}/></td>
+</tr>
+<tr>
+<td>{$ADD_EDIT_EXCLUDE_HOSTGROUPS}</td>
+<td><input class="text" name="hostgroups_exclude" id="hostgroups_exclude" size="60" value="{$EXCLUDE_HOSTGROUPS}"{$ONCHANGE_HOSTGROUPS_EXCLUDE}/></td>
+</tr>
+<tr>
 <td>{$ADD_EDIT_INCLUDE_HOSTS}</td>
 <td>
 <input class="text" name="hosts_include" id="hosts_include" size="60" value="{$INCLUDE_HOSTS}"{$ONCHANGE_HOSTS_INCLUDE}/>

@@ -64,15 +64,31 @@ sub getContacts
 sub generateNotificationList
 {
 
-    my ( $check_type, $notificationHost, $notificationService, %dbResult ) = @_;
+    my ( $check_type, $notificationHost, $notificationService, $notificationHostgroups, %dbResult ) = @_;
 
     my $cnt = 0;
     my %hostList;
     my %serviceList;
-
+    my @hostgroups = split(",",$notificationHostgroups);
     # BEGIN - generate include and exclude lists for hosts and services
     while ( defined( $dbResult{$cnt} ) )
     {
+        # generate hostgroup-include list
+        foreach my $hostgroup(@hostgroups) {
+            if (matchString( $dbResult{$cnt}->{hostgroups_include}, $hostgroup))
+            {
+                 debug( "Hostgroups:: HostIncl: $hostgroup\t" . $dbResult{$cnt}->{id} );
+                 $hostList{ $dbResult{$cnt}->{id} } = 1;
+            }
+
+            # remove hosts to be excluded
+            if (matchString( $dbResult{$cnt}->{hostgroups_exclude}, $hostgroup))
+            {
+                debug( "Hostgroups:HostExcl: $hostgroup\t" . $dbResult{$cnt}->{id} );
+                undef( $hostList{ $dbResult{$cnt}->{id} } )
+                    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
+            }
+        }
 
         # generate host-include list
         if (matchString( $dbResult{$cnt}->{hosts_include}, $notificationHost))

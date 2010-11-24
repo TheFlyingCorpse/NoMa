@@ -160,6 +160,8 @@ CREATE TABLE `notifications` (
   `username` varchar(255) character set latin1 NOT NULL,
   `hosts_include` varchar(255) character set latin1 NOT NULL,
   `hosts_exclude` varchar(255) character set latin1 NOT NULL,
+  `hostgroups_include` varchar(255) character set latin1 NOT NULL,
+  `hostgroups_exclude` varchar(255) character set latin1 NOT NULL,
   `services_include` varchar(255) character set latin1 NOT NULL,
   `services_exclude` varchar(255) character set latin1 NOT NULL,
   `notify_after_tries` varchar(10) character set latin1 NOT NULL default '0',

@@ -105,7 +105,6 @@ class nwTemplate {
 		else return false;
 
 		if (file_exists($file)) {
-
 			if (!($fp = fopen($file, 'r'))) return false;
 			while (!feof($fp)) {
 				if (!($tmp = fread($fp, 1024))) return false; 

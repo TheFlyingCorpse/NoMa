@@ -1,3 +1,8 @@
+1.0.5 -> 1.0.6
+--------------
+* ALTER TABLE `notifications` ADD `hostgroups_include` VARCHAR(255) NOT NULL DEFAULT;
+* ALTER TABLE `notifications` ADD `hostgroups_exclude` VARCHAR(255) NOT NULL DEFAULT;
+
 0.0.5 -> 0.1.0
 ---------------
 * ALTER TABLE `notification_methods` ADD `ack_able` BOOL NOT NULL ;

@@ -101,6 +101,8 @@ define('ADD_EDIT_HEADING_TIME', 'Zeit:');
 define('ADD_EDIT_HEADING_CONTACTS_METHODS', 'Kontakte und Methoden:');
 define('ADD_EDIT_HEADING_NOTIFICATION', 'Benachrichtigungen:');
 define('ADD_EDIT_HEADING_OWNER', 'Besitzer:');
+define('ADD_EDIT_INCLUDE_HOSTGROUPS', 'Einzuschlie&szlig;ende Hostgruppen:');
+define('ADD_EDIT_EXCLUDE_HOSTGROUPS', 'Auszuschlie&szlig;ende Hostgruppen:');
 define('ADD_EDIT_INCLUDE_HOSTS', 'Einzuschlie&szlig;ende Hosts:');
 define('ADD_EDIT_EXCLUDE_HOSTS', 'Auszuschlie&szlig;ende Hosts:');
 define('ADD_EDIT_INCLUDE_SERVICES', 'Einzuschlie&szlig;ende Services:');

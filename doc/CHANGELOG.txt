@@ -62,7 +62,7 @@
 ------
 * removed configuration overrides
 
-current (1.0.5)
+1.0.5
 ----------------
 * added 'filter', 'key_find_user' and 'key_set_user' to ldap authentication and configuration
 * added complex filters which allow filtering by login name
@@ -74,3 +74,9 @@ current (1.0.5)
 * fixed some minor php warnings
 * added default password for nagiosadmin
 * removed logout button from setups w/o authentication
+
+1.0.6 (current)
+----------------
+* added hostgroup include and exclude filter
+* fixed messages containing ';' being truncated
+* updated documentation

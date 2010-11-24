@@ -467,12 +467,12 @@ to your misccommands.cfg or wherever you want to:
 
 define command{
         command_name    host-notify-by-noma
-        command_line    <PATH-TO-NOMA>/notifier/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t $TIMET$
+        command_line    <PATH-TO-NOMA>/notifier/alert_via_noma.pl -c h -s "$HOSTSTATE$" -G "$HOSTGROUPNAMES$" -H "$HOSTNAME$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t $TIMET$
         }
 
 define command{
         command_name    service-notify-by-noma
-        command_line    <PATH-TO-NOMA>/notifier/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t $TIMET$
+        command_line    <PATH-TO-NOMA>/notifier/alert_via_noma.pl -c s -s "$SERVICESTATE$" -G "$HOSTGROUPNAMES$" -H "$HOSTNAME$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t $TIMET$
         }
 
 With the option -p you can force the plugin to use the pipe instead of the unix socket.  You can

@@ -55,7 +55,9 @@ if (empty($p['entity']) || empty($p['filter'])) exit;
 
 // determine table
 switch ($p['entity']) {
-
+	case 'hg':	$column = 'name1';
+				$objecttype_id = 3;
+				break;
 	case 'h':	$column = 'name1';
 				$objecttype_id = 1;
 				break;

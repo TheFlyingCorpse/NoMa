@@ -61,6 +61,8 @@ function addNotification ($p) {
 
 	// prepare data
 	$owner = prepareDBValue($p['owner']);
+	$hostgroups_include = prepareDBValue($p['hostgroups_include']);
+	$hostgroups_exclude = prepareDBValue($p['hostgroups_exclude']);
 	$hosts_include = prepareDBValue($p['hosts_include']);
 	$hosts_exclude = prepareDBValue($p['hosts_exclude']);
 	$services_include = prepareDBValue($p['services_include']);
@@ -84,8 +86,10 @@ function addNotification ($p) {
 	// check whether notification exists
 		$query = sprintf(
 		'select id from notifications
-			where active=0 and username=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\'', 
+			where active=0 and username=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\'',
 		$owner,
+		$hostgroups_include,
+		$hostgroups_exclude,
 		$hosts_include,
 		$hosts_exclude,
 		$services_include,
@@ -106,10 +110,12 @@ function addNotification ($p) {
 	// add notification
 	$query = sprintf(
 		'insert into notifications
-			(active,username,hosts_include,hosts_exclude,services_include,services_exclude,notify_after_tries,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,let_notifier_handle)
-			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+			(active,username,hostgroups_include,hostgroups_exclude,hosts_include,hosts_exclude,services_include,services_exclude,notify_after_tries,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,let_notifier_handle)
+			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
 		'0',
 		$owner,
+		$hostgroups_include,
+		$hostgroups_exclude,
 		$hosts_include,
 		$hosts_exclude,
 		$services_include,
@@ -130,8 +136,10 @@ function addNotification ($p) {
 	// get new id
 	$query = sprintf(
 		'select id from notifications
-			where active=\'0\' and username=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\'', 
+			where active=\'0\' and username=\'%s\'  and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and  hosts_include=\'%s\' and hosts_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\'',
 		$owner,
+		$hostgroups_include,
+		$hostgroups_exclude,
 		$hosts_include,
 		$hosts_exclude,
 		$services_include,
@@ -246,6 +254,8 @@ function updateNotification ($p) {
 	if (!$id) return false;
 
 	$owner = prepareDBValue($p['owner']);
+	$hostgroups_include = prepareDBValue($p['hostgroups_include']);
+	$hostgroups_exclude = prepareDBValue($p['hostgroups_exclude']);
 	$hosts_include = prepareDBValue($p['hosts_include']);
 	$hosts_exclude = prepareDBValue($p['hosts_exclude']);
 	$services_include = prepareDBValue($p['services_include']);
@@ -271,8 +281,10 @@ function updateNotification ($p) {
 
 	// update notification
 	$query = sprintf(
-		'update notifications set username=\'%s\',hosts_include=\'%s\',hosts_exclude=\'%s\',services_include=\'%s\',services_exclude=\'%s\',notify_after_tries=\'%s\',on_ok=\'%s\',on_warning=\'%s\',on_unknown=\'%s\',on_host_unreachable=\'%s\',on_critical=\'%s\',on_host_up=\'%s\',on_host_down=\'%s\',let_notifier_handle=\'%s\',rollover=\'%s\' where id=\'%s\'',
+		'update notifications set username=\'%s\', hostgroups_include=\'%s\', hostgroups_exclude=\'%s\', hosts_include=\'%s\',hosts_exclude=\'%s\',services_include=\'%s\',services_exclude=\'%s\',notify_after_tries=\'%s\',on_ok=\'%s\',on_warning=\'%s\',on_unknown=\'%s\',on_host_unreachable=\'%s\',on_critical=\'%s\',on_host_up=\'%s\',on_host_down=\'%s\',let_notifier_handle=\'%s\',rollover=\'%s\' where id=\'%s\'',
 		$owner,
+		$hostgroups_include,
+		$hostgroups_exclude,
 		$hosts_include,
 		$hosts_exclude,
 		$services_include,
