@@ -87,7 +87,7 @@ my $file = '';
 my $sendmail = "/usr/sbin/sendmail -t";
 my $subject = 'Subject: NoMa Alert';
 my $message = "$host/$service is $status\n$output\n";
-my $datetime = localtime($datetimes);
+my $datetime = scalar(localtime($datetimes));
 
 $service = $ARGV[10] if ($numArgs == 11);
 
