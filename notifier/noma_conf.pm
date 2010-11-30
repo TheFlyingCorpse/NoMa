@@ -38,7 +38,7 @@ sub conf {
 		command	=> {
 			sendemail		=> '/usr/local/nagios/noma/notifier/sendEmail.pl',
 			sendsms			=> '/usr/local/nagios/noma/notifier/sendSMS.pl',
-			#sendsms			=> '/usr/local/icinga/noma/notifier/sendSMSfinder.pl',		# if you use iMultitech iSMS/SMSfinder
+			#sendsms			=> '/usr/local/nagios/noma/notifier/sendSMSfinder.pl',		# if you use iMultitech iSMS/SMSfinder
 			voicecall		=> '/usr/local/nagios/noma/notifier/sendVoice.pl',
 			dummy			=> '/bin/true',
             nagios          => '/usr/local/nagios/noma/notifier/sendToNagios.pl',
@@ -75,7 +75,7 @@ sub conf {
 			#channel			=> ['Srx/g31', 'Srx/g31'],	# for standard Starface (array if more than one server, same order as servers above)
 			#channel		=> 'SIP',		# for SIP
             #international_prefix   => '',    # Replace + with this prefix. Defaults to 00 if not defined
-			check_command		=> '/usr/local/icinga/libexec/check_snmp -H $server -u $channel -l Starface -R "ISDN Channels: OK:1" -t 1 -o .1.3.6.1.4.1.32354.1.2.999.4.1.2.9.98.117.108.107.99.104.101.99.107.1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
+			check_command		=> '/usr/local/nagios/libexec/check_snmp -H $server -u $channel -l Starface -R "ISDN Channels: OK:1" -t 1 -o .1.3.6.1.4.1.32354.1.2.999.4.1.2.9.98.117.108.107.99.104.101.99.107.1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
             suffix          => '',          # channel suffix
 			message	=> {
 				header		=> 'this is a message from nagios ',				# header for all alerts
@@ -94,9 +94,9 @@ sub conf {
 			suppression		=> 0,               # add a global suppression menu option (value in minutes)
 			server			=> '192.168.1.1',	# address of the SMS server
 			#server			=> ['192.168.1.1', '192.168.1.2'],	# addresses of the SMS server farm
-			user			=> ['icinga', 'icinga'],	# user for iSMS/SMSfinder
-			pass			=> ['icinga', 'icinga'],	# pass for iSMS/SMSfinder
-			check_command		=> '/usr/local/icinga/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
+			user			=> ['nagios', 'nagios'],	# user for iSMS/SMSfinder
+			pass			=> ['nagios', 'nagios'],	# pass for iSMS/SMSfinder
+			check_command		=> '/usr/local/nagios/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
 			message	=> {
 				host		=> 'NoMa: $host is $status! $datetime',			# host message
 				service		=> 'NoMa: $host - $service is $status! $datetime',	# service message
@@ -154,9 +154,9 @@ Date/Time: $datetime',							# mail body
 			watchdogMaxVSS		=> 1048576,	# virtual memory
 			watchdogMaxRuntime	=> undef,	# restart after this many seconds
 			voice			=> undef,	# logging voice alert errors
-			#voice			=> '/usr/local/icinga/var/voice_debug.log',	# logging voice alert errors
+			#voice			=> '/usr/local/nagios/var/voice_debug.log',	# logging voice alert errors
 			sms				=> undef,	# dont log sms alert errors
-			#sms				=> '/usr/local/icinga/var/sms_debug.log',	# logging sms alert errors
+			#sms				=> '/usr/local/nagios/var/sms_debug.log',	# logging sms alert errors
 		},
 
 	};

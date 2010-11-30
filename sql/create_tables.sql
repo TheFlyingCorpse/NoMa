@@ -180,7 +180,7 @@ CREATE TABLE `notifications` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `notifications` VALUES (1,1,'nagiosadmin','*','','*','','1',0,0,0,1,1,1,1,1,1,1,285);
+INSERT INTO `notifications` VALUES (1,1,'nagiosadmin','*','','*','','*','','1',0,0,0,1,1,1,1,1,1,1,285);
 
 
 DROP TABLE IF EXISTS `notifications_to_contactgroups`;
