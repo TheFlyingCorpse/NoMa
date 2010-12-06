@@ -347,7 +347,7 @@ do
 
             # generate query and get list of possible users to notify
             my $query =
-            'select id,hosts_include,hosts_exclude,services_include,services_exclude from notifications';
+            'select id,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude from notifications';
             if ( $cmdh{check_type} eq 'h' )
             {
                 $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\'';
@@ -362,7 +362,7 @@ do
 
             # filter out unneeded users by using exclude lists
             my @ids_all =
-            generateNotificationList( $cmdh{check_type}, $cmdh{host}, $cmdh{service},
+            generateNotificationList( $cmdh{check_type}, $cmdh{host}, $cmdh{hostgroups}, $cmdh{service},
                 %dbResult );
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
 
@@ -747,7 +747,7 @@ sub parseCommand
             $cmdh{host_alias},        $cmdh{host_address}, $cmdh{service},
             $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
             $cmdh{notification_type}, $cmdh{output}
-        ) = split( ';', $cmd );
+        ) = split( ';', $cmd,11);
 
         if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
 
