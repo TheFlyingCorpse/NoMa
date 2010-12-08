@@ -362,7 +362,7 @@ do
 
             # filter out unneeded users by using exclude lists
             my @ids_all =
-            generateNotificationList( $cmdh{check_type}, $cmdh{host}, $cmdh{hostgroups}, $cmdh{service},
+            generateNotificationList( $cmdh{check_type}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups},
                 %dbResult );
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
 
