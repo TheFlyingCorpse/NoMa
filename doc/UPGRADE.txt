@@ -2,6 +2,7 @@
 --------------
 * ALTER TABLE `notifications` ADD `hostgroups_include` VARCHAR(255) NOT NULL DEFAULT;
 * ALTER TABLE `notifications` ADD `hostgroups_exclude` VARCHAR(255) NOT NULL DEFAULT;
+Add -G '$HOSTGROUPNAMES$' to your notification handler configuration
 
 0.0.5 -> 0.1.0
 ---------------
