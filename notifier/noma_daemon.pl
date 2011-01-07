@@ -326,14 +326,13 @@ do
 #             ) = parseCommand($cmd);
             my %cmdh = parseCommand($cmd);
             next if ( !defined $host );
-
+           
             debug(debugHash(%cmdh));
 #                 "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, output = $output"
 
             # hosts and services in lower case
             $cmdh{host} = lc($cmdh{host});
             $cmdh{service} = lc($cmdh{service}) if ( $cmdh{check_type} eq 's' );
-
 ##############################################################################
             # GENERATE LIST OF CONTACTS TO NOTIFY
 ##############################################################################
@@ -552,7 +551,7 @@ do
                 } else {
 # TODO: pass hashes?
                     prepareNotification($cmdh{external_id}, $user, $method, $cmd, $dest, $from, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
-                        $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, $cmdh{service}, $cmdh{output}, $contact->{rule});
+                        $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service}, $cmdh{output}, $contact->{rule});
                 }
 
             }
@@ -744,10 +743,10 @@ sub parseCommand
     {
         (
             $cmdh{operation},             $cmdh{external_id},           $cmdh{host},
-            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{service},
+            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service},
             $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
             $cmdh{notification_type}, $cmdh{output}
-        ) = split( ';', $cmd,11);
+        ) = split( ';', $cmd,12);
 
         if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
 
@@ -761,9 +760,9 @@ sub parseCommand
 
     if ( $cmd =~ /^notification;/i)
     {
-      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, service, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
             $cmdh{operation},             $cmdh{external_id},           $cmdh{host},
-            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{service},
+            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service},
             $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
             $cmdh{notification_type}, $cmdh{output});
 	  updateDB($sql);
@@ -838,7 +837,7 @@ sub prepareNotification
 {
 	my ($incident_id, $user, $method, $short_cmd, $dest, $from, $id,
 	$datetime, $check_type, $status,
-	$notification_type, $host, $host_alias, $host_address, $service, $output, $rule, $nodelay) = @_;
+	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $output, $rule, $nodelay) = @_;
 
 	# start of the notification
 	my $start = time();

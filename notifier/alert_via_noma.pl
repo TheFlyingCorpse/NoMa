@@ -169,6 +169,7 @@ my %check_type_str = (
 my $host                = '';
 my $host_alias          = '';
 my $host_address        = '';
+my $hostgroups		= '';
 my $service             = '';
 my $check_type          = '';
 my $status              = '';
@@ -229,6 +230,7 @@ Getopt::Long::Configure('bundling');
 my $clps = GetOptions(
 
     "H|host=s"              => \$host,
+    "G|hostgroups=s"	    => \$hostgroups,
     "u|unique-id=s"         => \$id,
     "a|host-alias=s"        => \$host_alias,
     "i|host-address=s"      => \$host_address,
@@ -269,8 +271,8 @@ if ( !defined $id or $id eq '' or $id < 1 )
     $id = unique_id();
 }
 
-$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
-    $id, $host, $host_alias, $host_address, $service, $check_type, $status, $datetime, $notification_type, $output);
+$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
+    $id, $host, $host_alias, $host_address, $hostgroups, $service, $check_type, $status, $datetime, $notification_type, $output);
 
 if ($usefifo)
 {
