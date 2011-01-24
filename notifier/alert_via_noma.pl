@@ -56,6 +56,7 @@ alert_via_noma.pl  -  NETWAYS Notification Manager - notification plugin
 =head1 SYNOPSIS
 
              -H|--host=<host name>
+             -G|--hostgroups=<hostgroup list>
              -S|--service=<service description>
              -c|--check-type=<check type (h|s)>
              -s|--status=<check status>
@@ -76,6 +77,10 @@ alert_via_noma.pl  -  NETWAYS Notification Manager - notification plugin
 =item -H|--host=<name-or-ip>
 
 Name of the affected host
+
+=item -G|--hostgroups=<hostgroup list>
+
+Name of the affected hostgroups. If none given, the pseudo hostgroup "__NONE" will be assigned
 
 =item -S|--service=<name-or-ip>
 
@@ -132,10 +137,10 @@ Print help message and exit.
 Can be integrated into nagios with the following
 
 For services;
-  command_line    /path_to_noma/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t "$SHORTDATETIME$"
+  command_line    /path_to_noma/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -G "$HOSTGROUPNAMES$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t "$SHORTDATETIME$"
 
 For hosts;
-  command_line    /path_to_noma/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t "$SHORTDATETIME$"
+  command_line    /path_to_noma/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$"  -G "$HOSTGROUPNAMES$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t "$SHORTDATETIME$"
 
 
 =cut
@@ -271,7 +276,7 @@ if ( !defined $id or $id eq '' or $id < 1 )
     $id = unique_id();
 }
 
-$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
+$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n',
     $id, $host, $host_alias, $host_address, $hostgroups, $service, $check_type, $status, $datetime, $notification_type, $output);
 
 if ($usefifo)
