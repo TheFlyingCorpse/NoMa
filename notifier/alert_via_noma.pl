@@ -276,7 +276,7 @@ if ( !defined $id or $id eq '' or $id < 1 )
     $id = unique_id();
 }
 
-$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n',
+$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
     $id, $host, $host_alias, $host_address, $hostgroups, $service, $check_type, $status, $datetime, $notification_type, $output);
 
 if ($usefifo)
@@ -324,7 +324,7 @@ sub writeToPipe
 
     sysopen( PIPE, $pipe, O_WRONLY ) or die "Pipe not writeable";
 
-    $written = syswrite PIPE, $output;
+    $written = syswrite PIPE, $output . "\n";
 
     close PIPE;
 
@@ -345,7 +345,7 @@ sub writeToSocket
 	
 	die "Socket not available" unless $sock;
 
-    print $sock $output;
+    print $sock $output . "\n";
 
     close($sock);
 
