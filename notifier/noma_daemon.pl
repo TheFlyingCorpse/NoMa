@@ -114,7 +114,7 @@ use DBI;
 
 our $processStart = time();
 our %suppressionHash;
-my $versionStr = 'current (1.0.5)';
+my $versionStr = 'current (1.0.7)';
 
 my %stati_service = (
     'OK'       => 'on_ok',
@@ -176,6 +176,7 @@ my $daemonize = $conf->{debug}->{daemonize};
 my $pidfile = $conf->{path}->{pidfile};
 $ignore = $conf->{escalator}{internalEscalation}
     if (defined($conf->{escalator}{internalEscalation}));
+my $sleep_time = $conf->{notifier}->{sleep_time};
 
 
 our %queue;                          # thread message queues
@@ -708,7 +709,7 @@ do
     # remove any orphans from the tmp_command table
     deleteOrphanCommands();
     # sleep for a bit
-    select( undef, undef, undef, 0.025 );
+    select( undef, undef, undef, $sleep_time );
     # sleep 1;
 
 } while (1);

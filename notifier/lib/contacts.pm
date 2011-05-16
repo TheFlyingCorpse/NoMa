@@ -73,7 +73,7 @@ sub generateNotificationList
     my $inHostgroup = -1;
     $hgCount = @hostgroups;
     if($hgCount < 1) {
-        @hostgroups[0] = "__NONE";
+        $hostgroups[0] = "__NONE";
     }
     # BEGIN - generate include and exclude lists for hosts and services
     while ( defined( $dbResult{$cnt} ) )

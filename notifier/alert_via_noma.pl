@@ -163,7 +163,7 @@ use IO::Select;
 use Fcntl qw(O_RDWR);
 use IO::Socket;
 
-my $versionStr = 'current (1.0.3)';
+my $versionStr = 'current (1.0.7)';
 
 my %check_type_str = (
     'h' => 'Host',
