@@ -5,6 +5,7 @@ CREATE TABLE `tmp_commands` (
   `operation` varchar(255) default NULL,
   `external_id` bigint(20) NOT NULL,
   `host` varchar(255) default NULL,
+  `hostgroups` varchar(255) default NULL,
   `host_alias` varchar(255) default NULL,
   `host_address` varchar(255) default NULL,
   `service` varchar(255) default NULL,
