@@ -167,7 +167,7 @@ sub escalate
 
     # $query = 'select id from escalation_stati where incident_id not in (select external_id from tmp_commands as c inner join tmp_active as a on a.command_id=c.id)';
     $query = 'select distinct id from escalation_stati where incident_id not in (select external_id from tmp_commands as c inner join tmp_active as a on a.command_id=c.id) and (time_string+(counter*'.$wait.'))<unix_timestamp()';
-    $query .= ' and time_string>(unix_timestamp()-'.$maxwait.')' if ($query > 0);
+    $query .= ' and time_string>(unix_timestamp()-'.$maxwait.')' if ($wait > 0);
 
     @dbResult = queryDB($query, 1, 1);
 
