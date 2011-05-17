@@ -44,27 +44,27 @@ stop() {
 }
 
 restart(){
-	stop
-	start
+        stop
+        rc_status -v
+        start
+        rc_status -v
 }
 
 case "$1" in
   start)
-	echo -n "Starting $ME"
-	start
-	rc_status -v
-	;;
+        start
+        rc_status -v
+        ;;
   stop)
-	echo -n "Stopping $ME"
-	stop
-	rc_status -v
-	;;
+        stop
+        rc_status -v
+        ;;
   restart)
-	restart
-	rc_status
+        restart
+        rc_status
         ;;
   status)
-	echo -n "Checking for $ME"
+	echo -n "Checking for $ME \n"
         /sbin/checkproc $prog
 	RETVAL=$?
 	rc_status -v
