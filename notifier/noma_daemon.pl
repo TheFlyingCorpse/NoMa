@@ -762,16 +762,12 @@ sub parseCommand
 
     if ( $cmd =~ /^notification;/i)
     {
-      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                 $cmdh{operation},       $cmdh{external_id},     $cmdh{host},
                 $cmdh{host_alias},      $cmdh{host_address},    $cmdh{hostgroups},
                 $cmdh{service},         $cmdh{servicegroups},   $cmdh{check_type},
                 $cmdh{status},          $cmdh{stime},           $cmdh{notification_type},
-                $cmdh{output}
-#            $cmdh{operation},             $cmdh{external_id},           $cmdh{host},
-#            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service},
-#            $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
-#            $cmdh{notification_type}, $cmdh{output});
+                $cmdh{output});
 	  updateDB($sql);
     }
         return %cmdh;
