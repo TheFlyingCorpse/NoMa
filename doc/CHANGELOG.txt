@@ -80,3 +80,8 @@
 * added hostgroup include and exclude filter
 * fixed messages containing ';' being truncated
 * updated documentation
+
+1.0.7 (WORK IN PROGRESS)
+* added servicegroup include and exclude filter
+* fixed missing hostgroup column in the SQL files for upgrading/new installation
+* updated documentation

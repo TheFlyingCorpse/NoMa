@@ -347,7 +347,7 @@ do
 
             # generate query and get list of possible users to notify
             my $query =
-            'select id,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude from notifications';
+            'select id,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude from notifications';
             if ( $cmdh{check_type} eq 'h' )
             {
                 $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\'';
@@ -362,7 +362,7 @@ do
 
             # filter out unneeded users by using exclude lists
             my @ids_all =
-            generateNotificationList( $cmdh{check_type}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups},
+            generateNotificationList( $cmdh{check_type}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups},
                 %dbResult );
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
 
@@ -552,7 +552,7 @@ do
                 } else {
 # TODO: pass hashes?
                     prepareNotification($cmdh{external_id}, $user, $method, $cmd, $dest, $from, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
-                        $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service}, $cmdh{output}, $contact->{rule});
+                        $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service}, $cmdh{servicegroups}, $cmdh{output}, $contact->{rule});
                 }
 
             }
@@ -743,10 +743,11 @@ sub parseCommand
         || $cmd =~ /^escalation;/i )
     {
         (
-            $cmdh{operation},             $cmdh{external_id},           $cmdh{host},
-            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service},
-            $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
-            $cmdh{notification_type}, $cmdh{output}
+            	$cmdh{operation},	$cmdh{external_id},	$cmdh{host},
+            	$cmdh{host_alias},      $cmdh{host_address}, 	$cmdh{hostgroups}, 
+		$cmdh{service},        	$cmdh{servicegroups},	$cmdh{check_type},
+	        $cmdh{status},    	$cmdh{stime},		$cmdh{notification_type}, 
+		$cmdh{output}
         ) = split( ';', $cmd,12);
 
         if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
@@ -761,11 +762,16 @@ sub parseCommand
 
     if ( $cmd =~ /^notification;/i)
     {
-      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
-            $cmdh{operation},             $cmdh{external_id},           $cmdh{host},
-            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service},
-            $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
-            $cmdh{notification_type}, $cmdh{output});
+      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+                $cmdh{operation},       $cmdh{external_id},     $cmdh{host},
+                $cmdh{host_alias},      $cmdh{host_address},    $cmdh{hostgroups},
+                $cmdh{service},         $cmdh{servicegroups},   $cmdh{check_type},
+                $cmdh{status},          $cmdh{stime},           $cmdh{notification_type},
+                $cmdh{output}
+#            $cmdh{operation},             $cmdh{external_id},           $cmdh{host},
+#            $cmdh{host_alias},        $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service},
+#            $cmdh{check_type},        $cmdh{status},       $cmdh{stime},
+#            $cmdh{notification_type}, $cmdh{output});
 	  updateDB($sql);
     }
         return %cmdh;
@@ -838,7 +844,7 @@ sub prepareNotification
 {
 	my ($incident_id, $user, $method, $short_cmd, $dest, $from, $id,
 	$datetime, $check_type, $status,
-	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $output, $rule, $nodelay) = @_;
+	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups,$output, $rule, $nodelay) = @_;
 
 	# start of the notification
 	my $start = time();

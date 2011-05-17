@@ -133,6 +133,9 @@ function getContent () {
 		$templateContent->assign('INCLUDE_HOSTS', $dbResult[0]['hosts_include']);
 		$templateContent->assign('EXCLUDE_HOSTS', $dbResult[0]['hosts_exclude']);
 
+                $templateContent->assign('INCLUDE_SERVICEGROUPS', $dbResult[0]['servicegroups_include']);
+                $templateContent->assign('EXCLUDE_SERVICEGROUPS', $dbResult[0]['servicegroups_exclude']);
+
 		$templateContent->assign('INCLUDE_SERVICES', $dbResult[0]['services_include']);
 		$templateContent->assign('EXCLUDE_SERVICES', $dbResult[0]['services_exclude']);
 
@@ -372,6 +375,9 @@ function getContent () {
 
 		$templateContent->assign('ONCHANGE_HOSTS_INCLUDE', ' onkeyup="update_preview(\'h\',\'i\');"');
 		$templateContent->assign('ONCHANGE_HOSTS_EXCLUDE', ' onkeyup="update_preview(\'h\',\'e\');"');
+
+                $templateContent->assign('ONCHANGE_SERVICEGROUPS_INCLUDE', ' onkeyup="update_preview(\'sg\',\'i\');"');
+                $templateContent->assign('ONCHANGE_SERVICEGROUPS_EXCLUDE', ' onkeyup="update_preview(\'sg\',\'e\');"');
 
 		$templateContent->assign('ONCHANGE_SERVICES_INCLUDE', ' onkeyup="update_preview(\'s\',\'i\');"');
 		$templateContent->assign('ONCHANGE_SERVICES_EXCLUDE', ' onkeyup="update_preview(\'s\',\'e\');"');

@@ -57,6 +57,7 @@ alert_via_noma.pl  -  NETWAYS Notification Manager - notification plugin
 
              -H|--host=<host name>
              -G|--hostgroups=<hostgroup list>
+             -E|--servicegroups=<servicegroup list>
              -S|--service=<service description>
              -c|--check-type=<check type (h|s)>
              -s|--status=<check status>
@@ -81,6 +82,10 @@ Name of the affected host
 =item -G|--hostgroups=<hostgroup list>
 
 Name of the affected hostgroups. If none given, the pseudo hostgroup "__NONE" will be assigned
+
+=item -E|--servicegroups=<servicegroup list>
+
+Name of the affected servicegroups. If none given, the pseudo servicegroup "__NONE" will be assigned
 
 =item -S|--service=<name-or-ip>
 
@@ -137,7 +142,7 @@ Print help message and exit.
 Can be integrated into nagios with the following
 
 For services;
-  command_line    /path_to_noma/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -G "$HOSTGROUPNAMES$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t "$SHORTDATETIME$"
+  command_line    /path_to_noma/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -G "$HOSTGROUPNAMES$" -E "$SERVICEGROUPNAMES$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t "$SHORTDATETIME$"
 
 For hosts;
   command_line    /path_to_noma/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$"  -G "$HOSTGROUPNAMES$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t "$SHORTDATETIME$"
@@ -176,6 +181,7 @@ my $host_alias          = '';
 my $host_address        = '';
 my $hostgroups		= '';
 my $service             = '';
+my $servicegroups	= '';
 my $check_type          = '';
 my $status              = '';
 my $datetime            = '';
@@ -236,6 +242,7 @@ my $clps = GetOptions(
 
     "H|host=s"              => \$host,
     "G|hostgroups=s"	    => \$hostgroups,
+    "E|servicegroups=s"     => \$servicegroups,
     "u|unique-id=s"         => \$id,
     "a|host-alias=s"        => \$host_alias,
     "i|host-address=s"      => \$host_address,
@@ -276,8 +283,8 @@ if ( !defined $id or $id eq '' or $id < 1 )
     $id = unique_id();
 }
 
-$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
-    $id, $host, $host_alias, $host_address, $hostgroups, $service, $check_type, $status, $datetime, $notification_type, $output);
+$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
+    $id, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $check_type, $status, $datetime, $notification_type, $output);
 
 if ($usefifo)
 {

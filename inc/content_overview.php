@@ -63,6 +63,7 @@ function getContent () {
 		'n.id' => 'NOTIFICATION_RULE',
 		'n.hostgroups_include' => 'HOSTGROUP',
 		'n.hosts_include' => 'HOST',
+		'n.servicegroups_include' => 'SERVICEGROUP',
 		'n.services_include' => 'SERVICE',
 		'n.username' => 'OWNER'
 	);
@@ -79,6 +80,7 @@ function getContent () {
 	$templateContent->assign('OVERVIEW_HEADING_HOSTGROUPS', OVERVIEW_HEADING_HOSTGROUPS);
 	$templateContent->assign('OVERVIEW_HEADING_HOSTS', OVERVIEW_HEADING_HOSTS);
 	$templateContent->assign('OVERVIEW_HEADING_SERVICES', OVERVIEW_HEADING_SERVICES);
+        $templateContent->assign('OVERVIEW_HEADING_SERVICEGROUPS', OVERVIEW_HEADING_SERVICEGROUPS);
 	$templateContent->assign('OVERVIEW_HEADING_OWNER', OVERVIEW_HEADING_OWNER);
 	$templateContent->assign('OVERVIEW_HEADING_TIMEZONE', OVERVIEW_HEADING_TIMEZONE);
 	$templateContent->assign('OVERVIEW_HEADING_NOTIFY_ON', OVERVIEW_HEADING_NOTIFY_ON);
@@ -313,7 +315,14 @@ function getContent () {
 				' onmouseover="javascript:showLong(\'&lt;b&gt;+&lt;/b&gt;: ' . $row['hosts_include'] . '&lt;br/&gt;&lt;b&gt;-&lt;/b&gt;: ' . $row['hosts_exclude'] . '\');" onmouseout="javascript:hideLong();"'
 			);
 		}
-
+                $data = list($long, $value, $short) = shorten($row['servicegroups_include'] . ' | ' .$row['servicegroups_exclude'], 'overview_servicegroup');
+                $templateSubContent->assign('SERVICEGROUPS', $value);
+                if ($short) {
+                        $templateSubContent->assign(
+                                'SERVICEGROUPS_MOUSEOVER',
+                                ' onmouseover="javascript:showLong(\'&lt;b&gt;+&lt;/b&gt;: ' . $row['servicegroups_include'] . '&lt;br/&gt;&lt;b&gt;-&lt;/b&gt;: ' . $row['servicegroups_exclude'] . '\');" onmouseout="javascript:hideLong();"'
+                        );
+                }
 		$data = list($long, $value, $short) = shorten($row['services_include'] . ' | ' . $row['services_exclude'], 'overview_service');
 		$templateSubContent->assign('SERVICES' , $value);
 		if ($short) {

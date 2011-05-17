@@ -107,6 +107,8 @@ define('ADD_EDIT_INCLUDE_HOSTS', 'Einzuschlie&szlig;ende Hosts:');
 define('ADD_EDIT_EXCLUDE_HOSTS', 'Auszuschlie&szlig;ende Hosts:');
 define('ADD_EDIT_INCLUDE_SERVICES', 'Einzuschlie&szlig;ende Services:');
 define('ADD_EDIT_EXCLUDE_SERVICES', 'Auszuschlie&szlig;ende Services:');
+define('ADD_EDIT_INCLUDE_SERVICEGROUPS', 'Einzuschlie&szlig;ende Servicegruppen:');
+define('ADD_EDIT_EXCLUDE_SERVICEGROUPS', 'Auszuschlie&szlig;ende Servicegruppen:');
 define('ADD_EDIT_TIMEZONE', 'Zeitzone:');
 define('ADD_EDIT_OWNER', 'Besitzer:');
 define('ADD_EDIT_NOTIFY_USERS', 'Zu benachrichtigende Personen:');

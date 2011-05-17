@@ -11,6 +11,7 @@ CREATE TABLE `tmp_commands` (
   `service` varchar(255) default NULL,
   `check_type` varchar(255) default NULL,
   `status` varchar(255) default NULL,
+  `servicegroups` varchar(255) default NULL,
   `stime` int(11) default 0,
   `notification_type` varchar(255) default NULL,
   `output` varchar(4096) default NULL,

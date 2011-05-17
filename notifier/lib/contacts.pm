@@ -64,16 +64,22 @@ sub getContacts
 sub generateNotificationList
 {
 
-    my ( $check_type, $notificationHost, $notificationService, $notificationHostgroups, %dbResult ) = @_;
+    my ( $check_type, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, %dbResult ) = @_;
 
     my $cnt = 0;
     my %hostList;
     my %serviceList;
     my @hostgroups = split(",",$notificationHostgroups);
+    my @servicegroups = split(",",$notificationServicegroups);
     my $inHostgroup = -1;
     $hgCount = @hostgroups;
     if($hgCount < 1) {
         $hostgroups[0] = "__NONE";
+    }
+    my $inServicegroup = -1;
+    $sgCount = @servicegroups;
+    if($sgCount < 1) {
+        $servicegroups[0] = "__NONE";
     }
     # BEGIN - generate include and exclude lists for hosts and services
     while ( defined( $dbResult{$cnt} ) )
@@ -96,6 +102,26 @@ sub generateNotificationList
                 #undef( $hostList{ $dbResult{$cnt}->{id} } )
                 #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
                 $inHostgroup = 0;
+            }
+        }
+
+        # generate servicegroup-include list
+        foreach my $servicegroup(@servicegroups) {
+            if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
+            {
+                 #$serviceList{ $dbResult{$cnt}->{id} } = 1;
+                 if($inServicegroup != 0) {
+                    $inServicegroup = 1;
+                 }
+            }
+
+            # remove services to be excluded
+            if (matchString( $dbResult{$cnt}->{serviceroups_exclude}, $hostgroup))
+            {
+                debug( "Servicegroups:ServiceExcl: $servicegroup\t" . $dbResult{$cnt}->{id} );
+                #undef( $hostList{ $dbResult{$cnt}->{id} } )
+                #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
+                $inServicegroup = 0;
             }
         }
 

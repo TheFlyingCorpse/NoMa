@@ -71,6 +71,9 @@ function update_preview (entity, type) {
 		case 'h':
 			prefix = 'hosts_';
 			break;
+                case 'sg':
+                        prefix = 'servicegroups_';
+                        break;
 		case 's':
 			prefix = 'services_';
 			break;
