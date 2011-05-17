@@ -364,9 +364,6 @@ do
             my @ids_all =
             generateNotificationList( $cmdh{check_type}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups},
                 %dbResult );
-	    foreach (@ids_all){
-		print "lol: $_ ";
-		}
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
 
             unless ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
@@ -1408,9 +1405,9 @@ sub counterExceededMax
 {
     my ($ids, $counter) = @_;
 
-    my $query = 'select notify_after_tries from notifications where id in ('.join(',',$ids).') and rollover=1';
+    my $query = 'select notify_after_tries from notifications where id in ('.join(',',@$ids).') and rollover=1';
     $query .= ' union select e.notify_after_tries from escalations_contacts as e';
-    $query .= ' left join notifications as n on e.notification_id=n.id where notification_id in ('.join(',',$ids).') and rollover=1';
+    $query .= ' left join notifications as n on e.notification_id=n.id where notification_id in ('.join(',',@$ids).') and rollover=1';
 
 	my @dbResult = queryDB($query, '1');
 
