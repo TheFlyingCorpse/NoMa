@@ -89,7 +89,7 @@ sub generateNotificationList
         foreach my $hostgroup(@hostgroups) {
             if (matchString( $dbResult{$cnt}->{hostgroups_include}, $hostgroup))
             {
-                debug( "Hostgroups:HostIncl: $hostgroup\t" . $dbResult{$cnt}->{id} );
+                debug( "Step1: HostgroupIncl: $notificationHostgroups\t" . $dbResult{$cnt}->{id} );
                  #$hostList{ $dbResult{$cnt}->{id} } = 1;
                  if($inHostgroup != 0) {
                     $inHostgroup = 1;
@@ -99,7 +99,7 @@ sub generateNotificationList
             # remove hostgroups to be excluded
             if (matchString( $dbResult{$cnt}->{hostgroups_exclude}, $hostgroup))
             {
-                debug( "Hostgroups:HostExcl: $hostgroup\t" . $dbResult{$cnt}->{id} );
+                debug( "Step1: HostgroupExcl: $notificationHostgroups\t" . $dbResult{$cnt}->{id} );
                 #undef( $hostList{ $dbResult{$cnt}->{id} } )
                 #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
                 $inHostgroup = 0;
@@ -123,30 +123,32 @@ sub generateNotificationList
 
         if ( $check_type eq 's' )
         {
+	    # TODO <-- FIX the following foreach loop.
             # generate servicegroup-include list
             $inServicegroup = 2;
 	    foreach my $servicegroup(@servicegroups) {
-            if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
-            {
-		debug( "Servicegroups:ServiceIncl: $servicegroup\t" . $dbResult{$cnt}->{id} );
-                #$serviceList{ $dbResult{$cnt}->{id} } = 1;
-            	if($inServicegroup != 0) {
-                     $inServicegroup = 1;
-                }
-            }
+            	if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
+            	{
+			debug( "Step1: ServicegroupsIncl: $notificationServicegroups\t" . $dbResult{$cnt}->{id} );
+                	#$serviceList{ $dbResult{$cnt}->{id} } = 1;
+            		if($inServicegroup != 0) {
+                     		$inServicegroup = 1;
+                	}
+            	}
 
-            # remove servicegroups to be excluded
-            if (matchString( $dbResult{$cnt}->{servicegroups_exclude}, $servicegroup))
-            {
-                debug( "Servicegroups:ServiceExcl: $servicegroup\t" . $dbResult{$cnt}->{id} );
-                #undef( $hostList{ $dbResult{$cnt}->{id} } )
-                #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
-                $inServicegroup = 0;
+            	# remove servicegroups to be excluded
+            	if (matchString( $dbResult{$cnt}->{servicegroups_exclude}, $servicegroup))
+            	{
+                	debug( "Step1: ServicegroupsExcl: $notificationServicegroups\t" . $dbResult{$cnt}->{id} );
+                	#undef( $hostList{ $dbResult{$cnt}->{id} } )
+                	#    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
+                	$inServicegroup = 0;
 		}
 	    }
 
             # generate service-include list
-            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService) && $inServicegroup != 0 && $inServicegroup != 2)
+            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService) && $inServicegroup != 0 && $inServicegroup != 2) # <-- PROBLEM
+#            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService))
             {
                 debug( "Step1: ServiceIncl: $notificationService\t" . $dbResult{$cnt}->{id} );
                 $serviceList{ $dbResult{$cnt}->{id} } = 1;
@@ -156,8 +158,7 @@ sub generateNotificationList
             # remove services to be excluded
             if (matchString( $dbResult{$cnt}->{services_exclude}, $notificationService))
             {
-                debug( "Step1: ServiceExcl: $notificationService\t"
-                        . $dbResult{$cnt}->{id} );
+                debug( "Step1: ServiceExcl: $notificationService\t" . $dbResult{$cnt}->{id} );
                 undef( $serviceList{ $dbResult{$cnt}->{id} } )
                     if defined( $serviceList{ $dbResult{$cnt}->{id} } );
             }
