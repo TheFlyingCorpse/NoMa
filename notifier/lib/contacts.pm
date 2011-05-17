@@ -136,7 +136,7 @@ sub generateNotificationList
             }
 
             # remove servicegroups to be excluded
-            if (matchString( $dbResult{$cnt}->{serviceroups_exclude}, $hostgroup))
+            if (matchString( $dbResult{$cnt}->{servicegroups_exclude}, $servicegroup))
             {
                 debug( "Servicegroups:ServiceExcl: $servicegroup\t" . $dbResult{$cnt}->{id} );
                 #undef( $hostList{ $dbResult{$cnt}->{id} } )
