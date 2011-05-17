@@ -364,8 +364,10 @@ do
             my @ids_all =
             generateNotificationList( $cmdh{check_type}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups},
                 %dbResult );
+	    foreach (@ids_all){
+		print "lol: $_ ";
+		}
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
-
 
             unless ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
             {
@@ -375,7 +377,6 @@ do
 			next;
 		}
             }
-
             # We need to split the rules into 2 types
             # those that escalate internally - and normal rules
             #
@@ -748,7 +749,7 @@ sub parseCommand
 		$cmdh{service},        	$cmdh{servicegroups},	$cmdh{check_type},
 	        $cmdh{status},    	$cmdh{stime},		$cmdh{notification_type}, 
 		$cmdh{output}
-        ) = split( ';', $cmd,12);
+        ) = split( ';', $cmd,13);
 
         if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
 
@@ -840,7 +841,7 @@ sub prepareNotification
 {
 	my ($incident_id, $user, $method, $short_cmd, $dest, $from, $id,
 	$datetime, $check_type, $status,
-	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups,$output, $rule, $nodelay) = @_;
+	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $output, $rule, $nodelay) = @_;
 
 	# start of the notification
 	my $start = time();
@@ -1407,9 +1408,9 @@ sub counterExceededMax
 {
     my ($ids, $counter) = @_;
 
-    my $query = 'select notify_after_tries from notifications where id in ('.join(',',@$ids).') and rollover=1';
+    my $query = 'select notify_after_tries from notifications where id in ('.join(',',$ids).') and rollover=1';
     $query .= ' union select e.notify_after_tries from escalations_contacts as e';
-    $query .= ' left join notifications as n on e.notification_id=n.id where notification_id in ('.join(',',@$ids).') and rollover=1';
+    $query .= ' left join notifications as n on e.notification_id=n.id where notification_id in ('.join(',',$ids).') and rollover=1';
 
 	my @dbResult = queryDB($query, '1');
 

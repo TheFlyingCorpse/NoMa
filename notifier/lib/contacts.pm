@@ -72,12 +72,12 @@ sub generateNotificationList
     my @hostgroups = split(",",$notificationHostgroups);
     my @servicegroups = split(",",$notificationServicegroups);
     my $inHostgroup = -1;
-    $hgCount = @hostgroups;
+    my $hgCount = @hostgroups;
     if($hgCount < 1) {
         $hostgroups[0] = "__NONE";
     }
     my $inServicegroup = -1;
-    $sgCount = @servicegroups;
+    my $sgCount = @servicegroups;
     if($sgCount < 1) {
         $servicegroups[0] = "__NONE";
     }
@@ -89,39 +89,20 @@ sub generateNotificationList
         foreach my $hostgroup(@hostgroups) {
             if (matchString( $dbResult{$cnt}->{hostgroups_include}, $hostgroup))
             {
+                debug( "Hostgroups:HostIncl: $hostgroup\t" . $dbResult{$cnt}->{id} );
                  #$hostList{ $dbResult{$cnt}->{id} } = 1;
                  if($inHostgroup != 0) {
                     $inHostgroup = 1;
                  }
             }
 
-            # remove hosts to be excluded
+            # remove hostgroups to be excluded
             if (matchString( $dbResult{$cnt}->{hostgroups_exclude}, $hostgroup))
             {
                 debug( "Hostgroups:HostExcl: $hostgroup\t" . $dbResult{$cnt}->{id} );
                 #undef( $hostList{ $dbResult{$cnt}->{id} } )
                 #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
                 $inHostgroup = 0;
-            }
-        }
-
-        # generate servicegroup-include list
-        foreach my $servicegroup(@servicegroups) {
-            if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
-            {
-                 #$serviceList{ $dbResult{$cnt}->{id} } = 1;
-                 if($inServicegroup != 0) {
-                    $inServicegroup = 1;
-                 }
-            }
-
-            # remove services to be excluded
-            if (matchString( $dbResult{$cnt}->{serviceroups_exclude}, $hostgroup))
-            {
-                debug( "Servicegroups:ServiceExcl: $servicegroup\t" . $dbResult{$cnt}->{id} );
-                #undef( $hostList{ $dbResult{$cnt}->{id} } )
-                #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
-                $inServicegroup = 0;
             }
         }
 
@@ -142,9 +123,30 @@ sub generateNotificationList
 
         if ( $check_type eq 's' )
         {
+            # generate servicegroup-include list
+            $inServicegroup = 2;
+	    foreach my $servicegroup(@servicegroups) {
+            if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
+            {
+		debug( "Servicegroups:ServiceIncl: $servicegroup\t" . $dbResult{$cnt}->{id} );
+                #$serviceList{ $dbResult{$cnt}->{id} } = 1;
+            	if($inServicegroup != 0) {
+                     $inServicegroup = 1;
+                }
+            }
+
+            # remove servicegroups to be excluded
+            if (matchString( $dbResult{$cnt}->{serviceroups_exclude}, $hostgroup))
+            {
+                debug( "Servicegroups:ServiceExcl: $servicegroup\t" . $dbResult{$cnt}->{id} );
+                #undef( $hostList{ $dbResult{$cnt}->{id} } )
+                #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
+                $inServicegroup = 0;
+		}
+	    }
 
             # generate service-include list
-            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService) && $inHostgroup != 0 && $inHostgroup !=  2)
+            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService) && $inServicegroup != 0 && $inServicegroup != 2)
             {
                 debug( "Step1: ServiceIncl: $notificationService\t" . $dbResult{$cnt}->{id} );
                 $serviceList{ $dbResult{$cnt}->{id} } = 1;
