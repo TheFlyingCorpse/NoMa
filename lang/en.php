@@ -68,6 +68,7 @@ define('OVERVIEW_EDIT_USER_PROFILE', 'Edit user profile');
 define('OVERVIEW_HEADING_ACTIONS', 'Actions');
 define('OVERVIEW_HEADING_HOSTGROUPS', 'Hostgroups');
 define('OVERVIEW_HEADING_HOSTS', 'Hosts');
+define('OVERVIEW_HEADING_SERVICEGROUPS', 'Servicegroups');
 define('OVERVIEW_HEADING_SERVICES', 'Services');
 define('OVERVIEW_HEADING_OWNER', 'Owner');
 define('OVERVIEW_HEADING_NOTIFICATION_RULE', 'No.');

@@ -69,7 +69,7 @@ $dbConf = array (
 
 // authentication type
 // options: false | 'native' | 'ldap' | 'http'
-$authentication_type = false;
+$authentication_type = 'native';
 
 
 // ldap
@@ -139,8 +139,10 @@ $logs = array (
 
 // length of overview fields
 $str_maxlen = array (
-	'overview_host'		=> 50,
-	'overview_service'	=> 40,
+	'overview_hosgroupst'		=> 50,
+	'overview_host'			=> 40,
+        'overview_sevicegroups'         => 50,
+        'overview_service'      	=> 40,
 );
 
 
