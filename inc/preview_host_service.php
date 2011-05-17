@@ -61,7 +61,9 @@ switch ($p['entity']) {
 	case 'h':	$column = 'name1';
 				$objecttype_id = 1;
 				break;
-
+        case 'sg':      $column = 'name1';
+                                $objecttype_id = 4;
+                                break;
 	case 's':	$column = 'name2';
 				$objecttype_id = 2;
 				break;
