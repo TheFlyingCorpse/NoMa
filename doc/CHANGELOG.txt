@@ -75,13 +75,13 @@
 * added default password for nagiosadmin
 * removed logout button from setups w/o authentication
 
-1.0.6 (current)
+1.0.6
 ----------------
 * added hostgroup include and exclude filter
 * fixed messages containing ';' being truncated
 * updated documentation
 
-1.0.7 (WORK IN PROGRESS)
+1.0.7 (current) - WORK IN PROGRESS
 * added servicegroup include and exclude filter
 * fixed missing hostgroup column in the SQL files for upgrading/new installation
 * updated documentation

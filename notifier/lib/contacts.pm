@@ -67,125 +67,81 @@ sub generateNotificationList
     my $cnt = 0;
     my %hostList;
     my %serviceList;
+    my %hostgroupList;
+    my %servicegroupList;
     my @hostgroups = split(",",$notificationHostgroups);
     my @servicegroups = split(",",$notificationServicegroups);
-    my $inHostgroup = -1;
     my $hgCount = @hostgroups;
     if($hgCount < 1) {
         $hostgroups[0] = "__NONE";
     }
-    my $inServicegroup = -1;
     my $sgCount = @servicegroups;
     if($sgCount < 1) {
         $servicegroups[0] = "__NONE";
     }
-    my @notif_ids = ();
-    my @notif_incl = ();
-    my @notif_excl = ();
     # BEGIN - generate include and exclude lists for hosts and services
     while ( defined( $dbResult{$cnt} ) )
     {
-	# HOSTGROUPS
-        #$inHostgroup = 2;
+	$inHostgroup = 2;
         # generate hostgroup-include list
         foreach my $hostgroup(@hostgroups) {
             if (matchString( $dbResult{$cnt}->{hostgroups_include}, $hostgroup))
             {
-                debug( "Step1: HostgroupIncl: $notificationHostgroups\t" . $dbResult{$cnt}->{id} );
-                #$hostList{ $dbResult{$cnt}->{id} } = 1;
-		push(@notif_incl,$dbResult{$cnt}->{id});
-                #if($inHostgroup != 0) {
-                #    $inHostgroup = 1;
-                # }
+		debug( "Step1: HostGrp:Incl: $hostgroup\t" . $dbResult{$cnt}->{id} );
+                $hostgroupList{ $dbResult{$cnt}->{id} } = 1;
             }
 
-            # remove hostgroups to be excluded
+            # remove hosts to be excluded
             if (matchString( $dbResult{$cnt}->{hostgroups_exclude}, $hostgroup))
             {
-                debug( "Step1: HostgroupExcl: $notificationHostgroups\t" . $dbResult{$cnt}->{id} );
-                #undef( $hostList{ $dbResult{$cnt}->{id} } )
-                #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
-		push(@notif_excl,$dbResult{$cnt}->{id});
-                #$inHostgroup = 0;
+                debug( "Step1: HostGrp:Excl: $hostgroup\t" . $dbResult{$cnt}->{id} );
+                undef( $hostgroupList{ $dbResult{$cnt}->{id} } )
+                    if ( defined( $hostgroupList{ $dbResult{$cnt}->{id} } ) );
             }
-                foreach my $lolkey (keys @notif_incl){
-                        print "$lolkey\n";
-                }
-	    # Remove Excludes from the Include list
-	    @notif_ids = getIncludeIDs(@notif_incl,@notif_excl);
         }
-	
-	# Cleanup
-	@notif_incl = {};
-        @notif_excl = {};
-	
+
+
         # generate host-include list
-        if (matchString( $dbResult{$cnt}->{hosts_include}, $notificationHost) && $inHostgroup != 0 && $inHostgroup !=  2)
+        if (matchString( $dbResult{$cnt}->{hosts_include}, $notificationHost))
         {
             debug( "Step1: HostIncl: $notificationHost\t" . $dbResult{$cnt}->{id} );
-           #$hostList{ $dbResult{$cnt}->{id} } = 1;
-	    #print"HOSTINCL: $dbResult{$cnt}->{id}\n"
-	    push(@notif_incl,$dbResult{$cnt}->{id});
+            $hostList{ $dbResult{$cnt}->{id} } = 1;
         }
 
         # remove hosts to be excluded
         if (matchString( $dbResult{$cnt}->{hosts_exclude}, $notificationHost))
         {
             debug( "Step1: HostExcl: $notificationHost\t" . $dbResult{$cnt}->{id} );
-            #undef( $hostList{ $dbResult{$cnt}->{id} } )
-            #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
-	    push(@notif_excl,$dbResult{$cnt}->{id});
+            undef( $hostList{ $dbResult{$cnt}->{id} } )
+                if defined( $hostList{ $dbResult{$cnt}->{id} } );
         }
-
-	if ( ($dbResult{$cnt}->{hosts_include} ne '') || ($dbResult{$cnt}->{hosts_include} ne ''))
-	{
-		push(@notif_ids, getIncludeIDs(@notif_incl,@notif_excl));
-	}
-        @notif_incl = {};
-        @notif_excl = {};
-
 
         if ( $check_type eq 's' )
         {
-            # TODO <-- FIX the following foreach loop.
-            # generate servicegroup-include list
-            #$inServicegroup = 2;
-            foreach my $servicegroup(@servicegroups) {
-                if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
-                {
-                        debug( "Step1: ServicegroupsIncl: $notificationServicegroups\t" . $dbResult{$cnt}->{id} );
-                        #$serviceList{ $dbResult{$cnt}->{id} } = 1;
-                        #if($inServicegroup != 0) {
-                        #        $inServicegroup = 1;
-                        #}
-			push(@notif_incl,$dbResult{$cnt}->{id});
-                }
-				# remove servicegroups to be excluded
-                if (matchString( $dbResult{$cnt}->{servicegroups_exclude}, $servicegroup))
-                {
-                        debug( "Step1: ServicegroupsExcl: $notificationServicegroups\t" . $dbResult{$cnt}->{id} );
-                        #undef( $hostList{ $dbResult{$cnt}->{id} } )
-                        #    if ( defined( $hostList{ $dbResult{$cnt}->{id} } ) );
-                        #$inServicegroup = 0;
-			push(@notif_excl,$dbResult{$cnt}->{id});
-                }
-#		foreach my $lolkey (keys @notif_incl){
-#			print "$lolkey\n";
-#		}
-		@notif_ids = getIncludeIDs(@notif_incl,@notif_excl);
-            }
 
-	    # Cleanup
-	    @notif_incl = {};
-	    @notif_excl = {};
+	    # generate servicegroup-include list
+	    foreach my $servicegroup(@servicegroups) {
+	        if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
+	        {
+		    debug( "Step1: SvcGrpIncl: $servicegroup\t" . $dbResult{$cnt}->{id} );
+                    $servicegroupList{ $dbResult{$cnt}->{id} } = 1;
+	        }
+	
+	            # remove services to be excluded
+	        if (matchString( $dbResult{$cnt}->{servicegroups_exclude}, $servicegroup))
+	        {
+	            debug( "Step1: SvcGrpExcl: $servicegroup\t" . $dbResult{$cnt}->{id} );
+                    undef( $servicegroupList{ $dbResult{$cnt}->{id} } )
+                        if defined( $servicegroupList{ $dbResult{$cnt}->{id} } );
+
+	    	}
+	    }
 
             # generate service-include list
-            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService) && $inServicegroup != 0 && $inServicegroup != 2) # <-- PROBLEM
-#            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService))
+            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService))
             {
                 debug( "Step1: ServiceIncl: $notificationService\t" . $dbResult{$cnt}->{id} );
-                #$serviceList{ $dbResult{$cnt}->{id} } = 1;
-		push(@notif_incl,$dbResult{$cnt}->{id});
+                $serviceList{ $dbResult{$cnt}->{id} } = 1;
             }
 
 
@@ -193,30 +149,15 @@ sub generateNotificationList
             if (matchString( $dbResult{$cnt}->{services_exclude}, $notificationService))
             {
                 debug( "Step1: ServiceExcl: $notificationService\t" . $dbResult{$cnt}->{id} );
-                #undef( $serviceList{ $dbResult{$cnt}->{id} } )
-                #    if defined( $serviceList{ $dbResult{$cnt}->{id} } );
-		push(@notif_excl,$dbResult{$cnt}->{id});
+                undef( $serviceList{ $dbResult{$cnt}->{id} } )
+                    if defined( $serviceList{ $dbResult{$cnt}->{id} } );
             }
 
-            if ( ($dbResult{$cnt}->{services_include} ne '') || ($dbResult{$cnt}->{services_include} ne ''))
-            {
-                push(@notif_ids, getIncludeIDs(@notif_incl,@notif_excl));
-            }
-            @notif_incl = {};
-            @notif_excl = {};
-
-
+        }
         # increase counter
         $cnt++;
 
-    	}
     }
-
-    foreach my $testkey (keys @notif_ids){
-	debug("Notif_ids: $testkey");
-	debug("TITT TITT");
-    }
-    debug("FUNKER?");
 
     # END   - generate include and exclude lists for hosts and services
 
@@ -240,6 +181,22 @@ sub generateNotificationList
                 debug("Step2: HostIncl: $hostIncl");
             }
         }
+    }
+    while ( my ($servicegroupIncl) = each(%servicegroupList) )
+    {
+            if ( defined( $servicegroupList{$servicegroupIncl}) )
+            {
+                $idList{$servicegroupIncl} = 1;
+                debug("Step2: SvcGrpIncl: $servicegroupIncl");
+            }
+    }
+    while ( my ($hostgroupIncl) = each(%hostgroupList) )
+    {
+            if ( defined( $hostgroupList{$hostgroupIncl}) )
+            {
+                $idList{$hostgroupIncl} = 1;
+                debug("Step2: HostGrpIncl: $hostgroupIncl");
+            }
     }
     while ( my ($id) = each(%idList) )
     {
@@ -614,25 +571,6 @@ sub getMaxValue
     }
 
     return $newmax;
-}
-
-sub getIncludeIDs
-{
-	my (@incl_list, @excl_list) = @_;
-	my %incl_list = map{ $_ => 1} join " ", @incl_list;
-	my %excl_list = map{ $_ => 1} join " ", @excl_list;
-	my @notifyList = ();
-
-	foreach my $key (sort keys %incl_list) {
-	   push(@notifylist,$key) unless $excl_list{$key};
-	}
-
-	while (($key, $value) = each(%incl_list)){
-		print "$key, $value\n";
-	}
-	#@notifyList = hash2arr(%notifyList);
-	#debug("Contacts::getIncludeIDs::".join(" ",@notifyList));
-	return @notifyList; 
 }
 
 1;
