@@ -139,7 +139,7 @@ $logs = array (
 
 // length of overview fields
 $str_maxlen = array (
-	'overview_hosgroupst'		=> 50,
+	'overview_hostgroups'		=> 50,
 	'overview_host'			=> 40,
         'overview_sevicegroups'         => 50,
         'overview_service'      	=> 40,
