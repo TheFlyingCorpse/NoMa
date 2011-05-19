@@ -51,7 +51,7 @@ sub conf {
 			delay			=> 0,	    # delay notifications this number of seconds (for bundling)
 			bundle			=> 0,       # set to 1 to bundle multiple alerts into a single notification
 			ackPipe			=> '/var/log/nagios/rw/nagios.cmd',     #
-			sleep_time		=> '1',     # Set the time in seconds that the daemon will sleep for. Can be decimal for shorter than a second, will increase load on database and local server.
+			sleep_time		=> '1',     # Set the time in seconds that the daemon will sleep for. Can be decimal for shorter than a second, will increase load on database and local server. Ideally lower only against local databases to prevent flooding.
 		},
 
 		# escalation settings

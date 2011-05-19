@@ -327,7 +327,6 @@ do
 #             ) = parseCommand($cmd);
             my %cmdh = parseCommand($cmd);
             next if ( !defined $host );
-           
             debug(debugHash(%cmdh));
 #                 "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, output = $output"
 
@@ -549,8 +548,11 @@ do
                     updateLog($id, ' was suppressed');
                 } else {
 # TODO: pass hashes?
-                    prepareNotification($cmdh{external_id}, $user, $method, $cmd, $dest, $from, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
-                        $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, $cmdh{hostgroups}, $cmdh{service}, $cmdh{servicegroups}, $cmdh{output}, $contact->{rule});
+                    prepareNotification($cmdh{external_id}, $user, $method, 
+			$cmd, $dest, $from, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
+                        $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, 
+			$cmdh{hostgroups}, $cmdh{service}, $cmdh{servicegroups}, $cmdh{output}, 
+			$contact->{rule});
                 }
 
             }
@@ -1121,10 +1123,11 @@ sub getNextMethodCmd
     
 
     my $cline = prepareNotification($dbResult{0}{user}, $dbResult{0}{method}, $dbResult{0}{command},
-	    $dbResult2{0}{$dbResult{0}{contact_field}}, $dbResult{0}{from}, $notify_id, $dbResult{0}{timestamp},
-	    $dbResult{0}{check_type}, $dbResult{0}{status}, $dbResult{0}{type}, $dbResult{0}{host},
-	    $dbResult{0}{host_alias}, $dbResult{0}{host_address}, $dbResult{0}{service}, $dbResult{0}{output});
-
+	    $dbResult2{0}{$dbResult{0}{contact_field}}, $dbResult{0}{from}, $notify_id, 
+	    $dbResult{0}{timestamp},$dbResult{0}{check_type}, $dbResult{0}{status}, 
+	    $dbResult{0}{type}, $dbResult{0}{host},$dbResult{0}{host_alias}, 
+	    $dbResult{0}{host_address}, $dbResult{0}{hostgroups}, $dbResult{0}{service}, 
+	    $dbResult{0}{servicegroups}, $dbResult{0}{output});
     return $cline;
 
 }

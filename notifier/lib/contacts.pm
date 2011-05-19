@@ -65,10 +65,7 @@ sub generateNotificationList
     my ( $check_type, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, %dbResult ) = @_;
 
     my $cnt = 0;
-    my %hostList;
-    my %serviceList;
-    my %hostgroupList;
-    my %servicegroupList;
+    my %notifyList;
     my @hostgroups = split(",",$notificationHostgroups);
     my @servicegroups = split(",",$notificationServicegroups);
     my $hgCount = @hostgroups;
@@ -88,15 +85,15 @@ sub generateNotificationList
             if (matchString( $dbResult{$cnt}->{hostgroups_include}, $hostgroup))
             {
 		debug( "Step1: HostGrp:Incl: $hostgroup\t" . $dbResult{$cnt}->{id} );
-                $hostgroupList{ $dbResult{$cnt}->{id} } = 1;
+                $notifyList{ $dbResult{$cnt}->{id} } = 1;
             }
 
             # remove hosts to be excluded
             if (matchString( $dbResult{$cnt}->{hostgroups_exclude}, $hostgroup))
             {
                 debug( "Step1: HostGrp:Excl: $hostgroup\t" . $dbResult{$cnt}->{id} );
-                undef( $hostgroupList{ $dbResult{$cnt}->{id} } )
-                    if ( defined( $hostgroupList{ $dbResult{$cnt}->{id} } ) );
+                undef( $notifyList{ $dbResult{$cnt}->{id} } )
+                    if ( defined( $notifyList{ $dbResult{$cnt}->{id} } ) );
             }
         }
 
@@ -105,15 +102,15 @@ sub generateNotificationList
         if (matchString( $dbResult{$cnt}->{hosts_include}, $notificationHost))
         {
             debug( "Step1: HostIncl: $notificationHost\t" . $dbResult{$cnt}->{id} );
-            $hostList{ $dbResult{$cnt}->{id} } = 1;
+            $notifyList{ $dbResult{$cnt}->{id} } = 1;
         }
 
         # remove hosts to be excluded
         if (matchString( $dbResult{$cnt}->{hosts_exclude}, $notificationHost))
         {
             debug( "Step1: HostExcl: $notificationHost\t" . $dbResult{$cnt}->{id} );
-            undef( $hostList{ $dbResult{$cnt}->{id} } )
-                if defined( $hostList{ $dbResult{$cnt}->{id} } );
+            undef( $notifyList{ $dbResult{$cnt}->{id} } )
+                if defined( $notifyList{ $dbResult{$cnt}->{id} } );
         }
 
         if ( $check_type eq 's' )
@@ -124,15 +121,15 @@ sub generateNotificationList
 	        if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
 	        {
 		    debug( "Step1: SvcGrpIncl: $servicegroup\t" . $dbResult{$cnt}->{id} );
-                    $servicegroupList{ $dbResult{$cnt}->{id} } = 1;
+                    $notifyList{ $dbResult{$cnt}->{id} } = 1;
 	        }
 	
 	            # remove services to be excluded
 	        if (matchString( $dbResult{$cnt}->{servicegroups_exclude}, $servicegroup))
 	        {
 	            debug( "Step1: SvcGrpExcl: $servicegroup\t" . $dbResult{$cnt}->{id} );
-                    undef( $servicegroupList{ $dbResult{$cnt}->{id} } )
-                        if defined( $servicegroupList{ $dbResult{$cnt}->{id} } );
+                    undef( $notifyList{ $dbResult{$cnt}->{id} } )
+                        if defined( $notifyList{ $dbResult{$cnt}->{id} } );
 
 	    	}
 	    }
@@ -141,7 +138,7 @@ sub generateNotificationList
             if (matchString( $dbResult{$cnt}->{services_include}, $notificationService))
             {
                 debug( "Step1: ServiceIncl: $notificationService\t" . $dbResult{$cnt}->{id} );
-                $serviceList{ $dbResult{$cnt}->{id} } = 1;
+                $notifyList{ $dbResult{$cnt}->{id} } = 1;
             }
 
 
@@ -149,8 +146,8 @@ sub generateNotificationList
             if (matchString( $dbResult{$cnt}->{services_exclude}, $notificationService))
             {
                 debug( "Step1: ServiceExcl: $notificationService\t" . $dbResult{$cnt}->{id} );
-                undef( $serviceList{ $dbResult{$cnt}->{id} } )
-                    if defined( $serviceList{ $dbResult{$cnt}->{id} } );
+                undef( $notifyList{ $dbResult{$cnt}->{id} } )
+                    if defined( $notifyList{ $dbResult{$cnt}->{id} } );
             }
 
         }
@@ -164,38 +161,12 @@ sub generateNotificationList
     # BEGIN - collect all IDs to notify
     my %idList;
     my @ids;
-    while ( my ($hostIncl) = each(%hostList) )
+    while ( my ($notifyIncl) = each(%notifyList) )
     {
-        if ( $check_type eq 's' )
-        {
-            if ( defined( $serviceList{$hostIncl} ) && defined( $hostList{$hostIncl} ) )
+            if ( defined( $notifyList{$notifyIncl}) )
             {
-                $idList{$hostIncl} = 1;
-                debug("Step2: SvcIncl: $hostIncl");
-            }
-        } else
-        {
-            if ( defined( $hostList{$hostIncl} ) )
-            {
-                $idList{$hostIncl} = 1;
-                debug("Step2: HostIncl: $hostIncl");
-            }
-        }
-    }
-    while ( my ($servicegroupIncl) = each(%servicegroupList) )
-    {
-            if ( defined( $servicegroupList{$servicegroupIncl}) )
-            {
-                $idList{$servicegroupIncl} = 1;
-                debug("Step2: SvcGrpIncl: $servicegroupIncl");
-            }
-    }
-    while ( my ($hostgroupIncl) = each(%hostgroupList) )
-    {
-            if ( defined( $hostgroupList{$hostgroupIncl}) )
-            {
-                $idList{$hostgroupIncl} = 1;
-                debug("Step2: HostGrpIncl: $hostgroupIncl");
+                $idList{$notifyIncl} = 1;
+                debug("Step2: notifyIncl: $notifyIncl");
             }
     }
     while ( my ($id) = each(%idList) )
