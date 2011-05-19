@@ -50,6 +50,7 @@ Table of Contents
     5.3.1 Adding notifications
     5.3.2 Modifying notifications
     5.3.3 Deleting notifications
+    5.3.4 Filtering of notification rules
 
   5.4 Viewing logs
 
@@ -472,7 +473,7 @@ define command{
 
 define command{
         command_name    service-notify-by-noma
-        command_line    <PATH-TO-NOMA>/notifier/alert_via_noma.pl -c s -s "$SERVICESTATE$" -G "$HOSTGROUPNAMES$" -H "$HOSTNAME$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t $TIMET$
+        command_line    <PATH-TO-NOMA>/notifier/alert_via_noma.pl -c s -s "$SERVICESTATE$" -G "$HOSTGROUPNAMES$" -H "$HOSTNAME$" -S "$SERVICEDESC$" -E "$SERVICEGROUPNAMES$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t $TIMET$
         }
 
 With the option -p you can force the plugin to use the pipe instead of the unix socket.  You can
@@ -515,6 +516,8 @@ $service        - name of the service on the host
 $file           - the contents of the file specified in "filename"
 $host_address       - host address as passed to NoMa
 $host_alias     - host alias as passed to NoMa
+$hostgroups     - (all) hostgroups passed to NoMa
+$servicegroups  - (all) servicegroups passed to NoMa
 $status         - status (WARNING/CRITICAL/OK/UNKNOWN/UNREACHABLE)
 $datetimes      - alert time in unix time format
 $datetime       - alert time converted to local time
@@ -681,6 +684,54 @@ may not take account of changes made after they are started.
 5.3.3 Deleting notifications
       Deletion of notifications is done via the small trash icon, on
       the left side of the notification's row (overview).
+
+5.3.4 Filtering of notification rules
+      Notifications will be sent, based on the filters you configure. 
+      Based on include and exclude rules defined in the database 
+      (populated through the webfrontend), notifications are sent to 
+      users and/or groups of users. 
+
+      Starting with version 1.0.7, the logic for notifications have been
+      rewritten. Rather than only having include/exclude rules within 
+      hostgroups, host, servicegroups OR service; it now has logic to 
+      remove included notification rules based on the order of filters. 
+      There is a fixed order of how the filters work, from highest to 
+      lowest. Order is: Hostgroup -> Host -> Servicegroup -> Service. 
+
+      Below is an example illustrating how the filters now work.
+
+      Example notification:
+      - Host 1
+        * name: mysql-lnxsrv01
+        * member of hostgroups: mysql, linux-servers
+        * service(desc): MySQL Service
+        * servicegroups: mysql-svcs
+
+      - Host 2
+        * name: mysql-lnxsrv02
+        * member of hostgroups: mysql, linux-servers
+        * service(desc): MySQL Query Cache Hitrate
+        * servicegroups: mysql-svcs
+
+      - Filters:
+        * Hostgroup Include: mysql
+        * Servicegroup Include: mysql-svcs
+        * Service Exclude: mysql query*
+
+      - Result Host 1:
+        1. Matches include for hostgroup
+        2. Matches include for servicegroup
+        3. Rule matches, notification sent.
+
+      - Result Host 2:
+        1. Matches include for hostgroup
+        2. Matches include for servicegroup
+        3. Matches exclude for service
+        4. Rule does not match, notification not sent to members of this
+      notification rule.
+
+      Based on this logic, we believe that you can make quite flexible, 
+      yet strong rules for handling your notifications.
 
 
 5.4 Viewing logs

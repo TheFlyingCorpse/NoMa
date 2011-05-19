@@ -63,20 +63,22 @@ tmp_commands
 The incoming command (alert) as received via a pipe / socket.  The error checking is limited.
 
 mysql> describe tmp_commands;
-+-------------------+---------------+------+-----+---------+----------------+---
++-------------------+---------------+------+-----+---------+----------------+
 | Field             | Type          | Null | Key | Default | Extra          |
-+-------------------+---------------+------+-----+---------+----------------+---
++-------------------+---------------+------+-----+---------+----------------+
 | id                | int(11)       | NO   | PRI | NULL    | auto_increment | id
 | operation         | varchar(255)  | YES  |     | NULL    |                | notification or escalation
 | external_id       | bigint(20)    | NO   |     | NULL    |                | unique for this command
-| host              | varchar(255)  | YES  |     | NULL    |                | the following fields are as received by NoMa
+| host              | varchar(255)  | YES  |     | NULL    |                | the following fields are as recieved by NoMa
+| hostgroups        | varchar(255)  | YES  |     | NULL    |                |
 | host_alias        | varchar(255)  | YES  |     | NULL    |                |
 | host_address      | varchar(255)  | YES  |     | NULL    |                |
 | service           | varchar(255)  | YES  |     | NULL    |                |
+| servicegroups     | varchar(255)  | YES  |     | NULL    |                |
 | check_type        | varchar(255)  | YES  |     | NULL    |                |
 | status            | varchar(255)  | YES  |     | NULL    |                |
 | stime             | int(11)       | YES  |     | 0       |                |
-| notification_type | varchar(255)  | YES  |     | NULL    |                | 
+| notification_type | varchar(255)  | YES  |     | NULL    |                |
 | output            | varchar(4096) | YES  |     | NULL    |                |
 +-------------------+---------------+------+-----+---------+----------------+
 

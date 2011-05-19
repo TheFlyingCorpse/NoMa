@@ -83,5 +83,6 @@
 
 1.0.7 (current) - WORK IN PROGRESS
 * added servicegroup include and exclude filter
+* redid the notification rule's in contacts.pm
 * fixed missing hostgroup column in the SQL files for upgrading/new installation
 * updated documentation
