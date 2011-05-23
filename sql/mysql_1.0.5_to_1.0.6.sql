@@ -1,3 +1,6 @@
+#
+# 1.0.5 to 1.0.6
+#
 
 DROP TABLE IF EXISTS `tmp_commands`;
 CREATE TABLE `tmp_commands` (
@@ -8,10 +11,11 @@ CREATE TABLE `tmp_commands` (
   `hostgroups` varchar(255) default NULL,
   `host_alias` varchar(255) default NULL,
   `host_address` varchar(255) default NULL,
+  `hostgroups` varchar(255) default NULL,
   `service` varchar(255) default NULL,
+  `servicegroups` varchar(255) default NULL,
   `check_type` varchar(255) default NULL,
   `status` varchar(255) default NULL,
-  `servicegroups` varchar(255) default NULL,
   `stime` int(11) default 0,
   `notification_type` varchar(255) default NULL,
   `output` varchar(4096) default NULL,
