@@ -125,10 +125,10 @@ sub createEscalationCounter
 #        $output
 
     my $query =
-            sprintf('insert into escalation_stati (notification_rule,starttime,counter,incident_id,host,host_alias,host_address,service,check_type,status,time_string,type,output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+            sprintf('insert into escalation_stati (notification_rule,starttime,counter,incident_id,host,host_alias,host_address,hostgroups,service,servicegroups,check_type,status,time_string,type,output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
             $esc_rule,time(),
             '1',$eventh{external_id},
-            $eventh{host},$eventh{host_alias},$eventh{host_address},$eventh{service},
+            $eventh{host},$eventh{host_alias},$eventh{host_address},$eventh{hostgroups},$eventh{service},$eventh{servicegroups},
             $eventh{check_type},$eventh{status},$eventh{stime},$eventh{notification_type},$eventh{output});
 
     updateDB($query);
@@ -177,7 +177,7 @@ sub escalate
       # $query = "update escalation_stati set counter=counter+1 where id='".$res->{id}."'";
       # %dbResult = updateDB($query);
 
-      $query = "select concat('escalation;',incident_id,';',host,';',host_alias,';',host_address,';',service,';',check_type,';',status,';',unix_timestamp(),';',type,';',output) as cmd from escalation_stati where id='".$res->{id}."'";
+      $query = "select concat('escalation;',incident_id,';',host,';',host_alias,';',host_address,';',hostgroups,';',service,';',servicegroups,';',check_type,';',status,';',unix_timestamp(),';',type,';',output) as cmd from escalation_stati where id='".$res->{id}."'";
       %dbResult = queryDB($query);
 
       $cmdq->enqueue($dbResult{0}{cmd});

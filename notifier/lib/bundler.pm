@@ -155,13 +155,15 @@ sub sendNotifications
 
                 my $now = time();
                 # create a fake command
-                $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, service, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+		$sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                     'NOTIFICATION',
                     $notify_id,
                     'multiple alerts',
                     'multiple alerts',
                     '127.0.0.1',
+                    'nohostgroup',
                     'nosvc',
+                    'nosvcgroup',
                     's',
                     'WARNING',
                     $now,

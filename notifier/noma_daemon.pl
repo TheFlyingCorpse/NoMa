@@ -141,7 +141,8 @@ my $check_type        = '';
 my $status            = '';
 my $datetime          = '';
 my $output            = '';
-my $notification_type = '', my $verbose = undef;
+my $notification_type = '';
+my $verbose           = undef;
 my $version           = undef;	# command option
 my $help              = undef;	# command option
 
@@ -495,7 +496,7 @@ do
                     }
 
                 }
-                elsif ($cmdh{status} ne 'OK' and $cmdh{status} ne 'UP')
+                elsif ($cmdh{status} ne 'OK' or $cmdh{status} ne 'UP')
                 {
                     debug("creating a new escalation for rule $esc_rule");
                     # create status entry
@@ -516,6 +517,9 @@ do
             # SEND COMMANDS
 ##############################################################################
 
+            # Suppress double of same method to same contact
+            my %sentList = ();
+
             # loop through list of contacts
             for my $contact (@contactsArr)
             {
@@ -526,6 +530,8 @@ do
                 my $dest   = $contact->{ $contact->{contact_field} };
                 my $from   = $contact->{from};
                 my $id    = unique_id();
+                my $flag  = 0;
+                my $notifyUnique = 1;
 
                 # insert into DB
                 createLog(
@@ -535,6 +541,31 @@ do
                     $method,           $contact->{mid}, $user,
                     'processing notification'
                 );
+
+
+                # Find out if the user has got a notification from the same method already.
+                foreach my $userNotification (keys %sentList) {
+                    if ($sentList{$userNotification} eq $method){
+                        updateLog($id, ' already sent in previous notification');
+                        debug('User and method already notified: ' . $user . ' and ' .  $method);
+                        $flag++;
+                        $notifyUnique = 0;
+                    }
+                }
+                # Should be unique by now, update log
+                unless ($flag) {
+                        #updateLog($id, ' uniq2user&method');
+                        debug('User and method unique: ' . $user . ' ,' . $method);
+                }
+ 
+                # Exit if its not unique!
+                if ($notifyUnique == 0){
+                        debug('Unique, next!');
+                        next;
+                }
+ 
+                # Save the method the user is notified with to the hashlist.
+                $sentList{$user} = $method;
 
                 # TODO consider using timezones and converting time to user configurable format e.g. 
                 # M/D/YY for USA
@@ -753,8 +784,12 @@ sub parseCommand
         if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
 
         $cmdh{operation} = lc($cmdh{operation});
-
-        if ( ($cmdh{stime} =~ /\D/) or ($cmdh{stime} < 1000000000))
+        if (($cmdh{stime} eq ""))
+        {
+             debug("Empty date $cmdh{stime} for notification - using time()");
+             $cmdh{stime} = time();
+        }
+        elsif (($cmdh{stime} =~ /\D/) or ($cmdh{stime} < 1000000000))
         {
             debug("Invalid date $cmdh{stime} for notification - using time()");
             $cmdh{stime} = time();
