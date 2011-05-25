@@ -639,7 +639,7 @@ CREATE TABLE `escalation_stati` (
   `host` varchar(255) character set latin1 NOT NULL,
   `host_alias` varchar(255) default NULL,
   `host_address` varchar(255) default NULL,
-  `hostgroups` varchar(255) default set latin1 NOT NULL,
+  `hostgroups` varchar(255) character set latin1 NOT NULL,
   `service` varchar(255) character set latin1 NOT NULL,
   `servicegroups` varchar(255) character set latin1 NOT NULL,
   `check_type` varchar(255) default NULL,
