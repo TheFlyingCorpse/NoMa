@@ -696,7 +696,7 @@ may not take account of changes made after they are started.
       hostgroups, host, servicegroups OR service; it now has logic to 
       remove included notification rules based on the order of filters. 
       There is a fixed order of how the filters work, from highest to 
-      lowest. Order is: Hostgroup -> Host -> Servicegroup -> Service. 
+      lowest. Order is: Servicegroup -> Hostgroup -> Host -> Service. 
 
       Below is an example illustrating how the filters now work.
 
@@ -719,13 +719,13 @@ may not take account of changes made after they are started.
         * Service Exclude: mysql query*
 
       - Result Host 1:
-        1. Matches include for hostgroup
-        2. Matches include for servicegroup
+        1. Matches include for servicegroup
+        2. Matches include for hostgroup
         3. Rule matches, notification sent.
 
       - Result Host 2:
-        1. Matches include for hostgroup
-        2. Matches include for servicegroup
+        1. Matches include for servicegroup
+        2. Matches include for hostgroup
         3. Matches exclude for service
         4. Rule does not match, notification not sent to members of this
       notification rule.

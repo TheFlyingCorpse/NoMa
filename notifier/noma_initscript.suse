@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 # init file for noma
-# Bernd Erk (berk@netways.de) - 19/12/2007
+# v2 - Rune Darrud (theflyingcorpse@gmail.com - 2011.05.26
+# v1 - Bernd Erk (berk@netways.de) - 19/12/2007
 #
 # description: the NETWAYS NOtification MAnager
 #
@@ -13,66 +14,53 @@
 # Short-Description: the NETWAYS NOtification MAnager
 # Description:       the NETWAYS NOtification MAnager
 ### END INIT INFO
-# 
+#
 
-# source function library
-#. /etc/init.d/functions
 
-. /etc/rc.status
+# Check for missing binaries (stale symlinks should not happen)
+# Note: Special treatment of stop for LSB conformance
+NOMA_BIN=/usr/local/nagios/noma/notifier/noma_daemon.pl
+test -x $NOMA_BIN || { echo "$NOMA_BIN not installed"; 
+	if [ "$1" = "stop" ]; then exit 0;
+	else exit 5; fi; }
 
-RETVAL=0
-prog="noma_daemon.pl"
+# Check for existence of needed config file and read it
+# Read config	
+
 ME="NoMa"
-nagios_bin="/usr/share/nagios/noma/notifier"
 RUNUSER="nagios"
 RUNGROUP="nagios"
 
-start() {
-	echo -n $"Starting $prog: "
+. /etc/rc.status
 
-	/sbin/startproc -u $RUNUSER $nagios_bin/$prog
-	RETVAL=$?
-	#echo
-	return $RETVAL
-}
+# Reset status of this service
+rc_reset
 
-stop() {
-	echo -n $"Stopping $prog: "
-	killproc $nagios_bin/$prog 2>/dev/null
-	RETVAL=$?
-	return $RETVAL
-}
-
-restart(){
-        stop
-        rc_status -v
-        start
-        rc_status -v
-}
 
 case "$1" in
-  start)
-        start
-        rc_status -v
-        ;;
-  stop)
-        stop
-        rc_status -v
-        ;;
-  restart)
-        restart
-        rc_status
-        ;;
-  status)
-	echo -n "Checking for $ME \n"
-        /sbin/checkproc $prog
-	RETVAL=$?
+    start)
+	echo -n "Starting $ME "
+	/sbin/startproc -u $RUNUSER $NOMA_BIN
 	rc_status -v
-        ;;
-  *)
-	echo $"Usage: $0 {start|stop|restart}"
-	RETVAL=1
+	;;
+    stop)
+	echo -n "Shutting down $ME "
+	/sbin/killproc $NOMA_BIN
+	rc_status -v
+	;;
+    restart)
+	$0 stop
+	$0 start
+	rc_status
+	;;
+    status)
+	echo -n "Checking for service $ME "
+	/sbin/checkproc $NOMA_BIN
+	rc_status -v
+	;;
+    *)
+	echo "Usage: $0 {start|stop|status|restart}"
+	exit 1
+	;;
 esac
-
-exit $RETVAL
-
+rc_exit

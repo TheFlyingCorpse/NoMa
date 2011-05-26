@@ -7,6 +7,14 @@
 <tr><td colspan="3" height="5"></td></tr>
 <tr class="header"><td colspan="3">{$HEADING_HOSTS_AND_SERVICES}<hr/></td></tr>
 <tr>
+<td>{$ADD_EDIT_INCLUDE_SERVICEGROUPS}</td>
+<td><input class="text" name="servicegroups_include" id="servicegroups_include" size="60" value="{$INCLUDE_SERVICEGROUPS}"{$ONCHANGE_SERVICEGROUPS_INCLUDE}/></td>
+</tr>
+<tr>
+<td>{$ADD_EDIT_EXCLUDE_SERVICEGROUPS}</td>
+<td><input class="text" name="servicegroups_exclude" id="servicegroups_exclude" size="60" value="{$EXCLUDE_SERVICEGROUPS}"{$ONCHANGE_SERVICEGROUPS_EXCLUDE}/></td>
+</tr>
+<tr>
 <td>{$ADD_EDIT_INCLUDE_HOSTGROUPS}</td>
 <td><input class="text" name="hostgroups_include" id="hostgroups_include" size="60" value="{$INCLUDE_HOSTGROUPS}"{$ONCHANGE_HOSTGROUPS_INCLUDE}/></td>
 </tr>
@@ -26,14 +34,6 @@
 <tr>
 <td>{$ADD_EDIT_EXCLUDE_HOSTS}</td>
 <td><input class="text" name="hosts_exclude" id="hosts_exclude" size="60" value="{$EXCLUDE_HOSTS}"{$ONCHANGE_HOSTS_EXCLUDE}/></td>
-</tr>
-<tr>
-<td>{$ADD_EDIT_INCLUDE_SERVICEGROUPS}</td>
-<td><input class="text" name="servicegroups_include" id="servicegroups_include" size="60" value="{$INCLUDE_SERVICEGROUPS}"{$ONCHANGE_SERVICEGROUPS_INCLUDE}/></td>
-</tr>
-<tr>
-<td>{$ADD_EDIT_EXCLUDE_SERVICEGROUPS}</td>
-<td><input class="text" name="servicegroups_exclude" id="servicegroups_exclude" size="60" value="{$EXCLUDE_SERVICEGROUPS}"{$ONCHANGE_SERVICEGROUPS_EXCLUDE}/></td>
 </tr>
 <tr>
 <td>{$ADD_EDIT_INCLUDE_SERVICES}</td>

@@ -85,4 +85,5 @@
 * added servicegroup include and exclude filter
 * redid the notification rule's in contacts.pm
 * fixed missing hostgroup column in the SQL files for upgrading/new installation
+* added logic to sending notifications. A Contact will only get one notification per method, this to make it easier to make notification rules that may overlap, without spamming the contact excessively.
 * updated documentation

@@ -360,6 +360,9 @@ do
             $query .= ' and active=\'1\'';
             my %dbResult = queryDB($query);
 
+            # Suppress double of same method to same contact
+            my %sentList = ();
+
             # filter out unneeded users by using exclude lists
             my @ids_all =
             generateNotificationList( $cmdh{check_type}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups},
@@ -517,9 +520,6 @@ do
             # SEND COMMANDS
 ##############################################################################
 
-            # Suppress double of same method to same contact
-            my %sentList = ();
-
             # loop through list of contacts
             for my $contact (@contactsArr)
             {
@@ -533,6 +533,9 @@ do
                 my $flag  = 0;
                 my $notifyUnique = 1;
 
+		# Create a string thats unique to a user, method and notification.
+		my $userAndMethod = "$user.$method.$cmdh{external_id}";
+
                 # insert into DB
                 createLog(
                     '1', $id, $cmdh{external_id}, $contact->{rule},
@@ -542,11 +545,10 @@ do
                     'processing notification'
                 );
 
-
-                # Find out if the user has got a notification from the same method already.
+                # Fgure out if the user has got a notification from the same method and external_ID already.
                 foreach my $userNotification (keys %sentList) {
-                    if ($sentList{$userNotification} eq $method){
-                        updateLog($id, ' already sent in previous notification');
+                    if ( $sentList{$userNotification} eq $userAndMethod ){
+                        updateLog($id, ', already sent in previous notification');
                         debug('User and method already notified: ' . $user . ' and ' .  $method);
                         $flag++;
                         $notifyUnique = 0;
@@ -565,7 +567,7 @@ do
                 }
  
                 # Save the method the user is notified with to the hashlist.
-                $sentList{$user} = $method;
+                $sentList{$userAndMethod} = $userAndMethod;
 
                 # TODO consider using timezones and converting time to user configurable format e.g. 
                 # M/D/YY for USA
@@ -585,9 +587,10 @@ do
 			$cmdh{hostgroups}, $cmdh{service}, $cmdh{servicegroups}, $cmdh{output}, 
 			$contact->{rule});
                 }
-
             }
 
+       # Clear the list over notifications, so the same external ID can be notified again if it is escalated to same users with the same methods.
+       %sentList = ();
         }
     }
 

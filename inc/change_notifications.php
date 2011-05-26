@@ -61,12 +61,12 @@ function addNotification ($p) {
 
 	// prepare data
 	$owner = prepareDBValue($p['owner']);
+        $servicegroups_include = prepareDBValue($p['servicegroups_include']);
+        $servicegroups_exclude = prepareDBValue($p['servicegroups_exclude']);
 	$hostgroups_include = prepareDBValue($p['hostgroups_include']);
 	$hostgroups_exclude = prepareDBValue($p['hostgroups_exclude']);
 	$hosts_include = prepareDBValue($p['hosts_include']);
 	$hosts_exclude = prepareDBValue($p['hosts_exclude']);
-        $servicegroups_include = prepareDBValue($p['servicegroups_include']);
-        $servicegroups_exclude = prepareDBValue($p['servicegroups_exclude']);
 	$services_include = prepareDBValue($p['services_include']);
 	$services_exclude = prepareDBValue($p['services_exclude']);
 	$notify_after_tries = prepareDBValue($p['notify_after_tries']);
@@ -262,12 +262,12 @@ function updateNotification ($p) {
 	if (!$id) return false;
 
 	$owner = prepareDBValue($p['owner']);
+        $servicegroups_include = prepareDBValue($p['servicegroups_include']);
+        $servicegroups_exclude = prepareDBValue($p['servicegroups_exclude']);
 	$hostgroups_include = prepareDBValue($p['hostgroups_include']);
 	$hostgroups_exclude = prepareDBValue($p['hostgroups_exclude']);
 	$hosts_include = prepareDBValue($p['hosts_include']);
 	$hosts_exclude = prepareDBValue($p['hosts_exclude']);
-        $servicegroups_include = prepareDBValue($p['servicegroups_include']);
-        $servicegroups_exclude = prepareDBValue($p['servicegroups_exclude']);
 	$services_include = prepareDBValue($p['services_include']);
 	$services_exclude = prepareDBValue($p['services_exclude']);
 	$notify_after_tries = prepareDBValue($p['notify_after_tries'][0]);

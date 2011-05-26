@@ -141,7 +141,7 @@ $logs = array (
 $str_maxlen = array (
 	'overview_hostgroups'	        => 50,
 	'overview_host'	                => 40,
-        'overview_sevicegroups'         => 50,
+        'overview_servicegroups'        => 50,
         'overview_service'              => 40,
 );
 

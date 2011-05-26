@@ -69,12 +69,12 @@ function getContent () {
 	$templateContent->assign('HEADING_TIME', ADD_EDIT_HEADING_TIME);
 	$templateContent->assign('ADD_EDIT_HEADING_OWNER', ADD_EDIT_HEADING_OWNER);
 	$templateContent->assign('ADD_EDIT_OWNER', ADD_EDIT_OWNER);
+        $templateContent->assign('ADD_EDIT_INCLUDE_SERVICEGROUPS', ADD_EDIT_INCLUDE_SERVICEGROUPS);
+        $templateContent->assign('ADD_EDIT_EXCLUDE_SERVICEGROUPS', ADD_EDIT_EXCLUDE_SERVICEGROUPS);
 	$templateContent->assign('ADD_EDIT_INCLUDE_HOSTGROUPS', ADD_EDIT_INCLUDE_HOSTGROUPS);
 	$templateContent->assign('ADD_EDIT_EXCLUDE_HOSTGROUPS', ADD_EDIT_EXCLUDE_HOSTGROUPS);
 	$templateContent->assign('ADD_EDIT_INCLUDE_HOSTS', ADD_EDIT_INCLUDE_HOSTS);
 	$templateContent->assign('ADD_EDIT_EXCLUDE_HOSTS', ADD_EDIT_EXCLUDE_HOSTS);
-        $templateContent->assign('ADD_EDIT_INCLUDE_SERVICEGROUPS', ADD_EDIT_INCLUDE_SERVICEGROUPS);
-        $templateContent->assign('ADD_EDIT_EXCLUDE_SERVICEGROUPS', ADD_EDIT_EXCLUDE_SERVICEGROUPS);
 	$templateContent->assign('ADD_EDIT_INCLUDE_SERVICES', ADD_EDIT_INCLUDE_SERVICES);
 	$templateContent->assign('ADD_EDIT_EXCLUDE_SERVICES', ADD_EDIT_EXCLUDE_SERVICES);
 	$templateContent->assign('ADD_EDIT_TIMEZONE', ADD_EDIT_TIMEZONE);
@@ -129,14 +129,14 @@ function getContent () {
 		$templateContent->assign('ACTION', 'update');
 		$templateContent->assign('HEADING', ADD_EDIT_HEADING_EDIT);
 
+                $templateContent->assign('INCLUDE_SERVICEGROUPS', $dbResult[0]['servicegroups_include']);
+                $templateContent->assign('EXCLUDE_SERVICEGROUPS', $dbResult[0]['servicegroups_exclude']);
+
 		$templateContent->assign('INCLUDE_HOSTGROUPS', $dbResult[0]['hostgroups_include']);
 		$templateContent->assign('EXCLUDE_HOSTGROUPS', $dbResult[0]['hostgroups_exclude']);
 
 		$templateContent->assign('INCLUDE_HOSTS', $dbResult[0]['hosts_include']);
 		$templateContent->assign('EXCLUDE_HOSTS', $dbResult[0]['hosts_exclude']);
-
-                $templateContent->assign('INCLUDE_SERVICEGROUPS', $dbResult[0]['servicegroups_include']);
-                $templateContent->assign('EXCLUDE_SERVICEGROUPS', $dbResult[0]['servicegroups_exclude']);
 
 		$templateContent->assign('INCLUDE_SERVICES', $dbResult[0]['services_include']);
 		$templateContent->assign('EXCLUDE_SERVICES', $dbResult[0]['services_exclude']);
@@ -372,14 +372,15 @@ function getContent () {
 
 	// BEGIN - generate content for asynchronous-preview call
 	if ($notifications['host_service_preview']) {
+
+                $templateContent->assign('ONCHANGE_SERVICEGROUPS_INCLUDE', ' onkeyup="update_preview(\'sg\',\'i\');"');
+                $templateContent->assign('ONCHANGE_SERVICEGROUPS_EXCLUDE', ' onkeyup="update_preview(\'sg\',\'e\');"');
+
 		$templateContent->assign('ONCHANGE_HOSTGROUPS_INCLUDE', ' onkeyup="update_preview(\'hg\',\'i\');"');
 		$templateContent->assign('ONCHANGE_HOSTGROUPS_EXCLUDE', ' onkeyup="update_preview(\'hg\',\'e\');"');
 
 		$templateContent->assign('ONCHANGE_HOSTS_INCLUDE', ' onkeyup="update_preview(\'h\',\'i\');"');
 		$templateContent->assign('ONCHANGE_HOSTS_EXCLUDE', ' onkeyup="update_preview(\'h\',\'e\');"');
-
-                $templateContent->assign('ONCHANGE_SERVICEGROUPS_INCLUDE', ' onkeyup="update_preview(\'sg\',\'i\');"');
-                $templateContent->assign('ONCHANGE_SERVICEGROUPS_EXCLUDE', ' onkeyup="update_preview(\'sg\',\'e\');"');
 
 		$templateContent->assign('ONCHANGE_SERVICES_INCLUDE', ' onkeyup="update_preview(\'s\',\'i\');"');
 		$templateContent->assign('ONCHANGE_SERVICES_EXCLUDE', ' onkeyup="update_preview(\'s\',\'e\');"');
