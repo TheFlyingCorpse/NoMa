@@ -298,7 +298,7 @@ function getContent () {
 			$templateSubContent->assign('OVERVIEW_EDIT_ENTRY_IMG', 'images/spacer.gif');
 			$templateSubContent->assign('OVERVIEW_DELETE_ENTRY_IMG', 'images/spacer.gif');
 		}
-		$data = list($long, $value, $short) = shorten($row['hostgroups_include'] . ' | ' .$row['hostgroups_exclude'], 'overview_hostgroup');
+		$data = list($long, $value, $short) = shorten($row['hostgroups_include'] . ' | ' .$row['hostgroups_exclude'], 'overview_hostgroups');
 		$templateSubContent->assign('HOSTGROUPS', $value);
 		if ($short) {
 			$templateSubContent->assign(
@@ -315,7 +315,7 @@ function getContent () {
 				' onmouseover="javascript:showLong(\'&lt;b&gt;+&lt;/b&gt;: ' . $row['hosts_include'] . '&lt;br/&gt;&lt;b&gt;-&lt;/b&gt;: ' . $row['hosts_exclude'] . '\');" onmouseout="javascript:hideLong();"'
 			);
 		}
-                $data = list($long, $value, $short) = shorten($row['servicegroups_include'] . ' | ' .$row['servicegroups_exclude'], 'overview_servicegroup');
+                $data = list($long, $value, $short) = shorten($row['servicegroups_include'] . ' | ' .$row['servicegroups_exclude'], 'overview_servicegroups');
                 $templateSubContent->assign('SERVICEGROUPS', $value);
                 if ($short) {
                         $templateSubContent->assign(
