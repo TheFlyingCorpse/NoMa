@@ -689,3 +689,15 @@ CREATE TABLE `tmp_active` (
   UNIQUE KEY `id` (`id`),
   FOREIGN KEY `command_id` (`command_id`) REFERENCES `tmp_commands`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*
+  The following INDEXes are just a suggestion, please evaluate whether they
+  make sense. Those INDEXes reduced query execution time from 10 mins to less
+  then one second on a system with a large notification_logs table:
+
+CREATE INDEX external_id ON tmp_commands (external_id);
+CREATE INDEX unique_id ON notification_logs (unique_id);
+CREATE INDEX notify_id ON tmp_active (notify_id);
+CREATE INDEX incident_id ON escalation_stati (incident_id);
+*/
+
