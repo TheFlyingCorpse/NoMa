@@ -222,6 +222,7 @@ sub getUnhandledRules
 
     # if global escalation is enabled, all rules are "handled"
     return () if ($conf->{'escalator'}->{'internalEscalation'} == 1);
+    return () if scalar @$ids < 1;
 
     my $query = 'select id from notifications where let_notifier_handle=\'0\' and id in ('.join(',',@$ids).')';
 
@@ -242,6 +243,7 @@ sub getHandledRules
     #
 
     my ($ids) = @_;
+    return () if scalar @$ids < 1;
 
     my $query = 'select id from notifications where id in ('.join(',',@$ids).')';
     $query .= ' and let_notifier_handle=\'1\''
