@@ -273,7 +273,7 @@ if ( defined($version) )
     exit 0;
 }
 
-if ( $notification_type ne 'PROBLEM' and $notification_type ne 'RECOVERY')
+if ( $notification_type ne 'PROBLEM' and $notification_type ne 'RECOVERY' and $notification_type ne 'ACKNOWLEDGEMENT' and $notification_type ne 'FLAPPINGSTART' and $notification_type ne 'FLAPPINGSTOP' and $notification_type ne 'FLAPPINGDISABLED' and $notification_type ne 'DOWNTIMESTART' and $notification_type ne 'DOWNTIMEEND' and $notification_type ne 'DOWNTIMECANCELLED')
 {
     exit 0;
 }
