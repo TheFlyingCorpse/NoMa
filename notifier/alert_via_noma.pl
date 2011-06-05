@@ -187,6 +187,8 @@ my $status              = '';
 my $datetime            = '';
 my $output              = '';
 my $notification_type   = '';
+my $authors		= '';
+my $comment		= '';
 my $verbose             = undef;
 my $version             = undef;
 my $help                = undef;
@@ -251,6 +253,8 @@ my $clps = GetOptions(
     "s|status=s"            => \$status,
     "t|datetime=s"          => \$datetime,
     "n|notification-type=s" => \$notification_type,
+    "A|authors"	            => \$authors,
+    "C|comment"             => \$comment,
     "o|output=s"            => \$output,
     "V|version"             => \$version,
     "p|pipe"                => \$usefifo,

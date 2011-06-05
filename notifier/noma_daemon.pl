@@ -332,8 +332,8 @@ do
 #                 "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, output = $output"
 
             # hosts and services in lower case
-            $cmdh{host} = lc($cmdh{host});
-            $cmdh{service} = lc($cmdh{service}) if ( $cmdh{check_type} eq 's' );
+            #$cmdh{host} = lc($cmdh{host});
+            #$cmdh{service} = lc($cmdh{service}) if ( $cmdh{check_type} eq 's' );
 ##############################################################################
             # GENERATE LIST OF CONTACTS TO NOTIFY
 ##############################################################################
