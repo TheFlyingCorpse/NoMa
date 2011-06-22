@@ -115,6 +115,7 @@ sub conf {
 
 Notification Type: $notification_type
 Host: $host
+Host Alias: $host_alias
 State: $status
 Address: $host_address
 Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host
@@ -131,6 +132,7 @@ Date/Time: $datetime',							# mail body
 Notification Type: $notification_type
 Service: $service
 Host: $host
+Host Alias: $host_alias
 State: $status
 Address: $host_address
 Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service

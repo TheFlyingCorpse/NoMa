@@ -19,6 +19,7 @@ Table of Contents
   3.1 Preparation
   3.2 Setting up the database
   3.3 Installing the daemon
+  3.4 Apache configuration
 
 4. Configuration
 
@@ -193,6 +194,13 @@ For Debian:
 * cp noma_initscript.debian /etc/init.d/noma
 * update-rc.d noma defaults
 * /etc/init.d/noma start
+
+3.4 Apache configuration
+----------------------------
+
+Copy the example contrib/noma.conf to your local apache2/conf.d directory, like /etc/apache2/conf.d/
+Modify it to fit your needs and restart apache afterwards to load the new configuration.
+See the sample file for examples of configuration.
 
 
 4. Configuration

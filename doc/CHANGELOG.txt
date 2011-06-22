@@ -88,4 +88,7 @@
 * fixed missing hostgroup column in the SQL files for upgrading/new installation
 * added logic to sending notifications. A Contact will only get one notification per method, this to make it easier to make notification rules that may overlap, without spamming the contact excessively.
 * added indexes to speed up MySQL performance 100 fold in setups with thousands of notifications.
+* added $host_alias as a default value to notify with via email. Note that there currently as of Nagios 3.2.3 is a bug regarding hostalias not being updated in the retention.dat file. 
+* now supports more than PROBLEM and RECOVERY notifications, added support for PROBLEM, RECOVERY, ACKNOWLEDGEMENT, FLAPPINGSTART, FLAPPINGSTOP, FLAPPINGDISABLED, DOWNTIMESTART, DOWNTIMEEND, DOWNTIMECANCELLED.
+* added a sample apache noma.conf file under contrib/
 * updated documentation
