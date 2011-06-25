@@ -37,7 +37,7 @@ sub sendNotifications
 
     # select notifications due to be executed that are not currently in progress and that have not already been bundled
     # N.B. a bundled notification will also appear here as a notification with a separate field.
-    my $query = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled = \'0\' and a.stime <= \''.time().'\'';
+    my $query = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comment,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled = \'0\' and a.stime <= \''.time().'\'';
     %dbResult = queryDB($query, undef, 1);
 
     return unless (keys(%dbResult));

@@ -48,7 +48,7 @@
 
 
 #
-# usage: sendSMSfinder.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <OUTPUT> [SERVICE]
+# usage: sendSMSfinder.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT>  <OUTPUT> [SERVICE]
 #
 #
 
@@ -68,7 +68,7 @@ my $debug = $conf->{debug}->{sms};
 
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
-if ($numArgs != 10 && $numArgs != 11)
+if ($numArgs != 13 && $numArgs != 14)
 {
 	print "wrong number of parameters ($numArgs)\n";
 	exit 1;
@@ -84,10 +84,13 @@ my $notification_type = $ARGV[5];
 my $host = $ARGV[6];
 my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
-my $output = $ARGV[9];
+my $incident_id = $ARGV[9];
+my $authors = $ARGV[10];
+my $comment = $ARGV[11];
+my $output = $ARGV[12];
 my $service = '';
 my $datetime = localtime($datetimes);
-$service = $ARGV[10] if ($numArgs == 11);
+$service = $ARGV[13] if ($numArgs == 14);
 
 
 my $message = '';

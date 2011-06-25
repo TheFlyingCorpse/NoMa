@@ -48,18 +48,22 @@
 
 
 #
-# usage: sendSMS.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <OUTPUT> [SERVICE]
+# usage: sendSMS.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT>  <OUTPUT> [SERVICE]
 #
 #
 
 
 use strict;
 use CGI;
+use FindBin;
+use lib "$FindBin::Bin";
+use noma_conf;
+my $conf = conf();
 
 
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
-exit 1 if ($numArgs != 10 && $numArgs != 11);
+exit 1 if ($numArgs != 13 && $numArgs != 14);
 
 
 # get parameters
@@ -72,22 +76,45 @@ my $notification_type = $ARGV[5];
 my $host = $ARGV[6];
 my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
-my $output = $ARGV[9];
+my $incident_id = $ARGV[9];
+my $authors = $ARGV[10];
+my $comment = $ARGV[11];
+my $output = $ARGV[12];
 my $service = '';
 my $datetime = localtime($datetimes);
-$service = $ARGV[10] if ($numArgs == 11);
+$service = $ARGV[13] if ($numArgs == 14);
 
 
 my $message = '';
 
-if ($check_type eq 'h') {
-	$message .= "NoMa: Host $host is $status! $datetime";
-} elsif ($check_type eq 's') {
-	$message .= "NoMa: $host - $service is $status! $datetime";
+#if ($check_type eq 'h') {
+#	$message .= "NoMa: ID $incident_id - Host $host is $status! $datetime";
+#} elsif ($check_type eq 's') {
+#	$message .= "NoMa: ID $incident_id - $host - $service is $status! $datetime";
+#} else {
+#	exit 1;
+#}
+
+if ($check_type eq 'h')
+{
+    if (($authors ne '') or ($comment ne ''))
+    {
+        $message = $conf->{sendsms}->{ackmessage}->{host} if (defined( $conf->{sendsms}->{ackmessage}->{host}));
+    } else {
+        $message = $conf->{sendsms}->{message}->{host} if (defined( $conf->{sendsms}->{message}->{host}));
+    }
+
 } else {
-	exit 1;
+    if (($authors ne '') or ($comment ne ''))
+    {
+        $message = $conf->{sendsms}->{ackmessage}->{service} if (defined( $conf->{sendsms}->{ackmessage}->{service}));
+    } else {
+        $message = $conf->{sendsms}->{message}->{service}  if (defined( $conf->{sendsms}->{message}->{service}));
+    }
 }
 
+
+$message =~ s/(\$\w+)/$1/gee;
 system("/usr/local/bin/sendsms $to \"$message\"");
 
 exit 0;

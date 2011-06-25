@@ -99,9 +99,39 @@ sub conf {
 			pass			=> ['nagios', 'nagios'],	# pass for iSMS/SMSfinder
 			check_command		=> '/usr/local/nagios/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
 			message	=> {
-				host		=> 'NoMa: $host is $status! $datetime',			# host message
-				service		=> 'NoMa: $host - $service is $status! $datetime',	# service message
+				host		=> 'NoMa: ID $incident_id 
+No: $notification_type
+Hst: $host
+S: $status
+D: $datetime',			# host message
+				service		=> 'NoMa: ID $incident_id
+No: $notification_type
+Hst: $host
+Svc: $service
+S: $status!
+Time: $datetime',	# service message
 			},
+
+                        ackmessage => {
+                                host            => 'NoMa: ID $incident_id
+No: $notification_type
+Author: $authors
+Com: $comment
+Hst: $host
+S: $status
+Time: $datetime',                  # host message
+                                service         => 'NoMa: ID $incident_id
+No: $notification_type
+Athor: $authors
+Com: $comment
+Hst: $host
+Svc: $service
+S: $status!
+Time: $datetime',  # service message
+#
+#                                host            => 'NoMa: ID $incident_id\nT: $notification_type\nAuthor: $authors\nComment: $comment\nHost: $host is $status!\n $datetime',                 # host message
+#                                service         => 'NoMa: ID $incident_id\nT: $notification_type\nAuthor: $authors\nComment: $comment\nHost: $host\nService: $service\nStatus: $status! $datetime',      # service message
+                        },
 		},
 			
 		# email alerting settings
@@ -113,6 +143,7 @@ sub conf {
 					message	=> 
 '***** NoMa *****
 
+ID: $incident_id
 Notification Type: $notification_type
 Host: $host
 Host Alias: $host_alias
@@ -122,6 +153,19 @@ Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host
 Info: $output
 
 Date/Time: $datetime',							# mail body
+                                        ackmessage =>
+'***** NoMa *****
+
+ID: $incident_id
+Notification Type: $notification_type
+Host: $host
+Author: $authors
+Comment: $comment
+State: $status
+Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host
+Info: $output
+
+Date/Time: $datetime',  
                     # filename => '/tmp/message_for_$host.txt',           # optionally include contents of filename (as variable $file in message). WARNING: avoid _ directly after a variable name.
 				},
 				service => {
@@ -129,6 +173,7 @@ Date/Time: $datetime',							# mail body
 					message	=> 
 '***** NoMa *****
 
+ID: $incident_id
 Notification Type: $notification_type
 Service: $service
 Host: $host
@@ -139,6 +184,21 @@ Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$ser
 Info: $output
 
 Date/Time: $datetime',							# mail body
+					ackmessage =>
+'***** NoMa *****
+
+ID: $incident_id
+Notification Type: $notification_type
+Author: $authors
+Comment: $comment
+Service: $service
+Host: $host
+State: $status
+
+Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service
+Info: $output
+
+Date/Time: $datetime',
                     # filename => '',           # optionally include contents of filename (as variable $file in message). WARNING: avoid _ directly after a variable name.
 				},
 			},

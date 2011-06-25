@@ -13,6 +13,9 @@ ALTER TABLE `notifications` ADD `hostgroups` VARCHAR( 255 ) NOT NULL AFTER `host
 ALTER TABLE `notifications` ADD `hostgroups` VARCHAR( 255 ) NOT NULL AFTER `hostgroups_include`
 END
 
+ALTER TABLE `tmp_commands` ADD `authors` varchar(255) NOT NULL AFTER `notification_type`
+ALTER TABLE `tmp_commands` ADD `comment` varchar(255) NOT NULL AFTER `authors`
+
 CREATE INDEX external_id ON tmp_commands (external_id);
 CREATE INDEX unique_id ON notification_logs (unique_id);
 CREATE INDEX notify_id ON tmp_active (notify_id);
@@ -20,3 +23,4 @@ CREATE INDEX incident_id ON escalation_stati (incident_id);
 
 # IF not hotfixed for hostgroups after upgrade to 1.0.6, run this to be sure! (If it already exists, it wont finish!)
 ALTER TABLE `tmp_commands` ADD `hostgroups` VARCHAR( 255 ) NOT NULL AFTER `hostgroups`
+

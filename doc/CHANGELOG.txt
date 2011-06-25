@@ -91,4 +91,5 @@
 * added $host_alias as a default value to notify with via email. Note that there currently as of Nagios 3.2.3 is a bug regarding hostalias not being updated in the retention.dat file. 
 * now supports more than PROBLEM and RECOVERY notifications, added support for PROBLEM, RECOVERY, ACKNOWLEDGEMENT, FLAPPINGSTART, FLAPPINGSTOP, FLAPPINGDISABLED, DOWNTIMESTART, DOWNTIMEEND, DOWNTIMECANCELLED.
 * added a sample apache noma.conf file under contrib/
+* added default notification ID, notification AUTHOR and notification COMMENT support, so acknowledgements, with comments and authors can be tracked. Modified default email and sms messages to reflect this change.
 * updated documentation

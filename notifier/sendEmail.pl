@@ -48,7 +48,7 @@
 
 
 #
-# usage: sendEmail.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <OUTPUT> [SERVICE]
+# usage: sendEmail.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT>  <OUTPUT> [SERVICE]
 #
 #
 
@@ -67,7 +67,7 @@ my $conf = conf();
 
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
-exit 1 if ($numArgs != 10 && $numArgs != 11);
+exit 1 if ($numArgs != 13 && $numArgs != 14);
 
 
 # get parameters
@@ -80,7 +80,10 @@ my $notification_type = $ARGV[5];
 my $host = $ARGV[6];
 my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
-my $output = $ARGV[9];
+my $incident_id = $ARGV[9];
+my $authors = $ARGV[10];
+my $comment = $ARGV[11];
+my $output = $ARGV[12];
 my $service = '';
 my $filename = '';
 my $file = '';
@@ -89,7 +92,7 @@ my $subject = 'Subject: NoMa Alert';
 my $message = "$host/$service is $status\n$output\n";
 my $datetime = scalar(localtime($datetimes));
 
-$service = $ARGV[10] if ($numArgs == 11);
+$service = $ARGV[13] if ($numArgs == 14);
 
 
 # check email format
@@ -103,12 +106,22 @@ $to = "To: " . $to;
 if ($check_type eq 'h')
 {
     $subject = 'Subject: '.$conf->{sendemail}->{message}->{host}->{subject} if (defined( $conf->{sendemail}->{message}->{host}->{subject}));
-    $message = $conf->{sendemail}->{message}->{host}->{message} if (defined( $conf->{sendemail}->{message}->{host}->{message}));
+    if (($authors ne '') or ($comment ne ''))
+    {
+        $message = $conf->{sendemail}->{message}->{host}->{ackmessage} if (defined( $conf->{sendemail}->{message}->{host}->{ackmessage}));
+    } else {
+        $message = $conf->{sendemail}->{message}->{host}->{message} if (defined( $conf->{sendemail}->{message}->{host}->{message}));
+    }
     $filename = $conf->{sendemail}->{message}->{host}->{filename} if (defined( $conf->{sendemail}->{message}->{host}->{filename}));
 
 } else {
     $subject = 'Subject: '.$conf->{sendemail}->{message}->{service}->{subject} if (defined( $conf->{sendemail}->{message}->{service}->{subject}));
-    $message = $conf->{sendemail}->{message}->{service}->{message} if (defined( $conf->{sendemail}->{message}->{service}->{message}));
+    if (($authors ne '') or ($comment ne ''))
+    {
+	$message = $conf->{sendemail}->{message}->{service}->{ackmessage} if (defined( $conf->{sendemail}->{message}->{service}->{ackmessage}));
+    } else {
+	$message = $conf->{sendemail}->{message}->{service}->{message} if (defined( $conf->{sendemail}->{message}->{service}->{message}));
+    }
     $filename = $conf->{sendemail}->{message}->{service}->{filename} if (defined( $conf->{sendemail}->{message}->{service}->{filename}));
 }
 

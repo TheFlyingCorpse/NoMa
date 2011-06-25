@@ -142,10 +142,10 @@ Print help message and exit.
 Can be integrated into nagios with the following
 
 For services;
-  command_line    /path_to_noma/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -G "$HOSTGROUPNAMES$" -E "$SERVICEGROUPNAMES$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t "$SHORTDATETIME$"
+  command_line    /path_to_noma/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -G "$HOSTGROUPNAMES$" -E "$SERVICEGROUPNAMES$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t "$SHORTDATETIME$" -u "$SERVICENOTIFICATIONID$" -A "$NOTIFICATIONAUTHORALIAS$" -C "$NOTIFICATIONCOMMENT$"
 
 For hosts;
-  command_line    /path_to_noma/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$"  -G "$HOSTGROUPNAMES$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t "$SHORTDATETIME$"
+  command_line    /path_to_noma/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$"  -G "$HOSTGROUPNAMES$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t "$SHORTDATETIME$" -u "$HOSTNOTIFICATIONID$" -A "$NOTIFICATIONAUTHORALIAS$" -C "$NOTIFICATIONCOMMENT$"
 
 
 =cut
@@ -253,8 +253,8 @@ my $clps = GetOptions(
     "s|status=s"            => \$status,
     "t|datetime=s"          => \$datetime,
     "n|notification-type=s" => \$notification_type,
-    "A|authors"	            => \$authors,
-    "C|comment"             => \$comment,
+    "A|authors=s"           => \$authors,
+    "C|comment=s"             => \$comment,
     "o|output=s"            => \$output,
     "V|version"             => \$version,
     "p|pipe"                => \$usefifo,
@@ -287,8 +287,8 @@ if ( !defined $id or $id eq '' or $id < 1 )
     $id = unique_id();
 }
 
-$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
-    $id, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $check_type, $status, $datetime, $notification_type, $output);
+$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
+    $id, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $check_type, $status, $datetime, $notification_type, $authors, $comment, $output);
 
 if ($usefifo)
 {
