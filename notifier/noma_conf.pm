@@ -99,38 +99,13 @@ sub conf {
 			pass			=> ['nagios', 'nagios'],	# pass for iSMS/SMSfinder
 			check_command		=> '/usr/local/nagios/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
 			message	=> {
-				host		=> 'NoMa: ID $incident_id 
-No: $notification_type
-Hst: $host
-S: $status
-D: $datetime',			# host message
-				service		=> 'NoMa: ID $incident_id
-No: $notification_type
-Hst: $host
-Svc: $service
-S: $status!
-Time: $datetime',	# service message
+				host            => '$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime',
+				service         => '$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime',
 			},
 
                         ackmessage => {
-                                host            => 'NoMa: ID $incident_id
-No: $notification_type
-Author: $authors
-Com: $comment
-Hst: $host
-S: $status
-Time: $datetime',                  # host message
-                                service         => 'NoMa: ID $incident_id
-No: $notification_type
-Athor: $authors
-Com: $comment
-Hst: $host
-Svc: $service
-S: $status!
-Time: $datetime',  # service message
-#
-#                                host            => 'NoMa: ID $incident_id\nT: $notification_type\nAuthor: $authors\nComment: $comment\nHost: $host is $status!\n $datetime',                 # host message
-#                                service         => 'NoMa: ID $incident_id\nT: $notification_type\nAuthor: $authors\nComment: $comment\nHost: $host\nService: $service\nStatus: $status! $datetime',      # service message
+				host            => '$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime',
+				service         => '$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime',
                         },
 		},
 			
@@ -160,7 +135,7 @@ ID: $incident_id
 Notification Type: $notification_type
 Host: $host
 Author: $authors
-Comment: $comment
+Comment: $comments
 State: $status
 Link: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host
 Info: $output
@@ -190,7 +165,7 @@ Date/Time: $datetime',							# mail body
 ID: $incident_id
 Notification Type: $notification_type
 Author: $authors
-Comment: $comment
+Comment: $comments
 Service: $service
 Host: $host
 State: $status

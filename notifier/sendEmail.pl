@@ -82,7 +82,7 @@ my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
 my $incident_id = $ARGV[9];
 my $authors = $ARGV[10];
-my $comment = $ARGV[11];
+my $comments = $ARGV[11];
 my $output = $ARGV[12];
 my $service = '';
 my $filename = '';
@@ -106,7 +106,7 @@ $to = "To: " . $to;
 if ($check_type eq 'h')
 {
     $subject = 'Subject: '.$conf->{sendemail}->{message}->{host}->{subject} if (defined( $conf->{sendemail}->{message}->{host}->{subject}));
-    if (($authors ne '') or ($comment ne ''))
+    if (($authors ne '') or ($comments ne ''))
     {
         $message = $conf->{sendemail}->{message}->{host}->{ackmessage} if (defined( $conf->{sendemail}->{message}->{host}->{ackmessage}));
     } else {
@@ -116,7 +116,7 @@ if ($check_type eq 'h')
 
 } else {
     $subject = 'Subject: '.$conf->{sendemail}->{message}->{service}->{subject} if (defined( $conf->{sendemail}->{message}->{service}->{subject}));
-    if (($authors ne '') or ($comment ne ''))
+    if (($authors ne '') or ($comments ne ''))
     {
 	$message = $conf->{sendemail}->{message}->{service}->{ackmessage} if (defined( $conf->{sendemail}->{message}->{service}->{ackmessage}));
     } else {

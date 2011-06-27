@@ -188,7 +188,7 @@ my $datetime            = '';
 my $output              = '';
 my $notification_type   = '';
 my $authors		= '';
-my $comment		= '';
+my $comments		= '';
 my $verbose             = undef;
 my $version             = undef;
 my $help                = undef;
@@ -254,7 +254,7 @@ my $clps = GetOptions(
     "t|datetime=s"          => \$datetime,
     "n|notification-type=s" => \$notification_type,
     "A|authors=s"           => \$authors,
-    "C|comment=s"             => \$comment,
+    "C|comments=s"             => \$comments,
     "o|output=s"            => \$output,
     "V|version"             => \$version,
     "p|pipe"                => \$usefifo,
@@ -277,7 +277,7 @@ if ( defined($version) )
     exit 0;
 }
 
-if ( $notification_type ne 'PROBLEM' and $notification_type ne 'RECOVERY' and $notification_type ne 'ACKNOWLEDGEMENT' and $notification_type ne 'FLAPPINGSTART' and $notification_type ne 'FLAPPINGSTOP' and $notification_type ne 'FLAPPINGDISABLED' and $notification_type ne 'DOWNTIMESTART' and $notification_type ne 'DOWNTIMEEND' and $notification_type ne 'DOWNTIMECANCELLED')
+if ( $notification_type ne 'PROBLEM' and $notification_type ne 'RECOVERY' and $notification_type ne 'ACKNOWLEDGEMENT' and $notification_type ne 'CUSTOM' and $notification_type ne 'FLAPPINGSTART' and $notification_type ne 'FLAPPINGSTOP' and $notification_type ne 'FLAPPINGDISABLED' and $notification_type ne 'DOWNTIMESTART' and $notification_type ne 'DOWNTIMEEND' and $notification_type ne 'DOWNTIMECANCELLED')
 {
     exit 0;
 }
@@ -288,7 +288,7 @@ if ( !defined $id or $id eq '' or $id < 1 )
 }
 
 $cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
-    $id, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $check_type, $status, $datetime, $notification_type, $authors, $comment, $output);
+    $id, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $check_type, $status, $datetime, $notification_type, $authors, $comments, $output);
 
 if ($usefifo)
 {

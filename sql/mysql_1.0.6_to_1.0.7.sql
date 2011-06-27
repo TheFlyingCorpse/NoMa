@@ -14,7 +14,7 @@ ALTER TABLE `notifications` ADD `hostgroups` VARCHAR( 255 ) NOT NULL AFTER `host
 END
 
 ALTER TABLE `tmp_commands` ADD `authors` varchar(255) NOT NULL AFTER `notification_type`
-ALTER TABLE `tmp_commands` ADD `comment` varchar(255) NOT NULL AFTER `authors`
+ALTER TABLE `tmp_commands` ADD `comments` varchar(255) NOT NULL AFTER `authors`
 
 CREATE INDEX external_id ON tmp_commands (external_id);
 CREATE INDEX unique_id ON notification_logs (unique_id);

@@ -23,13 +23,13 @@
 sub getContacts
 {
 
-    my ($ids, $notificationCounter, $status, $incident_id) = @_;
+    my ($ids, $notificationCounter, $status, $notification_type, $incident_id) = @_;
     debug('trying to getUsersAndMethods');
     my %contacts_c =
-    getUsersAndMethods( $ids, $notificationCounter, $status );
+    getUsersAndMethods( $ids, $notificationCounter, $notification_type,$status );
     debug("Users from rules: ". debugHashUsers(%contacts_c) );
     my %contacts_cg =
-    getUsersAndMethodsFromGroups( $ids, $notificationCounter,
+    getUsersAndMethodsFromGroups( $ids, $notificationCounter, $notification_type,
         $status );
     debug( 'Users from groups: '.debugHashUsers(%contacts_cg) );
 
@@ -216,7 +216,7 @@ sub matchString
 sub getUsersAndMethods
 {
 
-    my ( $ids, $notificationCounter, $status ) = @_;
+    my ( $ids, $notificationCounter, $notification_type, $status ) = @_;
 
     my %dbResult;
     my @dbResult_arr;
@@ -265,7 +265,7 @@ sub getUsersAndMethods
         # debug("Contacts Array: ".Dumper(@dbResult_arr));
 
         @dbResult_arr =
-          filterNotificationsByEscalation( \@dbResult_arr, $notificationCounter,
+          filterNotificationsByEscalation( \@dbResult_arr, $notificationCounter, $notification_type,
             $status );
         # debug("Filtered Array: ".Dumper(@dbResult_arr));
         %dbResult = arrayToHash( \@dbResult_arr );
@@ -281,7 +281,7 @@ sub getUsersAndMethods
 sub getUsersAndMethodsFromGroups
 {
 
-    my ( $ids, $notificationCounter, $status ) = @_;
+    my ( $ids, $notificationCounter, $notification_type, $status ) = @_;
 
     my %dbResult;
     my @dbResult_arr;
@@ -335,7 +335,7 @@ sub getUsersAndMethodsFromGroups
         @dbResult_arr = ( @dbResult_arr, @dbResult_tmp_arr );
 
         @dbResult_arr =
-          filterNotificationsByEscalation( \@dbResult_arr, $notificationCounter,
+          filterNotificationsByEscalation( \@dbResult_arr, $notificationCounter, $notification_type,
             $status );
         %dbResult = arrayToHash( \@dbResult_arr );
 
@@ -475,11 +475,11 @@ sub checkWorkingHours
 sub filterNotificationsByEscalation
 {
 
-    my ( $dbResult_arr, $filter, $status ) = @_;
+    my ( $dbResult_arr, $filter, $notification_type, $status ) = @_;
     my @return_arr;
 
     # prepare search filter
-    if ( $status eq 'OK' || $status eq 'UP' )
+    if ( $status eq 'OK' || $status eq 'UP' || $notification_type eq 'ACKNOWLEDGEMENT' || $notification_type eq 'CUSTOM' || $notification_type eq 'FLAPPINGSTART' || $notification_type eq 'FLAPPINGSTOP' || $notification_type eq 'FLAPPINGDISABLED' || $notification_type eq 'DOWNTIMESTART' || $notification_type eq 'DOWNTIMEEND' || $notification_type eq 'DOWNTIMECANCELLED')
     {
         my @filter_entries;
         for ( my $x = 0 ; $x <= $filter ; $x++ )

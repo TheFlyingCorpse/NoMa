@@ -666,7 +666,7 @@ CREATE TABLE `tmp_commands` (
   `stime` int(11) default 0,
   `notification_type` varchar(255) default NULL,
   `authors` varchar(255), default NULL,
-  `comment` varchar(255), default NULL,
+  `comments` varchar(255), default NULL,
   `output` varchar(4096) default NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

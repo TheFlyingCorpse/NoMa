@@ -78,7 +78,7 @@ my $host_alias = $ARGV[7];
 my $host_address = $ARGV[8];
 my $incident_id = $ARGV[9];
 my $authors = $ARGV[10];
-my $comment = $ARGV[11];
+my $comments = $ARGV[11];
 my $output = $ARGV[12];
 my $service = '';
 my $datetime = localtime($datetimes);
@@ -97,7 +97,7 @@ my $message = '';
 
 if ($check_type eq 'h')
 {
-    if (($authors ne '') or ($comment ne ''))
+    if (($authors ne '') or ($comments ne ''))
     {
         $message = $conf->{sendsms}->{ackmessage}->{host} if (defined( $conf->{sendsms}->{ackmessage}->{host}));
     } else {
@@ -105,7 +105,7 @@ if ($check_type eq 'h')
     }
 
 } else {
-    if (($authors ne '') or ($comment ne ''))
+    if (($authors ne '') or ($comments ne ''))
     {
         $message = $conf->{sendsms}->{ackmessage}->{service} if (defined( $conf->{sendsms}->{ackmessage}->{service}));
     } else {

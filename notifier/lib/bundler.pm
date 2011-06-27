@@ -37,7 +37,7 @@ sub sendNotifications
 
     # select notifications due to be executed that are not currently in progress and that have not already been bundled
     # N.B. a bundled notification will also appear here as a notification with a separate field.
-    my $query = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comment,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled = \'0\' and a.stime <= \''.time().'\'';
+    my $query = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comments,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled = \'0\' and a.stime <= \''.time().'\'';
     %dbResult = queryDB($query, undef, 1);
 
     return unless (keys(%dbResult));
@@ -73,6 +73,9 @@ sub sendNotifications
 			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{service} = $dbResult{$item}{service};
 			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host_alias} = $dbResult{$item}{host_alias};
 			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host_address} = $dbResult{$item}{host_address};
+                       $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{external_id} = $dbResult{$item}{external_id};
+                       $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{authors} = $dbResult{$item}{authors};
+                       $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{comments} = $dbResult{$item}{comments};
 			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{output} = $dbResult{$item}{output};
 			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{notify_id} = $dbResult{$item}{notify_id};
 
@@ -80,7 +83,7 @@ sub sendNotifications
 
         # now repeat the query without the time restriction to fetch any other notifications that have been queued
 
-        my $query2 = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled <= \'0\'';
+        my $query2 = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comments,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled <= \'0\'';
         my %res = queryDB($query2, undef, 1);
 
         foreach my $index (keys %res)
@@ -118,7 +121,7 @@ sub sendNotifications
                     #
 		    debug(" ---> Single alert ($cmd)\n");
                     $param = sprintf(
-                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                         $recipients{$user}{$cmd}{from_user},
                         $recipients{$user}{$cmd}{dest},
                         $recipients{$user}{$cmd}{check_type},
@@ -128,6 +131,9 @@ sub sendNotifications
                         $recipients{$user}{$cmd}{host},
                         $recipients{$user}{$cmd}{host_alias},
                         $recipients{$user}{$cmd}{host_address},
+                        $recipients{$user}{$cmd}{external_id},
+                        $recipients{$user}{$cmd}{authors},
+                        $recipients{$user}{$cmd}{comments},
                         $recipients{$user}{$cmd}{output});
 
                     $param .= ' "'.$recipients{$user}{$cmd}{service}.'"' if ( $recipients{$user}{$cmd}{check_type} eq 's' );
@@ -155,7 +161,7 @@ sub sendNotifications
 
                 my $now = time();
                 # create a fake command
-		$sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+		$sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                     'NOTIFICATION',
                     $notify_id,
                     'multiple alerts',
@@ -168,17 +174,19 @@ sub sendNotifications
                     'WARNING',
                     $now,
                     'PROBLEM',
+		    '',
+                    '',
                     $recipients{$user}{$cmd}{multi_message});
                 updateDB($sql);
                 
                 # add the bundled command to the tmp_active table as a new notification WITHOUT delay
                 prepareNotification($notify_id, '(bundler)', 'Bundled', $cmd, $user, $recipients{$user}{$cmd}{from_user}, $notify_id, $now,
-'h', 'WARNING','PROBLEM', 'multiple alerts',     'multiple alerts', '127.0.0.1', 'nosvc', $recipients{$user}{$cmd}{multi_message}, '0', 1);
+'h', 'WARNING','PROBLEM', 'multiple alerts',     'multiple alerts', '127.0.0.1', 'nosvc','','', $recipients{$user}{$cmd}{multi_message}, '0', 1);
 
                 # now create the actual alert
                 
                 $param = sprintf(
-                    "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                    "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                     $recipients{$user}{$cmd}{from_user},
                     $user,
                     'PROBLEM',
@@ -188,6 +196,8 @@ sub sendNotifications
                     'multiple alerts',
                     'multiple alerts',
                     '127.0.0.1',
+                    '',
+                    '',
                     $recipients{$user}{$cmd}{multi_message},
                     $recipients{$user}{$cmd}{count});
 
@@ -206,7 +216,7 @@ sub sendNotifications
         foreach my $item (@toNotify)
         {
             $param = sprintf(
-                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                 $dbResult{$item}{from_user},
                 $dbResult{$item}{dest},
                 $dbResult{$item}{check_type},
@@ -216,6 +226,9 @@ sub sendNotifications
                 $dbResult{$item}{host},
                 $dbResult{$item}{host_alias},
                 $dbResult{$item}{host_address},
+                $dbResult{$item}{external_id},
+                $dbResult{$item}{authors},
+                $dbResult{$item}{comments},
                 $dbResult{$item}{output});
 
             $param .= ' "'.$dbResult{$item}{service}.'"' if ( $dbResult{$item}{check_type} eq 's' );

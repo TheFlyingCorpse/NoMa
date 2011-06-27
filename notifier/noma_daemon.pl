@@ -369,7 +369,7 @@ do
                 %dbResult );
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
 
-            unless ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
+            unless ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP' || $cmdh{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh{notification_type} eq 'CUSTOM')
             {
                 if (scalar(@ids_all) < 1)
 		{
@@ -414,6 +414,15 @@ do
                         clearEscalationCounter($cmdh{host}, $cmdh{service});
                         deleteFromActiveByName($cmdh{host}, $cmdh{service});
                     }
+                    elsif ($cmdh{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh{notification_type} eq 'CUSTOM')
+                    {
+                        # clear counter
+                        #
+                        debug('  -> Acknowledgement or custom notification, Clear counters');
+                        clearNotificationCounter($cmdh{host}, $cmdh{service});
+                        clearEscalationCounter($cmdh{host}, $cmdh{service});
+                        deleteFromActiveByName($cmdh{host}, $cmdh{service});
+                    }
                     else
                     {
                         # increment counter
@@ -426,6 +435,11 @@ do
                     if ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
                     {
                         debug('Received recovery for a problem we never saw - will try to match against notification no. 1');
+                        $notificationCounter = 1;
+                    }
+                    elsif ($cmdh{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh{notification_type} eq 'CUSTOM')
+                    {
+                        debug('Acknowledgement or custom notification for a problem we never saw - will try to match against notification no. 1');
                         $notificationCounter = 1;
                     }
                     else
@@ -460,7 +474,7 @@ do
                         }
 
                         # get contact data
-                        @contactsArr = (@contactsArr, getContacts(\@id_arr, $notificationCounter, $cmdh{status}, $cmdh{external_id}));
+                        @contactsArr = (@contactsArr, getContacts(\@id_arr, $notificationCounter, $cmdh{status}, $cmdh{notification_type}, $cmdh{external_id}));
                     }
                 }
             }
@@ -495,11 +509,11 @@ do
                         $notificationCounter = $oflo
                             if ($oflo > 0);
 
-                        @contactsArr = (@contactsArr, getContacts(\@esc_arr, $notificationCounter, $cmdh{status}, $cmdh{external_id}));
+                        @contactsArr = (@contactsArr, getContacts(\@esc_arr, $notificationCounter, $cmdh{status}, $cmdh{notification_type}, $cmdh{external_id}));
                     }
 
                 }
-                elsif ($cmdh{status} ne 'OK' or $cmdh{status} ne 'UP')
+                elsif ($cmdh{status} ne 'OK' or $cmdh{status} ne 'UP' and $cmdh{notification_type} ne 'ACKNOWLEDGEMENT' and $cmdh{notification_type} ne 'CUSTOM')
                 {
                     debug("creating a new escalation for rule $esc_rule");
                     # create status entry
@@ -510,7 +524,7 @@ do
 #                         $output
 #                     );
                     debug("adding contacts to array");
-                    @contactsArr = (@contactsArr, getContacts(\@esc_arr, 1, $cmdh{status}, $cmdh{external_id}));
+                    @contactsArr = (@contactsArr, getContacts(\@esc_arr, 1, $cmdh{status}, $cmdh{notification_type}, $cmdh{external_id}));
                 }
 
             }
@@ -584,7 +598,7 @@ do
                     prepareNotification($cmdh{external_id}, $user, $method, 
 			$cmd, $dest, $from, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
                         $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, 
-			$cmdh{hostgroups}, $cmdh{service}, $cmdh{servicegroups}, $cmdh{authors}, $cmdh{comment}, $cmdh{output}, 
+			$cmdh{hostgroups}, $cmdh{service}, $cmdh{servicegroups}, $cmdh{authors}, $cmdh{comments}, $cmdh{output}, 
 			$contact->{rule});
                 }
             }
@@ -781,7 +795,7 @@ sub parseCommand
             	$cmdh{host_alias},      $cmdh{host_address}, 	$cmdh{hostgroups}, 
 		$cmdh{service},        	$cmdh{servicegroups},	$cmdh{check_type},
 	        $cmdh{status},    	$cmdh{stime},		$cmdh{notification_type}, 
-                $cmdh{authors},         $cmdh{comment},         $cmdh{output}
+                $cmdh{authors},         $cmdh{comments},         $cmdh{output}
         ) = split( ';', $cmd,15);
 
         if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
@@ -800,12 +814,12 @@ sub parseCommand
 
     if ( $cmd =~ /^notification;/i)
     {
-      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comment, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                 $cmdh{operation},       $cmdh{external_id},     $cmdh{host},
                 $cmdh{host_alias},      $cmdh{host_address},    $cmdh{hostgroups},
                 $cmdh{service},         $cmdh{servicegroups},   $cmdh{check_type},
                 $cmdh{status},          $cmdh{stime},           $cmdh{notification_type},
-		$cmdh{authors},		$cmdh{comment},         $cmdh{output});
+		$cmdh{authors},		$cmdh{comments},         $cmdh{output});
 	  updateDB($sql);
     }
         return %cmdh;
@@ -878,7 +892,7 @@ sub prepareNotification
 {
 	my ($incident_id, $user, $method, $short_cmd, $dest, $from, $id,
 	$datetime, $check_type, $status,
-	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $authors, $comment, $output, $rule, $nodelay) = @_;
+	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $authors, $comments, $output, $rule, $nodelay) = @_;
 
 	# start of the notification
 	my $start = time();
@@ -899,17 +913,6 @@ sub prepareNotification
 	unless ( defined($dest) )
 	{
 	    $error .= ' Missing destination for notification belonging to: ' . $user;
-	}
-	if (($notification_type ne 'PROBLEM') or ($notification_type ne 'RECOVERY'))
-	{
-	    unless ( defined($authors) )
-	    {
-            	$error .= ' No authors of command: ' . $cmd;
-	    }
-	    unless ( defined($comment) )
-	    {
-            	$error .= ' No comment of command: ' . $cmd;
-            }
 	}
 
     if (defined($error))
@@ -1176,7 +1179,7 @@ sub getNextMethodCmd
 	    $dbResult{0}{timestamp},$dbResult{0}{check_type}, $dbResult{0}{status}, 
 	    $dbResult{0}{type}, $dbResult{0}{host},$dbResult{0}{host_alias}, 
 	    $dbResult{0}{host_address}, $dbResult{0}{hostgroups}, $dbResult{0}{service}, 
-	    $dbResult{0}{servicegroups}, $dbResult{0}{authors},$dbResult{0}{comment}, $dbResult{0}{output});
+	    $dbResult{0}{servicegroups}, $dbResult{0}{authors},$dbResult{0}{comments}, $dbResult{0}{output});
     return $cline;
 
 }
