@@ -21,6 +21,28 @@ ALTER TABLE `notifications` ADD `recipients_include` VARCHAR( 255 ) NOT NULL AFT
 ALTER TABLE `notifications` ADD `recipients_exclude` VARCHAR( 255 ) NOT NULL AFTER `recipients_include`;
 ALTER TABLE `contacts` ADD `netaddress` VARCHAR( 255 ) NOT NULL AFTER `mobile`
 
+ALTER TABLE `notifications` ADD `on_type_problem` TINYINT( 1 ) NOT NULL AFTER `on_host_down` ,
+ADD `on_type_recovery` TINYINT( 1 ) NOT NULL AFTER `on_type_problem` ,
+ADD `on_type_flappingstart` TINYINT( 1 ) NOT NULL AFTER `on_type_recovery` ,
+ADD `on_type_flappingstop` TINYINT( 1 ) NOT NULL AFTER `on_type_flappingstart` ,
+ADD `on_type_flappingdisabled` TINYINT( 1 ) NOT NULL AFTER `on_type_flappingstop` ,
+ADD `on_type_downtimestart` TINYINT( 1 ) NOT NULL AFTER `on_type_flappingdisabled` ,
+ADD `on_type_downtimeend` TINYINT( 1 ) NOT NULL AFTER `on_type_downtimestart` ,
+ADD `on_type_downtimecancelled` TINYINT( 1 ) NOT NULL AFTER `on_type_downtimeend` ,
+ADD `on_type_acknowledgement` TINYINT( 1 ) NOT NULL AFTER `on_type_downtimecancelled` ,
+ADD `on_type_custom` TINYINT( 1 ) NOT NULL AFTER `on_type_acknowledgement`;
+
+ALTER TABLE `escalations_contacts` ADD `on_type_problem` TINYINT( 1 ) NOT NULL AFTER `on_host_down` ,
+ADD `on_type_recovery` TINYINT( 1 ) NOT NULL AFTER `on_type_problem` ,
+ADD `on_type_flappingstart` TINYINT( 1 ) NOT NULL AFTER `on_type_recovery` ,
+ADD `on_type_flappingstop` TINYINT( 1 ) NOT NULL AFTER `on_type_flappingstart` ,
+ADD `on_type_flappingdisabled` TINYINT( 1 ) NOT NULL AFTER `on_type_flappingstop` ,
+ADD `on_type_downtimestart` TINYINT( 1 ) NOT NULL AFTER `on_type_flappingdisabled` ,
+ADD `on_type_downtimeend` TINYINT( 1 ) NOT NULL AFTER `on_type_downtimestart` ,
+ADD `on_type_downtimecancelled` TINYINT( 1 ) NOT NULL AFTER `on_type_downtimeend` ,
+ADD `on_type_acknowledgement` TINYINT( 1 ) NOT NULL AFTER `on_type_downtimecancelled`,
+ADD `on_type_custom` TINYINT( 1 ) NOT NULL AFTER `on_type_acknowledgement`;
+
 INSERT INTO `noma`.`notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES (NULL, 'Growl', 'growl', 'netaddress', '', '0', '0');
 
 CREATE INDEX external_id ON tmp_commands (external_id);

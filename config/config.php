@@ -139,6 +139,7 @@ $logs = array (
 
 // length of overview fields
 $str_maxlen = array (
+	'overview_recipients'		=> 40,
 	'overview_hostgroups'	        => 50,
 	'overview_host'	                => 40,
         'overview_servicegroups'        => 50,
@@ -151,13 +152,26 @@ $stati = array (
 	'Host'		=> array (
 		'on_host_up'			=> 'o',
 		'on_host_down'			=> 'd',
-		'on_host_unreachable'	=> 'u',
+		'on_host_unreachable'		=> 'u',
 	),
 	'Service'	=> array (
-		'on_ok'					=> 'o',
+		'on_ok'				=> 'o',
 		'on_warning'			=> 'w',
 		'on_critical'			=> 'c',
 		'on_unknown'			=> 'u',
+	),
+	'Type'		=> array (
+		'on_type_problem'		=> 'p',
+                'on_type_recovery'		=> 'r',
+                'on_type_flappingstart'		=> 'FS',
+                'on_type_flappingstop'		=> 'fs',
+                'on_type_flappingdisabled'	=> 'fd',
+                'on_type_downtimestart'		=> 'DS',
+                'on_type_downtimeend'		=> 'ds',
+                'on_type_acknowledgement'	=> 'A',
+                'on_type_custom'		=> 'C',
+                'on_type_problem'		=> 'p',
+                'on_type_problem'		=> 'p',
 	),
 );
 

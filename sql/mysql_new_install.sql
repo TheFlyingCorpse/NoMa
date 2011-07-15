@@ -62,6 +62,16 @@ CREATE TABLE `escalations_contacts` (
   `on_host_up` tinyint(1) NOT NULL,
   `on_host_unreachable` tinyint(1) NOT NULL,
   `on_host_down` tinyint(1) NOT NULL,
+  `on_type_problem` tinyint(1) NOT NULL,
+  `on_type_recovery` tinyint(1) NOT NULL,
+  `on_type_flappingstart` tinyint(1) NOT NULL,
+  `on_type_flappingstop` tinyint(1) NOT NULL,
+  `on_type_flappingdisabled` tinyint(1) NOT NULL,
+  `on_type_downtimestart` tinyint(1) NOT NULL,
+  `on_type_downtimeend` tinyint(1) NOT NULL,
+  `on_type_downtimecancelled` tinyint(1) NOT NULL,
+  `on_type_acknowledgement` tinyint(1) NOT NULL,
+  `on_type_custom` tinyint(1) NOT NULL,
   `notify_after_tries` varchar(255) character set latin1 NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -184,6 +194,16 @@ CREATE TABLE `notifications` (
   `on_critical` tinyint(1) NOT NULL,
   `on_host_up` tinyint(1) NOT NULL,
   `on_host_down` tinyint(1) NOT NULL,
+  `on_type_problem` tinyint(1) NOT NULL,
+  `on_type_recovery` tinyint(1) NOT NULL,
+  `on_type_flappingstart` tinyint(1) NOT NULL,
+  `on_type_flappingstop` tinyint(1) NOT NULL,
+  `on_type_flappingdisabled` tinyint(1) NOT NULL,
+  `on_type_downtimestart` tinyint(1) NOT NULL,
+  `on_type_downtimeend` tinyint(1) NOT NULL,
+  `on_type_downtimecancelled` tinyint(1) NOT NULL,
+  `on_type_acknowledgement` tinyint(1) NOT NULL,
+  `on_type_custom` tinyint(1) NOT NULL,
   `timezone_id` int(11) NOT NULL default 372,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

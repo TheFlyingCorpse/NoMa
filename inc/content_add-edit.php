@@ -204,7 +204,7 @@ function getContent () {
 	if (!empty($id)) {
 		// get escalations
 		$query = sprintf(
-			'select id,on_ok,on_warning,on_critical,on_unknown,on_host_up,on_host_unreachable,on_host_down,notify_after_tries
+			'select id,on_ok,on_warning,on_critical,on_unknown,on_host_up,on_host_unreachable,on_host_down,on_type_problem,on_type_recovery,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,notify_after_tries
 				from escalations_contacts
 				where notification_id=\'%s\'
 				order by notify_after_tries asc',
@@ -364,6 +364,17 @@ function getContent () {
 		$templateSubContent->assign('CHECKED_NOTIFY_CRITICAL', ($dbResult[$x]['on_critical'] == '1') ? ' checked="checked"' : null);
 		$templateSubContent->assign('CHECKED_NOTIFY_HOST_UP', ($dbResult[$x]['on_host_up'] == '1') ? ' checked="checked"' : null);
 		$templateSubContent->assign('CHECKED_NOTIFY_HOST_DOWN', ($dbResult[$x]['on_host_down'] == '1') ? ' checked="checked"' : null);
+
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_PROBLEM', ($dbResult[$x]['on_type_problem'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_RECOVERY', ($dbResult[$x]['on_type_recovery'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_FLAPPINGSTART', ($dbResult[$x]['on_type_flappingstart'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_FLAPPINGSTOP', ($dbResult[$x]['on_type_flappingstop'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_FLAPPINGDISABLED', ($dbResult[$x]['on_type_flappingdisabled'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_DOWNTIMESTART', ($dbResult[$x]['on_type_downtimestart'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_DOWNTIMEEND', ($dbResult[$x]['on_type_downtimeend'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_DOWNTIMECANCELLED', ($dbResult[$x]['on_type_downtimecancelled'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_ACKNOWLEDGEMENT', ($dbResult[$x]['on_type_acknowledgement'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_CUSTOM', ($dbResult[$x]['on_type_custom'] == '1') ? ' checked="checked"' : null);
 
 		$templateSubContent->assign('ARRAY_ITEM', $formArray);
 
