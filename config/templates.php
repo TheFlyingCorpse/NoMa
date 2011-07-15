@@ -60,6 +60,7 @@ define('TEMPLATE_LOGIN', TEMPLATE_DIR . 'login.html');
 
 define('TEMPLATE_ADD_EDIT', TEMPLATE_DIR . 'add-edit_notification.html');
 define('TEMPLATE_ADD_EDIT_CONTACTS_METHODS', TEMPLATE_DIR . 'add-edit_notification_contacts_methods.html');
+define('TEMPLATE_ADD_EDIT_NOTIFICATION_TIMEPERIOD', TEMPLATE_DIR . 'add-edit_notification_timeperiod.html');
 define('TEMPLATE_ADD_EDIT_LET_NOTIFIER_HANDLE', TEMPLATE_DIR . 'add-edit_let_notifier_handle.html');
 
 define('TEMPLATE_CONTACT_MANAGER', TEMPLATE_DIR . 'contact_manager.html');
