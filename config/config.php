@@ -168,10 +168,9 @@ $stati = array (
                 'on_type_flappingdisabled'	=> 'fd',
                 'on_type_downtimestart'		=> 'DS',
                 'on_type_downtimeend'		=> 'ds',
+                'on_type_downtimecancelled'	=> 'dc',
                 'on_type_acknowledgement'	=> 'A',
                 'on_type_custom'		=> 'C',
-                'on_type_problem'		=> 'p',
-                'on_type_problem'		=> 'p',
 	),
 );
 

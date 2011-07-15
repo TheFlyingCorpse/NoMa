@@ -138,8 +138,8 @@ function addNotification ($p) {
 	// add notification
 	$query = sprintf(
 		'insert into notifications
-			(active,username,recipients_include,recipients_exclude,hostgroups_include,hostgroups_exclude,hosts_include,hosts_exclude,servicegroups_include,servicegroups_exclude,services_include,services_exclude,notify_after_tries,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,on_type_problem,on_type_recovery,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,let_notifier_handle)
-			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+			(active,username,recipients_include,recipients_exclude,hostgroups_include,hostgroups_exclude,hosts_include,hosts_exclude,servicegroups_include,servicegroups_exclude,services_include,services_exclude,notify_after_tries,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,on_type_problem,on_type_recovery,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,let_notifier_handle,rollover)
+			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
 		'0',
 		$owner,
 		$recipients_include,
@@ -351,7 +351,7 @@ function updateNotification ($p) {
 
 	// update notification
 	$query = sprintf(
-		'update notifications set username=\'%s\', recipients_include=\'%s\', recipients_exclude=\'%s\', hostgroups_include=\'%s\', hostgroups_exclude=\'%s\', hosts_include=\'%s\',hosts_exclude=\'%s\',servicegroups_include=\'%s\', servicegroups_exclude=\'%s\',services_include=\'%s\',services_exclude=\'%s\',notify_after_tries=\'%s\',on_ok=\'%s\',on_warning=\'%s\',on_unknown=\'%s\',on_host_unreachable=\'%s\',on_critical=\'%s\',on_host_up=\'%s\',on_host_down=\'%s\',on_type_problem=\'%s\',on_type_recovery=\'%s\',on_type_flappingstart=\'%s\',on_type_flappingstop=\'%s\',on_type_flappingdisabled=\'%s\',on_type_downtimestart=\'%s\',on_type_downtimeend=\'%s\',on_type_downtimecancelled=\'%s\',on_type_acknowledgement=\'%s\',on_type_custom=\'%s\' ,let_notifier_handle=\'%s\',rollover=\'%s\' where id=\'%s\'',
+		'update notifications set username=\'%s\', recipients_include=\'%s\', recipients_exclude=\'%s\', hostgroups_include=\'%s\', hostgroups_exclude=\'%s\', hosts_include=\'%s\', hosts_exclude=\'%s\', servicegroups_include=\'%s\', servicegroups_exclude=\'%s\', services_include=\'%s\', services_exclude=\'%s\', notify_after_tries=\'%s\',on_ok=\'%s\', on_warning=\'%s\', on_unknown=\'%s\', on_host_unreachable=\'%s\', on_critical=\'%s\', on_host_up=\'%s\', on_host_down=\'%s\', on_type_problem=\'%s\', on_type_recovery=\'%s\', on_type_flappingstart=\'%s\', on_type_flappingstop=\'%s\', on_type_flappingdisabled=\'%s\', on_type_downtimestart=\'%s\', on_type_downtimeend=\'%s\', on_type_downtimecancelled=\'%s\', on_type_acknowledgement=\'%s\', on_type_custom=\'%s\', let_notifier_handle=\'%s\', rollover=\'%s\' where id=\'%s\'',
 		$owner,
 		$recipients_include,
 		$recipients_exclude,
@@ -533,7 +533,6 @@ function updateNotification ($p) {
 				$notify_on_type_downtimecancelled,
 				$notify_on_type_acknowledgement,
 				$notify_on_type_custom,
-
 				$notify_after_tries
 			);
 			queryDB($query);
@@ -561,7 +560,6 @@ function updateNotification ($p) {
 				$notify_on_type_downtimecancelled,
 				$notify_on_type_acknowledgement,
 				$notify_on_type_custom,
-
 				$notify_after_tries
 			);
 			$dbResult = queryDB($query);
