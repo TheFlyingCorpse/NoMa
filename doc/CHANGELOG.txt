@@ -93,4 +93,5 @@
 * now supports more than PROBLEM and RECOVERY notifications, added support for PROBLEM, RECOVERY, ACKNOWLEDGEMENT, FLAPPINGSTART, FLAPPINGSTOP, FLAPPINGDISABLED, DOWNTIMESTART, DOWNTIMEEND, DOWNTIMECANCELLED.
 * added a sample apache noma.conf file under contrib/
 * added default notification ID, notification AUTHOR and notification COMMENT support, so acknowledgements, with comments and authors can be tracked. Modified default email and sms messages to reflect this change.
+* added new method of notification: Growl, see documentation for how to use.
 * updated documentation

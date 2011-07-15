@@ -448,6 +448,20 @@ The individual notifications are configured in this section
         to configure your mail relay to accept mails from the system.
         See 4.4.1 for further info
 
+4.2.9.4 growl
+
+	Growl notifications are sent using an included script. It requires the Perl module
+	Net::Growl and by standard it uses UDP 9887 by default.
+
+	Server only requires Perl module Net::Growl as stated earlier.
+
+	Client, depending on OS, requires an extra client:
+	- Mac: http://growl.info
+	- Linux: http://mattn.github.com/growl-for-linux/
+        - Windows: http://www.growlforwindows.com/gfw
+
+        After install, allow notifications from network, optional require password from LAN.
+
 
 4.2.10 debug - debugging for the notifier
 ------------------------------------------

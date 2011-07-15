@@ -2,3 +2,4 @@ Rune "TheFlyingCorpse" Darrud <theflyingcorpse@gmail.com>
 Christian Doebler <christian.doebler@netways.de>
 Wiliam Preston <william.preston@netways.de>
 Tobias Redel <tobias.redel@netways.de>
+Sebastian Wolf <DerSebastianWolf@web.de>
