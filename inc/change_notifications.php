@@ -152,8 +152,6 @@ function addNotification ($p) {
 		$owner,
 		$recipients_include,
 		$recipients_exclude,
-		$recipients_include,
-		$recipients_exclude,
 		$hostgroups_include,
 		$hostgroups_exclude,
 		$hosts_include,
