@@ -133,6 +133,7 @@ my %check_type_str = (
     ''  => '',
 );
 
+my $recipients        = '';
 my $host              = '';
 my $host_alias        = '';
 my $host_address      = '';
@@ -347,7 +348,7 @@ do
 
             # generate query and get list of possible users to notify
             my $query =
-            'select id,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude from notifications';
+            'select id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude from notifications';
             if ( $cmdh{check_type} eq 'h' )
             {
                 $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\'';
@@ -365,7 +366,7 @@ do
 
             # filter out unneeded users by using exclude lists
             my @ids_all =
-            generateNotificationList( $cmdh{check_type}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups},
+	    generateNotificationList( $cmdh{check_type}, $cmdh{recipients}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups},
                 %dbResult );
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
 
@@ -791,12 +792,12 @@ sub parseCommand
         || $cmd =~ /^escalation;/i )
     {
         (
-            	$cmdh{operation},	$cmdh{external_id},	$cmdh{host},
-            	$cmdh{host_alias},      $cmdh{host_address}, 	$cmdh{hostgroups}, 
+            	$cmdh{operation},	$cmdh{external_id},	$cmdh{recipients},
+		$cmdh{host},   		$cmdh{host_alias},      $cmdh{host_address}, 	$cmdh{hostgroups}, 
 		$cmdh{service},        	$cmdh{servicegroups},	$cmdh{check_type},
 	        $cmdh{status},    	$cmdh{stime},		$cmdh{notification_type}, 
                 $cmdh{authors},         $cmdh{comments},         $cmdh{output}
-        ) = split( ';', $cmd,15);
+        ) = split( ';', $cmd,16);
 
         if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
 
@@ -814,9 +815,9 @@ sub parseCommand
 
     if ( $cmd =~ /^notification;/i)
     {
-      $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
-                $cmdh{operation},       $cmdh{external_id},     $cmdh{host},
-                $cmdh{host_alias},      $cmdh{host_address},    $cmdh{hostgroups},
+	$sql = sprintf('insert into tmp_commands (operation, external_id, recipients, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\', \'%s\')',
+                $cmdh{operation},       $cmdh{external_id},	$cmdh{recipients},
+		$cmdh{host},            $cmdh{host_alias},      $cmdh{host_address},    $cmdh{hostgroups},
                 $cmdh{service},         $cmdh{servicegroups},   $cmdh{check_type},
                 $cmdh{status},          $cmdh{stime},           $cmdh{notification_type},
 		$cmdh{authors},		$cmdh{comments},         $cmdh{output});

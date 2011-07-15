@@ -1,7 +1,7 @@
 #
 # 1.0.6 to 1.0.7
 #
-IF NOT EXISTS (SELECT  * FROM noma-master.COLUMNS
+IF NOT EXISTS (SELECT  * FROM noma.COLUMNS
 WHERE TABLE_NAME='escalation_stati' AND column_name='hostgroups')
 BEGIN
 ALTER TABLE `escalation_stati` ADD `hostgroups` VARCHAR( 255 ) NOT NULL AFTER `hostgroups`
@@ -15,6 +15,10 @@ END
 
 ALTER TABLE `tmp_commands` ADD `authors` varchar(255) NOT NULL AFTER `notification_type`
 ALTER TABLE `tmp_commands` ADD `comments` varchar(255) NOT NULL AFTER `authors`
+ALTER TABLE `escalation_stati` ADD `recipients` VARCHAR( 255 ) NOT NULL AFTER `incident_id`;
+ALTER TABLE `tmp_commands` ADD `recipients` VARCHAR( 255 ) NOT NULL AFTER `external_id`;
+ALTER TABLE `notifications` ADD `recipients_include` VARCHAR( 255 ) NOT NULL AFTER `username`;
+ALTER TABLE `notifications` ADD `recipients_exclude` VARCHAR( 255 ) NOT NULL AFTER `recipients_include`;
 
 CREATE INDEX external_id ON tmp_commands (external_id);
 CREATE INDEX unique_id ON notification_logs (unique_id);

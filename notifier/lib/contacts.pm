@@ -62,12 +62,17 @@ sub getContacts
 sub generateNotificationList
 {
 
-    my ( $check_type, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, %dbResult ) = @_;
+    my ( $check_type, $notificationRecipients, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, %dbResult ) = @_;
 
     my $cnt = 0;
     my %notifyList;
+    my @recipients = split(",",$notificationRecipients);
     my @hostgroups = split(",",$notificationHostgroups);
     my @servicegroups = split(",",$notificationServicegroups);
+    my $rCount = @recipients;
+    if ($rCount < 1) {
+        $recipients[0] = "__NONE";
+    }
     my $hgCount = @hostgroups;
     if($hgCount < 1) {
         $hostgroups[0] = "__NONE";
@@ -79,6 +84,24 @@ sub generateNotificationList
     # BEGIN - generate include and exclude lists for hosts and services
     while ( defined( $dbResult{$cnt} ) )
     {
+
+	# generate recipients-include list
+	foreach my $recipient(@recipients) {
+            if (matchString( $dbResult{$cnt}->{recipients_include}, $recipient))
+            {
+                debug( "Step1: RecipientIncl: $recipient\t" . $dbResult{$cnt}->{id} );
+                $notifyList{ $dbResult{$cnt}->{id} } = 1;
+            }
+
+            # remove recipients to be excluded
+            if (matchString( $dbResult{$cnt}->{recipients_exclude}, $recipient))
+            {
+                debug( "Step1: RecipientExcl: $recipient\t" . $dbResult{$cnt}->{id} );
+                undef( $notifyList{ $dbResult{$cnt}->{id} } )
+                    if defined( $notifyList{ $dbResult{$cnt}->{id} } );
+            }
+        }
+
 	# If its a service(group) check.
         if ( $check_type eq 's' )
         {

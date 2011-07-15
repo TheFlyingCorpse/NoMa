@@ -65,6 +65,9 @@ function update_preview (entity, type) {
 	var qStrFilter = 'filter=';
 
 	switch (entity) {
+		case 'r':
+                        prefix = 'recipients_';
+                        break;
 		case 'hg':
 			prefix = 'hostgroups_';
 			break;

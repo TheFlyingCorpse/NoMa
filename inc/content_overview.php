@@ -61,6 +61,7 @@ function getContent () {
 	// init
 	$cols = array (
 		'n.id' => 'NOTIFICATION_RULE',
+                'n.recipients_include' => 'RECIPIENT',
                 'n.servicegroups_include' => 'SERVICEGROUP',
 		'n.hostgroups_include' => 'HOSTGROUP',
 		'n.hosts_include' => 'HOST',
@@ -77,6 +78,7 @@ function getContent () {
 	$templateContent->assign('OVERVIEW_ADD_NEW_NOTIFICATION', OVERVIEW_ADD_NEW_NOTIFICATION);
 	$templateContent->assign('OVERVIEW_HEADING_NOTIFICATION_RULE', OVERVIEW_HEADING_NOTIFICATION_RULE);
 	$templateContent->assign('OVERVIEW_HEADING_ACTIONS', OVERVIEW_HEADING_ACTIONS);
+        $templateContent->assign('OVERVIEW_HEADING_RECIPIENTS', OVERVIEW_HEADING_RECIPIENTS);
         $templateContent->assign('OVERVIEW_HEADING_SERVICEGROUPS', OVERVIEW_HEADING_SERVICEGROUPS);
 	$templateContent->assign('OVERVIEW_HEADING_HOSTGROUPS', OVERVIEW_HEADING_HOSTGROUPS);
 	$templateContent->assign('OVERVIEW_HEADING_HOSTS', OVERVIEW_HEADING_HOSTS);
@@ -298,7 +300,15 @@ function getContent () {
 			$templateSubContent->assign('OVERVIEW_EDIT_ENTRY_IMG', 'images/spacer.gif');
 			$templateSubContent->assign('OVERVIEW_DELETE_ENTRY_IMG', 'images/spacer.gif');
 		}
-                $data = list($long, $value, $short) = shorten($row['servicegroups_include'] . ' | ' .$row['servicegroups_exclude'], 'overview_servicegroups');
+		$data = list($long, $value, $short) = shorten($row['recipients_include'] . ' | ' .$row['recipients_exclude'], 'overview_recipients');
+                $templateSubContent->assign('RECIPIENTS', $long);
+                if ($short) {
+                        $templateSubContent->assign(
+                                'RECIPIENTS_MOUSEOVER',
+                                ' onmouseover="javascript:showLong(\'&lt;b&gt;+&lt;/b&gt;: ' . $row['recipients_include'] . '&lt;br/&gt;&lt;b&gt;-&lt;/b&gt;: ' . $row['recipients_exclude'] . '\');" onmouseout="javascript:hideLong();"'
+                        );
+                }
+		$data = list($long, $value, $short) = shorten($row['servicegroups_include'] . ' | ' .$row['servicegroups_exclude'], 'overview_servicegroups');
                 $templateSubContent->assign('SERVICEGROUPS', $value);
                 if ($short) {
                         $templateSubContent->assign(

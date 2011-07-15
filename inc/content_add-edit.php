@@ -69,6 +69,8 @@ function getContent () {
 	$templateContent->assign('HEADING_TIME', ADD_EDIT_HEADING_TIME);
 	$templateContent->assign('ADD_EDIT_HEADING_OWNER', ADD_EDIT_HEADING_OWNER);
 	$templateContent->assign('ADD_EDIT_OWNER', ADD_EDIT_OWNER);
+        $templateContent->assign('ADD_EDIT_INCLUDE_RECIPIENTS', ADD_EDIT_INCLUDE_RECIPIENTS);
+        $templateContent->assign('ADD_EDIT_EXCLUDE_RECIPIENTS', ADD_EDIT_EXCLUDE_RECIPIENTS);
         $templateContent->assign('ADD_EDIT_INCLUDE_SERVICEGROUPS', ADD_EDIT_INCLUDE_SERVICEGROUPS);
         $templateContent->assign('ADD_EDIT_EXCLUDE_SERVICEGROUPS', ADD_EDIT_EXCLUDE_SERVICEGROUPS);
 	$templateContent->assign('ADD_EDIT_INCLUDE_HOSTGROUPS', ADD_EDIT_INCLUDE_HOSTGROUPS);
@@ -128,6 +130,9 @@ function getContent () {
 
 		$templateContent->assign('ACTION', 'update');
 		$templateContent->assign('HEADING', ADD_EDIT_HEADING_EDIT);
+
+		$templateContent->assign('INCLUDE_RECIPIENTS', $dbResult[0]['recipients_include']);
+		$templateContent->assign('EXCLUDE_RECIPIENTS', $dbResult[0]['recipients_exclude']);
 
                 $templateContent->assign('INCLUDE_SERVICEGROUPS', $dbResult[0]['servicegroups_include']);
                 $templateContent->assign('EXCLUDE_SERVICEGROUPS', $dbResult[0]['servicegroups_exclude']);
@@ -372,6 +377,9 @@ function getContent () {
 
 	// BEGIN - generate content for asynchronous-preview call
 	if ($notifications['host_service_preview']) {
+
+                $templateContent->assign('ONCHANGE_RECIPIENTS_INCLUDE', ' onkeyup="update_preview(\'r\',\'i\');"');
+                $templateContent->assign('ONCHANGE_RECIPIENTS_EXCLUDE', ' onkeyup="update_preview(\'r\',\'e\');"');
 
                 $templateContent->assign('ONCHANGE_SERVICEGROUPS_INCLUDE', ' onkeyup="update_preview(\'sg\',\'i\');"');
                 $templateContent->assign('ONCHANGE_SERVICEGROUPS_EXCLUDE', ' onkeyup="update_preview(\'sg\',\'e\');"');
