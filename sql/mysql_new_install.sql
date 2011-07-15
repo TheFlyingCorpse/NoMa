@@ -35,6 +35,7 @@ CREATE TABLE `contacts` (
   `email` varchar(255) character set latin1 NOT NULL,
   `phone` varchar(255) character set latin1 NOT NULL,
   `mobile` varchar(255) character set latin1 NOT NULL,
+  `netaddress` varchar(255) character set latin1 NOT NULL,
   `section` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `time_period_id` int(11) NOT NULL,
@@ -139,7 +140,10 @@ INSERT INTO `notification_methods` VALUES
 (2,'SMS','sendsms','mobile','',0,0),
 (3,'Voice','voicecall','phone','',0,1),
 (4,'Voice + E-Mail fallback','voicecall','phone','',1,1),
-(5,'Voice + SMS fallback','voicecall','phone','',2,1);
+(5,'Voice + SMS fallback','voicecall','phone','',2,1),
+(6,'Growl','growl','netaddress','',0,0),
+(7,'Growl + E-Mail fallback','growl','netaddress','',1,0),
+(8,'Growl + SMS fallback','growl','netaddress','',2,0);
 
 
 DROP TABLE IF EXISTS `notification_stati`;

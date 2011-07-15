@@ -163,6 +163,7 @@ define('CONTACTS_PASSWORD_VERIFY', 'Passwort (Wiederholung):');
 define('CONTACTS_EMAIL', 'E-Mail:');
 define('CONTACTS_PHONE', 'Telefon:');
 define('CONTACTS_MOBILE', 'Mobiltelefon:');
+define('CONTACTS_NETADDRESS', 'Netadressen:');
 define('CONTACTS_RESTRICT_ALERTS', 'Mehrfachbenachrichtigungen unterdr&uuml;cken:');
 define('CONTACTS_TIMEPERIOD', 'Arbeitszeit:');
 define('CONTACTS_TIMEZONE', 'Zeitzone:');

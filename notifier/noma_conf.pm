@@ -40,6 +40,7 @@ sub conf {
 			sendsms			=> '/usr/local/nagios/noma/notifier/sendSMS.pl',
 			#sendsms			=> '/usr/local/nagios/noma/notifier/sendSMSfinder.pl',		# if you use iMultitech iSMS/SMSfinder
 			voicecall		=> '/usr/local/nagios/noma/notifier/sendVoice.pl',
+			growl			=> '/usr/local/nagios/noma/notifier/sendGrowl.pl',
 			dummy			=> '/bin/true',
             nagios          => '/usr/local/nagios/noma/notifier/sendToNagios.pl',
 		},
@@ -178,14 +179,32 @@ Date/Time: $datetime',
 				},
 			},
 		},
+
+                # growl  alerting settings
+                growl => {
+                        return_ack             => 0,               # set to 1 to feed ACKs back to Icinga/Nagios
+			application_name	=> 'NoMa',
+			password		=> 'somepassw0rd',
+                        subject_host            => 'NoMa - $notification_type: Host $host is $status',
+			subject_service		=> 'NoMa - $notification_type: Service $service on host $host is $status',
+                        message => {
+                                host            => '$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime',
+                                service         => '$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime',
+                        },
+
+                        ackmessage => {
+                                host            => '$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime',
+                                service         => '$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime',
+                        },
+                },
 			
 
 		# miscellaneous settings
 		debug => {
 			logging			=> '1',		# general debugging
-			queries			=> '0',		# log SQL queries
+			queries			=> '1',		# log SQL queries
 			file			=> '/usr/local/nagios/var/noma_debug.log',	# file to log in
-			daemonize		=> '1',		# daemonize process
+			daemonize		=> '0',		# daemonize process
 			paramlog		=> undef,	# '/usr/local/nagios/var/noma_args_log.txt'
 			watchdogEnabled		=> '1',		# the watchdog restarts the daemon if too much memory is used
 			watchdogMaxRSS		=> 524288,	# real memory

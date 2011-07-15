@@ -76,6 +76,7 @@ function getContent () {
 	$templateContent->assign('CONTACTS_EMAIL', CONTACTS_EMAIL);
 	$templateContent->assign('CONTACTS_PHONE', CONTACTS_PHONE);
 	$templateContent->assign('CONTACTS_MOBILE', CONTACTS_MOBILE);
+        $templateContent->assign('CONTACTS_NETADDRESS', CONTACTS_NETADDRESS);
 	$templateContent->assign('CONTACTS_RESTRICT_ALERTS', CONTACTS_RESTRICT_ALERTS);
 	$templateContent->assign('CONTACTS_TIMEPERIOD', CONTACTS_TIMEPERIOD);
 	$templateContent->assign('CONTACTS_TIMEZONE', CONTACTS_TIMEZONE);
@@ -171,6 +172,7 @@ function getContent () {
 		$templateContent->assign('EMAIL', $userData['email']);
 		$templateContent->assign('PHONE', $userData['phone']);
 		$templateContent->assign('MOBILE', $userData['mobile']);
+                $templateContent->assign('NETADDRESS', $userData['netaddress']);
 		$templateContent->assign('RESTRICT_ALERTS', ($userData['restrict_alerts']==1)?'checked="checked"':'');
 
         if ($admin) {
