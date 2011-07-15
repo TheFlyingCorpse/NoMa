@@ -25,6 +25,23 @@ CREATE INDEX unique_id ON notification_logs (unique_id);
 CREATE INDEX notify_id ON tmp_active (notify_id);
 CREATE INDEX incident_id ON escalation_stati (incident_id);
 
+CREATE INDEX contactgroup_id ON contactgroups_to_contacts (contactgroup_id);
+CREATE INDEX contact_id ON contactgroups_to_contacts (contact_id);
+
+CREATE INDEX escalation_contacts_id ON escalations_contacts_to_contacts (escalation_contacts_id);
+CREATE INDEX contactgroup_id ON escalations_contacts_to_contactgroups (contactgroup_id);
+CREATE INDEX escalation_contacts_id ON escalations_contacts_to_contacts (escalation_contacts_id);
+CREATE INDEX contacts_id ON escalations_contacts_to_contacts (contacts_id);
+CREATE INDEX escalation_contacts_id ON escalations_contacts_to_methods (escalation_contacts_id);
+CREATE INDEX method_id ON escalations_contacts_to_methods (method_id);
+
+CREATE INDEX notification_id ON notifications_to_contacts (notification_id);
+CREATE INDEX contactgroup_id ON notifications_to_contactgroups (contactgroup_id);
+CREATE INDEX notification_id ON notifications_to_contacts (notification_id);
+CREATE INDEX contact_id ON notifications_to_contacts (contact_id);
+CREATE INDEX notification_id ON notifications_to_methods (notification_id);
+CREATE INDEX method_id ON notifications_to_methods (method_id);
+
 # IF not hotfixed for hostgroups after upgrade to 1.0.6, run this to be sure! (If it already exists, it wont finish!)
 ALTER TABLE `tmp_commands` ADD `hostgroups` VARCHAR( 255 ) NOT NULL AFTER `hostgroups`
 

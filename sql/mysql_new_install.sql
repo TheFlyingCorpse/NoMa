@@ -9,7 +9,7 @@ CREATE TABLE `contactgroups` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `name_short` (`name_short`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `contactgroups` VALUES (1,'group1','Group 1',0);
@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS `contactgroups_to_contacts`;
 CREATE TABLE `contactgroups_to_contacts` (
   `contactgroup_id` int(11) NOT NULL,
   `contact_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 INSERT INTO `contactgroups_to_contacts` VALUES
 (1,2);
@@ -42,7 +42,7 @@ CREATE TABLE `contacts` (
   `restrict_alerts` tinyint(1) default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `contacts` VALUES 
@@ -63,28 +63,28 @@ CREATE TABLE `escalations_contacts` (
   `on_host_down` tinyint(1) NOT NULL,
   `notify_after_tries` varchar(255) character set latin1 NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `escalations_contacts_to_contactgroups`;
 CREATE TABLE `escalations_contacts_to_contactgroups` (
   `escalation_contacts_id` int(11) NOT NULL,
   `contactgroup_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `escalations_contacts_to_contacts`;
 CREATE TABLE `escalations_contacts_to_contacts` (
   `escalation_contacts_id` int(11) NOT NULL,
   `contacts_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `escalations_contacts_to_methods`;
 CREATE TABLE `escalations_contacts_to_methods` (
   `escalation_contacts_id` int(11) NOT NULL,
   `method_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `holidays`;
@@ -94,7 +94,7 @@ CREATE TABLE `holidays` (
   `start` datetime NOT NULL,
   `end` datetime NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `notification_logs`;
@@ -114,7 +114,7 @@ CREATE TABLE `notification_logs` (
   `notification_rule` int(11) default NULL,
   `last_method` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `notification_logs` VALUES
@@ -144,13 +144,14 @@ INSERT INTO `notification_methods` VALUES
 
 DROP TABLE IF EXISTS `notification_stati`;
 CREATE TABLE `notification_stati` (
+  `id` int(11) NOT NULL auto_increment,
   `host` varchar(255) character set latin1 NOT NULL,
   `service` varchar(255) character set latin1 NOT NULL,
   `check_type` varchar(10) character set latin1 NOT NULL,
   `check_result` varchar(15) character set latin1 NOT NULL,
   `counter` int(11) NOT NULL,
   `pid` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `notifications`;
@@ -158,6 +159,8 @@ CREATE TABLE `notifications` (
   `id` int(11) NOT NULL auto_increment,
   `active` tinyint(1) NOT NULL,
   `username` varchar(255) character set latin1 NOT NULL,
+  `recipients_include` varchar(255) character set latin1 NOT NULL,
+  `recipients_exclude` varchar(255) character set latin1 NOT NULL,
   `hosts_include` varchar(255) character set latin1 NOT NULL,
   `hosts_exclude` varchar(255) character set latin1 NOT NULL,
   `hostgroups_include` varchar(255) character set latin1 NOT NULL,
@@ -179,24 +182,24 @@ CREATE TABLE `notifications` (
   `on_host_down` tinyint(1) NOT NULL,
   `timezone_id` int(11) NOT NULL default 372,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
-INSERT INTO `notifications` VALUES (1,1,'nagiosadmin','*','','*','','*','','*','','1',0,0,0,1,1,1,1,1,1,1,285);
+INSERT INTO `notifications` VALUES (1,1,'nagiosadmin','','','*','','*','','*','','*','','1',0,0,0,1,1,1,1,1,1,1,285);
 
 
 DROP TABLE IF EXISTS `notifications_to_contactgroups`;
 CREATE TABLE `notifications_to_contactgroups` (
   `notification_id` int(11) NOT NULL,
   `contactgroup_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 DROP TABLE IF EXISTS `notifications_to_contacts`;
 CREATE TABLE `notifications_to_contacts` (
   `notification_id` int(11) NOT NULL,
   `contact_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `notifications_to_contacts` VALUES (1,2);
@@ -206,7 +209,7 @@ DROP TABLE IF EXISTS `notifications_to_methods`;
 CREATE TABLE `notifications_to_methods` (
   `notification_id` int(11) NOT NULL,
   `method_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `notifications_to_methods` VALUES (1,1);
@@ -216,7 +219,7 @@ CREATE TABLE `time_periods` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
 	  `description` varchar(255) NOT NULL,
 	  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `time_periods` VALUES 
@@ -233,7 +236,7 @@ CREATE TABLE `time_slices` (
 	  `starttime` time NOT NULL default '00:00:00',
 	  `endtime` time NOT NULL default '24:00:00',
 	  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `time_slices` VALUES 
@@ -250,7 +253,7 @@ CREATE TABLE `timezones` (
   `timezone` varchar(255) character set latin1 NOT NULL,
   `time_diff` tinyint(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `timezones` VALUES
@@ -636,6 +639,7 @@ CREATE TABLE `escalation_stati` (
   `counter` int(11) NOT NULL,
   /* the following fields directly map to the original command */
   `incident_id` bigint(20) not NULL,
+  `recipients` varchar(255) character set latin1 NOT NULL,
   `host` varchar(255) character set latin1 NOT NULL,
   `host_alias` varchar(255) default NULL,
   `host_address` varchar(255) default NULL,
@@ -648,13 +652,14 @@ CREATE TABLE `escalation_stati` (
   `type` varchar(255) default NULL,
   `output` varchar(4096) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `tmp_commands`;
 CREATE TABLE `tmp_commands` (
   `id` int(11) NOT NULL auto_increment,
   `operation` varchar(255) default NULL,
   `external_id` bigint(20) NOT NULL,
+  `recipients` varchar(255) default NULL,
   `host` varchar(255) default NULL,
   `hostgroups` varchar(255) default NULL,
   `host_alias` varchar(255) default NULL,
@@ -665,8 +670,8 @@ CREATE TABLE `tmp_commands` (
   `status` varchar(255) default NULL,
   `stime` int(11) default 0,
   `notification_type` varchar(255) default NULL,
-  `authors` varchar(255), default NULL,
-  `comments` varchar(255), default NULL,
+  `authors` varchar(255) default NULL,
+  `comments` varchar(255) default NULL,
   `output` varchar(4096) default NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -696,4 +701,21 @@ CREATE INDEX external_id ON tmp_commands (external_id);
 CREATE INDEX unique_id ON notification_logs (unique_id);
 CREATE INDEX notify_id ON tmp_active (notify_id);
 CREATE INDEX incident_id ON escalation_stati (incident_id);
+
+CREATE INDEX contactgroup_id ON contactgroups_to_contacts (contactgroup_id);
+CREATE INDEX contact_id ON contactgroups_to_contacts (contact_id);
+
+CREATE INDEX escalation_contacts_id ON escalations_contacts_to_contacts (escalation_contacts_id);
+CREATE INDEX contactgroup_id ON escalations_contacts_to_contactgroups (contactgroup_id);
+CREATE INDEX escalation_contacts_id ON escalations_contacts_to_contacts (escalation_contacts_id);
+CREATE INDEX contacts_id ON escalations_contacts_to_contacts (contacts_id);
+CREATE INDEX escalation_contacts_id ON escalations_contacts_to_methods (escalation_contacts_id);
+CREATE INDEX method_id ON escalations_contacts_to_methods (method_id);
+
+CREATE INDEX notification_id ON notifications_to_contacts (notification_id);
+CREATE INDEX contactgroup_id ON notifications_to_contactgroups (contactgroup_id);
+CREATE INDEX notification_id ON notifications_to_contacts (notification_id);
+CREATE INDEX contact_id ON notifications_to_contacts (contact_id);
+CREATE INDEX notification_id ON notifications_to_methods (notification_id);
+CREATE INDEX method_id ON notifications_to_methods (method_id);
 
