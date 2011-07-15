@@ -1,0 +1,63 @@
+<tr style="padding-bottom:0px;">
+<td class="header" style="padding-right:0px;">{$ADD_EDIT_HEADING_NOTIFICATION_TIMEPERIOD}</td>
+<td align="right" colspan="2" style="padding-left:0px;">{$BUTTON_REMOVE_ESCALATION}{$BUTTON_ADD_ESCALATION}</td>
+</tr>
+<tr style="padding-top:0px;"><td colspan="3"><hr/></td></tr>
+<tr>
+<td colspan="3">
+<table cellpadding="0" cellspacing="0" border="0" width="900">
+<tr>
+<td valign="top" width="50%" colspan="3">
+<input type="hidden" name="escalation_count[]" value="{$ESCALATION_COUNT}"/>
+<table cellpadding="2" cellspacing="0" border="0">
+<tr>
+<td>{$ADD_EDIT_NOTIFY_AFTER_TRIES}</td>
+<td width="20">&nbsp;</td>
+<td><input class="text" name="notify_after_tries{$ARRAY_ITEM}" size="5" value="{$NOTIFY_AFTER_TRIES}"/>&nbsp;&nbsp;&nbsp;{$ADD_EDIT_NUM_NOTIFICATIONS}</td>
+</tr>{$LET_NOTIFIER_HANDLE}
+<tr>
+<td>{$ADD_EDIT_NOTIFY_USERS}</td>
+<td width="20">&nbsp;</td>
+<td>{$NOTIFY_USERS_SELECT}</td>
+</tr>
+<tr>
+<td>{$ADD_EDIT_NOTIFY_GROUPS}</td>
+<td width="20">&nbsp;</td>
+<td>{$NOTIFY_GROUPS_SELECT}</td>
+</tr>
+</table>
+</td>
+<td valign="top" width="50%">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td>{$ADD_EDIT_NOTIFY_BY}</td>
+<td rowspan="2" width="20">&nbsp;</td>
+<td>{$NOTIFY_BY_SELECT}</td>
+</tr>
+<tr>
+<td>{$ADD_EDIT_NOTIFY_ON}</td>
+<td>
+<table cellpadding="2" cellspacing="0" border="0">
+<tr>
+<td valign="top">
+<input type="checkbox" name="notify_on_ok{$ARRAY_ITEM}"{$CHECKED_NOTIFY_OK}/>OK<br/>
+<input type="checkbox" name="notify_on_warning{$ARRAY_ITEM}"{$CHECKED_NOTIFY_WARNING}/>WARNING<br/>
+<input type="checkbox" name="notify_on_unknown{$ARRAY_ITEM}"{$CHECKED_NOTIFY_UNKNOWN}/>UNKNOWN<br/>
+<input type="checkbox" name="notify_on_critical{$ARRAY_ITEM}"{$CHECKED_NOTIFY_CRITICAL}/>CRITICAL<br/>
+</td>
+<td width="20"></td>
+<td valign="top">
+<input type="checkbox" name="notify_on_host_up{$ARRAY_ITEM}"{$CHECKED_NOTIFY_HOST_UP}/>HOST UP<br/>
+<input type="checkbox" name="notify_on_host_unreachable{$ARRAY_ITEM}"{$CHECKED_NOTIFY_HOST_UNREACHABLE}/>HOST UNREACHABLE<br/>
+<input type="checkbox" name="notify_on_host_down{$ARRAY_ITEM}"{$CHECKED_NOTIFY_HOST_DOWN}/>HOST DOWN<br/>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>

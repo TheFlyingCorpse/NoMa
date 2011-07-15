@@ -166,6 +166,7 @@ define('CONTACTS_PASSWORD_VERIFY', 'Password (verification):');
 define('CONTACTS_EMAIL', 'E-Mail:');
 define('CONTACTS_PHONE', 'Phone:');
 define('CONTACTS_MOBILE', 'Mobile:');
+define('CONTACTS_NETADDRESS', 'Netaddress:');
 define('CONTACTS_RESTRICT_ALERTS', 'Suppress multiple alerts:');
 define('CONTACTS_TIMEPERIOD', 'Working hours:');
 define('CONTACTS_TIMEZONE', 'Timezone:');

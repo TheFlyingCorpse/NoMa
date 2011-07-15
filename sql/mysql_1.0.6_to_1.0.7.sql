@@ -19,6 +19,9 @@ ALTER TABLE `escalation_stati` ADD `recipients` VARCHAR( 255 ) NOT NULL AFTER `i
 ALTER TABLE `tmp_commands` ADD `recipients` VARCHAR( 255 ) NOT NULL AFTER `external_id`;
 ALTER TABLE `notifications` ADD `recipients_include` VARCHAR( 255 ) NOT NULL AFTER `username`;
 ALTER TABLE `notifications` ADD `recipients_exclude` VARCHAR( 255 ) NOT NULL AFTER `recipients_include`;
+ALTER TABLE `contacts` ADD `netaddress` VARCHAR( 255 ) NOT NULL AFTER `mobile`
+
+INSERT INTO `noma`.`notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES (NULL, 'Growl', 'growl', 'netaddress', '', '0', '0');
 
 CREATE INDEX external_id ON tmp_commands (external_id);
 CREATE INDEX unique_id ON notification_logs (unique_id);
