@@ -238,6 +238,43 @@ CREATE TABLE `notifications_to_methods` (
 
 INSERT INTO `notifications_to_methods` VALUES (1,1);
 
+CREATE TABLE IF NOT EXISTS `time_frames` (
+  `id` tinyint(11) NOT NULL,
+  `notification_id` int(11) NOT NULL,
+  `validFrom` datetime DEFAULT NULL,
+  `validTo` datetime DEFAULT NULL,
+  `day_monday` int(3) DEFAULT NULL,
+  `day_tuesday` int(3) DEFAULT NULL,
+  `day_wednesday` int(3) DEFAULT NULL,
+  `day_thursday` int(3) DEFAULT NULL,
+  `day_friday` int(3) DEFAULT NULL,
+  `day_saturday` int(3) DEFAULT NULL,
+  `day_sunday` int(3) DEFAULT NULL,
+  `time_monday_start` time DEFAULT NULL,
+  `time_monday_stop` time DEFAULT NULL,
+  `time_monday_invert` tinyint(1) DEFAULT NULL,
+  `time_tuesday_start` time DEFAULT NULL,
+  `time_tuesday_stop` time DEFAULT NULL,
+  `time_tuesday_invert` tinyint(1) DEFAULT NULL,
+  `time_wednesday_start` time DEFAULT NULL,
+  `time_wednesday_stop` time DEFAULT NULL,
+  `time_wednesday_invert` tinyint(1) DEFAULT NULL,
+  `time_thursday_start` time DEFAULT NULL,
+  `time_thursday_stop` time DEFAULT NULL,
+  `time_thursday_invert` tinyint(1) DEFAULT NULL,
+  `time_friday_start` time DEFAULT NULL,
+  `time_friday_stop` time DEFAULT NULL,
+  `time_friday_invert` tinyint(1) DEFAULT NULL,
+  `time_saturday_start` time DEFAULT NULL,
+  `time_saturday_stop` time DEFAULT NULL,
+  `time_saturday_invert` tinyint(1) DEFAULT NULL,
+  `time_sunday_start` time DEFAULT NULL,
+  `time_sunday_stop` time DEFAULT NULL,
+  `time_sunday_invert` tinyint(1) DEFAULT NULL,
+  UNIQUE KEY `notification_id` (`notification_id`),
+  KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 DROP TABLE IF EXISTS `time_periods`;
 CREATE TABLE `time_periods` (
 	  `id` int(10) unsigned NOT NULL auto_increment,

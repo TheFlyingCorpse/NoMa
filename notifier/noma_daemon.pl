@@ -96,7 +96,6 @@ use contacts;
 use database;
 use debug;
 
-
 use Data::Dumper;
 # use threads ('yield', 'stack_size' => 16*4096);
 use threads;
@@ -111,6 +110,13 @@ use Storable;
 
 # use Proc::ProcessTable;
 use DBI;
+
+# new requirement since 1.0.7!
+use Date::Calc qw( Day_of_Week Delta_Days
+                   Nth_Weekday_of_Month_Year
+                   Date_to_Text_Long English_Ordinal
+                   Day_of_Week_to_Text Month_to_Text
+                   Today Add_Delta_Days);
 
 our $processStart = time();
 our %suppressionHash;
@@ -1483,5 +1489,66 @@ sub counterExceededMax
     return $retval;
 }
 
+# return a true or false if within timerange of said notification rule
+sub notificationInTimeFrame
+{
+	# arguements passed to function.
+	my ($notification_id) = @_;
+
+	# Create a bunch of variables to be filled.
+	#my $validFrom,$validTo,$day_monday,$day_tuesday,$day_wednesday,$day_thursday,$day_friday,$day_saturday,$day_sunday,$time_monday_start,$time_monday_stop,$time_monday_invert,$time_tuesday_start,$time_tuesday_stop,$time_tuesday_invert,$time_wednesday_start,$time_wednesday_stop,$time_wednesday_invert,$time_thursday_start,$time_thursday_stop,$time_thursday_invert,$time_friday_start,$time_friday_stop,$time_friday_invert,$time_saturday_start,$time_saturday_stop,$time_saturday_invert,$time_sunday_start,$time_sunday_stop,$time_sunday_invert;
+	my (@today,$current_dow,$validFrom,$validTo,$day_today,$time_today_start,$time_today_stop,$time_today_invert);
+
+	# Get todays date and weekday name.
+        @today = Today();
+        $current_dow = Day_of_Week(@today);
+	$current_dow = lc(Day_of_Week_to_Text($current_dow));
+	# Fill variables with todays english weekdayname.
+        $time_today_start = 'time_' . $current_dow . '_start';
+        $time_today_stop = 'time_' . $current_dow . '_stop';
+        $time_today_invert = 'time_' . $current_dow . '_invert';
+	
+	# query
+	my $query = 'SELECT notification_id,validFrom,validTo,day_monday,day_tuesday,day_wednesday,day_thursday,day_friday,day_saturday,day_sunday,time_monday_start,time_monday_stop,time_monday_invert,time_tuesday_start,time_tuesday_stop,time_tuesday_invert,time_wednesday_start,time_wednesday_stop,time_wednesday_invert,time_thursday_start,time_thursday_stop,time_thursday_invert,time_friday_start,time_friday_stop,time_friday_invert,time_saturday_start,time_saturday_stop,time_saturday_invert,time_sunday_start,time_sunday_stop,time_sunday_invert FROM time_frames WHERE notification_id=\'$notification_id\'';
+
+	# Query DB, no need to log query.
+	my %dbResult = queryDB($query, '0');
+
+	# Get the results!
+	$validFrom = $dbResult{0}->{validFrom};
+	$validTo = $dbResult{0}->{validTo};
+	$day_today = $dbResult{0}->{day_$current_dow};
+	$time_today_start = $dbResult{0}->{$time_today_start};
+	$time_today_stop = $dbResult{0}->{$time_today_stop};
+	$time_today_invert = $dbResult{0}->{$time_today_invert};
+
+	# IF NOW IS GREATER THAN $validFrom AND LESS THAN $validTo
+
+		# EXPAND $day_today to figure out what days of the month its active, see http://search.cpan.org/dist/Date-Calc/lib/Date/Calc.pod snippet 6
+
+		# IF $day_today is active today
+			# if ($time_today_invert == '1')
+			# {
+			#	if ($time_today_start LESS THAN NOW OR $time_today_stop GREATER THAN NOW)
+			#	{
+			#		TRUE
+			#	}
+			# else
+			#	if ($time_today_start GREATER THAN NOW AND $time_today_stop LESS THAN NOW)
+			#	{
+			#		TRUE
+			#	}
+		# ELSE
+			# debug(" Notify ID $notification_id time_frame not active today");
+		# END IF
+
+	# ELSIF NOW IS LESS THAN $validFrom
+	## debug(" Notify ID $notification_id time_frame has yet to be within timeframe");
+	# ELSIF NOW IS GREATER THAN $validTo
+	## debug(" Notify ID $notification_id time_frame has expired");
+	# ELSE
+	## debug(" UH OH");
+	# END IF
+}
 # vim: ts=4 sw=4 expandtab
 # EOF
