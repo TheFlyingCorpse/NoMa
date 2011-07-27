@@ -64,6 +64,8 @@ sub generateNotificationList
 
     my ( $check_type, $notificationRecipients, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, %dbResult ) = @_;
 
+#    debug(' notificationHost: '.$notificationHost.' notificationService: '.$notificationService.' notificationHostgroups: '.$notificationHostgroups.' notificationServicegroups: '.$notificationServicegroups.' notificationRecipients: '.$notificationRecipients);
+
     my $cnt = 0;
     my %notifyList;
     my @recipients = split(",",$notificationRecipients);
@@ -243,6 +245,8 @@ sub getUsersAndMethods
 
     my %dbResult;
     my @dbResult_arr;
+    my @dbResult_not_arr;
+    my @dbResult_esc_arr;
     my @dbResult_tmp_arr;
     my $where = '';
     my $query;
@@ -269,7 +273,7 @@ sub getUsersAndMethods
 					left join contacts c on c.id=nc.contact_id
 					left join timezones tz on c.timezone_id=tz.id
 					where n.active=\'1\' and (n.id=\'' . $where . '\')';
-        @dbResult_tmp_arr = queryDB( $query, 1 );
+        @dbResult_not_arr = queryDB( $query, 1 );
 
         $where =~ s/n\.id/ec\.notification_id/g;
 
@@ -282,15 +286,16 @@ sub getUsersAndMethods
 					left join timezones tz on c.timezone_id=tz.id
 					left join notifications n on ec.notification_id=n.id
 					where n.active=\'1\' and (ec.notification_id=\'' . $where . '\')';
-        @dbResult_arr = queryDB( $query, 1 );
+	@dbResult_tmp_arr = queryDB( $query, 1 );
 
-        @dbResult_arr = ( @dbResult_arr, @dbResult_tmp_arr );
-        # debug("Contacts Array: ".Dumper(@dbResult_arr));
-
-        @dbResult_arr =
-          filterNotificationsByEscalation( \@dbResult_arr, $notificationCounter, $notification_type,
+        @dbResult_esc_arr =
+          filterNotificationsByEscalation( \@dbResult_tmp_arr, $notificationCounter, $notification_type,
             $status );
-        # debug("Filtered Array: ".Dumper(@dbResult_arr));
+
+        @dbResult_arr = ( @dbResult_not_arr, @dbResult_esc_arr );
+
+        debug("To be notified: ".Dumper(@dbResult_arr));
+
         %dbResult = arrayToHash( \@dbResult_arr );
 
         %dbResult = () unless ( defined( $dbResult{0}->{username} ) );
@@ -308,6 +313,8 @@ sub getUsersAndMethodsFromGroups
 
     my %dbResult;
     my @dbResult_arr;
+    my @dbResult_not_arr;
+    my @dbResult_esc_arr;
     my @dbResult_tmp_arr;
     my $where = '';
     my $query;
@@ -337,7 +344,7 @@ sub getUsersAndMethodsFromGroups
 					left join timezones tz on c.timezone_id=tz.id
 					where cg.view_only=\'0\' and n.active=\'1\' and (n.id=\'' . $where . '\')';
 
-        @dbResult_arr = queryDB( $query, 1 );
+        @dbResult_not_arr = queryDB( $query, 1 );
 
         $where =~ s/n\.id/ec\.notification_id/g;
 
@@ -355,11 +362,14 @@ sub getUsersAndMethodsFromGroups
 
         @dbResult_tmp_arr = queryDB( $query, 1 );
 
-        @dbResult_arr = ( @dbResult_arr, @dbResult_tmp_arr );
-
-        @dbResult_arr =
-          filterNotificationsByEscalation( \@dbResult_arr, $notificationCounter, $notification_type,
+        @dbResult_esc_arr =
+          filterNotificationsByEscalation( \@dbResult_tmp_arr, $notificationCounter, $notification_type,
             $status );
+
+	@dbResult_arr = ( @dbResult_not_arr, @dbResult_esc_arr );
+
+	debug("To be notified: ".Dumper(@dbResult_arr));
+
         %dbResult = arrayToHash( \@dbResult_arr );
 
         %dbResult = () unless ( defined( $dbResult{0}->{username} ) );
@@ -501,6 +511,9 @@ sub filterNotificationsByEscalation
     my ( $dbResult_arr, $filter, $notification_type, $status ) = @_;
     my @return_arr;
 
+    debug('filter: '.$filter.' notification_type: '.$notification_type.' status: '.$status);
+    debug("dbResult_arr Array: ".Dumper($dbResult_arr));
+
     # prepare search filter
     if ( $status eq 'OK' || $status eq 'UP' || $notification_type eq 'ACKNOWLEDGEMENT' || $notification_type eq 'CUSTOM' || $notification_type eq 'FLAPPINGSTART' || $notification_type eq 'FLAPPINGSTOP' || $notification_type eq 'FLAPPINGDISABLED' || $notification_type eq 'DOWNTIMESTART' || $notification_type eq 'DOWNTIMEEND' || $notification_type eq 'DOWNTIMECANCELLED')
     {
@@ -512,9 +525,12 @@ sub filterNotificationsByEscalation
         $filter = '[' . join( '|', @filter_entries ) . ']';
     }
 
+    debug('filter2: '.$filter);
+
     # apply filter
     foreach my $row (@$dbResult_arr)
     {
+	debug('row: '.Dumper($row));
         next
           if ( !defined( $row->{notify_after_tries} )
             || $row->{notify_after_tries} eq '' );
@@ -526,6 +542,8 @@ sub filterNotificationsByEscalation
             push( @return_arr, $row );
         }
     }
+
+    debug('return_arr: '.Dumper(@return_arr));
 
     return @return_arr;
 
