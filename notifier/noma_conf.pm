@@ -42,11 +42,14 @@ sub conf {
 			voicecall		=> '/usr/local/nagios/noma/notifier/sendVoice.pl',
 			growl			=> '/usr/local/nagios/noma/notifier/sendGrowl.pl',
 			dummy			=> '/bin/true',
-            nagios          => '/usr/local/nagios/noma/notifier/sendToNagios.pl',
+		    nagios          => '/usr/local/nagios/noma/notifier/sendToNagios.pl',
 		},
 		
 		# notifier settings
 		notifier => {
+			timezone		=> 'Europe\Oslo', # TimeZone of NoMa / localhost. Used for proper timezone calculzation. Otherwise will default to UTC.
+			locale			=> 'en_GB', 	# Change at your own risk, its for datehandling with sql queries using english names for tables and conversion of dates.
+			pattern			=> '%F %T',	# Change at your own risk, might need to be changed if it does not use MySQL standard, see http://search.cpan.org/~drolsky/DateTime-Format-Strptime-1.5000/lib/DateTime/Format/Strptime.pm#STRPTIME_PATTERN_TOKENS for strip pattern tokens.
 			maxAttempts		=> '4',		# how often we retry a notification before giving up
 			timeToWait		=> '60',	# how many seconds to wait before retries
 			delay			=> 0,	    # delay notifications this number of seconds (for bundling)
@@ -94,14 +97,14 @@ sub conf {
 		sendsms => {
 			#return_ack		=> 0,               # set to 1 to feed ACKs back to Icinga/Nagios
 			suppression		=> 0,               # add a global suppression menu option (value in minutes)
-			server			=> '192.168.1.1',	# address of the SMS server
+			#server			=> '192.168.1.1',	# address of the SMS server
 			#server			=> ['192.168.1.1', '192.168.1.2'],	# addresses of the SMS server farm
-			user			=> ['nagios', 'nagios'],	# user for iSMS/SMSfinder
-			pass			=> ['nagios', 'nagios'],	# pass for iSMS/SMSfinder
+			#user			=> ['nagios', 'nagios'],	# user for iSMS/SMSfinder
+			#pass			=> ['nagios', 'nagios'],	# pass for iSMS/SMSfinder
 			check_command		=> '/usr/local/nagios/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1',		# check_command must return 0 if the appliance is ok, 1st ok appliance is chosen.
 			message	=> {
-				host            => '$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime',
-				service         => '$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime',
+				host            => '$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. $output Time: $datetime',
+				service         => '$incident_id: $notification_type for service $service on host $host. State is $status. Info: $output Time: $datetime',
 			},
 
                         ackmessage => {
