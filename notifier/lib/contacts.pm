@@ -12,7 +12,7 @@
 # LICENSE:GPL2
 # see noma_daemon.pl in parent directory for full details.
 # Please do not distribute without the above file!
-
+use time_frames;
 
 
 ##############################################################################
@@ -183,7 +183,7 @@ sub generateNotificationList
 
     }
 
-    # END   - generate include and exclude lists for hosts and services
+    # END - (of generate include and exclude lists for hosts and services)
 
     # BEGIN - collect all IDs to notify
     my %idList;
@@ -192,8 +192,11 @@ sub generateNotificationList
     {
             if ( defined( $notifyList{$notifyIncl}) )
             {
+		# Verify that the notification is within the time frame.
+		if (notificationInTimeFrame($notifyIncl) == '1'){
                 $idList{$notifyIncl} = 1;
                 debug("Step2: notifyIncl: $notifyIncl");
+		}
             }
     }
     while ( my ($id) = each(%idList) )

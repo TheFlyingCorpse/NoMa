@@ -57,7 +57,6 @@ sub notificationInTimeFrame
         @today = Today();
         $current_dow = Day_of_Week(@today);
         $current_dow_en = lc(Day_of_Week_to_Text($current_dow));
-	print"$current_dow_en";
         # Fill variables with todays english weekdayname.
         $time_today_start = 'time_' . $current_dow_en . '_start';
         $time_today_stop = 'time_' . $current_dow_en . '_stop';
@@ -68,13 +67,14 @@ sub notificationInTimeFrame
         my $query = 'SELECT time_frames.id, time_frames_to_notifications.time_frame_id, time_frames_to_notifications.notification_id, timezones.id, time_frames.dt_validFrom, time_frames.dt_validTo, timezones.timezone, time_frames.day_'.$current_dow_en.', time_frames.time_'.$current_dow_en.'_start, time_frames.time_'.$current_dow_en.'_stop, time_frames.time_'.$current_dow_en.'_invert FROM time_frames,time_frames_to_notifications,timezones WHERE time_frames.timezone_id = timezones.id AND time_frames.id = time_frames_to_notifications.time_frame_id AND time_frames_to_notifications.notification_id=\''.$notification_id.'\'';
 
         # Query DB, no need to log query.
-        my %dbResult = queryDB($query, '1');
+        my %dbResult = queryDB($query);
+
+	debug('dbResult: '.Dumper(\%dbResult));
 
         # Get the results!
         $dt_validFrom = $dbResult{0}->{dt_validFrom};
         $dt_validTo = $dbResult{0}->{dt_validTo};
         $tf_timezone = $dbResult{0}->{timezone};
-	debug('timeZONE from DB:'.$tf_timezone);
         $day_today = $dbResult{0}->{$day_today};
         $time_today_start = $dbResult{0}->{$time_today_start};
         $time_today_stop = $dbResult{0}->{$time_today_stop};
@@ -97,15 +97,15 @@ sub notificationInTimeFrame
         $time_today_start = $dt->parse_datetime( $dt_timeFrom );
         $time_today_stop = $dt->parse_datetime( $dt_timeTo );
 
+	print"PRE-1\n";
+
         # IF $now is after $validFrom and before $validTo
         if ($dt_validFrom lt $dt_Now and $dt_validTo gt $dt_Now)
         {
-                print"VALID\n";
-
-
-
                 # EXPAND $day_today to figure out what days of the month its active, see http://search.cpan.org/dist/Date-Calc/lib/Date/Calc.pod snippet 6
+		print"PRE-2\n";
                 if ($day_today & $notify_day_all){
+			print"PRE-3\n";
                         # Check if its inside or outside a valid timerange.
                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                 if ($notify_status eq 1){
@@ -175,13 +175,16 @@ sub notificationInTimeFrame
                         }
                         # Last selected weekday of month.
                         if ($day_today & $notify_day_last){
+			print"PRE-32\n";
                                 # Calculate last occurence of todays weekday of month.
                                 @notify_date = TimeFrameDayNthWeekday(6);
                                 if (@notify_date eq @today_short){
+				print"PRE-32-today\n";
                                         # Check if its inside or outside a valid timerange.
                                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                         if ($notify_status eq 1)
                                         {
+						print"PRE-32-today-VALID\n";
                                                 return 1;
                                         }
                                 }
@@ -237,7 +240,7 @@ sub TimeFrameInTime
 {
         # Input, time_from, time_to, time_inverted
         my ($time_from, $time_to, $time_inverted, $time_now) = @_;
-
+	debug('TimeFrameInTime input, time_from: '.$time_from.' time_to: '.$time_to.' time_inverted '.$time_inverted.' time now: '.$time_now);
         # If it is inverted, look outside the timerange rather than within.
         if ($time_inverted eq '1')
         {
