@@ -43,7 +43,8 @@ sub notificationInTimeFrame
         my (@today,$current_dow,$current_dow_en,$dt_validFrom,$dt_validTo,$dt_timeFrom,$dt_timeTo,$notify_status,@notify_date,$day_today,$time_today_start,$time_today_stop,$time_today_invert,$tf_timezone);
 
         # Fill in the static info for days of week.
-        my $dt_Now = DateTime->now();
+	#my $dt_Now = DateTime->now(timezone => $conf->{notifier}->{timezone});
+	my $dt_Now = DateTime->now();
         my $notify_day_all=64;
         my $notify_day_first=1;
         my $notify_day_second=2;
@@ -69,7 +70,7 @@ sub notificationInTimeFrame
         # Query DB, no need to log query.
         my %dbResult = queryDB($query);
 
-	debug('dbResult: '.Dumper(\%dbResult));
+	#debug('dbResult: '.Dumper(\%dbResult));
 
         # Get the results!
         $dt_validFrom = $dbResult{0}->{dt_validFrom};
@@ -94,18 +95,15 @@ sub notificationInTimeFrame
         # Convert to a DateTime objects.
         $dt_validFrom = $dt->parse_datetime( $dt_validFrom );
         $dt_validTo = $dt->parse_datetime( $dt_validTo );
-        $time_today_start = $dt->parse_datetime( $dt_timeFrom );
-        $time_today_stop = $dt->parse_datetime( $dt_timeTo );
+	$time_today_start = $dt->parse_datetime( $time_today_start );
+	$time_today_stop = $dt->parse_datetime( $time_today_stop );
 
-	print"PRE-1\n";
 
         # IF $now is after $validFrom and before $validTo
         if ($dt_validFrom lt $dt_Now and $dt_validTo gt $dt_Now)
         {
                 # EXPAND $day_today to figure out what days of the month its active, see http://search.cpan.org/dist/Date-Calc/lib/Date/Calc.pod snippet 6
-		print"PRE-2\n";
                 if ($day_today & $notify_day_all){
-			print"PRE-3\n";
                         # Check if its inside or outside a valid timerange.
                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                 if ($notify_status eq 1){
@@ -175,16 +173,13 @@ sub notificationInTimeFrame
                         }
                         # Last selected weekday of month.
                         if ($day_today & $notify_day_last){
-			print"PRE-32\n";
                                 # Calculate last occurence of todays weekday of month.
                                 @notify_date = TimeFrameDayNthWeekday(6);
                                 if (@notify_date eq @today_short){
-				print"PRE-32-today\n";
                                         # Check if its inside or outside a valid timerange.
                                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                         if ($notify_status eq 1)
                                         {
-						print"PRE-32-today-VALID\n";
                                                 return 1;
                                         }
                                 }
@@ -240,14 +235,14 @@ sub TimeFrameInTime
 {
         # Input, time_from, time_to, time_inverted
         my ($time_from, $time_to, $time_inverted, $time_now) = @_;
-	debug('TimeFrameInTime input, time_from: '.$time_from.' time_to: '.$time_to.' time_inverted '.$time_inverted.' time now: '.$time_now);
+
         # If it is inverted, look outside the timerange rather than within.
         if ($time_inverted eq '1')
         {
-                if ($time_from >= $time_now and $time_now >= $time_to){
-                        return 1;
+                if ($time_from <= $time_now and $time_now <= $time_to){
+                        # Outside range
                 } else {
-                        # Inside range.
+                        return 1;
                 }
         } else {
                 if ($time_from <= $time_now and $time_now <= $time_to){
