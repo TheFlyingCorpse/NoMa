@@ -202,25 +202,14 @@ define('TIMEFRAME_SUBMIT_ADD', 'Add timeframe');
 define('TIMEFRAME_SUBMIT_UPDATE', 'Update timeframe data');
 define('TIMEFRAME_CONFIRM_DEL', 'Do you really want to delete this timeframe?');
 define('TIMEFRAME_ADMIN', 'Administrator:');
-
-//<!--
-//TIMEFRAME_HEADING_CONTACT - assumed 'TIMEFRAME_HEADING_CONTACT' in /usr/local/nagios/noma/inc/content_timeframes.php on line 70, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//TIMEFRAME_HEADING_TIME - assumed 'TIMEFRAME_HEADING_TIME' in /usr/local/nagios/noma/inc/content_timeframes.php on line 71, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//TIMEFRAME_HEADING_ADMIN - assumed 'TIMEFRAME_HEADING_ADMIN' in /usr/local/nagios/noma/inc/content_timeframes.php on line 72, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//TIMEFRAME_ADD_EDIT - assumed 'TIMEFRAME_ADD_EDIT' in /usr/local/nagios/noma/inc/content_timeframes.php on line 92, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//TEMPLATE_TIMEFRAME_MANAGER_ADMIN - assumed 'TEMPLATE_TIMEFRAME_MANAGER_ADMIN' in /usr/local/nagios/noma/inc/content_timeframes.php on line 126, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//TIMEFRAME_HEADING_ADMIN - assumed 'TIMEFRAME_HEADING_ADMIN' in /usr/local/nagios/noma/inc/content_timeframes.php on line 127, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//TIMEFRAME_FRAMES - assumed 'TIMEFRAME_FRAMES' in /usr/local/nagios/noma/inc/content_timeframes.php on line 128, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//TIMEFRAME_ADMIN - assumed 'TIMEFRAME_ADMIN' in /usr/local/nagios/noma/inc/content_timeframes.php on line 130, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//TIMEFRAME_SELECT_FRAME_NEW - assumed 'TIMEFRAME_SELECT_FRAME_NEW' in /usr/local/nagios/noma/inc/content_timeframes.php on line 131, referer: http://192.168.1.101/noma/index.php?action=contactgroups
-//-->
+define('TIMEFRAME_FRAMES', 'Timeframes:');
 define('TIMEFRAME_FRAME_VALID_FROM', 'Valid from:');
 define('TIMEFRAME_FRAME_VALID_TO', 'Valid to:');
 define('TIMEFRAME_SELECT_FRAME_NEW', 'create new');
 define('TIMEFRAME_HEADING_NAME' , 'Timeframe');
 define('TIMEFRAME_TIMEZONE' , 'Timezone:');
 define('TIMEFRAME_NEW_FRAME', 'Add timeframe (name):');
-define('TIMEFRAME_NAME', 'Timeframe name:');
+//define('TIMEFRAME_NAME', 'Timeframe name:');
 define('TIMEFRAME_TIME_FROM', 'From time');
 define('TIMEFRAME_TIME_TO', 'To time');
 define('TIMEFRAME_TIME_INVERT', 'Invert time');
