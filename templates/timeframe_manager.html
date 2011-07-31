@@ -1,6 +1,6 @@
 <form name="timeframe_form" method="post" action="index.php">
 <input type="hidden" name="id" value="{$ID}"/>
-<input type="hidden" name="action" value="contacts"/>
+<input type="hidden" name="action" value="timeframes"/>
 <table cellpadding="5" cellspacing="0" border="0" width="990">
 <tr><td colspan="10" class="contacts_message">{$MESSAGE}</td></tr>{$ADMIN_CONTENT}
 <tr><td colspan="2" height="5"></td></tr>
@@ -43,99 +43,99 @@
   <td>{$TIMEFRAME_DAY_MONDAY}</td>
   <td><input class="text" name="time_monday_time_from" id="time_monday_time_from" size="10" value="{$TIME_MONDAY_TIME_FROM}"/></td>
   <td><input class="text" name="time_monday_time_to" id="time_monday_time_to" size="10" value="{$TIME_MONDAY_TIME_TO}"/></td>
-  <td><input type="checkbox" name="time_frame_monday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_MONDAY_INVERT_TIME}/></td>
+  <td><input type="checkbox" name="time_monday_invert{$ARRAY_ITEM}"{$CHECKED_DAY_MONDAY_INVERT_TIME}/></td>
   <td></td>
-  <td><input type="checkbox" value="64" name="time_frame_monday_all"/></td>
-  <td><input type="checkbox" value="1" name="time_frame_monday_1st"/></td>
-  <td><input type="checkbox" value="2" name="time_frame_monday_2nd"/></td>
-  <td><input type="checkbox" value="4" name="time_frame_monday_3rd"/></td>
-  <td><input type="checkbox" value="8" name="time_frame_monday_4th"/></td>
-  <td><input type="checkbox" value="16" name="time_frame_monday_5th"/></td>
-  <td><input type="checkbox" value="32" name="time_frame_monday_last"/></td>
+  <td><input type="checkbox" value="64" name="day_monday_all{$ARRAY_ITEM}"{$CHECKED_DAY_MONDAY_ALL}/></td>
+  <td><input type="checkbox" value="1" name="day_monday_1st{$ARRAY_ITEM}"{$CHECKED_DAY_MONDAY_1ST}/></td>
+  <td><input type="checkbox" value="2" name="day_monday_2nd{$ARRAY_ITEM}"{$CHECKED_DAY_MONDAY_2ND}/></td>
+  <td><input type="checkbox" value="4" name="day_monday_3rd{$ARRAY_ITEM}"{$CHECKED_DAY_MONDAY_3RD}/></td>
+  <td><input type="checkbox" value="8" name="day_monday_4th{$ARRAY_ITEM}"{$CHECKED_DAY_MONDAY_4TH}/></td>
+  <td><input type="checkbox" value="16" name="day_monday_5th{$ARRAY_ITEM}"{$CHECKED_DAY_MONDAY_5TH}/></td>
+  <td><input type="checkbox" value="32" name="day_monday_last{$ARRAY_ITEM}"{$CHECKED_DAY_MONDAY_LAST}/></td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td>{$TIMEFRAME_DAY_TUESDAY}</td>
   <td><input class="text" name="time_tuesday_time_from" id="time_tuesday_time_from" size="10" value="{$TIME_TUESDAY_TIME_FROM}"/></td>
   <td><input class="text" name="time_tuesday_time_to" id="time_tuesday_time_to" size="10" value="{$TIME_TUESDAY_TIME_TO}"/></td>
-  <td><input type="checkbox" name="time_frame_tuesday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_TUESDAY_INVERT_TIME}/></td>
+  <td><input type="checkbox" name="time_tuesday_invert{$ARRAY_ITEM}"{$CHECKED_DAY_TUESDAY_INVERT_TIME}/></td>
   <td></td>
-  <td><input type="checkbox" value="64" name="time_frame_tuesday_all"/></td>
-  <td><input type="checkbox" value="1" name="time_frame_tuesday_1st"/></td>
-  <td><input type="checkbox" value="2" name="time_frame_tuesday_2nd"/></td>
-  <td><input type="checkbox" value="4" name="time_frame_tuesday_3rd"/></td>
-  <td><input type="checkbox" value="8" name="time_frame_tuesday_4th"/></td>
-  <td><input type="checkbox" value="16" name="time_frame_tuesday_5th"/></td>
-  <td><input type="checkbox" value="32" name="time_frame_tuesday_last"/></td>
+  <td><input type="checkbox" value="64" name="day_tuesday_all{$ARRAY_ITEM}"{$CHECKED_DAY_TUESDAY_ALL}/></td>
+  <td><input type="checkbox" value="1" name="day_tuesday_1st{$ARRAY_ITEM}"{$CHECKED_DAY_TUESDAY_1ST}/></td>
+  <td><input type="checkbox" value="2" name="day_tuesday_2nd{$ARRAY_ITEM}"{$CHECKED_DAY_TUESDAY_2ND}/></td>
+  <td><input type="checkbox" value="4" name="day_tuesday_3rd{$ARRAY_ITEM}"{$CHECKED_DAY_TUESDAY_3RD}/></td>
+  <td><input type="checkbox" value="8" name="day_tuesday_4th{$ARRAY_ITEM}"{$CHECKED_DAY_TUESDAY_4TH}/></td>
+  <td><input type="checkbox" value="16" name="day_tuesday_5th{$ARRAY_ITEM}"{$CHECKED_DAY_TUESDAY_5TH}/></td>
+  <td><input type="checkbox" value="32" name="day_tuesday_last{$ARRAY_ITEM}"{$CHECKED_DAY_TUESDAY_LAST}/></td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td>{$TIMEFRAME_DAY_WEDNESDAY}</td>
   <td><input class="text" name="time_wednesday_time_from" id="time_wednesday_time_from" size="10" value="{$TIME_WEDNESDAY_TIME_FROM}"/></td>
   <td><input class="text" name="time_wednesday_time_to" id="time_wednesday_time_to" size="10" value="{$TIME_WEDNESDAY_TIME_TO}"/></td>
-  <td><input type="checkbox" name="time_frame_wednesday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_INVERT_TIME}/></td>
+  <td><input type="checkbox" name="time_wednesday_invert{$ARRAY_ITEM}"{$CHECKED_DAY_WEDNESDAY_INVERT_TIME}/></td>
   <td></td>
-  <td><input type="checkbox" name="time_frame_wednesday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_AL}/></td>
-  <td><input type="checkbox" name="time_frame_wednesday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_1ST}/></td>
-  <td><input type="checkbox" name="time_frame_wednesday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_2ND}/></td>
-  <td><input type="checkbox" name="time_frame_wednesday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_3RD}/></td>
-  <td><input type="checkbox" name="time_frame_wednesday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_4TH}/></td>
-  <td><input type="checkbox" name="time_frame_wednesday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_5TH}/></td>
-  <td><input type="checkbox" name="time_frame_wednesday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_LAST}/></td>
+  <td><input type="checkbox" name="day_wednesday_all{$ARRAY_ITEM}"{$CHECKED_DAY_WEDNESDAY_ALL}/></td>
+  <td><input type="checkbox" name="day_wednesday_1st{$ARRAY_ITEM}"{$CHECKED_DAY_WEDNESDAY_1ST}/></td>
+  <td><input type="checkbox" name="day_wednesday_2nd{$ARRAY_ITEM}"{$CHECKED_DAY_WEDNESDAY_2ND}/></td>
+  <td><input type="checkbox" name="day_wednesday_3rd{$ARRAY_ITEM}"{$CHECKED_DAY_WEDNESDAY_3RD}/></td>
+  <td><input type="checkbox" name="day_wednesday_4th{$ARRAY_ITEM}"{$CHECKED_DAY_WEDNESDAY_4TH}/></td>
+  <td><input type="checkbox" name="day_wednesday_5th{$ARRAY_ITEM}"{$CHECKED_DAY_WEDNESDAY_5TH}/></td>
+  <td><input type="checkbox" name="day_wednesday_last{$ARRAY_ITEM}"{$CHECKED_DAY_WEDNESDAY_LAST}/></td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td>{$TIMEFRAME_DAY_THURSDAY}</td>
   <td><input class="text" name="time_thursday_time_from" id="time_thursday_time_from" size="10" value="{$TIME_THURSDAY_TIME_FROM}"/></td>
   <td><input class="text" name="time_thursday_time_to" id="time_thursday_time_to" size="10" value="{$TIME_THURSDAY_TIME_TO}"/></td>
-  <td><input type="checkbox" name="time_frame_thursday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_INVERT_TIME}/></td>
+  <td><input type="checkbox" name="time_thursday_invert{$ARRAY_ITEM}"{$CHECKED_DAY_THURSDAY_INVERT_TIME}/></td>
   <td></td>
-  <td><input type="checkbox" name="time_frame_thursday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_AL}/></td>
-  <td><input type="checkbox" name="time_frame_thursday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_1ST}/></td>
-  <td><input type="checkbox" name="time_frame_thursday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_2ND}/></td>
-  <td><input type="checkbox" name="time_frame_thursday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_3RD}/></td>
-  <td><input type="checkbox" name="time_frame_thursday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_4TH}/></td>
-  <td><input type="checkbox" name="time_frame_thursday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_5TH}/></td>
-  <td><input type="checkbox" name="time_frame_thursday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_LAST}/></td>
+  <td><input type="checkbox" name="day_thursday_all{$ARRAY_ITEM}"{$CHECKED_DAY_THURSDAY_ALL}/></td>
+  <td><input type="checkbox" name="day_thursday_1st{$ARRAY_ITEM}"{$CHECKED_DAY_THURSDAY_1ST}/></td>
+  <td><input type="checkbox" name="day_thursday_2nd{$ARRAY_ITEM}"{$CHECKED_DAY_THURSDAY_2ND}/></td>
+  <td><input type="checkbox" name="day_thursday_3rd{$ARRAY_ITEM}"{$CHECKED_DAY_THURSDAY_3RD}/></td>
+  <td><input type="checkbox" name="day_thursday_4th{$ARRAY_ITEM}"{$CHECKED_DAY_THURSDAY_4TH}/></td>
+  <td><input type="checkbox" name="day_thursday_5th{$ARRAY_ITEM}"{$CHECKED_DAY_THURSDAY_5TH}/></td>
+  <td><input type="checkbox" name="day_thursday_last{$ARRAY_ITEM}"{$CHECKED_DAY_THURSDAY_LAST}/></td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td>{$TIMEFRAME_DAY_FRIDAY}</td>
   <td><input class="text" name="time_friday_time_from" id="time_friday_time_from" size="10" value="{$TIME_FRIDAY_TIME_FROM}"/></td>
   <td><input class="text" name="time_friday_time_to" id="time_friday_time_to" size="10" value="{$TIME_FRIDAY_TIME_TO}"/></td>
-  <td><input type="checkbox" name="time_frame_friday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_INVERT_TIME}/></td>
+  <td><input type="checkbox" name="time_friday_invert{$ARRAY_ITEM}"{$CHECKED_DAY_FRIDAY_INVERT_TIME}/></td>
   <td></td>
-  <td><input type="checkbox" name="time_frame_friday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_AL}/></td>
-  <td><input type="checkbox" name="time_frame_friday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_1ST}/></td>
-  <td><input type="checkbox" name="time_frame_friday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_2ND}/></td>
-  <td><input type="checkbox" name="time_frame_friday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_3RD}/></td>
-  <td><input type="checkbox" name="time_frame_friday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_4TH}/></td>
-  <td><input type="checkbox" name="time_frame_friday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_5TH}/></td>
-  <td><input type="checkbox" name="time_frame_friday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_LAST}/></td>
+  <td><input type="checkbox" name="day_friday_all{$ARRAY_ITEM}"{$CHECKED_DAY_FRIDAY_ALL}/></td>
+  <td><input type="checkbox" name="day_friday_1st{$ARRAY_ITEM}"{$CHECKED_DAY_FRIDAY_1ST}/></td>
+  <td><input type="checkbox" name="day_friday_2nd{$ARRAY_ITEM}"{$CHECKED_DAY_FRIDAY_2ND}/></td>
+  <td><input type="checkbox" name="day_friday_3rd{$ARRAY_ITEM}"{$CHECKED_DAY_FRIDAY_3RD}/></td>
+  <td><input type="checkbox" name="day_friday_4th{$ARRAY_ITEM}"{$CHECKED_DAY_FRIDAY_4TH}/></td>
+  <td><input type="checkbox" name="day_friday_5th{$ARRAY_ITEM}"{$CHECKED_DAY_FRIDAY_5TH}/></td>
+  <td><input type="checkbox" name="day_friday_last{$ARRAY_ITEM}"{$CHECKED_DAY_FRIDAY_LAST}/></td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td>{$TIMEFRAME_DAY_SATURDAY}</td>
   <td><input class="text" name="time_saturday_time_from" id="time_saturday_time_from" size="10" value="{$TIME_SATURDAY_TIME_FROM}"/></td>
   <td><input class="text" name="time_saturday_time_to" id="time_saturday_time_to" size="10" value="{$TIME_SATURDAY_TIME_TO}"/></td>
-  <td><input type="checkbox" name="time_frame_saturday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_INVERT_TIME}/></td>
+  <td><input type="checkbox" name="time_saturday_invert{$ARRAY_ITEM}"{$CHECKED_DAY_SATURDAY_INVERT_TIME}/></td>
   <td></td>
-  <td><input type="checkbox" name="time_frame_saturday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_AL}/></td>
-  <td><input type="checkbox" name="time_frame_saturday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_1ST}/></td>
-  <td><input type="checkbox" name="time_frame_saturday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_2ND}/></td>
-  <td><input type="checkbox" name="time_frame_saturday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_3RD}/></td>
-  <td><input type="checkbox" name="time_frame_saturday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_4TH}/></td>
-  <td><input type="checkbox" name="time_frame_saturday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_5TH}/></td>
-  <td><input type="checkbox" name="time_frame_saturday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_LAST}/></td>
+  <td><input type="checkbox" name="day_saturday_all{$ARRAY_ITEM}"{$CHECKED_DAY_SATURDAY_ALL}/></td>
+  <td><input type="checkbox" name="day_saturday_1st{$ARRAY_ITEM}"{$CHECKED_DAY_SATURDAY_1ST}/></td>
+  <td><input type="checkbox" name="day_saturday_2nd{$ARRAY_ITEM}"{$CHECKED_DAY_SATURDAY_2ND}/></td>
+  <td><input type="checkbox" name="day_saturday_3rd{$ARRAY_ITEM}"{$CHECKED_DAY_SATURDAY_3RD}/></td>
+  <td><input type="checkbox" name="day_saturday_4th{$ARRAY_ITEM}"{$CHECKED_DAY_SATURDAY_4TH}/></td>
+  <td><input type="checkbox" name="day_saturday_5th{$ARRAY_ITEM}"{$CHECKED_DAY_SATURDAY_5TH}/></td>
+  <td><input type="checkbox" name="day_saturday_last{$ARRAY_ITEM}"{$CHECKED_DAY_SATURDAY_LAST}/></td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td>{$TIMEFRAME_DAY_SUNDAY}</td>
   <td><input class="text" name="time_sunday_time_from" id="time_sunday_time_from" size="10" value="{$TIME_SUNDAY_TIME_FROM}"/></td>
   <td><input class="text" name="time_sunday_time_to" id="time_sunday_time_to" size="10" value="{$TIME_SUNDAY_TIME_TO}"/></td>
-  <td><input type="checkbox" name="time_frame_sunday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_INVERT_TIME}/></td>
+  <td><input type="checkbox" name="time_sunday_invert{$ARRAY_ITEM}"{$CHECKED_DAY_SUNDAY_INVERT_TIME}/></td>
   <td></td>
-  <td><input type="checkbox" name="time_frame_sunday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_AL}/></td>
-  <td><input type="checkbox" name="time_frame_sunday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_1ST}/></td>
-  <td><input type="checkbox" name="time_frame_sunday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_2ND}/></td>
-  <td><input type="checkbox" name="time_frame_sunday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_3RD}/></td>
-  <td><input type="checkbox" name="time_frame_sunday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_4TH}/></td>
-  <td><input type="checkbox" name="time_frame_sunday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_5TH}/></td>
-  <td><input type="checkbox" name="time_frame_sunday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_LAST}/></td>
+  <td><input type="checkbox" name="day_sunday_all{$ARRAY_ITEM}"{$CHECKED_DAY_SUNDAY_ALL}/></td>
+  <td><input type="checkbox" name="day_sunday_1st{$ARRAY_ITEM}"{$CHECKED_DAY_SUNDAY_1ST}/></td>
+  <td><input type="checkbox" name="day_sunday_2nd{$ARRAY_ITEM}"{$CHECKED_DAY_SUNDAY_2ND}/></td>
+  <td><input type="checkbox" name="day_sunday_3rd{$ARRAY_ITEM}"{$CHECKED_DAY_SUNDAY_3RD}/></td>
+  <td><input type="checkbox" name="day_sunday_4th{$ARRAY_ITEM}"{$CHECKED_DAY_SUNDAY_4TH}/></td>
+  <td><input type="checkbox" name="day_sunday_5th{$ARRAY_ITEM}"{$CHECKED_DAY_SUNDAY_5TH}/></td>
+  <td><input type="checkbox" name="day_sunday_last{$ARRAY_ITEM}"{$CHECKED_DAY_SUNDAY_LAST}/></td>
  </tr>
  </table>
  <br/>
