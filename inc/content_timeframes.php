@@ -160,6 +160,8 @@ function getContent () {
 		//$userHolidays = queryDB('select * from holidays where contact_id=\'' . $timeframeData['id'] . '\' order by start asc');
 		$templateContent->assign('ID', $timeframeData['id']);
 		$templateContent->assign('TIMEFRAME_NAME', $timeframeData['timeframe_name']);
+                $templateContent->assign('TIME_VALID_DATETIME_FROM', $timeframeData['dt_validFrom']);
+                $templateContent->assign('TIME_VALID_DATETIME_TO', $timeframeData['dt_validTo']);
                 $templateContent->assign('TIME_MONDAY_TIME_FROM', $timeframeData['time_monday_start']);
                 $templateContent->assign('TIME_TUESDAY_TIME_FROM', $timeframeData['time_tuesday_start']);
                 $templateContent->assign('TIME_WEDNESDAY_TIME_FROM', $timeframeData['time_wednesday_start']);
