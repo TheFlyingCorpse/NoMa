@@ -191,8 +191,8 @@ Date/Time: $datetime',
                         subject_host            => 'NoMa - $notification_type: Host $host is $status',
 			subject_service		=> 'NoMa - $notification_type: Service $service on host $host is $status',
                         message => {
-                                host            => '$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime',
-                                service         => '$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime',
+                                host            => '$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. $output Time: $datetime',
+                                service         => '$incident_id: $notification_type for service $service on host $host. State is $status. Info: $output Time: $datetime',
                         },
 
                         ackmessage => {
@@ -205,9 +205,9 @@ Date/Time: $datetime',
 		# miscellaneous settings
 		debug => {
 			logging			=> '1',		# general debugging
-			queries			=> '1',		# log SQL queries
+			queries			=> '0',		# log SQL queries
 			file			=> '/usr/local/nagios/var/noma_debug.log',	# file to log in
-			daemonize		=> '0',		# daemonize process
+			daemonize		=> '1',		# daemonize process
 			paramlog		=> undef,	# '/usr/local/nagios/var/noma_args_log.txt'
 			watchdogEnabled		=> '1',		# the watchdog restarts the daemon if too much memory is used
 			watchdogMaxRSS		=> 524288,	# real memory
