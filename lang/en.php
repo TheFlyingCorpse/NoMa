@@ -209,7 +209,7 @@ define('TIMEFRAME_SELECT_FRAME_NEW', 'create new');
 define('TIMEFRAME_HEADING_NAME' , 'Timeframe');
 define('TIMEFRAME_TIMEZONE' , 'Timezone:');
 define('TIMEFRAME_NEW_FRAME', 'Add timeframe (name):');
-define('TIMEFRAME_NAME', 'Timeframe name:');
+//define('TIMEFRAME_NAME', 'Timeframe name:');
 define('TIMEFRAME_TIME_FROM', 'From time');
 define('TIMEFRAME_TIME_TO', 'To time');
 define('TIMEFRAME_TIME_INVERT', 'Invert time');
