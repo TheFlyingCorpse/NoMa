@@ -71,8 +71,7 @@ sub notificationInTimeFrame
         $day_today_last = 'day_'.$current_dow_en.'_last';
 
         # query
-#        my $query = 'SELECT time_frames.id, time_frames_to_notifications.time_frame_id, time_frames_to_notifications.notification_id, timezones.id, time_frames.dt_validFrom, time_frames.dt_validTo, timezones.timezone, time_frames.day_'.$current_dow_en.', time_frames.time_'.$current_dow_en.'_start, time_frames.time_'.$current_dow_en.'_stop, time_frames.time_'.$current_dow_en.'_invert FROM time_frames,time_frames_to_notifications,timezones WHERE time_frames.timezone_id = timezones.id AND time_frames.id = time_frames_to_notifications.time_frame_id AND time_frames_to_notifications.notification_id=\''.$notification_id.'\'';
-        my $query = 'SELECT timeframes.id, time_frames_to_notifications.time_frame_id, time_frames_to_notifications.notification_id, timezones.id, timeframes.dt_validFrom, timeframes.dt_validTo, timezones.timezone, timeframes.day_'.$current_dow_en.'_all, timeframes.day_'.$current_dow_en.'_1st, timeframes.day_'.$current_dow_en.'_2nd, timeframes.day_'.$current_dow_en.'_3rd, timeframes.day_'.$current_dow_en.'_4th, timeframes.day_'.$current_dow_en.'_5th, timeframes.day_'.$current_dow_en.'_last, timeframes.time_'.$current_dow_en.'_start, timeframes.time_'.$current_dow_en.'_stop, timeframes.time_'.$current_dow_en.'_invert FROM timeframes,time_frames_to_notifications,timezones WHERE timeframes.timezone_id = timezones.id AND timeframes.id = time_frames_to_notifications.time_frame_id AND time_frames_to_notifications.notification_id=\''.$notification_id.'\'';
+        my $query = 'SELECT timeframes.id, timeframes_to_notifications.timeframe_id, timeframes_to_notifications.notification_id, timezones.id, timeframes.dt_validFrom, timeframes.dt_validTo, timezones.timezone, timeframes.day_'.$current_dow_en.'_all, timeframes.day_'.$current_dow_en.'_1st, timeframes.day_'.$current_dow_en.'_2nd, timeframes.day_'.$current_dow_en.'_3rd, timeframes.day_'.$current_dow_en.'_4th, timeframes.day_'.$current_dow_en.'_5th, timeframes.day_'.$current_dow_en.'_last, timeframes.time_'.$current_dow_en.'_start, timeframes.time_'.$current_dow_en.'_stop, timeframes.time_'.$current_dow_en.'_invert FROM timeframes,timeframes_to_notifications,timezones WHERE timeframes.timezone_id = timezones.id AND timeframes.id = timeframes_to_notifications.timeframe_id AND timeframes_to_notifications.notification_id=\''.$notification_id.'\'';
 
         # Query DB, no need to log query.
         my %dbResult = queryDB($query);
@@ -83,7 +82,6 @@ sub notificationInTimeFrame
         $dt_validFrom = $dbResult{0}->{dt_validFrom};
         $dt_validTo = $dbResult{0}->{dt_validTo};
         $tf_timezone = $dbResult{0}->{timezone};
-#        $day_today = $dbResult{0}->{$day_today};
         $day_today_all = $dbResult{0}->{$day_today_all};
         $day_today_1st = $dbResult{0}->{$day_today_1st};
         $day_today_2nd = $dbResult{0}->{$day_today_2nd};

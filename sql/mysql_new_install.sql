@@ -238,42 +238,110 @@ CREATE TABLE `notifications_to_methods` (
 
 INSERT INTO `notifications_to_methods` VALUES (1,1);
 
-CREATE TABLE IF NOT EXISTS `time_frames` (
-  `id` tinyint(11) NOT NULL,
-  `notification_id` int(11) NOT NULL,
-  `validFrom` datetime DEFAULT NULL,
-  `validTo` datetime DEFAULT NULL,
-  `day_monday` int(3) DEFAULT NULL,
-  `day_tuesday` int(3) DEFAULT NULL,
-  `day_wednesday` int(3) DEFAULT NULL,
-  `day_thursday` int(3) DEFAULT NULL,
-  `day_friday` int(3) DEFAULT NULL,
-  `day_saturday` int(3) DEFAULT NULL,
-  `day_sunday` int(3) DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `timeframes` (
+  `id` tinyint(3) NOT NULL,
+  `dt_validFrom` datetime NOT NULL,
+  `dt_validTo` datetime DEFAULT NULL,
+  `timezone_id` int(3) NOT NULL,
+  `day_monday_all` tinyint(1) DEFAULT '1',
+  `day_monday_1st` tinyint(1) DEFAULT '0',
+  `day_monday_2nd` tinyint(1) DEFAULT '0',
+  `day_monday_3rd` tinyint(1) DEFAULT '0',
+  `day_monday_4th` tinyint(1) DEFAULT '0',
+  `day_monday_5th` tinyint(1) DEFAULT '0',
+  `day_monday_last` tinyint(1) DEFAULT '0',
+  `day_tuesday_all` tinyint(1) DEFAULT '1',
+  `day_tuesday_1st` tinyint(1) DEFAULT '0',
+  `day_tuesday_2nd` tinyint(1) DEFAULT '0',
+  `day_tuesday_3rd` tinyint(1) DEFAULT '0',
+  `day_tuesday_4th` tinyint(1) DEFAULT '0',
+  `day_tuesday_5th` tinyint(1) DEFAULT '0',
+  `day_tuesday_last` tinyint(1) DEFAULT '0',
+  `day_wednesday_all` tinyint(1) DEFAULT '1',
+  `day_wednesday_1st` tinyint(1) DEFAULT '0',
+  `day_wednesday_2nd` tinyint(1) DEFAULT '0',
+  `day_wednesday_3rd` tinyint(1) DEFAULT '0',
+  `day_wednesday_4th` tinyint(1) DEFAULT '0',
+  `day_wednesday_5th` tinyint(1) DEFAULT '0',
+  `day_wednesday_last` tinyint(1) DEFAULT '0',
+  `day_thursday_all` tinyint(1) DEFAULT '1',
+  `day_thursday_1st` tinyint(1) DEFAULT '0',
+  `day_thursday_2nd` tinyint(1) DEFAULT '0',
+  `day_thursday_3rd` tinyint(1) DEFAULT '0',
+  `day_thursday_4th` tinyint(1) DEFAULT '0',
+  `day_thursday_5th` tinyint(1) DEFAULT '0',
+  `day_thursday_last` tinyint(1) DEFAULT '0',
+  `day_friday_all` tinyint(1) DEFAULT '1',
+  `day_friday_1st` tinyint(1) DEFAULT '0',
+  `day_friday_2nd` tinyint(1) DEFAULT '0',
+  `day_friday_3rd` tinyint(1) DEFAULT '0',
+  `day_friday_4th` tinyint(1) DEFAULT '0',
+  `day_friday_5th` tinyint(1) DEFAULT '0',
+  `day_friday_last` tinyint(1) DEFAULT '0',
+  `day_saturday_all` tinyint(1) DEFAULT '1',
+  `day_saturday_1st` tinyint(1) DEFAULT '0',
+  `day_saturday_2nd` tinyint(1) DEFAULT '0',
+  `day_saturday_3rd` tinyint(1) DEFAULT '0',
+  `day_saturday_4th` tinyint(1) DEFAULT '0',
+  `day_saturday_5th` tinyint(1) DEFAULT '0',
+  `day_saturday_last` tinyint(1) DEFAULT '0',
+  `day_sunday_all` tinyint(1) DEFAULT '1',
+  `day_sunday_1st` tinyint(1) DEFAULT '0',
+  `day_sunday_2nd` tinyint(1) DEFAULT '0',
+  `day_sunday_3rd` tinyint(1) DEFAULT '0',
+  `day_sunday_4th` tinyint(1) DEFAULT '0',
+  `day_sunday_5th` tinyint(1) DEFAULT '0',
+  `day_sunday_last` tinyint(1) DEFAULT '0',
   `time_monday_start` time DEFAULT NULL,
   `time_monday_stop` time DEFAULT NULL,
-  `time_monday_invert` tinyint(1) DEFAULT NULL,
+  `time_monday_invert` tinyint(1) DEFAULT '0',
   `time_tuesday_start` time DEFAULT NULL,
   `time_tuesday_stop` time DEFAULT NULL,
-  `time_tuesday_invert` tinyint(1) DEFAULT NULL,
+  `time_tuesday_invert` tinyint(1) DEFAULT '0',
   `time_wednesday_start` time DEFAULT NULL,
   `time_wednesday_stop` time DEFAULT NULL,
-  `time_wednesday_invert` tinyint(1) DEFAULT NULL,
+  `time_wednesday_invert` tinyint(1) DEFAULT '0',
   `time_thursday_start` time DEFAULT NULL,
   `time_thursday_stop` time DEFAULT NULL,
-  `time_thursday_invert` tinyint(1) DEFAULT NULL,
+  `time_thursday_invert` tinyint(1) DEFAULT '0',
   `time_friday_start` time DEFAULT NULL,
   `time_friday_stop` time DEFAULT NULL,
-  `time_friday_invert` tinyint(1) DEFAULT NULL,
+  `time_friday_invert` tinyint(1) DEFAULT '0',
   `time_saturday_start` time DEFAULT NULL,
   `time_saturday_stop` time DEFAULT NULL,
-  `time_saturday_invert` tinyint(1) DEFAULT NULL,
+  `time_saturday_invert` tinyint(1) DEFAULT '0',
   `time_sunday_start` time DEFAULT NULL,
   `time_sunday_stop` time DEFAULT NULL,
-  `time_sunday_invert` tinyint(1) DEFAULT NULL,
-  UNIQUE KEY `notification_id` (`notification_id`),
+  `time_sunday_invert` tinyint(1) DEFAULT '0',
   KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+INSERT INTO `timeframes` (`id`, `dt_validFrom`, `dt_validTo`, `timezone_id`, `day_monday_all`, `day_monday_1st`, `day_monday_2nd`, `day_monday_3rd`, `day_monday_4th`, `day_monday_5th`, `day_monday_last`, `day_tuesday_all`, `day_tuesday_1st`, `day_tuesday_2nd`, `day_tuesday_3rd`, `day_tuesday_4th`, `day_tuesday_5th`, `day_tuesday_last`, `day_wednesday_all`, `day_wednesday_1st`, `day_wednesday_2nd`, `day_wednesday_3rd`, `day_wednesday_4th`, `day_wednesday_5th`, `day_wednesday_last`, `day_thursday_all`, `day_thursday_1st`, `day_thursday_2nd`, `day_thursday_3rd`, `day_thursday_4th`, `day_thursday_5th`, `day_thursday_last`, `day_friday_all`, `day_friday_1st`, `day_friday_2nd`, `day_friday_3rd`, `day_friday_4th`, `day_friday_5th`, `day_friday_last`, `day_saturday_all`, `day_saturday_1st`, `day_saturday_2nd`, `day_saturday_3rd`, `day_saturday_4th`, `day_saturday_5th`, `day_saturday_last`, `day_sunday_all`, `day_sunday_1st`, `day_sunday_2nd`, `day_sunday_3rd`, `day_sunday_4th`, `day_sunday_5th`, `day_sunday_last`, `time_monday_start`, `time_monday_stop`, `time_monday_invert`, `time_tuesday_start`, `time_tuesday_stop`, `time_tuesday_invert`, `time_wednesday_start`, `time_wednesday_stop`, `time_wednesday_invert`, `time_thursday_start`, `time_thursday_stop`, `time_thursday_invert`, `time_friday_start`, `time_friday_stop`, `time_friday_invert`, `time_saturday_start`, `time_saturday_stop`, `time_saturday_invert`, `time_sunday_start`, `time_sunday_stop`, `time_sunday_invert`) VALUES
+(1, '2011-07-31 11:29:00', '2011-07-31 19:34:00', 305, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, '00:00:00', '23:59:59', 0, '00:00:00', '23:59:59', 0, '00:00:00', '23:59:59', 0, '00:00:00', '23:59:59', 0, '00:00:00', '23:59:59', 0, '00:00:00', '23:59:59', 0, '00:00:00', '23:59:59', 0);
+
+CREATE TABLE IF NOT EXISTS `timeframes_to_contactgroups` (
+  `timeframe_id` int(11) NOT NULL,
+  `contactgroup_id` int(11) NOT NULL,
+  PRIMARY KEY (`timeframe_id`),
+  KEY `contactgroup_id` (`contactgroup_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `timeframes_to_contacts` (
+  `timeframe_id` int(11) NOT NULL,
+  `contact_id` int(11) NOT NULL,
+  PRIMARY KEY (`timeframe_id`),
+  KEY `contact_id` (`contact_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `timeframes_to_notifications` (
+  `timeframe_id` int(11) NOT NULL,
+  `notification_id` int(11) NOT NULL,
+  PRIMARY KEY (`timeframe_id`),
+  KEY `notification_id` (`notification_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+INSERT INTO `timeframes_to_notifications` (`timeframe_id`, `notification_id`) VALUES
+(1, 1);
 
 DROP TABLE IF EXISTS `time_periods`;
 CREATE TABLE `time_periods` (

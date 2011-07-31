@@ -54,17 +54,184 @@
 <!--
 <tr><td colspan="3" height="5"></td></tr>
 <tr class="grey"><td colspan="3">{$HEADING_TIME}</td></tr>
+<link rel="stylesheet" type="text/css" href="anytime.css" />
+<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="js/anytimec.js"></script>
+
+<tr style="padding-bottom:0px;">
+<td class="header" style="padding-right:0px;">{$ADD_EDIT_HEADING_TIME_FRAME}</td>
+</tr>
+<tr style="padding-top:0px;"><td colspan="3"><hr/></td></tr>
+<tr>
+<td colspan="3">
+<table cellpadding="0" cellspacing="0" border="0" width="900">
+<tr>
+<td valign="top" width="50%" colspan="3">
+
+<table border=0 cellpadding=0 cellspacing=0 width=986 style='border-collapse:
+ collapse;table-layout:fixed;width:740pt'>
+ <col width=80 span=3 style='width:60pt'>
+ <col width=21 style='mso-width-source:userset;mso-width-alt:768;width:16pt'>
+ <col width=80 span=7 style='width:60pt'>
+
+ <tr height=20 style='height:15.0pt'>
+  <td width=80 style='width:50pt'>{$ADD_EDIT_TIME_FRAME_TIME_FROM}</td>
+  <td width=80 style='width:50pt'>{$ADD_EDIT_TIME_FRAME_TIME_TO}</td>
+  <td width=21 style='width:21pt'>{$ADD_EDIT_TIME_FRAME_INVERT}</td>
+  <td width=21 style='width:16pt'></td>
+  <td width=30 style='width:21pt'>{$ADD_EDIT_TIME_FRAME_DAYS_ALL}</td>
+  <td width=30 style='width:21pt'>{$ADD_EDIT_TIME_FRAME_DAYS_1ST}</td>
+  <td width=30 style='width:21pt'>{$ADD_EDIT_TIME_FRAME_DAYS_2ND}</td>
+  <td width=30 style='width:21pt'>{$ADD_EDIT_TIME_FRAME_DAYS_3RD}</td>
+  <td width=30 style='width:21pt'>{$ADD_EDIT_TIME_FRAME_DAYS_4TH}</td>
+  <td width=30 style='width:21pt'>{$ADD_EDIT_TIME_FRAME_DAYS_5TH}</td>
+  <td width=30 style='width:21pt'>{$ADD_EDIT_TIME_FRAME_DAYS_LAST}</td>
+ </tr>
+ <form name='form_monday' id='form_monday'>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$DAY_MONDAY}</td>
+  <td><input class="text" name="time_monday_time_from" id="time_monday_time_from" size="10" value="{$TIME_MONDAY_TIME_FROM}"/></td>
+  <td><input class="text" name="time_monday_time_to" id="time_monday_time_to" size="10" value="{$TIME_MONDAY_TIME_TO}"/></td>
+  <td><input type="checkbox" name="time_frame_monday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_MONDAY_INVERT_TIME}/></td>
+  <td></td>
+  <td><input type="checkbox" value="64" name="time_frame_monday_all"/></td>
+  <td><input type="checkbox" value="1" name="time_frame_monday_1st"/></td>
+  <td><input type="checkbox" value="2" name="time_frame_monday_2nd"/></td>
+  <td><input type="checkbox" value="4" name="time_frame_monday_3rd"/></td>
+  <td><input type="checkbox" value="8" name="time_frame_monday_4th"/></td>
+  <td><input type="checkbox" value="16" name="time_frame_monday_5th"/></td>
+  <td><input type="checkbox" value="32" name="time_frame_monday_last"/></td>
+  <td><input class="text" name="day_monday_total" id="day_monday_total" size="4" value=""/></td>
+ </tr>
+ </form>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$DAY_TUESDAY}</td>
+  <td><input class="text" name="time_tuesday_time_from" id="time_tuesday_time_from" size="10" value="{$TIME_TUESDAY_TIME_FROM}"/></td>
+  <td><input class="text" name="time_tuesday_time_to" id="time_tuesday_time_to" size="10" value="{$TIME_TUESDAY_TIME_TO}"/></td>
+  <td><input type="checkbox" name="time_frame_tuesday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_TUESDAY_INVERT_TIME}/></td>
+  <td></td>
+  <td><input type="checkbox" value="64" name="time_frame_tuesday_all"/>/></td>
+  <td><input type="checkbox" value="1" name="time_frame_tuesday_1st"/></td>
+  <td><input type="checkbox" value="2" name="time_frame_tuesday_2nd"/></td>
+  <td><input type="checkbox" value="4" name="time_frame_tuesday_3rd"/></td>
+  <td><input type="checkbox" value="8" name="time_frame_tuesday_4th"/></td>
+  <td><input type="checkbox" value="16" name="time_frame_tuesday_5th"/></td>
+  <td><input type="checkbox" value="32" name="time_frame_tuesday_last"/></td>
+  <td><input class="text" name="day_tuesday_total" id="day_tuesday_total" size="4" value=""/></td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$DAY_WEDNESDAY}</td>
+  <td><input class="text" name="time_wednesday_time_from" id="time_wednesday_time_from" size="10" value="{$TIME_WEDNESDAY_TIME_FROM}"/></td>
+  <td><input class="text" name="time_wednesday_time_to" id="time_wednesday_time_to" size="10" value="{$TIME_WEDNESDAY_TIME_TO}"/></td>
+  <td><input type="checkbox" name="time_frame_wednesday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_INVERT_TIME}/></td>
+  <td></td>
+  <td><input type="checkbox" name="time_frame_wednesday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_AL}/></td>
+  <td><input type="checkbox" name="time_frame_wednesday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_1ST}/></td>
+  <td><input type="checkbox" name="time_frame_wednesday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_2ND}/></td>
+  <td><input type="checkbox" name="time_frame_wednesday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_3RD}/></td>
+  <td><input type="checkbox" name="time_frame_wednesday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_4TH}/></td>
+  <td><input type="checkbox" name="time_frame_wednesday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_5TH}/></td>
+  <td><input type="checkbox" name="time_frame_wednesday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_WEDNESDAY_LAST}/></td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$DAY_THURSDAY}</td>
+  <td><input class="text" name="time_thursday_time_from" id="time_thursday_time_from" size="10" value="{$TIME_THURSDAY_TIME_FROM}"/></td>
+  <td><input class="text" name="time_thursday_time_to" id="time_thursday_time_to" size="10" value="{$TIME_THURSDAY_TIME_TO}"/></td>
+  <td><input type="checkbox" name="time_frame_thursday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_INVERT_TIME}/></td>
+  <td></td>
+  <td><input type="checkbox" name="time_frame_thursday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_AL}/></td>
+  <td><input type="checkbox" name="time_frame_thursday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_1ST}/></td>
+  <td><input type="checkbox" name="time_frame_thursday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_2ND}/></td>
+  <td><input type="checkbox" name="time_frame_thursday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_3RD}/></td>
+  <td><input type="checkbox" name="time_frame_thursday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_4TH}/></td>
+  <td><input type="checkbox" name="time_frame_thursday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_5TH}/></td>
+  <td><input type="checkbox" name="time_frame_thursday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_THURSDAY_LAST}/></td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$DAY_FRIDAY}</td>
+  <td><input class="text" name="time_friday_time_from" id="time_friday_time_from" size="10" value="{$TIME_FRIDAY_TIME_FROM}"/></td>
+  <td><input class="text" name="time_friday_time_to" id="time_friday_time_to" size="10" value="{$TIME_FRIDAY_TIME_TO}"/></td>
+  <td><input type="checkbox" name="time_frame_friday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_INVERT_TIME}/></td>
+  <td></td>
+  <td><input type="checkbox" name="time_frame_friday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_AL}/></td>
+  <td><input type="checkbox" name="time_frame_friday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_1ST}/></td>
+  <td><input type="checkbox" name="time_frame_friday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_2ND}/></td>
+  <td><input type="checkbox" name="time_frame_friday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_3RD}/></td>
+  <td><input type="checkbox" name="time_frame_friday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_4TH}/></td>
+  <td><input type="checkbox" name="time_frame_friday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_5TH}/></td>
+  <td><input type="checkbox" name="time_frame_friday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_FRIDAY_LAST}/></td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$DAY_SATURDAY}</td>
+  <td><input class="text" name="time_saturday_time_from" id="time_saturday_time_from" size="10" value="{$TIME_SATURDAY_TIME_FROM}"/></td>
+  <td><input class="text" name="time_saturday_time_to" id="time_saturday_time_to" size="10" value="{$TIME_SATURDAY_TIME_TO}"/></td>
+  <td><input type="checkbox" name="time_frame_saturday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_INVERT_TIME}/></td>
+  <td></td>
+  <td><input type="checkbox" name="time_frame_saturday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_AL}/></td>
+  <td><input type="checkbox" name="time_frame_saturday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_1ST}/></td>
+  <td><input type="checkbox" name="time_frame_saturday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_2ND}/></td>
+  <td><input type="checkbox" name="time_frame_saturday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_3RD}/></td>
+  <td><input type="checkbox" name="time_frame_saturday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_4TH}/></td>
+  <td><input type="checkbox" name="time_frame_saturday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_5TH}/></td>
+  <td><input type="checkbox" name="time_frame_saturday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SATURDAY_LAST}/></td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$DAY_SUNDAY}</td>
+  <td><input class="text" name="time_sunday_time_from" id="time_sunday_time_from" size="10" value="{$TIME_SUNDAY_TIME_FROM}"/></td>
+  <td><input class="text" name="time_sunday_time_to" id="time_sunday_time_to" size="10" value="{$TIME_SUNDAY_TIME_TO}"/></td>
+  <td><input type="checkbox" name="time_frame_sunday_invert_time{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_INVERT_TIME}/></td>
+  <td></td>
+  <td><input type="checkbox" name="time_frame_sunday_all{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_AL}/></td>
+  <td><input type="checkbox" name="time_frame_sunday_1st{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_1ST}/></td>
+  <td><input type="checkbox" name="time_frame_sunday_2nd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_2ND}/></td>
+  <td><input type="checkbox" name="time_frame_sunday_3rd{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_3RD}/></td>
+  <td><input type="checkbox" name="time_frame_sunday_4th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_4TH}/></td>
+  <td><input type="checkbox" name="time_frame_sunday_5th{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_5TH}/></td>
+  <td><input type="checkbox" name="time_frame_sunday_last{$ARRAY_ITEM}"{$CHECKED_TIME_FRAME_SUNDAY_LAST}/></td>
+ </tr>
+ </table>
+ <table>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$TIME_FRAME_VALID_FROM}</td>
+  <td><input type="text" class="text" id=datetime_validFrom align=right value="{$TIME_VALID_DATETIME_FROM}"</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td>{$TIME_FRAME_VALID_TO}</td>
+  <td><input type="text" class="text" id=datetime_validTo align=right value="{$TIME_VALID_DATETIME_TO}"</td>
+ </tr>
+ </table>
+ 
+<script type="text/javascript">
+AnyTime.picker( "datetime_validTo", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
+AnyTime.picker( "datetime_validFrom", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
+AnyTime.picker( "time_monday_time_from", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_monday_time_to", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_tuesday_time_from", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_tuesday_time_to", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_wednesday_time_from", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_wednesday_time_to", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_thursday_time_from", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_thursday_time_to", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_friday_time_from", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_friday_time_to", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_saturday_time_from", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_saturday_time_to", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_sunday_time_from", { format: "%H:%i:%s" } );  
+AnyTime.picker( "time_sunday_time_to", { format: "%H:%i:%s" } );    
+</script>
+<!--
 <tr>
 <td>{$ADD_EDIT_TIMEZONE}</td>
 <td colspan="2">{$TIMEZONE_SELECT}</td>
 </tr>
 <tr><td colspan="3" height="5"></td></tr>
 <tr class="grey"><td colspan="3">{$ADD_EDIT_HEADING_OWNER}</td></tr>
--->
+<tr style="padding-top:0px;"><td colspan="3"><hr/></td></tr>
 <tr>
 <td>{$ADD_EDIT_OWNER}</td>
 <td colspan="2">{$OWNER_SELECT}</td>
 </tr>
+-->
 <tr><td colspan="3" height="5"></td></tr>
 {$NOTIFICATION_TIMEPERIOD}
 <tr><td colspan="3" height="5"></td></tr>
