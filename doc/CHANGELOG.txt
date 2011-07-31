@@ -81,7 +81,7 @@
 * fixed messages containing ';' being truncated
 * updated documentation
 
-1.0.7 (current) - WORK IN PROGRESS
+1.1.0 (current) - WORK IN PROGRESS - UNDER HEAVY DEVELOPMENT
 ----------------
 * added servicegroup include and exclude filter
 * added recipient include and exclude filter - Thanks Sebastian Wolf
@@ -94,4 +94,6 @@
 * added a sample apache noma.conf file under contrib/
 * added default notification ID, notification AUTHOR and notification COMMENT support, so acknowledgements, with comments and authors can be tracked. Modified default email and sms messages to reflect this change.
 * added new method of notification: Growl, see documentation for how to use.
+* replaced the timeperiod table with a new timeframe setup, editable through the frontend for better flexibillity.
+* added timeframe support for notification rules, so the filter now also includes the abillity to filter on time.
 * updated documentation

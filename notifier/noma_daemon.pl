@@ -115,7 +115,7 @@ use DBI;
 
 our $processStart = time();
 our %suppressionHash;
-my $versionStr = 'current (1.0.7)';
+my $versionStr = 'current (1.1.0-alpha)';
 
 my %stati_service = (
     'OK'       => 'on_ok',

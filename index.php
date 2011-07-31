@@ -52,6 +52,7 @@ require_once('inc/html.php');
 require_once('inc/change_notifications.php');
 require_once('inc/change_contacts.php');
 require_once('inc/change_contactgroups.php');
+require_once('inc/change_timeframes.php');
 require_once('inc/authentication.php');
 require_once('inc/content_funcs.php');
 
@@ -137,6 +138,29 @@ switch ($action) {
 		$message = LOGIN_LOGOUT;
 		$require = 'inc/content_login.php';
 		break;
+
+        case 'timeframes':
+                if (isset($p['submit'])) $do = 'add';
+                else if (isset($p['edit'])) $do = 'edit';
+                else if (isset($p['del'])) $do = 'del';
+                else $do = null;
+
+                if ($do == 'add') {
+                        if (empty($p['id'])) {
+                                $message = addTimeframe($p);
+                        } else {
+                                $message = updateTimeframe($p);
+                        }
+                } else if ($do == 'del') {
+                        if (isset($p['user'])) {
+                                if (!delTimeframe($p)) $message = TIMEFRAME_ADD_UPDATE_DEL_ERROR;
+                                else $message = TIMEFRAME_DELETED;
+                        } else {
+                                $message = TIMEFRAME_ADD_UPDATE_DEL_ERROR;
+                        }
+                }
+                $require = 'inc/content_timeframes.php';
+                break;
 
 	case 'contacts':
 		if (isset($p['submit'])) $do = 'add';

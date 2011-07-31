@@ -61,7 +61,6 @@ define('TEMPLATE_LOGIN', TEMPLATE_DIR . 'login.html');
 define('TEMPLATE_ADD_EDIT', TEMPLATE_DIR . 'add-edit_notification.html');
 define('TEMPLATE_ADD_EDIT_CONTACTS_METHODS', TEMPLATE_DIR . 'add-edit_notification_contacts_methods.html');
 define('TEMPLATE_ADD_EDIT_LET_NOTIFIER_HANDLE', TEMPLATE_DIR . 'add-edit_let_notifier_handle.html');
-define('TEMPLATE_ADD_EDIT_NOTIFICATION_TIME_FRAME', TEMPLATE_DIR . 'add-edit_notification_time_frame.html');
 
 define('TEMPLATE_CONTACT_MANAGER', TEMPLATE_DIR . 'contact_manager.html');
 define('TEMPLATE_CONTACT_MANAGER_ADMIN', TEMPLATE_DIR . 'contact_manager_admin.html');
@@ -78,5 +77,9 @@ define('TEMPLATE_CONTACTGROUP_MANAGER', TEMPLATE_DIR . 'contactgroup_manager.htm
 define('TEMPLATE_CONTACTGROUP_MANAGER_ADD', TEMPLATE_DIR . 'contactgroup_manager_add.html');
 define('TEMPLATE_CONTACTGROUP_MANAGER_EDIT', TEMPLATE_DIR . 'contactgroup_manager_edit.html');
 define('TEMPLATE_CONTACTGROUP_MANAGER_DELETE', TEMPLATE_DIR . 'contactgroup_manager_delete.html');
+
+define('TEMPLATE_TIMEFRAME_MANAGER', TEMPLATE_DIR . 'timeframe_manager.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_ADMIN', TEMPLATE_DIR . 'timeframe_manager_admin.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_ADMIN_DELETE', TEMPLATE_DIR . 'timeframe_manager_admin_delete.html');
 
 ?>

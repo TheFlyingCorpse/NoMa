@@ -53,6 +53,7 @@ define('NAVIGATION_NOTIFICATION', 'Notification');
 define('NAVIGATION_CONTACTS', 'Contacts');
 define('NAVIGATION_PROFILE', 'Profile');
 define('NAVIGATION_CONTACTGROUPS', 'Contactgroups');
+define('NAVIGATION_TIMEFRAMES', 'Timeframes');
 define('NAVIGATION_STATUS', 'Status');
 define('NAVIGATION_LOGS', 'Logs');
 define('NAVIGATION_LOGOUT', 'LOGOUT');
@@ -190,6 +191,61 @@ define('CONTACTS_ADD_USER_EXISTS', 'User already exists!');
 define('CONTACTS_ADD_UPDATE_PASSWD_MISSING', 'No Password set!');
 define('CONTACTS_ADD_ADDED_BUT_NOT_IN_DB', 'Contact added but database has not been updated, yet.');
 
+// timeframe manager
+define('TIMEFRAME_OVERVIEW_LINK', 'Overview');
+define('TIMEFRAME_HEADING_TIME' , 'Time:');
+define('TIMEFRAME_HEADING_ADMIN' , 'Admin functions:');
+define('TIMEFRAME_ADD_EDIT_FRAME', 'Add and edit timeframes');
+define('TIMEFRAME_EDIT_BUTTON', 'Edit timeframe');
+define('TIMEFRAME_DEL_BUTTON', 'Delete timeframe');
+define('TIMEFRAME_SUBMIT_ADD', 'Add timeframe');
+define('TIMEFRAME_SUBMIT_UPDATE', 'Update timeframe data');
+define('TIMEFRAME_CONFIRM_DEL', 'Do you really want to delete this timeframe?');
+define('TIMEFRAME_ADMIN', 'Administrator:');
+
+//<!--
+//TIMEFRAME_HEADING_CONTACT - assumed 'TIMEFRAME_HEADING_CONTACT' in /usr/local/nagios/noma/inc/content_timeframes.php on line 70, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//TIMEFRAME_HEADING_TIME - assumed 'TIMEFRAME_HEADING_TIME' in /usr/local/nagios/noma/inc/content_timeframes.php on line 71, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//TIMEFRAME_HEADING_ADMIN - assumed 'TIMEFRAME_HEADING_ADMIN' in /usr/local/nagios/noma/inc/content_timeframes.php on line 72, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//TIMEFRAME_ADD_EDIT - assumed 'TIMEFRAME_ADD_EDIT' in /usr/local/nagios/noma/inc/content_timeframes.php on line 92, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//TEMPLATE_TIMEFRAME_MANAGER_ADMIN - assumed 'TEMPLATE_TIMEFRAME_MANAGER_ADMIN' in /usr/local/nagios/noma/inc/content_timeframes.php on line 126, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//TIMEFRAME_HEADING_ADMIN - assumed 'TIMEFRAME_HEADING_ADMIN' in /usr/local/nagios/noma/inc/content_timeframes.php on line 127, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//TIMEFRAME_FRAMES - assumed 'TIMEFRAME_FRAMES' in /usr/local/nagios/noma/inc/content_timeframes.php on line 128, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//TIMEFRAME_ADMIN - assumed 'TIMEFRAME_ADMIN' in /usr/local/nagios/noma/inc/content_timeframes.php on line 130, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//TIMEFRAME_SELECT_FRAME_NEW - assumed 'TIMEFRAME_SELECT_FRAME_NEW' in /usr/local/nagios/noma/inc/content_timeframes.php on line 131, referer: http://192.168.1.101/noma/index.php?action=contactgroups
+//-->
+define('TIMEFRAME_FRAME_VALID_FROM', 'Valid from:');
+define('TIMEFRAME_FRAME_VALID_TO', 'Valid to:');
+define('TIMEFRAME_SELECT_FRAME_NEW', 'create new');
+define('TIMEFRAME_HEADING_NAME' , 'Timeframe');
+define('TIMEFRAME_TIMEZONE' , 'Timezone:');
+define('TIMEFRAME_NEW_FRAME', 'Add timeframe (name):');
+define('TIMEFRAME_NAME', 'Timeframe name:');
+define('TIMEFRAME_TIME_FROM', 'From time');
+define('TIMEFRAME_TIME_TO', 'To time');
+define('TIMEFRAME_TIME_INVERT', 'Invert time');
+define('TIMEFRAME_DAYS_ALL', 'All');
+define('TIMEFRAME_DAYS_1ST', '1st');
+define('TIMEFRAME_DAYS_2ND', '2nd');
+define('TIMEFRAME_DAYS_3RD', '3rd');
+define('TIMEFRAME_DAYS_4TH', '4th');
+define('TIMEFRAME_DAYS_5TH', '5th');
+define('TIMEFRAME_DAYS_LAST', 'Last');
+define('TIMEFRAME_DAYS_OF_WEEK', 'Day of week');
+define('TIMEFRAME_DAY_MONDAY', 'Monday');
+define('TIMEFRAME_DAY_TUESDAY', 'Tuesday');
+define('TIMEFRAME_DAY_WEDNESDAY', 'Wednesday');
+define('TIMEFRAME_DAY_THURSDAY', 'Thursday');
+define('TIMEFRAME_DAY_FRIDAY', 'Friday');
+define('TIMEFRAME_DAY_SATURDAY', 'Saturday');
+define('TIMEFRAME_DAY_SUNDAY', 'Sunday');
+define('TIMEFRAME_UPDATED', 'Timeframe has been updated.');
+define('TIMEFRAME_ADDED', 'Timeframe has been added.');
+define('TIMEFRAME_DELETED', 'Timeframe has been deleted.');
+define('TIMEFRAME_ADD_UPDATE_DEL_ERROR', 'An error occurred!');
+define('TIMEFRAME_ADD_UPDATE_ERROR_INSUFF_RIGHTS', 'Insufficient rights to apply changes!');
+define('TIMEFRAME_ADD_USER_EXISTS', 'Timeframe already exists!');
+define('TIMEFRAME_ADD_ADDED_BUT_NOT_IN_DB', 'Timeframe added but database has not been updated, yet.');
 
 // log viewer
 define('LOG_VIEWER_OVERVIEW_LINK', 'Overview');

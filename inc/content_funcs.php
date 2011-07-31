@@ -114,7 +114,27 @@ function getContacts ($exclude = null) {
 	return $users;
 }
 
-
+/**
+ * getTimeframes - give back associative array of timeframes and corresponding ids
+ *
+ * @param               string          $exclude                username of user to exclude from list
+ * @return                                                                      array of users and corresponding ids
+ */
+function getTimeframes ($exclude = null) {
+        $query = 'select timeframe_name from timeframes where timeframe_name!=\'[---]\'';
+        if ($exclude) {
+                $query .= ' and timeframe_name != \'' . prepareDBValue($exclude) . '\'';
+        }
+        $query .= ' order by timeframe_name';
+        $dbResult = queryDB($query);
+        $timeframes = array();
+        if (is_array($timeframes)) {
+                foreach ($dbResult as $row) {
+                        $timeframes[$row['timeframe_name']] = $row['timeframe_name'];
+                }
+        }
+        return $timeframes;
+}
 
 
 /**
@@ -249,6 +269,12 @@ function getNavigationContent ($action, $admin = false) {
 			'auth_type_required'	=> false,
 			'title'					=> NAVIGATION_CONTACTGROUPS,
 		),
+                array(
+                        'actions'                               => array('timeframes'),
+                        'admin_only'                    => $contactgroups['admin_only'],
+                        'auth_type_required'    => false,
+                        'title'                                 => NAVIGATION_TIMEFRAMES,
+                ),
 		array(
 			'actions'				=> array('status'),
 			'admin_only'			=> $statuspage['admin_only'],
