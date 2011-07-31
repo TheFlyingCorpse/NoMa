@@ -40,7 +40,7 @@ sub notificationInTimeFrame
         my ($notification_id) = @_;
 
         # Create a bunch of variables to be filled.
-        my (@today,$current_dow,$current_dow_en,$dt_validFrom,$dt_validTo,$dt_timeFrom,$dt_timeTo,$notify_status,@notify_date,$day_today,$time_today_start,$time_today_stop,$time_today_invert,$tf_timezone);
+        my (@today,$current_dow,$current_dow_en,$dt_validFrom,$dt_validTo,$dt_timeFrom,$dt_timeTo,$notify_status,@notify_date,$day_today_all,$day_today_1st,$day_today_2nd,$day_today_3rd,$day_today_4th,$day_today_5th,$day_today_last,$time_today_start,$time_today_stop,$time_today_invert,$tf_timezone);
 
         # Fill in the static info for days of week.
 	#my $dt_Now = DateTime->now(timezone => $conf->{notifier}->{timezone});
@@ -62,21 +62,35 @@ sub notificationInTimeFrame
         $time_today_start = 'time_' . $current_dow_en . '_start';
         $time_today_stop = 'time_' . $current_dow_en . '_stop';
         $time_today_invert = 'time_' . $current_dow_en . '_invert';
-	$day_today = 'day_'.$current_dow_en;
+	$day_today_all = 'day_'.$current_dow_en.'_all';
+        $day_today_1st = 'day_'.$current_dow_en.'_1st';
+        $day_today_2nd = 'day_'.$current_dow_en.'_2nd';
+        $day_today_3rd = 'day_'.$current_dow_en.'_3rd';
+        $day_today_4th = 'day_'.$current_dow_en.'_4th';
+        $day_today_5th = 'day_'.$current_dow_en.'_5th';
+        $day_today_last = 'day_'.$current_dow_en.'_last';
 
         # query
-        my $query = 'SELECT time_frames.id, time_frames_to_notifications.time_frame_id, time_frames_to_notifications.notification_id, timezones.id, time_frames.dt_validFrom, time_frames.dt_validTo, timezones.timezone, time_frames.day_'.$current_dow_en.', time_frames.time_'.$current_dow_en.'_start, time_frames.time_'.$current_dow_en.'_stop, time_frames.time_'.$current_dow_en.'_invert FROM time_frames,time_frames_to_notifications,timezones WHERE time_frames.timezone_id = timezones.id AND time_frames.id = time_frames_to_notifications.time_frame_id AND time_frames_to_notifications.notification_id=\''.$notification_id.'\'';
+#        my $query = 'SELECT time_frames.id, time_frames_to_notifications.time_frame_id, time_frames_to_notifications.notification_id, timezones.id, time_frames.dt_validFrom, time_frames.dt_validTo, timezones.timezone, time_frames.day_'.$current_dow_en.', time_frames.time_'.$current_dow_en.'_start, time_frames.time_'.$current_dow_en.'_stop, time_frames.time_'.$current_dow_en.'_invert FROM time_frames,time_frames_to_notifications,timezones WHERE time_frames.timezone_id = timezones.id AND time_frames.id = time_frames_to_notifications.time_frame_id AND time_frames_to_notifications.notification_id=\''.$notification_id.'\'';
+        my $query = 'SELECT timeframes.id, time_frames_to_notifications.time_frame_id, time_frames_to_notifications.notification_id, timezones.id, timeframes.dt_validFrom, timeframes.dt_validTo, timezones.timezone, timeframes.day_'.$current_dow_en.'_all, timeframes.day_'.$current_dow_en.'_1st, timeframes.day_'.$current_dow_en.'_2nd, timeframes.day_'.$current_dow_en.'_3rd, timeframes.day_'.$current_dow_en.'_4th, timeframes.day_'.$current_dow_en.'_5th, timeframes.day_'.$current_dow_en.'_last, timeframes.time_'.$current_dow_en.'_start, timeframes.time_'.$current_dow_en.'_stop, timeframes.time_'.$current_dow_en.'_invert FROM timeframes,time_frames_to_notifications,timezones WHERE timeframes.timezone_id = timezones.id AND timeframes.id = time_frames_to_notifications.time_frame_id AND time_frames_to_notifications.notification_id=\''.$notification_id.'\'';
 
         # Query DB, no need to log query.
         my %dbResult = queryDB($query);
 
-	#debug('dbResult: '.Dumper(\%dbResult));
+	debug('dbResult: '.Dumper(\%dbResult));
 
         # Get the results!
         $dt_validFrom = $dbResult{0}->{dt_validFrom};
         $dt_validTo = $dbResult{0}->{dt_validTo};
         $tf_timezone = $dbResult{0}->{timezone};
-        $day_today = $dbResult{0}->{$day_today};
+#        $day_today = $dbResult{0}->{$day_today};
+        $day_today_all = $dbResult{0}->{$day_today_all};
+        $day_today_1st = $dbResult{0}->{$day_today_1st};
+        $day_today_2nd = $dbResult{0}->{$day_today_2nd};
+        $day_today_3rd = $dbResult{0}->{$day_today_3rd};
+        $day_today_4th = $dbResult{0}->{$day_today_4th};
+        $day_today_5th = $dbResult{0}->{$day_today_5th};
+        $day_today_last = $dbResult{0}->{$day_today_last};
         $time_today_start = $dbResult{0}->{$time_today_start};
         $time_today_stop = $dbResult{0}->{$time_today_stop};
         $time_today_invert = $dbResult{0}->{$time_today_invert};
@@ -103,7 +117,7 @@ sub notificationInTimeFrame
         if ($dt_validFrom lt $dt_Now and $dt_validTo gt $dt_Now)
         {
                 # EXPAND $day_today to figure out what days of the month its active, see http://search.cpan.org/dist/Date-Calc/lib/Date/Calc.pod snippet 6
-                if ($day_today & $notify_day_all){
+                if ($day_today_all eq 1){
                         # Check if its inside or outside a valid timerange.
                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                 if ($notify_status eq 1){
@@ -111,7 +125,7 @@ sub notificationInTimeFrame
                                 }
                                  
 				} else {
-                        if ($day_today & $notify_day_first){
+                        if ($day_today_1st eq 1){
                                 # Calculate 1st occurence of todays weekday of month.
                                 @notify_date = TimeFrameDayNthWeekday(1);
                                 if (@notify_date eq @today_short){
@@ -123,7 +137,7 @@ sub notificationInTimeFrame
                                         }
                                 }
                         }
-                        if ($day_today & $notify_day_second){
+                        if ($day_today_2nd eq 1){
                                 # Calculate 2nd occurence of todays weekday of month.
                                 @notify_date = TimeFrameDayNthWeekday(2);
                                 if (@notify_date eq @today_short){
@@ -135,7 +149,7 @@ sub notificationInTimeFrame
                                         }
                                 }
                         }
-                        if ($day_today & $notify_day_third){
+                        if ($day_today_3rd eq 1){
                                 # Calculate 3rd occurence of todays weekday of month.
                                 @notify_date = TimeFrameDayNthWeekday(3);
                                 if (@notify_date eq @today_short){
@@ -147,7 +161,7 @@ sub notificationInTimeFrame
                                         }
                                 }
                         }
-                        if ($day_today & $notify_day_fourth){
+                        if ($day_today_4th eq 1){
                                 # Calculate 4th occurence of todays weekday of month.
                                 @notify_date = TimeFrameDayNthWeekday(4);
                                 if (@notify_date eq @today_short){
@@ -159,7 +173,7 @@ sub notificationInTimeFrame
                                         }
                                 }
                         }
-                        if ($day_today & $notify_day_fifth){
+                        if ($day_today_5th eq 1){
                                 # Calculate 5th occurence of todays weekday of month.
                                 @notify_date = TimeFrameDayNthWeekday(5);
                                 if (@notify_date eq @today_short){
@@ -172,7 +186,7 @@ sub notificationInTimeFrame
                                 }
                         }
                         # Last selected weekday of month.
-                        if ($day_today & $notify_day_last){
+                        if ($day_today_last eq 1){
                                 # Calculate last occurence of todays weekday of month.
                                 @notify_date = TimeFrameDayNthWeekday(6);
                                 if (@notify_date eq @today_short){
