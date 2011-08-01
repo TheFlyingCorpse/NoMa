@@ -69,7 +69,7 @@ $dbConf = array (
 
 // authentication type
 // options: false | 'native' | 'ldap' | 'http'
-$authentication_type = 'native';
+$authentication_type = false;
 
 
 // ldap

@@ -205,9 +205,9 @@ Date/Time: $datetime',
 		# miscellaneous settings
 		debug => {
 			logging			=> '1',		# general debugging
-			queries			=> '1',		# log SQL queries
+			queries			=> '0',		# log SQL queries
 			file			=> '/usr/local/nagios/var/noma_debug.log',	# file to log in
-			daemonize		=> '0',		# daemonize process
+			daemonize		=> '1',		# daemonize process
 			paramlog		=> undef,	# '/usr/local/nagios/var/noma_args_log.txt'
 			watchdogEnabled		=> '1',		# the watchdog restarts the daemon if too much memory is used
 			watchdogMaxRSS		=> 524288,	# real memory
