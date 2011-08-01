@@ -369,15 +369,15 @@ function getContent () {
 
 		$templateSubContent->assign('NOTIFY_BY_SELECT', htmlSelect('notify_by' . $formArray . '[]', getNotificationMethods(), $notify_by, 'size="5" multiple="multiple"'));
 
-		$templateSubContent->assign('CHECKED_NOTIFY_OK', ($dbResult[$x]['on_ok'] == '1') ? ' checked="checked"' : null);
-		$templateSubContent->assign('CHECKED_NOTIFY_WARNING', ($dbResult[$x]['on_warning'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_OK', ($dbResult[$x]['on_ok']=='1') ? ' checked="checked"' : '' );
+		$templateSubContent->assign('CHECKED_NOTIFY_WARNING', ($dbResult[$x]['on_warning']=='1') ? ' checked="checked"' : '' );
 		$templateSubContent->assign('CHECKED_NOTIFY_UNKNOWN', ($dbResult[$x]['on_unknown'] == '1') ? ' checked="checked"' : null);
 		$templateSubContent->assign('CHECKED_NOTIFY_HOST_UNREACHABLE', ($dbResult[$x]['on_host_unreachable'] == '1') ? ' checked="checked"' : null);
 		$templateSubContent->assign('CHECKED_NOTIFY_CRITICAL', ($dbResult[$x]['on_critical'] == '1') ? ' checked="checked"' : null);
 		$templateSubContent->assign('CHECKED_NOTIFY_HOST_UP', ($dbResult[$x]['on_host_up'] == '1') ? ' checked="checked"' : null);
 		$templateSubContent->assign('CHECKED_NOTIFY_HOST_DOWN', ($dbResult[$x]['on_host_down'] == '1') ? ' checked="checked"' : null);
 
-		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_PROBLEM', ($dbResult[$x]['on_type_problem'] == '1') ? ' checked="checked"' : null);
+		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_PROBLEM', ($dbResult[$x]['on_type_problem']=='1') ? ' checked="checked"' : '' );
 		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_RECOVERY', ($dbResult[$x]['on_type_recovery'] == '1') ? ' checked="checked"' : null);
 		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_FLAPPINGSTART', ($dbResult[$x]['on_type_flappingstart'] == '1') ? ' checked="checked"' : null);
 		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_FLAPPINGSTOP', ($dbResult[$x]['on_type_flappingstop'] == '1') ? ' checked="checked"' : null);

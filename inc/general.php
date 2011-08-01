@@ -76,6 +76,7 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 	// select database
 	mysql_select_db($dbConf['database']) or die("Could not select database!");
 
+	echo $query."<br/>";
 	// query database
 	$result = mysql_query($query) or die("Could not execute query: " . mysql_error());
 

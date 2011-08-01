@@ -66,14 +66,12 @@ function getContent () {
 
 	// assign labels
 	$templateContent->assign('TIMEFRAME_OVERVIEW_LINK', TIMEFRAME_OVERVIEW_LINK);
-//	$templateContent->assign('TIMEFRAME_HEADING_NAME', TIMEFRAME_HEADING_NAME);
-//	$templateContent->assign('TIMEFRAME_HEADING_CONTACT', TIMEFRAME_HEADING_CONTACT);
 	$templateContent->assign('TIMEFRAME_HEADING_TIME', TIMEFRAME_HEADING_TIME);
 	$templateContent->assign('TIMEFRAME_HEADING_ADMIN', TIMEFRAME_HEADING_ADMIN);
-//	$templateContent->assign('TIMEFRAME_NAME', TIMEFRAME_NAME);
         $templateContent->assign('TIMEFRAME_FRAME_VALID_FROM', TIMEFRAME_FRAME_VALID_FROM);
         $templateContent->assign('TIMEFRAME_FRAME_VALID_TO', TIMEFRAME_FRAME_VALID_TO);
         $templateContent->assign('TIMEFRAME_TIME_FROM', TIMEFRAME_TIME_FROM);
+        $templateContent->assign('TIMEFRAME_FRAME', TIMEFRAME_FRAME);
         $templateContent->assign('TIMEFRAME_TIME_TO', TIMEFRAME_TIME_TO);
         $templateContent->assign('TIMEFRAME_TIME_INVERT', TIMEFRAME_TIME_INVERT);
 	$templateContent->assign('TIMEFRAME_DAYS_ALL', TIMEFRAME_DAYS_ALL);
@@ -145,7 +143,8 @@ function getContent () {
 		if (!empty($postTimeframe)) {
 
 			// get timeframe from database
-			$dbResult = queryDB('select * from timeframes where timeframe_name=\'' . prepareDBValue($postTimeframe) . '\' limit 1');
+			//$dbResult = queryDB('select * from timeframes where timeframe_name=\'' . prepareDBValue($postTimeframe) . '\' limit 1');
+			$dbResult = queryDB('select * from timeframes where id=\'' . prepareDBValue($postTimeframe) . '\' limit 1');
 			$timeframeData = $dbResult[0];
 
 		}
