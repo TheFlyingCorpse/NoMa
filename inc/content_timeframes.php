@@ -66,11 +66,11 @@ function getContent () {
 
 	// assign labels
 	$templateContent->assign('TIMEFRAME_OVERVIEW_LINK', TIMEFRAME_OVERVIEW_LINK);
-	$templateContent->assign('TIMEFRAME_HEADING_NAME', TIMEFRAME_HEADING_NAME);
-	$templateContent->assign('TIMEFRAME_HEADING_CONTACT', TIMEFRAME_HEADING_CONTACT);
+//	$templateContent->assign('TIMEFRAME_HEADING_NAME', TIMEFRAME_HEADING_NAME);
+//	$templateContent->assign('TIMEFRAME_HEADING_CONTACT', TIMEFRAME_HEADING_CONTACT);
 	$templateContent->assign('TIMEFRAME_HEADING_TIME', TIMEFRAME_HEADING_TIME);
 	$templateContent->assign('TIMEFRAME_HEADING_ADMIN', TIMEFRAME_HEADING_ADMIN);
-	$templateContent->assign('TIMEFRAME_NAME', TIMEFRAME_NAME);
+//	$templateContent->assign('TIMEFRAME_NAME', TIMEFRAME_NAME);
         $templateContent->assign('TIMEFRAME_FRAME_VALID_FROM', TIMEFRAME_FRAME_VALID_FROM);
         $templateContent->assign('TIMEFRAME_FRAME_VALID_TO', TIMEFRAME_FRAME_VALID_TO);
         $templateContent->assign('TIMEFRAME_TIME_FROM', TIMEFRAME_TIME_FROM);
@@ -99,9 +99,9 @@ function getContent () {
 
 
 	if (empty($id)) {
-		$templateContent->assign('HEADING', TIMEFRAME_ADD_EDIT);
+		$templateContent->assign('HEADING', TEMPLATE_TIMEFRAME_MANAGER);
 	} else {
-		$templateContent->assign('HEADING', TIMEFRAME_EDIT);
+		$templateContent->assign('HEADING', TEMPLATE_TIMEFRAME_MANAGER);
 	}
 
 

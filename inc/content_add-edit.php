@@ -114,7 +114,8 @@ function getContent () {
 
 	// get info and assign defaults
 	$id = (!isset($_GET['id'])) ? ((isset($_POST['id'])) ? $_POST['id'] : null) : $_GET['id'];
-	// $timezone = null;
+	$timezone_id = null;
+	$timeframe_id = null;
 	$notify_users = null;
 	$notify_groups = null;
 	$notify_by = null;
