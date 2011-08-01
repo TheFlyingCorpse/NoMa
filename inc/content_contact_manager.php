@@ -78,7 +78,7 @@ function getContent () {
 	$templateContent->assign('CONTACTS_MOBILE', CONTACTS_MOBILE);
         $templateContent->assign('CONTACTS_NETADDRESS', CONTACTS_NETADDRESS);
 	$templateContent->assign('CONTACTS_RESTRICT_ALERTS', CONTACTS_RESTRICT_ALERTS);
-	$templateContent->assign('CONTACTS_TIMEPERIOD', CONTACTS_TIMEPERIOD);
+	$templateContent->assign('CONTACTS_TIMEFRAME', CONTACTS_TIMEFRAME);
 	$templateContent->assign('CONTACTS_TIMEZONE', CONTACTS_TIMEZONE);
 	$templateContent->assign('CONTACTS_HEADING_HOLIDAYS', CONTACTS_HEADING_HOLIDAYS);
 	$templateContent->assign('CONTACTS_HOLIDAYS_START', CONTACTS_HOLIDAYS_START);
@@ -174,6 +174,11 @@ function getContent () {
 		$templateContent->assign('MOBILE', $userData['mobile']);
                 $templateContent->assign('NETADDRESS', $userData['netaddress']);
 		$templateContent->assign('RESTRICT_ALERTS', ($userData['restrict_alerts']==1)?'checked="checked"':'');
+       		if (!isset($userData['timeframe_id'])) $userData['timeframe_id'] = null;
+       		if (!isset($userData['timezone_id'])) $userData['timezone_id'] = null;
+       		$templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $userData['timeframe_id']));
+	        $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $userData['timezone_id']));
+
 
         if ($admin) {
             // display delete button
@@ -187,12 +192,6 @@ function getContent () {
 
 	// assign admin content	
 	if ($admin) $templateContent->assign('ADMIN_CONTENT', $templateSubContent->getHTML());
-
-
-	if (!isset($userData['time_period_id'])) $userData['time_period_id'] = null;
-	if (!isset($userData['timezone_id'])) $userData['timezone_id'] = null;
-	$templateContent->assign('TIMEPERIOD_SELECT', htmlSelect('timeperiod', getTimePeriods(), $userData['time_period_id']));	
-	$templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $userData['timezone_id']));	
 
 
 	// add user's holiday data

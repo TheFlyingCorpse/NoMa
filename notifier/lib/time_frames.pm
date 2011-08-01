@@ -33,11 +33,65 @@ use Date::Calc qw( Day_of_Week Delta_Days Date_to_Time
                    Today Today_and_Now Add_Delta_Days);
 use DateTime::Format::Strptime;
 
-# return a true or false if within timerange of said notification rule if its in timerange etc...
+# Use the supplied notification id to find the matching timeframe.
 sub notificationInTimeFrame
 {
         # arguements passed to function.
         my ($notification_id) = @_;
+
+	# query
+	my $query = 'SELECT notifications.timeframe_id FROM notifications WHERE notifications.id=\''.$notification_id.'\'';
+
+        my %dbResult = queryDB($query);
+
+	my $timeframe_id = $dbResult{0}->{timeframe_id};
+	
+	my $result = objectInTimeFrame($timeframe_id);
+
+	return $result;
+}
+
+# Use the supplied contact_id to find the matching timeframe.
+sub contactInTimeFrame
+{
+        # arguements passed to function.
+        my ($contact_id) = @_;
+
+        # query
+        my $query = 'SELECT contacts.timeframe_id FROM contacts WHERE contacts.id=\''.$contact_id.'\'';
+
+        my %dbResult = queryDB($query);
+
+        my $timeframe_id = $dbResult{0}->{timeframe_id};
+
+        my $result = objectInTimeFrame($timeframe_id);
+
+        return $result;
+}
+
+# Use the supplied contactgroup_id to find the matching timeframe.
+sub contactgroupInTimeFrame
+{
+        # arguements passed to function.
+        my ($contactgroup_id) = @_;
+
+        # query
+        my $query = 'SELECT contactgroups.timeframe_id FROM contactgroups WHERE contactgroups.id=\''.$contactgroup_id.'\'';
+
+        my %dbResult = queryDB($query);
+
+        my $timeframe_id = $dbResult{0}->{timeframe_id};
+
+        my $result = objectInTimeFrame($timeframe_id);
+
+        return $result;
+}
+
+# Get the of the timeframe_id and calculate if its inside or outside.
+sub objectInTimeFrame
+{
+	# Get the timeframe_id from parent function.
+        my ($timeframe_id) = @_;
 
         # Create a bunch of variables to be filled.
         my (@today,$current_dow,$current_dow_en,$dt_validFrom,$dt_validTo,$dt_timeFrom,$dt_timeTo,$notify_status,@notify_date,$day_today_all,$day_today_1st,$day_today_2nd,$day_today_3rd,$day_today_4th,$day_today_5th,$day_today_last,$time_today_start,$time_today_stop,$time_today_invert,$tf_timezone);
@@ -71,7 +125,7 @@ sub notificationInTimeFrame
         $day_today_last = 'day_'.$current_dow_en.'_last';
 
         # query
-        my $query = 'SELECT timeframes.id, timeframes_to_notifications.timeframe_id, timeframes_to_notifications.notification_id, timezones.id, timeframes.dt_validFrom, timeframes.dt_validTo, timezones.timezone, timeframes.day_'.$current_dow_en.'_all, timeframes.day_'.$current_dow_en.'_1st, timeframes.day_'.$current_dow_en.'_2nd, timeframes.day_'.$current_dow_en.'_3rd, timeframes.day_'.$current_dow_en.'_4th, timeframes.day_'.$current_dow_en.'_5th, timeframes.day_'.$current_dow_en.'_last, timeframes.time_'.$current_dow_en.'_start, timeframes.time_'.$current_dow_en.'_stop, timeframes.time_'.$current_dow_en.'_invert FROM timeframes,timeframes_to_notifications,timezones WHERE timeframes.timezone_id = timezones.id AND timeframes.id = timeframes_to_notifications.timeframe_id AND timeframes_to_notifications.notification_id=\''.$notification_id.'\'';
+	my $query = 'SELECT timeframes.id, timezones.id, timeframes.dt_validFrom, timeframes.dt_validTo, timezones.timezone, timeframes.day_'.$current_dow_en.'_all, timeframes.day_'.$current_dow_en.'_1st, timeframes.day_'.$current_dow_en.'_2nd, timeframes.day_'.$current_dow_en.'_3rd, timeframes.day_'.$current_dow_en.'_4th, timeframes.day_'.$current_dow_en.'_5th, timeframes.day_'.$current_dow_en.'_last, timeframes.time_'.$current_dow_en.'_start, timeframes.time_'.$current_dow_en.'_stop, timeframes.time_'.$current_dow_en.'_invert FROM timeframes, timezones WHERE timeframes.timezone_id = timezones.id AND timeframes.id=\''.$timeframe_id.'\'';
 
         # Query DB, no need to log query.
         my %dbResult = queryDB($query);
@@ -110,6 +164,7 @@ sub notificationInTimeFrame
 	$time_today_start = $dt->parse_datetime( $time_today_start );
 	$time_today_stop = $dt->parse_datetime( $time_today_stop );
 
+	# HOLIDAY FUNCTION HERE
 
         # IF $now is after $validFrom and before $validTo
         if ($dt_validFrom lt $dt_Now and $dt_validTo gt $dt_Now)
@@ -201,21 +256,21 @@ sub notificationInTimeFrame
         # ELSIF NOW IS LESS THAN $validFrom
         elsif ($dt_Now lt $dt_validFrom)
         {
-                debug(" Notify ID $notification_id time_frame has yet to be within timeframe");
+                debug(" Timeframe ".$timeframe_id." has yet to be within timeframe");
                 return 0;
         }
         # ELSIF NOW IS GREATER THAN $validTo
         elsif ($dt_Now gt $dt_validTo)
         {
-                debug(" Notify ID $notification_id time_frame has expired");
+                debug(" Timeframe ".$timeframe_id." has expired");
                 return 0;
         }
         # ELSE
         else
         {
-                debug(" This shouldnt happen, invalid data for the time in Notify ID $notification_id");
+                debug(" This shouldnt happen, invalid data for the time in timeframe ".$timeframe_id);
+		return 0;
         }
-
 }
 
 sub TimeFrameDayNthWeekday

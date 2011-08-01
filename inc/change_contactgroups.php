@@ -64,23 +64,26 @@ function addContactGroup () {
 	$contactgroup_short = ((isset($p['contactgroup_name_short'])) ? $p['contactgroup_name_short'] : null);
 	if (empty($contactgroup_short)) return false;
 	$contactgroup_short = prepareDBValue($contactgroup_short);
+        $timeframe_id = prepareDBValue($timeframe_id);
 	
 	$contactgroup_view_only = (isset($p['contactgroup_view_only'])) ? (int)$p['contactgroup_view_only'] : '0';
 
 	// insert new group
 	$query = sprintf(
-		'insert into contactgroups (name,name_short,view_only) values (\'%s\',\'%s\',\'%s\')',
+		'insert into contactgroups (name,name_short,view_only,timeframe_id) values (\'%s\',\'%s\',\'%s\',\'%s\')',
 		$contactgroup,
 		$contactgroup_short,
-		$contactgroup_view_only
+		$contactgroup_view_only,
+		$timeframe_id
 	);
 	queryDB($query);
 
 	// set new contactgroup to 'edit'
 	$query = sprintf(
-		'select id from contactgroups where name=\'%s\' and name_short=\'%s\'',
+		'select id from contactgroups where name=\'%s\' and name_short=\'%s\' and timeframe_id=\'%s\'',
 		$contactgroup,
-		$contactgroup_short
+		$contactgroup_short,
+		$timeframe_id
 	);
 	$dbResult = queryDB($query);
 	if (!is_array($dbResult)) return false;
@@ -116,6 +119,8 @@ function updateContactGroup () {
 	if (empty($p['update_contactgroup_name_short'])) return false;
 	$contactgroup_name_short = prepareDBValue($p['update_contactgroup_name_short']);
 
+        $timeframe_id = prepareDBValue($p['timeframe_id']);
+
 	$contactgroup_view_only = (isset($p['contactgroup_view_only'])) ? (int)$p['contactgroup_view_only'] : '0';
 
 	$contacts = ((isset($p['contacts']) && is_array($p['contacts'])) ? $p['contacts'] : array());
@@ -123,10 +128,11 @@ function updateContactGroup () {
 
 	// update contact group's name
 	$query = sprintf(
-		'update contactgroups set name=\'%s\',name_short=\'%s\',view_only=\'%s\' where id=\'%s\'',
+		'update contactgroups set name=\'%s\',name_short=\'%s\',view_only=\'%s\',$timeframe_id=\'%s\' where id=\'%s\'',
 		$contactgroup_name,
 		$contactgroup_name_short,
 		$contactgroup_view_only,
+		$timeframe_id,
 		$id
 	);
 	queryDB($query);

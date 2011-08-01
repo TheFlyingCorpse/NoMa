@@ -169,7 +169,7 @@ define('CONTACTS_PHONE', 'Phone:');
 define('CONTACTS_MOBILE', 'Mobile:');
 define('CONTACTS_NETADDRESS', 'Netaddress:');
 define('CONTACTS_RESTRICT_ALERTS', 'Suppress multiple alerts:');
-define('CONTACTS_TIMEPERIOD', 'Working hours:');
+define('CONTACTS_TIMEFRAME', 'Working hours:');
 define('CONTACTS_TIMEZONE', 'Timezone:');
 define('CONTACTS_USER', 'User to edit:');
 define('CONTACTS_ADMIN', 'Administrator:');
@@ -280,5 +280,6 @@ define('CONTACTGROUPS_EDIT_NAME_SHORT', 'Name (short):');
 define('CONTACTGROUPS_EDIT_NAME', 'Name:');
 define('CONTACTGROUP_CONFIRM_DEL', 'Do you really want to delete this contactgroup?');
 define('CONTACTGROUPS_VIEW_ONLY', 'Do not send notifications to members:');
+define('CONTACTGROUPS_TIMEFRAME', 'Notification hours:');
 
 ?>

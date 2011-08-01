@@ -73,6 +73,7 @@ function getContent () {
 	$templateContent->assign('CONTACTGROUPS_HEADING_SELECT', CONTACTGROUPS_HEADING_SELECT);
 	$templateContent->assign('CONTACTGROUPS_EDIT_GROUPS', CONTACTGROUPS_EDIT_GROUPS);
 	$templateContent->assign('CONTACTGROUPS_EDIT_BUTTON', CONTACTGROUPS_EDIT_BUTTON);
+        $templateContent->assign('CONTACTGROUPS_TIMEFRAME', CONTACTGROUPS_TIMEFRAME);
 
 	// add message
 	if (!empty($message)) $templateContent->assign('MESSAGE', $message);
@@ -87,7 +88,6 @@ function getContent () {
 	$contactgroups = getContactGroups();
 	$templateContent->assign('CONTACTGROUPS_EDIT_GROUPS_SELECT', htmlSelect('contactgroup', $contactgroups, $id,  'onchange="document.contact_form.edit.click();"', array('', CONTACTGROUPS_SELECT_GROUP_NEW)));
 
-
 	// add form content
 	if (!empty($id)) {
 		$groupData = getContactGroupById($id);
@@ -101,6 +101,8 @@ function getContent () {
 		$templateSubContent->assign('CONTACTGROUPS_VIEW_ONLY', CONTACTGROUPS_VIEW_ONLY);
 		$templateSubContent->assign('CONTACTGROUP_NAME_SHORT', $groupData['name_short']);
 		$templateSubContent->assign('CONTACTGROUP_NAME', $groupData['name']);
+       		if (!isset($groupData['timeframe_id'])) $groupData['timeframe_id'] = null;
+	        $templateSubContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $groupData['timeframe_id']));
 		$templateSubContent->assign('CONTACTGROUPS_EDIT_USERS_SELECT', htmlSelect('contacts[]', getContacts(), getContactGroupMembers($contactgroup), 'size="5" multiple="multiple"'));
 		$templateSubContent->assign('VIEW_ONLY_CHECKED', ($groupData['view_only'] == '1') ? ' checked="true"' : null);
 
@@ -113,8 +115,11 @@ function getContent () {
 		$templateSubContent->assign('CONTACTGROUPS_HEADING_ADD', CONTACTGROUPS_HEADING_ADD);
 		$templateSubContent->assign('CONTACTGROUPS_ADD_NAME_SHORT', CONTACTGROUPS_ADD_NAME_SHORT);
 		$templateSubContent->assign('CONTACTGROUPS_ADD_NAME', CONTACTGROUPS_ADD_NAME);
+                if (!isset($groupData['timeframe_id'])) $groupData['timeframe_id'] = null;
+                $templateSubContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $groupData['timeframe_id']));
 		$templateSubContent->assign('CONTACTGROUPS_VIEW_ONLY', CONTACTGROUPS_VIEW_ONLY);
 		$templateSubContent->assign('CONTACTGROUPS_ADD_BUTTON', CONTACTGROUPS_ADD_BUTTON);
+
 	}
 
 	$templateContent->assign('CONTACTGROUPS_MAIN_CONTENT', $templateSubContent->getHTML());

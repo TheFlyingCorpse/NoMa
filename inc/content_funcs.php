@@ -117,25 +117,19 @@ function getContacts ($exclude = null) {
 /**
  * getTimeframes - give back associative array of timeframes and corresponding ids
  *
- * @param               string          $exclude                username of user to exclude from list
- * @return                                                                      array of users and corresponding ids
+ * @param               none
+ * @return              array of timeframes and corresponding ids
  */
-function getTimeframes ($exclude = null) {
-        $query = 'select timeframe_name from timeframes where timeframe_name!=\'[---]\'';
-        if ($exclude) {
-                $query .= ' and timeframe_name != \'' . prepareDBValue($exclude) . '\'';
-        }
-        $query .= ' order by timeframe_name';
-        $dbResult = queryDB($query);
+function getTimeFrames () {
         $timeframes = array();
-        if (is_array($timeframes)) {
+        $dbResult = queryDB('select id,timeframe_name from timeframes');
+        if (is_array($dbResult)) {
                 foreach ($dbResult as $row) {
-                        $timeframes[$row['timeframe_name']] = $row['timeframe_name'];
+                        $timeframes[$row['id']] = $row['timeframe_name'];
                 }
         }
         return $timeframes;
 }
-
 
 /**
  * getNotificytionMethods - give back associative array of methods and corresponding ids

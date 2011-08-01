@@ -165,7 +165,7 @@ define('CONTACTS_PHONE', 'Telefon:');
 define('CONTACTS_MOBILE', 'Mobiltelefon:');
 define('CONTACTS_NETADDRESS', 'Netadressen:');
 define('CONTACTS_RESTRICT_ALERTS', 'Mehrfachbenachrichtigungen unterdr&uuml;cken:');
-define('CONTACTS_TIMEPERIOD', 'Arbeitszeit:');
+define('CONTACTS_TIMEFRAME', 'Arbeitszeit:');
 define('CONTACTS_TIMEZONE', 'Zeitzone:');
 define('CONTACTS_USER', 'Benutzerauswahl:');
 define('CONTACTS_ADMIN', 'Administrator:');

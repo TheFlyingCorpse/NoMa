@@ -138,7 +138,7 @@ function getContent () {
 		$templateSubContent->assign('TIMEFRAME_FRAMES', TIMEFRAME_FRAMES);
 		$templateSubContent->assign('TIMEFRAME_NEW_FRAME', TIMEFRAME_NEW_FRAME);
 		$templateSubContent->assign('TIMEFRAME_ADMIN', TIMEFRAME_ADMIN);
-		$templateSubContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeframes(), $postTimeframe, 'onchange="document.timeframe_form.edit.click();"', array('', TIMEFRAME_SELECT_FRAME_NEW)));
+		$templateSubContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $postTimeframe, 'onchange="document.timeframe_form.edit.click();"', array('', TIMEFRAME_SELECT_FRAME_NEW)));
 		$templateSubContent->assign('TIMEFRAME_EDIT_BUTTON', TIMEFRAME_EDIT_BUTTON);
 
 		// check whether a timeframe has been selected

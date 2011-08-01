@@ -46,7 +46,7 @@ sub getContacts
     debug("Holidays. Users remaining: ". debugHashUsers(%contacts) );
 
     # check contacts for working hours
-    %contacts = checkWorkingHours(%contacts);
+    %contacts = checkContactWorkingHours(%contacts);
     debug("Working hours. Users remaining: ". debugHashUsers(%contacts) );
 
     # check contacts for multiple alert suppression
@@ -455,41 +455,34 @@ sub checkHolidays
 
 }
 
-sub checkWorkingHours
+sub checkContactWorkingHours
 {
 
     my %contacts = @_;
 
     # set up variables
-    my $away;
     my %newContacts;
 
     # loop through contacts
     while ( my ($contact) = each(%contacts) )
     {
 
-        # init away flag
-        $away = 0;
+	# REPLACE WHAT IS BELOW!!! 
 
-        # get working hours for current contact
-        $query = 'select s.days,s.starttime,s.endtime from time_slices s
-			left join time_periods t on s.time_period_id=t.id
-			left join contacts c on c.time_period_id=t.id
-			where c.username=\'' . $contacts{$contact}->{username} . '\'';
+	my $away = 0;
 
-        my @dbResult = queryDB($query, '1');
+	# get timeframe_id for the current contact
+	my $query = 'select contacts.timeframe_id from contacts where contacts.username=\'' . $contacts{$contact}->{username} . '\'';
 
-	# set timezone
-	my $tz = DateTime::TimeZone->new( name =>  $contacts{$contact}->{timezone});
-	my $dt = DateTime->now()->set_time_zone($tz);
+        my %dbResult = queryDB($query);
 
-    # drop contact and break loop if outside time period
-    if (!(timeInPeriod(\@dbResult, $dt->day_of_week, $dt->hms)))
-    {
-	debug( "username: ".$contacts{$contact}->{username}." (GMT+".$dt->offset($dt)."s) outside time period, dropping");
-	$away = 1;
-	next;
-    }
+	    # drop contact and break loop if outside time period
+	    if ( (objectInTimeFrame($dbResult{0}->{timeframe_id}) eq 0 ))
+	    {
+		debug( "username: ".$contacts{$contact}->{username}." outside timeframe, dropping");
+		$away = 1;
+		next;
+	    }
 
         # add contact to new contact list
         if ( !$away )
