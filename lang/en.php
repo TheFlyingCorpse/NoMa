@@ -117,6 +117,7 @@ define('ADD_EDIT_EXCLUDE_SERVICEGROUPS', 'Exclude servicegroups:');
 define('ADD_EDIT_INCLUDE_RECIPIENTS', 'Include recipients:');
 define('ADD_EDIT_EXCLUDE_RECIPIENTS', 'Exclude recipients:');
 define('ADD_EDIT_TIMEZONE', 'Timezone:');
+define('ADD_EDIT_TIMEFRAME', 'Timeframe:');
 define('ADD_EDIT_OWNER', 'Owner:');
 define('ADD_EDIT_NOTIFY_USERS', 'Notify users:');
 define('ADD_EDIT_NOTIFY_GROUPS', 'Notify groups:');
