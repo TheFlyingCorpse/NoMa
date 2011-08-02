@@ -152,7 +152,7 @@ switch ($action) {
                                 $message = updateTimeframe($p);
                         }
                 } else if ($do == 'del') {
-                        if (isset($p['user'])) {
+                        if (isset($p['timeframe'])) {
                                 if (!delTimeframe($p)) $message = TIMEFRAME_ADD_UPDATE_DEL_ERROR;
                                 else $message = TIMEFRAME_DELETED;
                         } else {
