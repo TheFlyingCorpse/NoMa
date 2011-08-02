@@ -37,7 +37,7 @@ td {
 
 #header {
 	position: relative;
-	background: url(images/header_bg.png) top left no-repeat;
+	background: url(../images/header_bg.png) top left no-repeat;
 	margin-bottom: 10px;
 	width: 1000px;
 	height: 65px;
@@ -53,14 +53,14 @@ td {
 }
 
 #navigation-left {
-	background: url(images/navigation_bg_left.png) top left no-repeat;
+	background: url(../images/navigation_bg_left.png) top left no-repeat;
 	width: 18px;
 	height: 27px;
 	float: left;
 }
 
 #navigation-center {
-	background: url(images/navigation_bg.png) top left repeat;
+	background: url(../images/navigation_bg.png) top left repeat;
 	height: 27px;
 	float: left;
 }
@@ -87,7 +87,7 @@ td {
 }
 
 #navigation-right {
-	background: url(images/navigation_bg_right.png) top left no-repeat;
+	background: url(../images/navigation_bg_right.png) top left no-repeat;
 	width: 18px;
 	height: 27px;
 	float: left;
