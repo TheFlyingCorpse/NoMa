@@ -83,6 +83,7 @@
 
 1.1.0 (current) - WORK IN PROGRESS - UNDER HEAVY DEVELOPMENT
 ----------------
+* new folder structure to make it easier to work with NoMa
 * added servicegroup include and exclude filter
 * added recipient include and exclude filter - Thanks Sebastian Wolf
 * redid the notification rule's in contacts.pm
@@ -96,4 +97,5 @@
 * added new method of notification: Growl, see documentation for how to use.
 * replaced the timeperiod table with a new timeframe setup, editable through the frontend for better flexibillity.
 * added timeframe support for notification rules, so the filter now also includes the abillity to filter on time.
+* added timeframe support for contact rules.
 * updated documentation
