@@ -178,7 +178,7 @@ function getContent () {
                 $templateContent->assign('CHECKED_TIME_MONDAY_TIME_INVERT', ($timeframeData['time_monday_invert']==1)?' checked="checked" ':'');
                 $templateContent->assign('CHECKED_TIME_TUESDAY_TIME_INVERT', ($timeframeData['time_tuesday_invert']==1)?' checked="checked" ':'');
                 $templateContent->assign('CHECKED_TIME_WEDNESDAY_TIME_INVERT', ($timeframeData['time_wednesday_invert']==1)?' checked="checked" ':'');
-                $templateContent->assign('CHECKED_TIME_THRUSDAY_TIME_INVERT', ($timeframeData['time_thursday_invert']==1)?' checked="checked" ':'');
+                $templateContent->assign('CHECKED_TIME_THURSDAY_TIME_INVERT', ($timeframeData['time_thursday_invert']==1)?' checked="checked" ':'');
                 $templateContent->assign('CHECKED_TIME_FRIDAY_TIME_INVERT', ($timeframeData['time_friday_invert']==1)?' checked="checked" ':'');
                 $templateContent->assign('CHECKED_TIME_SATURDAY_TIME_INVERT', ($timeframeData['time_saturday_invert']==1)?' checked="checked" ':'');
                 $templateContent->assign('CHECKED_TIME_SUNDAY_TIME_INVERT', ($timeframeData['time_sunday_invert']==1)?' checked="checked" ':'');

@@ -78,62 +78,63 @@ function addTimeframe ($p) {
 	$time_saturday_stop = prepareDBValue($p['time_saturday_to']);
 	$time_sunday_start = prepareDBValue($p['time_sunday_from']);
 	$time_sunday_stop = prepareDBValue($p['time_sunday_to']);
-        $time_monday_invert = (($p['day_monday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_tuesday_invert = (($p['day_tuesday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_wednesday_invert = (($p['day_wednesday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_thursday_invert = (($p['day_thursday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_friday_invert = (($p['day_friday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_saturday_invert = (($p['day_saturday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_sunday_invert = (($p['day_sunday_time_invert'][0] == 'on') ? '1' : '0');
-        $day_monday_all = (($p['day_monday_all'][0] == 'on') ? '1' : '0');
-        $day_monday_1st = (($p['day_monday_1st'][0] == 'on') ? '1' : '0');
-        $day_monday_2nd = (($p['day_monday_2nd'][0] == 'on') ? '1' : '0');
-        $day_monday_3rd = (($p['day_monday_3rd'][0] == 'on') ? '1' : '0');
-        $day_monday_4th = (($p['day_monday_4th'][0] == 'on') ? '1' : '0');
-        $day_monday_5th = (($p['day_monday_5th'][0] == 'on') ? '1' : '0');
-        $day_monday_last = (($p['day_monday_last'][0] == 'on') ? '1' : '0');
-        $day_tuesday_all = (($p['day_tuesday_all'][0] == 'on') ? '1' : '0');
-        $day_tuesday_1st = (($p['day_tuesday_1st'][0] == 'on') ? '1' : '0');
-        $day_tuesday_2nd = (($p['day_tuesday_2nd'][0] == 'on') ? '1' : '0');
-        $day_tuesday_3rd = (($p['day_tuesday_3rd'][0] == 'on') ? '1' : '0');
-        $day_tuesday_4th = (($p['day_tuesday_4th'][0] == 'on') ? '1' : '0');
-        $day_tuesday_5th = (($p['day_tuesday_5th'][0] == 'on') ? '1' : '0');
-        $day_tuesday_last = (($p['day_tuesday_last'][0] == 'on') ? '1' : '0');
-        $day_wednesday_all = (($p['day_wednesday_all'][0] == 'on') ? '1' : '0');
-        $day_wednesday_1st = (($p['day_wednesday_1st'][0] == 'on') ? '1' : '0');
-        $day_wednesday_2nd = (($p['day_wednesday_2nd'][0] == 'on') ? '1' : '0');
-        $day_wednesday_3rd = (($p['day_wednesday_3rd'][0] == 'on') ? '1' : '0');
-        $day_wednesday_4th = (($p['day_wednesday_4th'][0] == 'on') ? '1' : '0');
-        $day_wednesday_5th = (($p['day_wednesday_5th'][0] == 'on') ? '1' : '0');
-        $day_wednesday_last = (($p['day_wednesday_last'][0] == 'on') ? '1' : '0');
-        $day_thursday_all = (($p['day_thursday_all'][0] == 'on') ? '1' : '0');
-        $day_thursday_1st = (($p['day_thursday_1st'][0] == 'on') ? '1' : '0');
-        $day_thursday_2nd = (($p['day_thursday_2nd'][0] == 'on') ? '1' : '0');
-        $day_thursday_3rd = (($p['day_thursday_3rd'][0] == 'on') ? '1' : '0');
-        $day_thursday_4th = (($p['day_thursday_4th'][0] == 'on') ? '1' : '0');
-        $day_thursday_5th = (($p['day_thursday_5th'][0] == 'on') ? '1' : '0');
-        $day_thursday_last = (($p['day_thursday_last'][0] == 'on') ? '1' : '0');
-        $day_friday_all = (($p['day_friday_all'][0] == 'on') ? '1' : '0');
-        $day_friday_1st = (($p['day_friday_1st'][0] == 'on') ? '1' : '0');
-        $day_friday_2nd = (($p['day_friday_2nd'][0] == 'on') ? '1' : '0');
-        $day_friday_3rd = (($p['day_friday_3rd'][0] == 'on') ? '1' : '0');
-        $day_friday_4th = (($p['day_friday_4th'][0] == 'on') ? '1' : '0');
-        $day_friday_5th = (($p['day_friday_5th'][0] == 'on') ? '1' : '0');
-        $day_friday_last = (($p['day_friday_last'][0] == 'on') ? '1' : '0');
-        $day_saturday_all = (($p['day_saturday_all'][0] == 'on') ? '1' : '0');
-        $day_saturday_1st = (($p['day_saturday_1st'][0] == 'on') ? '1' : '0');
-        $day_saturday_2nd = (($p['day_saturday_2nd'][0] == 'on') ? '1' : '0');
-        $day_saturday_3rd = (($p['day_saturday_3rd'][0] == 'on') ? '1' : '0');
-        $day_saturday_4th = (($p['day_saturday_4th'][0] == 'on') ? '1' : '0');
-        $day_saturday_5th = (($p['day_saturday_5th'][0] == 'on') ? '1' : '0');
-        $day_saturday_last = (($p['day_saturday_last'][0] == 'on') ? '1' : '0');
-        $day_sunday_all = (($p['day_sunday_all'][0] == 'on') ? '1' : '0');
-        $day_sunday_1st = (($p['day_sunday_1st'][0] == 'on') ? '1' : '0');
-        $day_sunday_2nd = (($p['day_sunday_2nd'][0] == 'on') ? '1' : '0');
-        $day_sunday_3rd = (($p['day_sunday_3rd'][0] == 'on') ? '1' : '0');
-        $day_sunday_4th = (($p['day_sunday_4th'][0] == 'on') ? '1' : '0');
-        $day_sunday_5th = (($p['day_sunday_5th'][0] == 'on') ? '1' : '0');
-        $day_sunday_last = (($p['day_sunday_last'][0] == 'on') ? '1' : '0');
+        $time_monday_invert = prepareDBValue((isset($p['time_monday_invert']) && $p['time_monday_invert'] == 'on') ? '1' : '0');
+        $time_tuesday_invert = prepareDBValue((isset($p['time_tuesday_invert']) && $p['time_tuesday_invert'] == 'on') ? '1' : '0');
+        $time_wednesday_invert = prepareDBValue((isset($p['time_wednesday_invert']) && $p['time_wednesday_invert'] == 'on') ? '1' : '0');
+        $time_wednesday_invert = prepareDBValue((isset($p['time_wednesday_invert']) && $p['time_wednesday_invert'] == 'on') ? '1' : '0');
+        $time_thursday_invert = prepareDBValue((isset($p['time_thursday_invert']) && $p['time_thursday_invert'] == 'on') ? '1' : '0');
+        $time_friday_invert = prepareDBValue((isset($p['time_friday_invert']) && $p['time_friday_invert'] == 'on') ? '1' : '0');
+        $time_saturday_invert = prepareDBValue((isset($p['time_saturday_invert']) && $p['time_saturday_invert'] == 'on') ? '1' : '0');
+        $time_sunday_invert = prepareDBValue((isset($p['time_sunday_invert']) && $p['time_sunday_invert'] == 'on') ? '1' : '0');
+        $day_monday_all = prepareDBValue((isset($p['day_monday_all']) && $p['day_monday_all'] == 'on') ? '1' : '0');
+        $day_monday_1st = prepareDBValue((isset($p['day_monday_1st']) && $p['day_monday_1st'] == 'on') ? '1' : '0');
+        $day_monday_2nd = prepareDBValue((isset($p['day_monday_2nd']) && $p['day_monday_2nd'] == 'on') ? '1' : '0');
+        $day_monday_3rd = prepareDBValue((isset($p['day_monday_3rd']) && $p['day_monday_3rd'] == 'on') ? '1' : '0');
+        $day_monday_4th = prepareDBValue((isset($p['day_monday_4th']) && $p['day_monday_4th'] == 'on') ? '1' : '0');
+        $day_monday_5th = prepareDBValue((isset($p['day_monday_5th']) && $p['day_monday_5th'] == 'on') ? '1' : '0');
+        $day_monday_last = prepareDBValue((isset($p['day_monday_last']) && $p['day_monday_last'] == 'on') ? '1' : '0');
+        $day_tuesday_all = prepareDBValue((isset($p['day_tuesday_all']) && $p['day_tuesday_all'] == 'on') ? '1' : '0');
+        $day_tuesday_1st = prepareDBValue((isset($p['day_tuesday_1st']) && $p['day_tuesday_1st'] == 'on') ? '1' : '0');
+        $day_tuesday_2nd = prepareDBValue((isset($p['day_tuesday_2nd']) && $p['day_tuesday_2nd'] == 'on') ? '1' : '0');
+        $day_tuesday_3rd = prepareDBValue((isset($p['day_tuesday_3rd']) && $p['day_tuesday_3rd'] == 'on') ? '1' : '0');
+        $day_tuesday_4th = prepareDBValue((isset($p['day_tuesday_4th']) && $p['day_tuesday_4th'] == 'on') ? '1' : '0');
+        $day_tuesday_5th = prepareDBValue((isset($p['day_tuesday_5th']) && $p['day_tuesday_5th'] == 'on') ? '1' : '0');
+        $day_tuesday_last = prepareDBValue((isset($p['day_tuesday_last']) && $p['day_tuesday_last'] == 'on') ? '1' : '0');
+        $day_wednesday_all = prepareDBValue((isset($p['day_wednesday_all']) && $p['day_wednesday_all'] == 'on') ? '1' : '0');
+        $day_wednesday_1st = prepareDBValue((isset($p['day_wednesday_1st']) && $p['day_wednesday_1st'] == 'on') ? '1' : '0');
+        $day_wednesday_2nd = prepareDBValue((isset($p['day_wednesday_2nd']) && $p['day_wednesday_2nd'] == 'on') ? '1' : '0');
+        $day_wednesday_3rd = prepareDBValue((isset($p['day_wednesday_3rd']) && $p['day_wednesday_3rd'] == 'on') ? '1' : '0');
+        $day_wednesday_4th = prepareDBValue((isset($p['day_wednesday_4th']) && $p['day_wednesday_4th'] == 'on') ? '1' : '0');
+        $day_wednesday_5th = prepareDBValue((isset($p['day_wednesday_5th']) && $p['day_wednesday_5th'] == 'on') ? '1' : '0');
+        $day_wednesday_last = prepareDBValue((isset($p['day_wednesday_last']) && $p['day_wednesday_last'] == 'on') ? '1' : '0');
+        $day_thursday_all = prepareDBValue((isset($p['day_thursday_all']) && $p['day_thursday_all'] == 'on') ? '1' : '0');
+        $day_thursday_1st = prepareDBValue((isset($p['day_thursday_1st']) && $p['day_thursday_1st'] == 'on') ? '1' : '0');
+        $day_thursday_2nd = prepareDBValue((isset($p['day_thursday_2nd']) && $p['day_thursday_2nd'] == 'on') ? '1' : '0');
+        $day_thursday_3rd = prepareDBValue((isset($p['day_thursday_3rd']) && $p['day_thursday_3rd'] == 'on') ? '1' : '0');
+        $day_thursday_4th = prepareDBValue((isset($p['day_thursday_4th']) && $p['day_thursday_4th'] == 'on') ? '1' : '0');
+        $day_thursday_5th = prepareDBValue((isset($p['day_thursday_5th']) && $p['day_thursday_5th'] == 'on') ? '1' : '0');
+        $day_thursday_last = prepareDBValue((isset($p['day_thursday_last']) && $p['day_thursday_last'] == 'on') ? '1' : '0');
+        $day_friday_all = prepareDBValue((isset($p['day_friday_all']) && $p['day_friday_all'] == 'on') ? '1' : '0');
+        $day_friday_1st = prepareDBValue((isset($p['day_friday_1st']) && $p['day_friday_1st'] == 'on') ? '1' : '0');
+        $day_friday_2nd = prepareDBValue((isset($p['day_friday_2nd']) && $p['day_friday_2nd'] == 'on') ? '1' : '0');
+        $day_friday_3rd = prepareDBValue((isset($p['day_friday_3rd']) && $p['day_friday_3rd'] == 'on') ? '1' : '0');
+        $day_friday_4th = prepareDBValue((isset($p['day_friday_4th']) && $p['day_friday_4th'] == 'on') ? '1' : '0');
+        $day_friday_5th = prepareDBValue((isset($p['day_friday_5th']) && $p['day_friday_5th'] == 'on') ? '1' : '0');
+        $day_friday_last = prepareDBValue((isset($p['day_friday_last']) && $p['day_friday_last'] == 'on') ? '1' : '0');
+        $day_saturday_all = prepareDBValue((isset($p['day_saturday_all']) && $p['day_saturday_all'] == 'on') ? '1' : '0');
+        $day_saturday_1st = prepareDBValue((isset($p['day_saturday_1st']) && $p['day_saturday_1st'] == 'on') ? '1' : '0');
+        $day_saturday_2nd = prepareDBValue((isset($p['day_saturday_2nd']) && $p['day_saturday_2nd'] == 'on') ? '1' : '0');
+        $day_saturday_3rd = prepareDBValue((isset($p['day_saturday_3rd']) && $p['day_saturday_3rd'] == 'on') ? '1' : '0');
+        $day_saturday_4th = prepareDBValue((isset($p['day_saturday_4th']) && $p['day_saturday_4th'] == 'on') ? '1' : '0');
+        $day_saturday_5th = prepareDBValue((isset($p['day_saturday_5th']) && $p['day_saturday_5th'] == 'on') ? '1' : '0');
+        $day_saturday_last = prepareDBValue((isset($p['day_saturday_last']) && $p['day_saturday_last'] == 'on') ? '1' : '0');
+        $day_sunday_all = prepareDBValue((isset($p['day_sunday_all']) && $p['day_sunday_all'] == 'on') ? '1' : '0');
+        $day_sunday_1st = prepareDBValue((isset($p['day_sunday_1st']) && $p['day_sunday_1st'] == 'on') ? '1' : '0');
+        $day_sunday_2nd = prepareDBValue((isset($p['day_sunday_2nd']) && $p['day_sunday_2nd'] == 'on') ? '1' : '0');
+        $day_sunday_3rd = prepareDBValue((isset($p['day_sunday_3rd']) && $p['day_sunday_3rd'] == 'on') ? '1' : '0');
+        $day_sunday_4th = prepareDBValue((isset($p['day_sunday_4th']) && $p['day_sunday_4th'] == 'on') ? '1' : '0');
+        $day_sunday_5th = prepareDBValue((isset($p['day_sunday_5th']) && $p['day_sunday_5th'] == 'on') ? '1' : '0');
+        $day_sunday_last = prepareDBValue((isset($p['day_sunday_last']) && $p['day_sunday_last'] == 'on') ? '1' : '0');
 	$timezone_id = prepareDBValue($p['timezone_id']);
 
 	// check whether timeframe already exists
@@ -220,32 +221,13 @@ function addTimeframe ($p) {
 
 	// add timeframe
 	$query = sprintf(
-		'insert into timeframes (timeframe_name,dt_validFrom,dt_validTo,time_monday_start,time_monday_stop,time_tuesday_start,time_tuesday_stop,time_wednesday_start,time_wednesday_stop,time_thursday_start,time_thursday_stop,time_friday_start,time_friday_stop,time_saturday_start,time_saturday_stop,time_sunday_start,time_sunday_stop,time_monday_invert,time_tuesday_invert,time_wednesday_invert,time_thursday_invert,time_friday_invert,time_saturday_invert,time_sunday_invert,day_monday_all,day_monday_1st,day_monday_2nd,day_monday_3rd,day_monday_4th,day_monday_5th,day_monday_last,day_tuesday_all,day_tuesday_1st,day_tuesday_2nd,day_tuesday_3rd,day_tuesday_4th,day_tuesday_5th,day_tuesday_last,day_wednesday_all,day_wednesday_1st,day_wednesday_2nd,day_wednesday_3rd,day_wednesday_4th,day_wednesday_5th,day_wednesday_last,day_thursday_all,day_thursday_1st,day_thursday_2nd,day_thursday_3rd,day_thursday_4th,day_thursday_5th,day_thursday_last,day_friday_all,day_friday_1st,day_friday_2nd,day_friday_3rd,day_friday_4th,day_friday_5th,day_friday_last,day_saturday_all,day_saturday_1st,day_saturday_2nd,day_saturday_3rd,day_saturday_4th,day_saturday_5th,day_saturday_last,day_sunday_all,day_sunday_1st,day_sunday_2nd,day_sunday_3rd,day_sunday_4th,day_sunday_5th,day_sunday_last,timezone_id)
-			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'',
+		'INSERT INTO timeframes
+	(timeframe_name, dt_validFrom, dt_validTo, timezone_id, day_monday_all, day_monday_1st, day_monday_2nd, day_monday_3rd, day_monday_4th, day_monday_5th, day_monday_last, day_tuesday_all, day_tuesday_1st, day_tuesday_2nd, day_tuesday_3rd, day_tuesday_4th, day_tuesday_5th, day_tuesday_last, day_wednesday_all, day_wednesday_1st, day_wednesday_2nd, day_wednesday_3rd, day_wednesday_4th, day_wednesday_5th, day_wednesday_last, day_thursday_all, day_thursday_1st, day_thursday_2nd, day_thursday_3rd, day_thursday_4th, day_thursday_5th, day_thursday_last, day_friday_all, day_friday_1st, day_friday_2nd, day_friday_3rd, day_friday_4th, day_friday_5th, day_friday_last, day_saturday_all, day_saturday_1st, day_saturday_2nd, day_saturday_3rd, day_saturday_4th, day_saturday_5th, day_saturday_last, day_sunday_all, day_sunday_1st, day_sunday_2nd, day_sunday_3rd, day_sunday_4th, day_sunday_5th, day_sunday_last, time_monday_start, time_monday_stop, time_monday_invert, time_tuesday_start, time_tuesday_stop, time_tuesday_invert, time_wednesday_start, time_wednesday_stop, time_wednesday_invert, time_thursday_start, time_thursday_stop, time_thursday_invert, time_friday_start, time_friday_stop, time_friday_invert, time_saturday_start, time_saturday_stop, time_saturday_invert, time_sunday_start, time_sunday_stop, time_sunday_invert) 
+		VALUES (\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\');',
                 $timeframe_name,
                 $dt_validFrom,
                 $dt_validTo,
-                $time_monday_start,
-		$time_monday_stop,
-		$time_tuesday_start,
-		$time_tuesday_stop,
-		$time_wednesday_start,
-		$time_wednesday_stop,
-		$time_thursday_start,
-		$time_thursday_stop,
-		$time_friday_start,
-		$time_friday_stop,
-		$time_saturday_start,
-		$time_saturday_stop,
-		$time_sunday_start,
-		$time_sunday_stop,
-                $time_monday_invert,
-                $time_tuesday_invert,
-                $time_wednesday_invert,
-                $time_thursday_invert,
-                $time_friday_invert,
-                $time_saturday_invert,
-                $time_sunday_invert,
+		$timezone_id,
                 $day_monday_all,
                 $day_monday_1st,
                 $day_monday_2nd,
@@ -295,7 +277,27 @@ function addTimeframe ($p) {
                 $day_sunday_4th,
                 $day_sunday_5th,
                 $day_sunday_last,
-                $timezone_id
+                $time_monday_start,
+                $time_monday_stop,
+                $time_tuesday_start,
+                $time_tuesday_stop,
+                $time_wednesday_start,
+                $time_wednesday_stop,
+                $time_thursday_start,
+                $time_thursday_stop,
+                $time_friday_start,
+                $time_friday_stop,
+                $time_saturday_start,
+                $time_saturday_stop,
+                $time_sunday_start,
+                $time_sunday_stop,
+                $time_monday_invert,
+                $time_tuesday_invert,
+                $time_wednesday_invert,
+                $time_thursday_invert,
+                $time_friday_invert,
+                $time_saturday_invert,
+                $time_sunday_invert
 	);
 	queryDB($query);
 
@@ -431,92 +433,87 @@ function updateTimeframe ($p) {
 	$time_saturday_stop = prepareDBValue($p['time_saturday_to']);
 	$time_sunday_start = prepareDBValue($p['time_sunday_from']);
 	$time_sunday_stop = prepareDBValue($p['time_sunday_to']);
-        $time_monday_invert = (($p['day_monday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_tuesday_invert = (($p['day_tuesday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_wednesday_invert = (($p['day_wednesday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_thursday_invert = (($p['day_thursday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_friday_invert = (($p['day_friday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_saturday_invert = (($p['day_saturday_time_invert'][0] == 'on') ? '1' : '0');
-        $time_sunday_invert = (($p['day_sunday_time_invert'][0] == 'on') ? '1' : '0');
-        $day_monday_all = (($p['day_monday_all'][0] == 'on') ? '1' : '0');
-        $day_monday_1st = (($p['day_monday_1st'][0] == 'on') ? '1' : '0');
-        $day_monday_2nd = (($p['day_monday_2nd'][0] == 'on') ? '1' : '0');
-        $day_monday_3rd = (($p['day_monday_3rd'][0] == 'on') ? '1' : '0');
-        $day_monday_4th = (($p['day_monday_4th'][0] == 'on') ? '1' : '0');
-        $day_monday_5th = (($p['day_monday_5th'][0] == 'on') ? '1' : '0');
-        $day_monday_last = (($p['day_monday_last'][0] == 'on') ? '1' : '0');
-        $day_tuesday_all = (($p['day_tuesday_all'][0] == 'on') ? '1' : '0');
-        $day_tuesday_1st = (($p['day_tuesday_1st'][0] == 'on') ? '1' : '0');
-        $day_tuesday_2nd = (($p['day_tuesday_2nd'][0] == 'on') ? '1' : '0');
-        $day_tuesday_3rd = (($p['day_tuesday_3rd'][0] == 'on') ? '1' : '0');
-        $day_tuesday_4th = (($p['day_tuesday_4th'][0] == 'on') ? '1' : '0');
-        $day_tuesday_5th = (($p['day_tuesday_5th'][0] == 'on') ? '1' : '0');
-        $day_tuesday_last = (($p['day_tuesday_last'][0] == 'on') ? '1' : '0');
-        $day_wednesday_all = (($p['day_wednesday_all'][0] == 'on') ? '1' : '0');
-        $day_wednesday_1st = (($p['day_wednesday_1st'][0] == 'on') ? '1' : '0');
-        $day_wednesday_2nd = (($p['day_wednesday_2nd'][0] == 'on') ? '1' : '0');
-        $day_wednesday_3rd = (($p['day_wednesday_3rd'][0] == 'on') ? '1' : '0');
-        $day_wednesday_4th = (($p['day_wednesday_4th'][0] == 'on') ? '1' : '0');
-        $day_wednesday_5th = (($p['day_wednesday_5th'][0] == 'on') ? '1' : '0');
-        $day_wednesday_last = (($p['day_wednesday_last'][0] == 'on') ? '1' : '0');
-        $day_thursday_all = (($p['day_thursday_all'][0] == 'on') ? '1' : '0');
-        $day_thursday_1st = (($p['day_thursday_1st'][0] == 'on') ? '1' : '0');
-        $day_thursday_2nd = (($p['day_thursday_2nd'][0] == 'on') ? '1' : '0');
-        $day_thursday_3rd = (($p['day_thursday_3rd'][0] == 'on') ? '1' : '0');
-        $day_thursday_4th = (($p['day_thursday_4th'][0] == 'on') ? '1' : '0');
-        $day_thursday_5th = (($p['day_thursday_5th'][0] == 'on') ? '1' : '0');
-        $day_thursday_last = (($p['day_thursday_last'][0] == 'on') ? '1' : '0');
-        $day_friday_all = (($p['day_friday_all'][0] == 'on') ? '1' : '0');
-        $day_friday_1st = (($p['day_friday_1st'][0] == 'on') ? '1' : '0');
-        $day_friday_2nd = (($p['day_friday_2nd'][0] == 'on') ? '1' : '0');
-        $day_friday_3rd = (($p['day_friday_3rd'][0] == 'on') ? '1' : '0');
-        $day_friday_4th = (($p['day_friday_4th'][0] == 'on') ? '1' : '0');
-        $day_friday_5th = (($p['day_friday_5th'][0] == 'on') ? '1' : '0');
-        $day_friday_last = (($p['day_friday_last'][0] == 'on') ? '1' : '0');
-        $day_saturday_all = (($p['day_saturday_all'][0] == 'on') ? '1' : '0');
-        $day_saturday_1st = (($p['day_saturday_1st'][0] == 'on') ? '1' : '0');
-        $day_saturday_2nd = (($p['day_saturday_2nd'][0] == 'on') ? '1' : '0');
-        $day_saturday_3rd = (($p['day_saturday_3rd'][0] == 'on') ? '1' : '0');
-        $day_saturday_4th = (($p['day_saturday_4th'][0] == 'on') ? '1' : '0');
-        $day_saturday_5th = (($p['day_saturday_5th'][0] == 'on') ? '1' : '0');
-        $day_saturday_last = (($p['day_saturday_last'][0] == 'on') ? '1' : '0');
-        $day_sunday_all = (($p['day_sunday_all'][0] == 'on') ? '1' : '0');
-        $day_sunday_1st = (($p['day_sunday_1st'][0] == 'on') ? '1' : '0');
-        $day_sunday_2nd = (($p['day_sunday_2nd'][0] == 'on') ? '1' : '0');
-        $day_sunday_3rd = (($p['day_sunday_3rd'][0] == 'on') ? '1' : '0');
-        $day_sunday_4th = (($p['day_sunday_4th'][0] == 'on') ? '1' : '0');
-        $day_sunday_5th = (($p['day_sunday_5th'][0] == 'on') ? '1' : '0');
-        $day_sunday_last = (($p['day_sunday_last'][0] == 'on') ? '1' : '0');
+        $time_monday_invert = prepareDBValue((isset($p['time_monday_invert']) && $p['time_monday_invert'] == 'on') ? '1' : '0');
+        $time_tuesday_invert = prepareDBValue((isset($p['time_tuesday_invert']) && $p['time_tuesday_invert'] == 'on') ? '1' : '0');
+        $time_wednesday_invert = prepareDBValue((isset($p['time_wednesday_invert']) && $p['time_wednesday_invert'] == 'on') ? '1' : '0');
+        $time_wednesday_invert = prepareDBValue((isset($p['time_wednesday_invert']) && $p['time_wednesday_invert'] == 'on') ? '1' : '0');
+        $time_thursday_invert = prepareDBValue((isset($p['time_thursday_invert']) && $p['time_thursday_invert'] == 'on') ? '1' : '0');
+        $time_friday_invert = prepareDBValue((isset($p['time_friday_invert']) && $p['time_friday_invert'] == 'on') ? '1' : '0');
+        $time_saturday_invert = prepareDBValue((isset($p['time_saturday_invert']) && $p['time_saturday_invert'] == 'on') ? '1' : '0');
+        $time_sunday_invert = prepareDBValue((isset($p['time_sunday_invert']) && $p['time_sunday_invert'] == 'on') ? '1' : '0');
+        $day_monday_all = prepareDBValue((isset($p['day_monday_all']) && $p['day_monday_all'] == 'on') ? '1' : '0');
+        $day_monday_1st = prepareDBValue((isset($p['day_monday_1st']) && $p['day_monday_1st'] == 'on') ? '1' : '0');
+        $day_monday_2nd = prepareDBValue((isset($p['day_monday_2nd']) && $p['day_monday_2nd'] == 'on') ? '1' : '0');
+        $day_monday_3rd = prepareDBValue((isset($p['day_monday_3rd']) && $p['day_monday_3rd'] == 'on') ? '1' : '0');
+        $day_monday_4th = prepareDBValue((isset($p['day_monday_4th']) && $p['day_monday_4th'] == 'on') ? '1' : '0');
+        $day_monday_5th = prepareDBValue((isset($p['day_monday_5th']) && $p['day_monday_5th'] == 'on') ? '1' : '0');
+	$day_monday_last = prepareDBValue((isset($p['day_monday_last']) && $p['day_monday_last'] == 'on') ? '1' : '0');
+        $day_tuesday_all = prepareDBValue((isset($p['day_tuesday_all']) && $p['day_tuesday_all'] == 'on') ? '1' : '0');
+        $day_tuesday_1st = prepareDBValue((isset($p['day_tuesday_1st']) && $p['day_tuesday_1st'] == 'on') ? '1' : '0');
+        $day_tuesday_2nd = prepareDBValue((isset($p['day_tuesday_2nd']) && $p['day_tuesday_2nd'] == 'on') ? '1' : '0');
+        $day_tuesday_3rd = prepareDBValue((isset($p['day_tuesday_3rd']) && $p['day_tuesday_3rd'] == 'on') ? '1' : '0');
+        $day_tuesday_4th = prepareDBValue((isset($p['day_tuesday_4th']) && $p['day_tuesday_4th'] == 'on') ? '1' : '0');
+        $day_tuesday_5th = prepareDBValue((isset($p['day_tuesday_5th']) && $p['day_tuesday_5th'] == 'on') ? '1' : '0');
+        $day_tuesday_last = prepareDBValue((isset($p['day_tuesday_last']) && $p['day_tuesday_last'] == 'on') ? '1' : '0');
+        $day_wednesday_all = prepareDBValue((isset($p['day_wednesday_all']) && $p['day_wednesday_all'] == 'on') ? '1' : '0');
+        $day_wednesday_1st = prepareDBValue((isset($p['day_wednesday_1st']) && $p['day_wednesday_1st'] == 'on') ? '1' : '0');
+        $day_wednesday_2nd = prepareDBValue((isset($p['day_wednesday_2nd']) && $p['day_wednesday_2nd'] == 'on') ? '1' : '0');
+        $day_wednesday_3rd = prepareDBValue((isset($p['day_wednesday_3rd']) && $p['day_wednesday_3rd'] == 'on') ? '1' : '0');
+        $day_wednesday_4th = prepareDBValue((isset($p['day_wednesday_4th']) && $p['day_wednesday_4th'] == 'on') ? '1' : '0');
+        $day_wednesday_5th = prepareDBValue((isset($p['day_wednesday_5th']) && $p['day_wednesday_5th'] == 'on') ? '1' : '0');
+        $day_wednesday_last = prepareDBValue((isset($p['day_wednesday_last']) && $p['day_wednesday_last'] == 'on') ? '1' : '0');
+        $day_thursday_all = prepareDBValue((isset($p['day_thursday_all']) && $p['day_thursday_all'] == 'on') ? '1' : '0');
+        $day_thursday_1st = prepareDBValue((isset($p['day_thursday_1st']) && $p['day_thursday_1st'] == 'on') ? '1' : '0');
+        $day_thursday_2nd = prepareDBValue((isset($p['day_thursday_2nd']) && $p['day_thursday_2nd'] == 'on') ? '1' : '0');
+        $day_thursday_3rd = prepareDBValue((isset($p['day_thursday_3rd']) && $p['day_thursday_3rd'] == 'on') ? '1' : '0');
+        $day_thursday_4th = prepareDBValue((isset($p['day_thursday_4th']) && $p['day_thursday_4th'] == 'on') ? '1' : '0');
+        $day_thursday_5th = prepareDBValue((isset($p['day_thursday_5th']) && $p['day_thursday_5th'] == 'on') ? '1' : '0');
+        $day_thursday_last = prepareDBValue((isset($p['day_thursday_last']) && $p['day_thursday_last'] == 'on') ? '1' : '0');
+        $day_friday_all = prepareDBValue((isset($p['day_friday_all']) && $p['day_friday_all'] == 'on') ? '1' : '0');
+        $day_friday_1st = prepareDBValue((isset($p['day_friday_1st']) && $p['day_friday_1st'] == 'on') ? '1' : '0');
+        $day_friday_2nd = prepareDBValue((isset($p['day_friday_2nd']) && $p['day_friday_2nd'] == 'on') ? '1' : '0');
+        $day_friday_3rd = prepareDBValue((isset($p['day_friday_3rd']) && $p['day_friday_3rd'] == 'on') ? '1' : '0');
+        $day_friday_4th = prepareDBValue((isset($p['day_friday_4th']) && $p['day_friday_4th'] == 'on') ? '1' : '0');
+        $day_friday_5th = prepareDBValue((isset($p['day_friday_5th']) && $p['day_friday_5th'] == 'on') ? '1' : '0');
+        $day_friday_last = prepareDBValue((isset($p['day_friday_last']) && $p['day_friday_last'] == 'on') ? '1' : '0');
+        $day_saturday_all = prepareDBValue((isset($p['day_saturday_all']) && $p['day_saturday_all'] == 'on') ? '1' : '0');
+        $day_saturday_1st = prepareDBValue((isset($p['day_saturday_1st']) && $p['day_saturday_1st'] == 'on') ? '1' : '0');
+        $day_saturday_2nd = prepareDBValue((isset($p['day_saturday_2nd']) && $p['day_saturday_2nd'] == 'on') ? '1' : '0');
+        $day_saturday_3rd = prepareDBValue((isset($p['day_saturday_3rd']) && $p['day_saturday_3rd'] == 'on') ? '1' : '0');
+        $day_saturday_4th = prepareDBValue((isset($p['day_saturday_4th']) && $p['day_saturday_4th'] == 'on') ? '1' : '0');
+        $day_saturday_5th = prepareDBValue((isset($p['day_saturday_5th']) && $p['day_saturday_5th'] == 'on') ? '1' : '0');
+        $day_saturday_last = prepareDBValue((isset($p['day_saturday_last']) && $p['day_saturday_last'] == 'on') ? '1' : '0');
+        $day_sunday_all = prepareDBValue((isset($p['day_sunday_all']) && $p['day_sunday_all'] == 'on') ? '1' : '0');
+        $day_sunday_1st = prepareDBValue((isset($p['day_sunday_1st']) && $p['day_sunday_1st'] == 'on') ? '1' : '0');
+        $day_sunday_2nd = prepareDBValue((isset($p['day_sunday_2nd']) && $p['day_sunday_2nd'] == 'on') ? '1' : '0');
+        $day_sunday_3rd = prepareDBValue((isset($p['day_sunday_3rd']) && $p['day_sunday_3rd'] == 'on') ? '1' : '0');
+        $day_sunday_4th = prepareDBValue((isset($p['day_sunday_4th']) && $p['day_sunday_4th'] == 'on') ? '1' : '0');
+        $day_sunday_5th = prepareDBValue((isset($p['day_sunday_5th']) && $p['day_sunday_5th'] == 'on') ? '1' : '0');
+        $day_sunday_last = prepareDBValue((isset($p['day_sunday_last']) && $p['day_sunday_last'] == 'on') ? '1' : '0');
         $timezone_id = prepareDBValue($p['timezone']);
 
 	// update timeframe
 	$query = sprintf(
-                'update timeframes (timeframe_name=\'%s\', dt_validFrom=\'%s\', dt_validTo=\'%s\', time_monday_start=\'%s\', time_monday_stop=\'%s\', time_tuesday_start=\'%s\', time_tuesday_stop=\'%s\', time_wednesday_start=\'%s\', time_wednesday_stop=\'%s\', time_thursday_start=\'%s\', time_thursday_stop=\'%s\', time_friday_start=\'%s\', time_friday_stop=\'%s\', time_saturday_start=\'%s\', time_saturday_stop=\'%s\', time_sunday_start=\'%s\', time_sunday_stop=\'%s\', time_monday_invert=\'%s\', time_tuesday_invert=\'%s\', time_wednesday_invert=\'%s\', time_thursday_invert=\'%s\', time_friday_invert=\'%s\', time_saturday_invert=\'%s\', time_sunday_invert=\'%s\', day_sunday_all=\'%s\', day_monday_1st=\'%s\', day_monday_2nd=\'%s\' ,day_monday_3rd=\'%s\' ,day_monday_4th=\'%s\' ,day_monday_5th=\'%s\' ,day_monday_last=\'%s\' ,day_tuesday_1st=\'%s\' ,day_tuesday_2nd=\'%s\' ,day_tuesday_3rd=\'%s\' ,day_tuesday_4th=\'%s\' ,day_tuesday_5th=\'%s\' ,day_tuesday_last=\'%s\' ,day_wednesday_1st=\'%s\' ,day_wednesday_2nd=\'%s\' ,day_wednesday_3rd=\'%s\' ,day_wednesday_4th=\'%s\' ,day_wednesday_5th=\'%s\' ,day_wednesday_last=\'%s\' ,day_thursday_1st=\'%s\' ,day_thursday_2nd=\'%s\' ,day_thursday_3rd=\'%s\' ,day_thursday_4th=\'%s\' ,day_thursday_5th=\'%s\' ,day_thursday_last=\'%s\' ,day_friday_1st=\'%s\' ,day_friday_2nd=\'%s\' ,day_friday_3rd=\'%s\' ,day_friday_4th=\'%s\' ,day_friday_5th=\'%s\' ,day_friday_last=\'%s\' ,day_saturday_1st=\'%s\' ,day_saturday_2nd=\'%s\' ,day_saturday_3rd=\'%s\' ,day_saturday_4th=\'%s\' ,day_saturday_5th=\'%s\' ,day_saturday_last=\'%s\', day_sunday_1st=\'%s\', day_sunday_2nd=\'%s\', day_sunday_3rd=\'%s\', day_sunday_4th=\'%s\', day_sunday_5th=\'%s\', day_sunday_last=\'%s\', timezone_id=\'%s\' where id=\'%s\')
-                        values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'',
+		'UPDATE timeframes SET timeframe_name=\'%s\', dt_validFrom=\'%s\', dt_validTo=\'%s\', timezone_id=\'%s\', 
+			day_monday_all=\'%s\', day_monday_1st=\'%s\', day_monday_2nd=\'%s\', day_monday_3rd=\'%s\', day_monday_4th=\'%s\', day_monday_5th=\'%s\', day_monday_last=\'%s\', 
+			day_tuesday_all=\'%s\', day_tuesday_1st=\'%s\', day_tuesday_2nd=\'%s\', day_tuesday_3rd=\'%s\', day_tuesday_4th=\'%s\', day_tuesday_5th=\'%s\', day_tuesday_last=\'%s\', 
+			day_wednesday_all=\'%s\', day_wednesday_1st=\'%s\', day_wednesday_2nd=\'%s\', day_wednesday_3rd=\'%s\', day_wednesday_4th=\'%s\', day_wednesday_5th=\'%s\', day_wednesday_last=\'%s\', 
+			day_thursday_all=\'%s\', day_thursday_1st=\'%s\', day_thursday_2nd=\'%s\', day_thursday_3rd=\'%s\', day_thursday_4th=\'%s\', day_thursday_5th=\'%s\', day_thursday_last=\'%s\', 
+			day_friday_all=\'%s\', day_friday_1st=\'%s\', day_friday_2nd=\'%s\', day_friday_3rd=\'%s\', day_friday_4th=\'%s\', day_friday_5th=\'%s\', day_friday_last=\'%s\', 
+			day_saturday_all=\'%s\', day_saturday_1st=\'%s\', day_saturday_2nd=\'%s\', day_saturday_3rd=\'%s\', day_saturday_4th=\'%s\', day_saturday_5th=\'%s\', day_saturday_last=\'%s\', 
+			day_sunday_all=\'%s\', day_sunday_1st=\'%s\', day_sunday_2nd=\'%s\', day_sunday_3rd=\'%s\', day_sunday_4th=\'%s\', day_sunday_5th=\'%s\', day_sunday_last=\'%s\', 
+			time_monday_start=\'%s\', time_monday_stop=\'%s\', time_monday_invert=\'%s\', 
+			time_tuesday_start=\'%s\', time_tuesday_stop=\'%s\', time_tuesday_invert=\'%s\', 
+			time_wednesday_start=\'%s\', time_wednesday_stop=\'%s\', time_wednesday_invert=\'%s\', 
+			time_thursday_start=\'%s\', time_thursday_stop=\'%s\', time_thursday_invert=\'%s\', 
+			time_friday_start=\'%s\', time_friday_stop=\'%s\', time_friday_invert=\'%s\', 
+			time_saturday_start=\'%s\', time_saturday_stop=\'%s\', time_saturday_invert=\'%s\', 
+			time_sunday_start=\'%s\', time_sunday_stop=\'%s\', time_sunday_invert=\'%s\' 
+		WHERE id =\'%s\';',
                 $timeframe_name,
                 $dt_validFrom,
                 $dt_validTo,
-		$time_monday_start,
-                $time_monday_stop,
-                $time_tuesday_start,
-                $time_tuesday_stop,
-                $time_wednesday_start,
-                $time_wednesday_stop,
-                $time_thursday_start,
-                $time_thursday_stop,
-                $time_friday_start,
-                $time_friday_stop,
-                $time_saturday_start,
-                $time_saturday_stop,
-                $time_sunday_start,
-                $time_sunday_stop,
-                $time_monday_invert,
-                $time_tuesday_invert,
-                $time_wednesday_invert,
-                $time_thursday_invert,
-                $time_friday_invert,
-                $time_saturday_invert,
-                $time_sunday_invert,
+                $timezone_id,
 		$day_monday_all,
 		$day_monday_1st,
 		$day_monday_2nd,
@@ -566,7 +563,27 @@ function updateTimeframe ($p) {
                 $day_sunday_4th,
                 $day_sunday_5th,
                 $day_sunday_last,
-                $timezone_id,
+                $time_monday_start,
+                $time_monday_stop,
+                $time_monday_invert,
+                $time_tuesday_start,
+                $time_tuesday_stop,
+                $time_tuesday_invert,
+                $time_wednesday_start,
+                $time_wednesday_stop,
+                $time_wednesday_invert,
+                $time_thursday_start,
+                $time_thursday_stop,
+                $time_thursday_invert,
+                $time_friday_start,
+                $time_friday_stop,
+                $time_friday_invert,
+                $time_saturday_start,
+                $time_saturday_stop,
+                $time_saturday_invert,
+                $time_sunday_start,
+                $time_sunday_stop,
+                $time_sunday_invert,
 		$id
         );
 	queryDB($query);
@@ -603,32 +620,35 @@ function updateTimeframe ($p) {
 /**
  * delTimeframe - deletes a timeframe and sets all owned notifications to disabled
  *
- * @param		array		$p		posted data for contact update
+ * @param		array		$p		posted data for timeframe update
  * @return							boolean value (false on error)
  */
 function delTimeframe ($p) {
 // TODO -> SET IT TO USE TIMEFRAME 0 AND DISABLE.
 	// pre checks
 	if (!isAdmin()) return false;
-	if (!isset($p['user'])) return false;
-	if (empty($p['user'])) return false;
+	if (!isset($p['timeframe'])) return false;
+	if (empty($p['timeframe'])) return false;
 
 	// security
-	$userPrep = prepareDBValue($p['timeframe_name']);
+	$timeframe_name = prepareDBValue($p['timeframe_name']);
 
 	// get contact id
-	$dbResult = queryDB('select id from timeframes where timeframe_name=\'' . $userPrep . '\'');
+	$dbResult = queryDB('select id from timeframes where timeframe_name=\'' . $timeframe_name . '\'');
 	if (!isset($dbResult[0]['id'])) return false;
-	$userID = $dbResult[0]['id'];
+	$timeframe_id = $dbResult[0]['id'];
 
-	// delete all notifications assigned to the posted contact
-	queryDB('delete from notifications_to_contacts where contact_id=\'' . $userID . '\'');
+	// set notifications to use timeframe 0, the inactive one.
+	queryDB('update notifications set timeframe_id=\'0\' where timeframe_id=\'' . $timeframe_id . '\'');
 
-	// disable all notifications and change usernames of all notifications owned by this user
-	queryDB('update notifications set active=\'0\', username=\'' . prepareDBValue('[' . $p['user'] . ']') . '\' where username=\'' . $userPrep . '\'');
+        // set contacts to use timeframe 0, the inactive one.
+        queryDB('update contacts set timeframe_id=\'0\' where timeframe_id=\'' . $timeframe_id . '\'');
+
+        // set contacgroups to use timeframe 0, the inactive one.
+        queryDB('update contactgroups set timeframe_id=\'0\' where timeframe_id=\'' . $timeframe_id . '\'');
 
 	// finally, delete the user
-	queryDB('delete from contacts where id=\'' . $userID . '\'');
+	queryDB('delete from timeframes where id=\'' . $timeframe_id . '\'');
 
 	return true;
 
