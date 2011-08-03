@@ -34,7 +34,7 @@ sub queryDB
         $conf->{db}->{user}, $conf->{db}->{password}
     ) or return undef;
 
-    debug("QUERY: " . $queryStr) if (defined($debug_queries) and ($debug_queries != 0) and not defined($nolog));
+    debug("QUERY: " . $queryStr) if (defined($debug_queries) and ($debug_queries != 0) and not defined($nolog), 2);
     my $query = $dbh->prepare($queryStr) or return undef;
     $query->execute or return undef;
 
@@ -78,7 +78,7 @@ sub updateDB
     if ( !defined( queryDB($sql, undef, $nolog) ) )
     {
 
-	debug('Failed to query DB - serious error');
+	debug('Failed to query DB - serious error', 1);
         # DB not available, cache the SQL
         #open( LOG, ">> $cache" );
         #print LOG "$sql\n";

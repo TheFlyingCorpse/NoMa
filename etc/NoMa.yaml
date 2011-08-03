@@ -16,7 +16,7 @@ debug:
   file: /usr/local/nagios/var/noma_debug.log
   logging: 1
   paramlog: ~
-  queries: 0
+  queries: 1
   sms: ~
   voice: ~
   watchdogEnabled: 1

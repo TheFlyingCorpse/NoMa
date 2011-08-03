@@ -130,7 +130,7 @@ sub objectInTimeFrame
         # Query DB, no need to log query.
         my %dbResult = queryDB($query);
 
-	debug('dbResult: '.Dumper(\%dbResult));
+	debug('dbResult: '.Dumper(\%dbResult), 2);
 
         # Get the results!
         $dt_validFrom = $dbResult{0}->{dt_validFrom};
@@ -169,71 +169,85 @@ sub objectInTimeFrame
         # IF $now is after $validFrom and before $validTo
         if ($dt_validFrom lt $dt_Now and $dt_validTo gt $dt_Now)
         {
+		debug(" Timeframe ".$timeframe_id." is valid, checking if any days match...", 3);
+
                 # EXPAND $day_today to figure out what days of the month its active, see http://search.cpan.org/dist/Date-Calc/lib/Date/Calc.pod snippet 6
                 if ($day_today_all eq 1){
+			debug(" Timeframe ".$timeframe_id." is checked for " . $current_dow_en ." all days... Checking if its a valid timewindow", 2);
                         # Check if its inside or outside a valid timerange.
                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                 if ($notify_status eq 1){
+		                        debug(" Timeframe ".$timeframe_id." is valid and will return true.", 2);
                                         return 1;
                                 }
                                  
-				} else {
+		} else {
                         if ($day_today_1st eq 1){
                                 # Calculate 1st occurence of todays weekday of month.
+                                debug(" Timeframe ".$timeframe_id." is checked for monthly " . $current_dow_en ." 1st occurence", 2);
                                 @notify_date = TimeFrameDayNthWeekday(1);
                                 if (@notify_date eq @today_short){
                                         # Check if its inside or outside a valid timerange.
                                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                         if ($notify_status eq 1)
                                         {
+                                                debug(" Timeframe ".$timeframe_id." is valid and will return true.", 2);
                                                 return 1;
                                         }
                                 }
                         }
                         if ($day_today_2nd eq 1){
                                 # Calculate 2nd occurence of todays weekday of month.
+                                debug(" Timeframe ".$timeframe_id." is checked for monthly " . $current_dow_en ." 2nd occurence", 2);
                                 @notify_date = TimeFrameDayNthWeekday(2);
                                 if (@notify_date eq @today_short){
                                         # Check if its inside or outside a valid timerange.
                                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                         if ($notify_status eq 1)
                                         {
+						debug(" Timeframe ".$timeframe_id." is valid and will return true.", 2);
                                                 return 1;
                                         }
                                 }
                         }
                         if ($day_today_3rd eq 1){
                                 # Calculate 3rd occurence of todays weekday of month.
+                                debug(" Timeframe ".$timeframe_id." is checked for monthly " . $current_dow_en ." 3rd occurence", 2);
                                 @notify_date = TimeFrameDayNthWeekday(3);
                                 if (@notify_date eq @today_short){
                                         # Check if its inside or outside a valid timerange.
                                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                         if ($notify_status eq 1)
                                         {
+                                                debug(" Timeframe ".$timeframe_id." is valid and will return true.", 2);
                                                 return 1;
                                         }
                                 }
                         }
                         if ($day_today_4th eq 1){
                                 # Calculate 4th occurence of todays weekday of month.
+                                debug(" Timeframe ".$timeframe_id." is checked for monthly " . $current_dow_en ." 4th occurence", 2);
                                 @notify_date = TimeFrameDayNthWeekday(4);
                                 if (@notify_date eq @today_short){
                                         # Check if its inside or outside a valid timerange.
                                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                         if ($notify_status eq 1)
                                         {
+                                                debug(" Timeframe ".$timeframe_id." is valid and will return true.", 2);
                                                 return 1;
                                         }
                                 }
                         }
                         if ($day_today_5th eq 1){
                                 # Calculate 5th occurence of todays weekday of month.
+                                debug(" Timeframe ".$timeframe_id." is checked for monthly " . $current_dow_en ." 5th occurence", 2);
                                 @notify_date = TimeFrameDayNthWeekday(5);
                                 if (@notify_date eq @today_short){
                                         # Check if its inside or outside a valid timerange.
                                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                         if ($notify_status eq 1)
                                         {
+                                                debug(" Timeframe ".$timeframe_id." is valid and will return true.", 2);
                                                 return 1;
                                         }
                                 }
@@ -241,34 +255,38 @@ sub objectInTimeFrame
                         # Last selected weekday of month.
                         if ($day_today_last eq 1){
                                 # Calculate last occurence of todays weekday of month.
+                                debug(" Timeframe ".$timeframe_id." is checked for monthly " . $current_dow_en ." last occurence", 2);
                                 @notify_date = TimeFrameDayNthWeekday(6);
                                 if (@notify_date eq @today_short){
                                         # Check if its inside or outside a valid timerange.
                                         $notify_status = TimeFrameInTime($time_today_start,$time_today_stop, $time_today_invert, $dt_Now);
                                         if ($notify_status eq 1)
                                         {
+                                                debug(" Timeframe ".$timeframe_id." is valid and will return true.", 2);
                                                 return 1;
                                         }
                                 }
                         }
+                        debug(" Timeframe ".$timeframe_id." didnt match any monthly occuring days, have you remembered to tick off a day of month?", 2);
+			return 0;
                 }
         }
         # ELSIF NOW IS LESS THAN $validFrom
         elsif ($dt_Now lt $dt_validFrom)
         {
-                debug(" Timeframe ".$timeframe_id." has yet to be within timeframe");
+                debug(" Timeframe ".$timeframe_id." has yet to be within timeframe", 2);
                 return 0;
         }
         # ELSIF NOW IS GREATER THAN $validTo
         elsif ($dt_Now gt $dt_validTo)
         {
-                debug(" Timeframe ".$timeframe_id." has expired");
+                debug(" Timeframe ".$timeframe_id." has expired", 2);
                 return 0;
         }
         # ELSE
         else
         {
-                debug(" This shouldnt happen, invalid data for the time in timeframe ".$timeframe_id);
+                debug(" This shouldnt happen, invalid data for the time in timeframe ".$timeframe_id, 2);
 		return 0;
         }
 }
@@ -295,6 +313,7 @@ sub TimeFrameDayNthWeekday
         } else {
                 @nth_day = Nth_Weekday_of_Month_Year($today[0],$today[1],$current_dow,$input);
         }
+	debug("Day of month: ". \@nth_day . " for " . $input . " th/nd/rd/th/th weekday", 3);
         return @nth_day;
 }
 
@@ -308,14 +327,18 @@ sub TimeFrameInTime
         {
                 if ($time_from <= $time_now and $time_now <= $time_to){
                         # Outside range
+			debug(" Inverted time is FALSE inside timewindow, this is FALSE and will not notify", 3);
                 } else {
+			debug(" Inverted time is TRUE outside timewindow, this is TRUE and will notify if the rest apply", 3);
                         return 1;
                 }
         } else {
                 if ($time_from <= $time_now and $time_now <= $time_to){
+                        debug(" Time is inside specified timewindow, this is TRUE and will notify if the rest apply ", 3);
                         return 1;
                 } else {
                         # Outside range.
+			debug(" Time is outside specified timewindow, this is FALSE and will not notify ", 3);
                 }
         }
         return 0; # Not in bounds of time.

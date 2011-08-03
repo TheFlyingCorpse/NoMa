@@ -37,11 +37,11 @@ sub spawnNotifierThread
         my ( $id, $start, $count, $param ) = split( ';', $msg, 4 );
 
 	# check for retries
-    debug("$name: $id received");
+    debug("$name: $id received", 1);
 
 	if ($count > 1)
 	{
-        debug("BUG in NoMa. This code should not be called (count=$count)");
+        debug("BUG in NoMa. This code should not be called (count=$count)", 1);
 		# retry - check if it is old enough to be retried
 		
 		$timeToWait = $conf->{notifier}->{timeToWait};
@@ -61,7 +61,7 @@ sub spawnNotifierThread
 
 			next NOTIFIERLOOP;
 		}
-		debug("Retry (attempt $count) for $param");
+		debug("Retry (attempt $count) for $param", 2);
 	}
 
 
@@ -102,7 +102,7 @@ sub spawnEscalationThread
         if (defined($timeTillAbandon) and (($start + $timeTillAbandon) < time()))
         {
             # drop it
-            debug("Escalation is over $timeTillAbandon seconds old - dropping it");
+            debug("Escalation is over $timeTillAbandon seconds old - dropping it", 2);
             next ESCALATIONLOOP;
         }
 
@@ -184,14 +184,14 @@ sub spawnCommandSocketThread
         {
             my $conn = $sock->accept();
             my($dummy, $ipaddr) = sockaddr_in($conn->peername);
-            debug("incoming connection from ".join('.', unpack('C4', $ipaddr)));
+            debug("incoming connection from ".join('.', unpack('C4', $ipaddr)), 2);
             $pool->enqueue(fileno($conn));
             $openConnections{fileno($conn)} = $conn;
         }
 
         if (my $closeme = $closedConn->dequeue_nb())
         {
-            debug("closing FD $closeme");
+            debug("closing FD $closeme", 1);
             undef ($openConnections{$closeme});
         }
     }
@@ -221,7 +221,7 @@ sub create_pipe
 {
     my $pipe = shift;
 
-    debug("creating pipe $pipe");
+    debug("creating pipe $pipe", 1);
     if ( -e $pipe )
     {
         unlink $pipe or die "Cannot delete pipe $pipe\n";
@@ -276,7 +276,7 @@ sub spawnWatchdogThread
             (defined($maxTime) and (time() > ($processStart + $maxTime)))
            )
         {
-            debug("WATCHDOG: Limits exceeded (rss=$rss, vss=$size, time=".(time()-$processStart)."s)");
+            debug("WATCHDOG: Limits exceeded (rss=$rss, vss=$size, time=".(time()-$processStart)."s)", 1);
             exec $0 or die "Failed to respawn self";
         }
 

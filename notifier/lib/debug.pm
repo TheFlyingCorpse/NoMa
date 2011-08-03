@@ -62,13 +62,13 @@ sub debugHashUsers
 sub debug
 {
 
-    my ($msg) = @_;
+    my ($msg, $severity) = @_;
     my $debug = $conf->{debug}->{logging};
     my $debug_file = $conf->{debug}->{file};
     my $caller = (caller(1))[3];
     $caller = 'main' unless defined($caller);
 
-    if ( defined($debug) && $debug )
+    if ( defined($debug) && $debug && ($debug ge $severity) )
     {
 
         $msg =~ s/\s*\n\s*/ /g;

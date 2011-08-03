@@ -24,7 +24,7 @@ sub getEscalationCounter
         ' host=\''.$host.'\''.
         ' and notification_rule=\''.$rule.'\'';
 
-    debug("service is \"$svc\"");
+    debug("service is \"$svc\"", 2);
     if (defined($svc) and $svc ne '')
     {
         # service alert

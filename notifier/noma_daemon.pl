@@ -291,7 +291,7 @@ foreach my $method ( getMethods() )
     $thread{$proc} =
       threads->new( \&spawnNotifierThread, $queue{$proc}, $msgq, $proc,
         $conf->{command}{$proc} );
-    debug( 'spawned ' . $proc . ' with ID ' . $thread{$proc}->tid );
+    debug( 'spawned ' . $proc . ' with ID ' . $thread{$proc}->tid, 1 );
 }
 
 # the escalation thread (for internal escalation)
@@ -334,7 +334,7 @@ do
     if ( $cmd = $cmdq->dequeue_nb )
     {
         {
-            debug( 'processing command ' . $cmd );
+            debug( 'processing command ' . $cmd , 1);
 #             my ( $operation,
 #                 $host,         $incident_id, $host_alias,
 #                 $host_address, $service,     $check_type,
@@ -343,7 +343,7 @@ do
 #             ) = parseCommand($cmd);
             my %cmdh = parseCommand($cmd);
             next if ( !defined $host );
-            debug(debugHash(%cmdh));
+            debug(debugHash(%cmdh), 2);
 #                 "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, output = $output"
 
             # hosts and services in lower case
@@ -382,7 +382,7 @@ do
             my @ids_all =
 	    generateNotificationList( $cmdh{check_type}, $cmdh{recipients}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups},
                 %dbResult );
-            debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ) );
+            debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ), 2 );
 
             unless ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP' || $cmdh{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh{notification_type} eq 'CUSTOM')
             {
@@ -400,23 +400,23 @@ do
             my @contactsArr = ();
 
             # first handle normal rules
-            debug("now handling normal rules");
+            debug("now handling normal rules", 2);
             ############ NORMAL RULES ####################
 
             # only consider "real" alerts
             if ($cmdh{operation} eq 'notification')
             {
                 @ids = getUnhandledRules(\@ids_all);
-                debug( 'Unhandled(normal) rule IDs (unfiltered): ' . join( '|', @ids ) );
+                debug( 'Unhandled(normal) rule IDs (unfiltered): ' . join( '|', @ids ), 2 );
 
 
                 $notificationCounter = getNotificationCounter($cmdh{host}, $cmdh{service});
-                debug("Counter from notification_stati for $cmdh{host} / $cmdh{service} is $notificationCounter");
+                debug("Counter from notification_stati for $cmdh{host} / $cmdh{service} is $notificationCounter", 2);
 
                 if ($notificationCounter > 0)
                 {
                     # notification already active
-                    debug('-> already active');
+                    debug('-> already active', 2);
 
                     ## TODO: escalation handled internally - ignore it here
 
@@ -424,7 +424,7 @@ do
                     {
                         # clear counter
                         #
-                        debug('  -> Clearing counter');
+                        debug('  -> Clearing counter', 2);
                         clearNotificationCounter($cmdh{host}, $cmdh{service});
                         clearEscalationCounter($cmdh{host}, $cmdh{service});
                         deleteFromActiveByName($cmdh{host}, $cmdh{service});
@@ -433,7 +433,7 @@ do
                     {
                         # clear counter
                         #
-                        debug('  -> Acknowledgement or custom notification, Clear counters');
+                        debug('  -> Acknowledgement or custom notification, Clear counters', 2);
                         clearNotificationCounter($cmdh{host}, $cmdh{service});
                         clearEscalationCounter($cmdh{host}, $cmdh{service});
                         deleteFromActiveByName($cmdh{host}, $cmdh{service});
@@ -441,7 +441,7 @@ do
                     else
                     {
                         # increment counter
-                        debug('  -> Incrementing counter');
+                        debug('  -> Incrementing counter', 2);
                         $notificationCounter =
                             incrementNotificationCounter( $cmdh{status}, $cmdh{host}, $cmdh{service},$cmdh{check_type});
                     }
@@ -449,17 +449,17 @@ do
                     # notification returned 0
                     if ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
                     {
-                        debug('Received recovery for a problem we never saw - will try to match against notification no. 1');
+                        debug('Received recovery for a problem we never saw - will try to match against notification no. 1', 2);
                         $notificationCounter = 1;
                     }
                     elsif ($cmdh{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh{notification_type} eq 'CUSTOM')
                     {
-                        debug('Acknowledgement or custom notification for a problem we never saw - will try to match against notification no. 1');
+                        debug('Acknowledgement or custom notification for a problem we never saw - will try to match against notification no. 1', 2);
                         $notificationCounter = 1;
                     }
                     else
                     {
-                        debug('-> setting to active');
+                        debug('-> setting to active', 2);
                         $notificationCounter =
                             incrementNotificationCounter( $cmdh{status}, $cmdh{host}, $cmdh{service},$cmdh{check_type});
                     }
@@ -468,12 +468,12 @@ do
                 my $idCount = @ids;
                 if ( $idCount < 1 )
                 {
-                    debug('No rule matches!');
+                    debug('No rule matches!', 2);
                     # TODO: clear stati??
                 }
                 else
                 {
-                    debug($idCount.' rules matched');
+                    debug($idCount.' rules matched', 2);
 
                     # do we need to rollover the counter?
                     # the various rules may rollover at different times, so handle them individually
@@ -484,7 +484,7 @@ do
                         # - this is a local check
                         if (counterExceededMax(\@id_arr, $notificationCounter))
                         {
-                            debug('No more alerts possible, rolling over the counter');
+                            debug('No more alerts possible, rolling over the counter', 2);
                             $notificationCounter = resetNotificationCounter($cmdh{host}, $cmdh{service});
                         }
 
@@ -494,31 +494,31 @@ do
                 }
             }
             # now handle escalation rules
-            debug("now handling internal escalation rules");
+            debug("now handling internal escalation rules", 2);
             ############ ESCALATION RULES ####################
 
             @ids = getHandledRules(\@ids_all);
-            debug( 'Handled by NoMa(internal escalation) rule IDs (unfiltered): ' . join( '|', @ids ) );
+            debug( 'Handled by NoMa(internal escalation) rule IDs (unfiltered): ' . join( '|', @ids ), 2);
 
             # the various rules may be at different stages, so handle them individually
             foreach my $esc_rule (@ids)
             {
                 my @esc_arr;
                 push @esc_arr, $esc_rule;
-                debug("looking at rule $esc_rule");
+                debug("looking at rule $esc_rule", 3);
                 $notificationCounter = getEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule);
 
                 if ($notificationCounter > 0)
                 {
                     # notification already active
-                    debug("rule $esc_rule is currently escalating");
+                    debug("rule $esc_rule is currently escalating", 3);
                     incrementEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule);
                     $notificationCounter += 1;
 
                     # is this a faked alert? otherwise ignore it!
                     if ($cmdh{operation} eq 'escalation')
                     {
-                        debug("rule $esc_rule is faked - checking for overflow");
+                        debug("rule $esc_rule is faked - checking for overflow", 3);
                         # $notificationCounter = resetEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule)
                         my $oflo = counterExceededMax(\@esc_arr, $notificationCounter);
                         $notificationCounter = $oflo
@@ -530,7 +530,7 @@ do
                 }
                 elsif ($cmdh{status} ne 'OK' or $cmdh{status} ne 'UP' and $cmdh{notification_type} ne 'ACKNOWLEDGEMENT' and $cmdh{notification_type} ne 'CUSTOM')
                 {
-                    debug("creating a new escalation for rule $esc_rule");
+                    debug("creating a new escalation for rule $esc_rule", 2);
                     # create status entry
                     createEscalationCounter($esc_rule, %cmdh);
 #                         $incident_id,  $host,        $host_alias,
@@ -538,7 +538,7 @@ do
 #                         $status,       $datetime,    $notification_type,
 #                         $output
 #                     );
-                    debug("adding contacts to array");
+                    debug("adding contacts to array", 2);
                     @contactsArr = (@contactsArr, getContacts(\@esc_arr, 1, $cmdh{status}, $cmdh{notification_type}, $cmdh{external_id}));
                 }
 
@@ -578,7 +578,7 @@ do
                 foreach my $userNotification (keys %sentList) {
                     if ( $sentList{$userNotification} eq $userAndMethod ){
                         updateLog($id, ', already sent in previous notification');
-                        debug('User and method already notified: ' . $user . ' and ' .  $method);
+                        debug('User and method already notified: ' . $user . ' and ' .  $method, 2);
                         $flag++;
                         $notifyUnique = 0;
                     }
@@ -586,12 +586,12 @@ do
                 # Should be unique by now, update log
                 unless ($flag) {
                         #updateLog($id, ' uniq2user&method');
-                        debug('User and method unique: ' . $user . ' ,' . $method);
+                        debug('User and method unique: ' . $user . ' ,' . $method, 2);
                 }
  
                 # Exit if its not unique!
                 if ($notifyUnique == 0){
-                        debug('Unique, next!');
+                        debug('Unique, next!', 3);
                         next;
                 }
  
@@ -633,9 +633,7 @@ do
 # TODO: Storable::thaw
         my $retstr = join( ';', @retstr );
 
-        debug(
-            "received message from notifier: id=$id, retval=$retval, retstr=$retstr"
-        );
+        debug("received message from notifier: id=$id, retval=$retval, retstr=$retstr", 2);
 
         # retrieve details from DB
 
@@ -643,7 +641,7 @@ do
 
         if (is_a_bundle($id))
         {
-            debug("Bundled reply received");
+            debug("Bundled reply received", 3);
             foreach my $item (unbundle($id))
             {
                 # delete the bundle from tmp active
@@ -668,7 +666,7 @@ do
                 if (getRetryCounter($id) < $conf->{notifier}->{maxAttempts})
                 {
                     # requeue notification and increment counter
-            debug("requeueing notification $id");
+            debug("requeueing notification $id", 2);
                     requeueNotification($id);
                 }
                 else
@@ -681,7 +679,7 @@ do
                     if ($nextMethod eq '0')
                     {
 
-                        debug("no more methods for $id");
+                        debug("no more methods for $id", 3);
                         if ( $retstr eq '' )
                         {
                             $retstr = ' failed - no methods left';
@@ -818,12 +816,12 @@ sub parseCommand
         $cmdh{operation} = lc($cmdh{operation});
         if (($cmdh{stime} eq ""))
         {
-             debug("Empty date $cmdh{stime} for notification - using time()");
+             debug("Empty date $cmdh{stime} for notification - using time()", 2);
              $cmdh{stime} = time();
         }
         elsif (($cmdh{stime} =~ /\D/) or ($cmdh{stime} < 1000000000))
         {
-            debug("Invalid date $cmdh{stime} for notification - using time()");
+            debug("Invalid date $cmdh{stime} for notification - using time()", 2);
             $cmdh{stime} = time();
         }
 
@@ -845,16 +843,16 @@ sub parseCommand
 
         foreach my $i (keys %queue)
         {
-            debug("Queue $i has ".$queue{$i}->pending." pending jobs");
+            debug("Queue $i has ".$queue{$i}->pending." pending jobs", 1);
         }
 
         $sql = 'select count(*) as count from tmp_active';
         @dbResult = queryDB($sql, 1);
-        debug("There are ".$dbResult[0]{count}." active escalations");
+        debug("There are ".$dbResult[0]{count}." active escalations", 3);
 
         $sql = 'select count(*) as count from notification_logs where timestamp>date_sub(now(), interval 1 hour)';
         @dbResult = queryDB($sql, 1);
-        debug($dbResult[0]{count}." notifications were sent in the last hour");
+        debug($dbResult[0]{count}." notifications were sent in the last hour", 1);
 
 
     }
@@ -932,7 +930,7 @@ sub prepareNotification
 
     if (defined($error))
     {
-        debug($error);
+        debug($error, 1);
         updateLog($id, $error);
         return 0;
     }
@@ -1055,7 +1053,7 @@ sub notificationAcknowledgable
     my $ackable = $dbResult{0}->{ack_able};
 
     return 1 if (defined($ackable) && ($ackable>0));
-    debug("notification not ackable");
+    debug("notification not ackable", 2);
     return 0;
 }
 
@@ -1085,11 +1083,11 @@ sub sendAckToPipe
 
     if (!sysopen(PIPE, $file, O_WRONLY | O_APPEND | O_NONBLOCK))
     {
-	debug("Failed to open Ack Pipe $file");
+	debug("Failed to open Ack Pipe $file", 1);
 	return;
     }
 
-    debug("Writing $ackstr to $file");
+    debug("Writing $ackstr to $file", 1);
     syswrite(PIPE,$ackstr);
 }
 
@@ -1493,7 +1491,7 @@ sub counterExceededMax
     my $retval = $counter % $maxval;
     $retval = $maxval if($retval == 0);
 
-    debug("notification counter rollover: $counter exceeds $maxval -> continuing at $retval");
+    debug("notification counter rollover: $counter exceeds $maxval -> continuing at $retval", 2);
     return $retval;
 }
 # vim: ts=4 sw=4 expandtab

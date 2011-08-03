@@ -24,35 +24,35 @@ sub getContacts
 {
 
     my ($ids, $notificationCounter, $status, $notification_type, $incident_id) = @_;
-    debug('trying to getUsersAndMethods');
+    debug('trying to getUsersAndMethods', 2);
     my %contacts_c =
     getUsersAndMethods( $ids, $notificationCounter, $notification_type,$status );
-    debug("Users from rules: ". debugHashUsers(%contacts_c) );
+    debug("Users from rules: ". debugHashUsers(%contacts_c), 2);
     my %contacts_cg =
     getUsersAndMethodsFromGroups( $ids, $notificationCounter, $notification_type,
         $status );
-    debug( 'Users from groups: '.debugHashUsers(%contacts_cg) );
+    debug( 'Users from groups: '.debugHashUsers(%contacts_cg), 2);
 
     # merge contact hashes
     my %contacts = mergeHashes( \%contacts_c, \%contacts_cg );
     %contacts = removeHashEntryDuplicates( \%contacts );
-    debug("Removing duplicates. Users remaining: ". debugHashUsers(%contacts) );
+    debug("Removing duplicates. Users remaining: ". debugHashUsers(%contacts), 2);
 
     # get current time
     my $now = time();
 
     # check contacts for holidays
     %contacts = checkHolidays(%contacts);
-    debug("Holidays. Users remaining: ". debugHashUsers(%contacts) );
+    debug("Holidays. Users remaining: ". debugHashUsers(%contacts), 2);
 
     # check contacts for working hours
     %contacts = checkContactWorkingHours(%contacts);
-    debug("Working hours. Users remaining: ". debugHashUsers(%contacts) );
+    debug("Working hours. Users remaining: ". debugHashUsers(%contacts), 2);
 
     # check contacts for multiple alert suppression
     # --> only sends one alert if the incident_id is the same - be careful
     %contacts = checkSuppressionFlag($incident_id, %contacts) if ( $status ne 'OK' && $status ne 'UP');
-    debug("Suppression. Users remaining: ". debugHashUsers(%contacts) );
+    debug("Suppression. Users remaining: ". debugHashUsers(%contacts), 2);
 
     # convert contact hash into array
     my @contactsArr = hash2arr(%contacts);
@@ -64,7 +64,7 @@ sub generateNotificationList
 
     my ( $check_type, $notificationRecipients, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, %dbResult ) = @_;
 
-#    debug(' notificationHost: '.$notificationHost.' notificationService: '.$notificationService.' notificationHostgroups: '.$notificationHostgroups.' notificationServicegroups: '.$notificationServicegroups.' notificationRecipients: '.$notificationRecipients);
+    debug(' notificationRecipients: '. $notificationRecipients . ' notificationHost: '.$notificationHost.' notificationService: '.$notificationService.' notificationHostgroups: '.$notificationHostgroups.' notificationServicegroups: '.$notificationServicegroups.' notificationRecipients: '.$notificationRecipients, 2);
 
     my $cnt = 0;
     my %notifyList;
@@ -91,14 +91,14 @@ sub generateNotificationList
 	foreach my $recipient(@recipients) {
             if (matchString( $dbResult{$cnt}->{recipients_include}, $recipient))
             {
-                debug( "Step1: RecipientIncl: $recipient\t" . $dbResult{$cnt}->{id} );
+                debug( "Step1: RecipientIncl: $recipient\t" . $dbResult{$cnt}->{id}, 2);
                 $notifyList{ $dbResult{$cnt}->{id} } = 1;
             }
 
             # remove recipients to be excluded
             if (matchString( $dbResult{$cnt}->{recipients_exclude}, $recipient))
             {
-                debug( "Step1: RecipientExcl: $recipient\t" . $dbResult{$cnt}->{id} );
+                debug( "Step1: RecipientExcl: $recipient\t" . $dbResult{$cnt}->{id}, 2);
                 undef( $notifyList{ $dbResult{$cnt}->{id} } )
                     if defined( $notifyList{ $dbResult{$cnt}->{id} } );
             }
@@ -112,14 +112,14 @@ sub generateNotificationList
             foreach my $servicegroup(@servicegroups) {
                 if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
                 {
-                    debug( "Step1: SvcGrpIncl: $servicegroup\t" . $dbResult{$cnt}->{id} );
+                    debug( "Step1: SvcGrpIncl: $servicegroup\t" . $dbResult{$cnt}->{id}, 2);
                     $notifyList{ $dbResult{$cnt}->{id} } = 1;
                 }
 
                     # remove services to be excluded
                 if (matchString( $dbResult{$cnt}->{servicegroups_exclude}, $servicegroup))
                 {
-                    debug( "Step1: SvcGrpExcl: $servicegroup\t" . $dbResult{$cnt}->{id} );
+                    debug( "Step1: SvcGrpExcl: $servicegroup\t" . $dbResult{$cnt}->{id}, 2);
                     undef( $notifyList{ $dbResult{$cnt}->{id} } )
                         if defined( $notifyList{ $dbResult{$cnt}->{id} } );
 
@@ -130,14 +130,14 @@ sub generateNotificationList
         foreach my $hostgroup(@hostgroups) {
             if (matchString( $dbResult{$cnt}->{hostgroups_include}, $hostgroup))
             {
-		debug( "Step1: HostGrp:Incl: $hostgroup\t" . $dbResult{$cnt}->{id} );
+		debug( "Step1: HostGrp:Incl: $hostgroup\t" . $dbResult{$cnt}->{id}, 2);
                 $notifyList{ $dbResult{$cnt}->{id} } = 1;
             }
 
             # remove hosts to be excluded
             if (matchString( $dbResult{$cnt}->{hostgroups_exclude}, $hostgroup))
             {
-                debug( "Step1: HostGrp:Excl: $hostgroup\t" . $dbResult{$cnt}->{id} );
+                debug( "Step1: HostGrp:Excl: $hostgroup\t" . $dbResult{$cnt}->{id}, 2);
                 undef( $notifyList{ $dbResult{$cnt}->{id} } )
                     if ( defined( $notifyList{ $dbResult{$cnt}->{id} } ) );
             }
@@ -147,14 +147,14 @@ sub generateNotificationList
         # generate host-include list
         if (matchString( $dbResult{$cnt}->{hosts_include}, $notificationHost))
         {
-            debug( "Step1: HostIncl: $notificationHost\t" . $dbResult{$cnt}->{id} );
+            debug( "Step1: HostIncl: $notificationHost\t" . $dbResult{$cnt}->{id}, 2);
             $notifyList{ $dbResult{$cnt}->{id} } = 1;
         }
 
         # remove hosts to be excluded
         if (matchString( $dbResult{$cnt}->{hosts_exclude}, $notificationHost))
         {
-            debug( "Step1: HostExcl: $notificationHost\t" . $dbResult{$cnt}->{id} );
+            debug( "Step1: HostExcl: $notificationHost\t" . $dbResult{$cnt}->{id}, 2);
             undef( $notifyList{ $dbResult{$cnt}->{id} } )
                 if defined( $notifyList{ $dbResult{$cnt}->{id} } );
         }
@@ -164,7 +164,7 @@ sub generateNotificationList
             # generate service-include list
             if (matchString( $dbResult{$cnt}->{services_include}, $notificationService))
             {
-                debug( "Step1: ServiceIncl: $notificationService\t" . $dbResult{$cnt}->{id} );
+                debug( "Step1: ServiceIncl: $notificationService\t" . $dbResult{$cnt}->{id}, 2);
                 $notifyList{ $dbResult{$cnt}->{id} } = 1;
             }
 
@@ -172,7 +172,7 @@ sub generateNotificationList
             # remove services to be excluded
             if (matchString( $dbResult{$cnt}->{services_exclude}, $notificationService))
             {
-                debug( "Step1: ServiceExcl: $notificationService\t" . $dbResult{$cnt}->{id} );
+                debug( "Step1: ServiceExcl: $notificationService\t" . $dbResult{$cnt}->{id}, 2);
                 undef( $notifyList{ $dbResult{$cnt}->{id} } )
                     if defined( $notifyList{ $dbResult{$cnt}->{id} } );
             }
@@ -195,7 +195,7 @@ sub generateNotificationList
 		# Verify that the notification is within the time frame.
 		if (notificationInTimeFrame($notifyIncl) == '1'){
                 $idList{$notifyIncl} = 1;
-                debug("Step2: notifyIncl: $notifyIncl");
+                debug("Step2: notifyIncl: $notifyIncl", 2);
 		}
             }
     }
@@ -297,7 +297,7 @@ sub getUsersAndMethods
 
         @dbResult_arr = ( @dbResult_not_arr, @dbResult_esc_arr );
 
-        debug("To be notified: ".Dumper(@dbResult_arr));
+        debug("To be notified: ".Dumper(@dbResult_arr), 3);
 
         %dbResult = arrayToHash( \@dbResult_arr );
 
@@ -371,7 +371,7 @@ sub getUsersAndMethodsFromGroups
 
 	@dbResult_arr = ( @dbResult_not_arr, @dbResult_esc_arr );
 
-	debug("To be notified: ".Dumper(@dbResult_arr));
+	debug("To be notified: ".Dumper(@dbResult_arr), 3);
 
         %dbResult = arrayToHash( \@dbResult_arr );
 
@@ -438,7 +438,7 @@ sub checkHolidays
         # check person's holiday data
 	if (datetimeInPeriod(\@dbResult, $dt->ymd." ".$dt->hms))
         {
-		debug(  "username: ".$contacts{$contact}->{username}." (GMT+".$dt->offset($dt)."s) on holiday, dropping");
+		debug(  "username: ".$contacts{$contact}->{username}." (GMT+".$dt->offset($dt)."s) on holiday, dropping", 2);
 	        $on_holiday = 1;
 
         }
@@ -479,7 +479,7 @@ sub checkContactWorkingHours
 	    # drop contact and break loop if outside time period
 	    if ( (objectInTimeFrame($dbResult{0}->{timeframe_id}) eq 0 ))
 	    {
-		debug( "username: ".$contacts{$contact}->{username}." outside timeframe, dropping");
+		debug( "username: ".$contacts{$contact}->{username}." outside timeframe, dropping", 2);
 		$away = 1;
 		next;
 	    }
@@ -507,8 +507,8 @@ sub filterNotificationsByEscalation
     my ( $dbResult_arr, $filter, $notification_type, $status ) = @_;
     my @return_arr;
 
-    debug('filter: '.$filter.' notification_type: '.$notification_type.' status: '.$status);
-    debug("dbResult_arr Array: ".Dumper($dbResult_arr));
+    debug('filter: '.$filter.' notification_type: '.$notification_type.' status: '.$status, 2);
+    debug("dbResult_arr Array: ".Dumper($dbResult_arr), 3);
 
     # prepare search filter
     if ( $status eq 'OK' || $status eq 'UP' || $notification_type eq 'ACKNOWLEDGEMENT' || $notification_type eq 'CUSTOM' || $notification_type eq 'FLAPPINGSTART' || $notification_type eq 'FLAPPINGSTOP' || $notification_type eq 'FLAPPINGDISABLED' || $notification_type eq 'DOWNTIMESTART' || $notification_type eq 'DOWNTIMEEND' || $notification_type eq 'DOWNTIMECANCELLED')
@@ -521,12 +521,12 @@ sub filterNotificationsByEscalation
         $filter = '[' . join( '|', @filter_entries ) . ']';
     }
 
-    debug('filter2: '.$filter);
+    debug('filter2: '.$filter, 2);
 
     # apply filter
     foreach my $row (@$dbResult_arr)
     {
-	debug('row: '.Dumper($row));
+	debug('row: '.Dumper($row), 3);
         next
           if ( !defined( $row->{notify_after_tries} )
             || $row->{notify_after_tries} eq '' );
@@ -539,7 +539,7 @@ sub filterNotificationsByEscalation
         }
     }
 
-    debug('return_arr: '.Dumper(@return_arr));
+    debug('return_arr: '.Dumper(@return_arr), 2);
 
     return @return_arr;
 
@@ -558,7 +558,7 @@ sub getMaxValue
     my $newmax = 1;
     foreach my $crange (split(/[,;]/, $range))
     {
-        debug("Expanding $crange");
+        debug("Expanding $crange", 2);
         $crange =~ /(\d*)-(\d*)/;
 
         my $min = $1;
@@ -566,13 +566,13 @@ sub getMaxValue
 
         if ((not defined($min)) or ($min < 1))
         {
-            debug("Invalid minimum value in range \"$crange\" - setting to 1");
+            debug("Invalid minimum value in range \"$crange\" - setting to 1", 3);
             $min = 1;
         }
 
         if ((not defined($max)) or ($max < $min))
         {
-            debug("Invalid maximum value in range \"$crange\" - setting to 99999");
+            debug("Invalid maximum value in range \"$crange\" - setting to 99999", 3);
             $max = 99999;
         }
 

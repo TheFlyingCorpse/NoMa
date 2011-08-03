@@ -119,7 +119,7 @@ sub sendNotifications
 		if ($recipients{$user}{$cmd}{count} < 2 or $cmd ne 'voicecall')
                 {
                     #
-		    debug(" ---> Single alert ($cmd)\n");
+		    debug(" ---> Single alert ($cmd)\n", 2);
                     $param = sprintf(
                 "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                         $recipients{$user}{$cmd}{from_user},
@@ -147,7 +147,7 @@ sub sendNotifications
                 else
                 {
 
-	    debug(" ---> Bundle alert\n");
+	    debug(" ---> Bundle alert\n", 2);
                 # create a new notify ID for this bundle
                 my $notify_id = unique_id();
 
@@ -205,7 +205,7 @@ sub sendNotifications
                 # queue notification (concat notify_id '/'), "There are count messages: " + message
                 setProgressFlag([$notify_id]);
                 $queue->{$cmd}->enqueue("$notify_id;$start;1;$param");
-                debug("enqueue to $cmd: $notify_id;$start;1;$param");
+                debug("enqueue to $cmd: $notify_id;$start;1;$param", 2);
                 }
             }
         }
@@ -235,7 +235,7 @@ sub sendNotifications
 
             updateLog($dbResult{$item}{notify_id}, ", single alert");
             # queue notification "host + service is output"
-            debug("no bundle enqueue");
+            debug("no bundle enqueue", 2);
             $queue->{$dbResult{$item}{notify_cmd}}->enqueue($dbResult{$item}{notify_id}.';'.$dbResult{$item}{stime}.';1;'.$param);
         }
     }
@@ -267,7 +267,7 @@ sub addToBundle
 
 
     $list = join(',', @$arrptr);
-    debug("adding $list to bundle $bunid\n");
+    debug("adding $list to bundle $bunid\n", 2);
     updateDB("update tmp_active set bundled='".$bunid."' where notify_id in (".$list.")");
 }
 
@@ -281,7 +281,7 @@ sub is_a_bundle
     my %dbResult = queryDB("select count(*) as count from tmp_active where bundled=\"".$bunid."\"");
 
     return 0 unless (defined($dbResult{0}->{count}) and ($dbResult{0}->{count} > 0));
-    debug("$bunid is bundled (".$dbResult{0}->{count}." alerts)");
+    debug("$bunid is bundled (".$dbResult{0}->{count}." alerts)", 2);
     return 1;
 }
 
@@ -299,7 +299,7 @@ sub unbundle
     {
         push @tmp, $dbResult{$key}{notify_id};
     }
-    debug("unbundle returned ".join(',',@tmp));
+    debug("unbundle returned ".join(',',@tmp), 2);
     return @tmp;
 }
 
@@ -311,7 +311,7 @@ sub setProgressFlag
 
 
     $list = join(',', @$arrptr);
-    debug("setting progress flag for $list");
+    debug("setting progress flag for $list", 2);
     updateDB("update tmp_active set progress='1' where notify_id in (".$list.")");
 }
 
