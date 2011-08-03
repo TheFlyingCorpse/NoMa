@@ -128,6 +128,18 @@ my %stati_host = (
     'UNREACHABLE' => 'on_host_unreachable',
     'DOWN'        => 'on_host_down'
 );
+my %stati_type = (
+    'PROBLEM'   	=> 'on_type_problem',
+    'RECOVERY'		=> 'on_type_recovery',
+    'DOWNTIMESTART'     => 'on_type_downtimestart',
+    'DOWNTIMEEND'       => 'on_type_downtimeend',
+    'DOWNTIMECANCELLED' => 'on_type_downtimecancelled',
+    'FLAPPINGSTART'     => 'on_type_flappingstart',
+    'FLAPPINGSTOP'      => 'on_type_flappingstop',
+    'FLAPPINGDISABLED'  => 'on_type_flappingdisabled',
+    'ACKNOWLEDGEMENT'   => 'on_type_acknowledgement',
+    'CUSTOM'            => 'on_type_custom'
+);
 my %check_type_str = (
     'h' => 'Host',
     's' => 'Service',
@@ -353,10 +365,10 @@ do
             'select id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude from notifications';
             if ( $cmdh{check_type} eq 'h' )
             {
-                $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\'';
+                $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\' and ' . $stati_type{$cmdh{notification_type}} . '=\'1\'';
             } else
             {
-                $query .= ' where ' . $stati_service{$cmdh{status}} . '=\'1\'';
+                $query .= ' where ' . $stati_service{$cmdh{status}} . '=\'1\' and ' . $stati_type{$cmdh{notification_type}} . '=\'1\'';
             }
 
             # only active rules!
