@@ -87,7 +87,6 @@ use Digest::MD5 qw(md5_hex);
 use FindBin;
 use lib "$FindBin::Bin";
 use lib "$FindBin::Bin".'/lib';
-use noma_conf;
 use thread_procs;
 use escalations;
 use bundler;
@@ -104,6 +103,7 @@ use Thread::Queue;
 use IO::Select;
 use Fcntl qw(O_RDWR);
 use IO::Socket;
+use YAML::Syck;
 
 use DateTime;
 use DateTime::TimeZone;
@@ -115,7 +115,7 @@ use DBI;
 
 our $processStart = time();
 our %suppressionHash;
-my $versionStr = 'current (1.1.0-alpha)';
+my $versionStr = 'current (2.0.0-dev)';
 
 my %stati_service = (
     'OK'       => 'on_ok',
@@ -153,6 +153,7 @@ my $notificationCounter = 0;
 my $notifierPID         = 0;
 my $notifierUser        = 'nagios';
 my $notifierBin         = 'noma_notifier.pl';
+my $notifierConfig	= '/usr/local/nagios/noma/etc/NoMa.yaml';
 my $now                 = 0;
 
 my $reloop_delay    = 1;
@@ -167,7 +168,7 @@ my @triesPerID;
 my $additional_run          = 0;
 my $whoami     = 'notifier';
 
-our $conf  = conf();
+our $conf = LoadFile($notifierConfig);
 my $cache = $conf->{path}->{cache};
 
 my $debug = $conf->{debug}->{logging};

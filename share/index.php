@@ -293,8 +293,8 @@ if ($require != 'inc/content_login.php') {
 }
 
 $version = null;
-if (file_exists('doc/VERSION.txt') && is_readable('doc/VERSION.txt')) {
-	if (($version = file_get_contents('doc/VERSION.txt')) === false) {
+if (file_exists('../doc/VERSION.txt') && is_readable('../doc/VERSION.txt')) {
+	if (($version = file_get_contents('../doc/VERSION.txt')) === false) {
 		$version = null;
 	} else {
 		$version = str_replace(' ', '&#160;', $version);

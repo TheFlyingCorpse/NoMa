@@ -55,8 +55,13 @@
 use strict;
 use FindBin;
 use lib "$FindBin::Bin";
-use noma_conf;
-my $conf = conf();
+use YAML::Syck;
+
+my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
+my $conf = LoadFile($notifierConfig);
+
+#use noma_conf;
+#my $conf = conf();
 
 
 # check number of command-line parameters

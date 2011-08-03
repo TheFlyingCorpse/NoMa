@@ -48,18 +48,20 @@
 
 
 #
-# usage: sendSMS.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT>  <OUTPUT> [SERVICE]
+# usage: sendGrowl.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT>  <OUTPUT> [SERVICE]
 #
 #
 
 
 use strict;
-use CGI;
+#use CGI; # Uncomment if problems.
 use Net::Growl;
-use FindBin;
-use lib "$FindBin::Bin";
-use noma_conf;
-my $conf = conf();
+use YAML::Syck;
+
+my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
+my $conf = LoadFile($notifierConfig);
+#use noma_conf;
+#my $conf = conf();
 
 
 # check number of command-line parameters
@@ -67,8 +69,8 @@ my $numArgs = $#ARGV + 1;
 exit 1 if ($numArgs != 13 && $numArgs != 14);
 
 
-my $application = $conf->{growl}->{application_name};
-my $password = $conf->{growl}->{password};
+my $application = $conf->{methods}->{growl}->{application_name};
+my $password = $conf->{methods}->{growl}->{password};
 my $subject = '';
 my $priority = 0;
 my $sticky = 0;
@@ -105,21 +107,21 @@ if ($check_type eq 'h')
 {
     if (($authors ne '') or ($comments ne ''))
     {
-        $subject = $conf->{growl}->{subject_host} if (defined( $conf->{growl}->{subject_host}));
-        $message = $conf->{growl}->{ackmessage}->{host} if (defined( $conf->{growl}->{ackmessage}->{host}));
+        $subject = $conf->{methods}->{growl}->{subject_host} if (defined( $conf->{methods}->{growl}->{subject_host}));
+        $message = $conf->{methods}->{growl}->{ackmessage}->{host} if (defined( $conf->{methods}->{growl}->{ackmessage}->{host}));
     } else {
-        $subject = $conf->{growl}->{subject_host} if (defined( $conf->{growl}->{subject_host}));
-        $message = $conf->{growl}->{message}->{host} if (defined( $conf->{growl}->{message}->{host}));
+        $subject = $conf->{methods}->{growl}->{subject_host} if (defined( $conf->{methods}->{growl}->{subject_host}));
+        $message = $conf->{methods}->{growl}->{message}->{host} if (defined( $conf->{methods}->{growl}->{message}->{host}));
     }
 
 } else {
     if (($authors ne '') or ($comments ne ''))
     {
-        $subject = $conf->{growl}->{subject_service} if (defined( $conf->{growl}->{subject_service}));
-        $message = $conf->{growl}->{ackmessage}->{service} if (defined( $conf->{growl}->{ackmessage}->{service}));
+        $subject = $conf->{methods}->{growl}->{subject_service} if (defined( $conf->{methods}->{growl}->{subject_service}));
+        $message = $conf->{methods}->{growl}->{ackmessage}->{service} if (defined( $conf->{methods}->{growl}->{ackmessage}->{service}));
     } else {
-        $subject = $conf->{growl}->{subject_service} if (defined( $conf->{growl}->{subject_service}));
-        $message = $conf->{growl}->{message}->{service}  if (defined( $conf->{growl}->{message}->{service}));
+        $subject = $conf->{methods}->{growl}->{subject_service} if (defined( $conf->{methods}->{growl}->{subject_service}));
+        $message = $conf->{methods}->{growl}->{message}->{service}  if (defined( $conf->{methods}->{growl}->{message}->{service}));
     }
 }
 

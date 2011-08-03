@@ -60,8 +60,13 @@ use FindBin;
 use lib "$FindBin::Bin";
 my $scriptPath = $FindBin::Bin;
 my $whoami = $FindBin::Script;
-use noma_conf;
-my $conf = conf();
+use YAML::Syck;
+
+my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
+my $conf = LoadFile($notifierConfig);
+
+#use noma_conf;
+#my $conf = conf();
 my $scriptName = 'voicecall.pl';
 
 
@@ -97,11 +102,11 @@ my $datetime = localtime($datetimes);
 $service = $ARGV[13] if ($numArgs == 14);
 
 
-my $message = $conf->{voicecall}->{message}->{header};
+my $message = $conf->{methods}->{voicecall}->{message}->{header};
 
 # ensure the number contains only digits
 my $int_prefix = "00";
-$int_prefix =  $conf->{voicecall}->{international_prefix} if (defined($conf->{voicecall}->{international_prefix}));
+$int_prefix =  $conf->{methods}->{voicecall}->{international_prefix} if (defined($conf->{methods}->{voicecall}->{international_prefix}));
 $to =~ s/\+/$int_prefix/g;
 $to =~ s/[^\d]//g;
 
@@ -110,26 +115,26 @@ debugLog("$to\t$host\t$service\t$check_type\t$status\n");
 my $unique_id = md5_hex ( $host . "_" . $service . "_" . $datetimes . "_" . $to );
 my $ret_str;
 
-my $asterisk = selectAppliance($conf->{voicecall}->{server}, $conf->{voicecall}->{channel}, $conf->{voicecall}->{check_command});
+my $asterisk = selectAppliance($conf->{methods}->{voicecall}->{server}, $conf->{methods}->{voicecall}->{channel}, $conf->{methods}->{voicecall}->{check_command});
 my $scriptParams = "--number $to --callid $unique_id --host \"$host\" $asterisk";
 
 if ($host eq 'multiple alerts') {
 	# bundled alerts
-        $message .= $conf->{voicecall}->{bundled_message}->{host};
+        $message .= $conf->{methods}->{voicecall}->{bundled_message}->{host};
 	$count = $service;
 } elsif ($service eq '') {
-        $message .= $conf->{voicecall}->{message}->{host};
+        $message .= $conf->{methods}->{voicecall}->{message}->{host};
 } else {
-        $message .= $conf->{voicecall}->{message}->{service};
+        $message .= $conf->{methods}->{voicecall}->{message}->{service};
 	$scriptParams .= " --service \"$service\"";
 }
 
-if (defined($conf->{voicecall}->{suffix}) and $conf->{voicecall}->{suffix} ne '')
+if (defined($conf->{methods}->{voicecall}->{suffix}) and $conf->{methods}->{voicecall}->{suffix} ne '')
 {
-	$scriptParams .= ' --suffix '.$conf->{voicecall}->{suffix};
+	$scriptParams .= ' --suffix '.$conf->{methods}->{voicecall}->{suffix};
 }
 
-if (defined($conf->{voicecall}->{starface}) and $conf->{voicecall}->{starface} == '1')
+if (defined($conf->{methods}->{voicecall}->{starface}) and $conf->{methods}->{voicecall}->{starface} == '1')
 {
 	$scriptParams .= ' --starface';
 }

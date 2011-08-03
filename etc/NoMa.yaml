@@ -1,0 +1,102 @@
+--- 
+command: 
+  dummy: /bin/true
+  growl: /usr/local/nagios/noma/notifier/sendGrowl.pl
+  nagios: /usr/local/nagios/noma/notifier/sendToNagios.pl
+  sendemail: /usr/local/nagios/noma/notifier/sendEmail.pl
+  sendsms: /usr/local/nagios/noma/notifier/sendSMS.pl
+  voicecall: /usr/local/nagios/noma/notifier/sendVoice.pl
+db: 
+  database: noma
+  host: localhost
+  password: noma
+  user: noma
+debug: 
+  daemonize: 1
+  file: /usr/local/nagios/var/noma_debug.log
+  logging: 1
+  paramlog: ~
+  queries: 0
+  sms: ~
+  voice: ~
+  watchdogEnabled: 1
+  watchdogMaxRSS: 524288
+  watchdogMaxRuntime: ~
+  watchdogMaxVSS: 1048576
+escalator: 
+  internalEscalation: 0
+  stopAfter: 5400
+  timeToWait: 300
+input: 
+  pipeEnabled: 1
+  pipePath: /usr/local/nagios/noma/noma.pipe
+  socketAddress: localhost
+  socketEnabled: 1
+  socketMaxConns: 10
+  socketPort: 5670
+log: 
+  delimiter: " | "
+  hostServiceOutput: 1
+  pluginOutput: 1
+methods: 
+  growl: 
+    ackmessage: 
+      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime"
+      service: "$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime"
+    application_name: NoMa
+    message: 
+      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. $output Time: $datetime"
+      service: "$incident_id: $notification_type for service $service on host $host. State is $status. Info: $output Time: $datetime"
+    password: somepassw0rd
+    return_ack: 0
+    subject_host: "NoMa - $notification_type: Host $host is $status"
+    subject_service: "NoMa - $notification_type: Service $service on host $host is $status"
+  sendemail: 
+    message: 
+      host: 
+        ackmessage: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nHost: $host\nAuthor: $authors\nComment: $comments\nState: $status\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host\nInfo: $output\n\nDate/Time: $datetime"
+        message: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nHost: $host\nHost Alias: $host_alias\nState: $status\nAddress: $host_address\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host\nInfo: $output\n\nDate/Time: $datetime"
+        subject: "NoMa: Host $host is $status"
+      service: 
+        ackmessage: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nAuthor: $authors\nComment: $comments\nService: $service\nHost: $host\nState: $status\n\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service\nInfo: $output\n\nDate/Time: $datetime"
+        message: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nService: $service\nHost: $host\nHost Alias: $host_alias\nState: $status\nAddress: $host_address\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service\nInfo: $output\n\nDate/Time: $datetime"
+        subject: "NoMa: Service $service on host $host is $status"
+    sendmail: /usr/sbin/sendmail -t
+  sendsms: 
+    ackmessage: 
+      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime"
+      service: "$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime"
+    check_command: /usr/local/nagios/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1
+    message: 
+      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. $output Time: $datetime"
+      service: "$incident_id: $notification_type for service $service on host $host. State is $status. Info: $output Time: $datetime"
+    suppression: 0
+  voicecall: 
+    bundled_message: 
+      header: "this is a message from nagios "
+      host: there are $count alerts. $output.
+    callerID: 0
+    channel: Srx/g31
+    check_command: "/usr/local/nagios/libexec/check_snmp -H $server -u $channel -l Starface -R \"ISDN Channels: OK:1\" -t 1 -o .1.3.6.1.4.1.32354.1.2.999.4.1.2.9.98.117.108.107.99.104.101.99.107.1"
+    message: 
+      header: "this is a message from nagios "
+      host: the host $host is $status
+      service: the service $service on host $host is status $status
+    return_ack: 0
+    server: 192.168.1.1
+    starface: 1
+    suffix: ''
+    suppression: 0
+notifier: 
+  ackPipe: /var/log/nagios/rw/nagios.cmd
+  bundle: 0
+  delay: 0
+  locale: en_GB
+  maxAttempts: 4
+  pattern: "%F %T"
+  sleep_time: 1
+  timeToWait: 60
+  timezone: Europe\Oslo
+path: 
+  cache: /usr/local/nagios/noma/noma.cache
+  pidfile: /usr/local/nagios/noma/noma.pid

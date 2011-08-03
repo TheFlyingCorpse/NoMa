@@ -54,12 +54,10 @@
 
 
 use strict;
-use CGI;
-use FindBin;
-use lib "$FindBin::Bin";
-use noma_conf;
-my $conf = conf();
+use YAML::Syck;
 
+my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
+my $conf = LoadFile($notifierConfig);
 
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
@@ -99,17 +97,17 @@ if ($check_type eq 'h')
 {
     if (($authors ne '') or ($comments ne ''))
     {
-        $message = $conf->{sendsms}->{ackmessage}->{host} if (defined( $conf->{sendsms}->{ackmessage}->{host}));
+        $message = $conf->{methods}->{sendsms}->{ackmessage}->{host} if (defined( $conf->{methods}->{sendsms}->{ackmessage}->{host}));
     } else {
-        $message = $conf->{sendsms}->{message}->{host} if (defined( $conf->{sendsms}->{message}->{host}));
+        $message = $conf->{methods}->{sendsms}->{message}->{host} if (defined( $conf->{methods}->{sendsms}->{message}->{host}));
     }
 
 } else {
     if (($authors ne '') or ($comments ne ''))
     {
-        $message = $conf->{sendsms}->{ackmessage}->{service} if (defined( $conf->{sendsms}->{ackmessage}->{service}));
+        $message = $conf->{methods}->{sendsms}->{ackmessage}->{service} if (defined( $conf->{methods}->{sendsms}->{ackmessage}->{service}));
     } else {
-        $message = $conf->{sendsms}->{message}->{service}  if (defined( $conf->{sendsms}->{message}->{service}));
+        $message = $conf->{methods}->{sendsms}->{message}->{service}  if (defined( $conf->{methods}->{sendsms}->{message}->{service}));
     }
 }
 

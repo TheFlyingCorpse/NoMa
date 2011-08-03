@@ -81,9 +81,10 @@
 * fixed messages containing ';' being truncated
 * updated documentation
 
-1.1.0 (current) - WORK IN PROGRESS - UNDER HEAVY DEVELOPMENT
+2.0.0 (current) - WORK IN PROGRESS - UNDER HEAVY DEVELOPMENT
 ----------------
 * new folder structure to make it easier to work with NoMa
+* new configuration file for the daemon
 * added servicegroup include and exclude filter
 * added recipient include and exclude filter - Thanks Sebastian Wolf
 * redid the notification rule's in contacts.pm

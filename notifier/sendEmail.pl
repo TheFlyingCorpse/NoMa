@@ -57,13 +57,12 @@
 
 
 use strict;
-use CGI;
+#use CGI; #Uncomment if problems!
 #use Email::Valid;
-use FindBin;
-use lib "$FindBin::Bin";
-use noma_conf;
-my $conf = conf();
+use YAML::Syck;
 
+my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
+my $conf = LoadFile($notifierConfig);
 
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
@@ -105,24 +104,24 @@ $to = "To: " . $to;
 
 if ($check_type eq 'h')
 {
-    $subject = 'Subject: '.$conf->{sendemail}->{message}->{host}->{subject} if (defined( $conf->{sendemail}->{message}->{host}->{subject}));
+    $subject = 'Subject: '.$conf->{methods}->{sendemail}->{message}->{host}->{subject} if (defined( $conf->{methods}->{sendemail}->{message}->{host}->{subject}));
     if (($authors ne '') or ($comments ne ''))
     {
-        $message = $conf->{sendemail}->{message}->{host}->{ackmessage} if (defined( $conf->{sendemail}->{message}->{host}->{ackmessage}));
+        $message = $conf->{methods}->{sendemail}->{message}->{host}->{ackmessage} if (defined( $conf->{methods}->{sendemail}->{message}->{host}->{ackmessage}));
     } else {
-        $message = $conf->{sendemail}->{message}->{host}->{message} if (defined( $conf->{sendemail}->{message}->{host}->{message}));
+        $message = $conf->{methods}->{sendemail}->{message}->{host}->{message} if (defined( $conf->{methods}->{sendemail}->{message}->{host}->{message}));
     }
-    $filename = $conf->{sendemail}->{message}->{host}->{filename} if (defined( $conf->{sendemail}->{message}->{host}->{filename}));
+    $filename = $conf->{methods}->{sendemail}->{message}->{host}->{filename} if (defined( $conf->{methods}->{sendemail}->{message}->{host}->{filename}));
 
 } else {
-    $subject = 'Subject: '.$conf->{sendemail}->{message}->{service}->{subject} if (defined( $conf->{sendemail}->{message}->{service}->{subject}));
+    $subject = 'Subject: '.$conf->{methods}->{sendemail}->{message}->{service}->{subject} if (defined( $conf->{methods}->{sendemail}->{message}->{service}->{subject}));
     if (($authors ne '') or ($comments ne ''))
     {
-	$message = $conf->{sendemail}->{message}->{service}->{ackmessage} if (defined( $conf->{sendemail}->{message}->{service}->{ackmessage}));
+	$message = $conf->{methods}->{sendemail}->{message}->{service}->{ackmessage} if (defined( $conf->{methods}->{sendemail}->{message}->{service}->{ackmessage}));
     } else {
-	$message = $conf->{sendemail}->{message}->{service}->{message} if (defined( $conf->{sendemail}->{message}->{service}->{message}));
+	$message = $conf->{methods}->{sendemail}->{message}->{service}->{message} if (defined( $conf->{methods}->{sendemail}->{message}->{service}->{message}));
     }
-    $filename = $conf->{sendemail}->{message}->{service}->{filename} if (defined( $conf->{sendemail}->{message}->{service}->{filename}));
+    $filename = $conf->{methods}->{sendemail}->{message}->{service}->{filename} if (defined( $conf->{methods}->{sendemail}->{message}->{service}->{filename}));
 }
 
 if ($filename ne "")
@@ -146,7 +145,7 @@ if ($filename ne "")
     }
 }
 
-$sendmail = $conf->{sendemail}->{sendmail} if (defined($conf->{sendemail}->{sendmail}));
+$sendmail = $conf->{methods}->{sendemail}->{sendmail} if (defined($conf->{methods}->{sendemail}->{sendmail}));
 
 $subject =~ s/(\$\w+)/$1/gee;
 $message =~ s/(\$\w+)/$1/gee;

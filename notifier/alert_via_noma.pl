@@ -162,9 +162,10 @@ use Getopt::Long;
 use Pod::Usage;
 use POSIX;
 use Digest::MD5 qw(md5_hex);
-use FindBin;
-use lib "$FindBin::Bin";
-use noma_conf;
+use YAML::Syck;
+
+my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
+my $conf = LoadFile($notifierConfig);
 
 use Data::Dumper;
 use threads;
@@ -236,7 +237,6 @@ my $whoami     = 'notifier';
 my $cmd;
 
 
-my $conf  = conf();
 my $cache = $conf->{path}->{cache};
 
 
