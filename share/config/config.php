@@ -59,7 +59,7 @@ $language = 'en';
 
 // DATABASE
 $dbConf = array (
-	'type'			=> 'mysql', // Valid are 'mysql', 'sqlite'
+	'type'			=> 'mysql', // Valid are 'mysql', ToDo: 'sqlite3'
 	'host'			=> 'localhost',
 	'user'			=> 'noma',
 	'password'		=> 'noma',
