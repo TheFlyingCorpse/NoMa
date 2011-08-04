@@ -6,11 +6,15 @@ command:
   sendemail: /usr/local/nagios/noma/notifier/sendEmail.pl
   sendsms: /usr/local/nagios/noma/notifier/sendSMS.pl
   voicecall: /usr/local/nagios/noma/notifier/sendVoice.pl
-db: 
-  database: noma
-  host: localhost
-  password: noma
-  user: noma
+db:
+  type: mysql 
+  mysql:
+   database: noma
+   host: localhost
+   password: noma
+   user: noma
+  sqlite3:
+   dbfile: /tmp/NoMa.db
 debug: 
   daemonize: 1
   file: /usr/local/nagios/var/noma_debug.log

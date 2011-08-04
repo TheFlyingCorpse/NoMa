@@ -25,14 +25,29 @@ sub queryDB
 
     my ( $queryStr, $array, $nolog ) = @_;
     my $debug_queries = $conf->{debug}->{queries};
+    my $database_type = $conf->{db}->{type};
+    my $dbh;
 
-    my $dbh = DBI->connect(
-        'DBI:mysql:host='
-          . $conf->{db}->{host}
-          . ';database='
-          . $conf->{db}->{database},
-        $conf->{db}->{user}, $conf->{db}->{password}
-    ) or return undef;
+
+    if ($database_type == 'mysql'){
+	    $dbh = DBI->connect(
+	        'DBI:mysql:host='
+	          . $conf->{db}->{mysql}->{host}	# MySQL NoMa Host
+	          . ';database='
+	          . $conf->{db}->{mysql}->{database},	# MySQL NoMa DB
+	        $conf->{db}->{mysql}->{user}, 		# MySQL Username
+		$conf->{db}->{mysql}->{password}	# MySQL Password
+	    ) or debug($DBI::errstr,1);
+    } elsif ($database_type == 'sqlite3'){
+	    $dbh = DBI->connect(
+		"dbi:SQLite:dbname="
+		. $conf->{db}->{sqlite3}->{dbfile},     # SQLite DB file
+		"",					# No user
+		"",					# No password
+		( RaiseError => 1 ),			# Complain if something goes wrong
+            ) or debug($DBI::errstr,1);
+	
+    }
 
     debug("QUERY: " . $queryStr) if (defined($debug_queries) and ($debug_queries != 0) and not defined($nolog), 2);
     my $query = $dbh->prepare($queryStr) or return undef;
