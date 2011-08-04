@@ -70,8 +70,7 @@ function getContent () {
 	$templateContent->assign('CONTACTS_HEADING_CONTACT', CONTACTS_HEADING_CONTACT);
 	$templateContent->assign('CONTACTS_HEADING_TIME', CONTACTS_HEADING_TIME);
 	$templateContent->assign('CONTACTS_HEADING_ADMIN', CONTACTS_HEADING_ADMIN);
-	$templateContent->assign('CONTACTS_FIRST_NAME', CONTACTS_FIRST_NAME);
-	$templateContent->assign('CONTACTS_LAST_NAME', CONTACTS_LAST_NAME);
+	$templateContent->assign('CONTACTS_FULL_NAME', CONTACTS_FULL_NAME);
 	$templateContent->assign('CONTACTS_USERNAME', CONTACTS_USERNAME);
 	$templateContent->assign('CONTACTS_EMAIL', CONTACTS_EMAIL);
 	$templateContent->assign('CONTACTS_PHONE', CONTACTS_PHONE);
@@ -166,8 +165,7 @@ function getContent () {
 		$userHolidays = queryDB('select * from holidays where contact_id=\'' . $userData['id'] . '\' order by start asc');
 		if ($userData['admin'] == '1' && $admin) $templateSubContent->assign('CHECKED_ADMIN', ' checked');
 		$templateContent->assign('ID', $userData['id']);
-		$templateContent->assign('FIRST_NAME', $userData['first_name']);
-		$templateContent->assign('LAST_NAME', $userData['last_name']);
+		$templateContent->assign('FULL_NAME', $userData['full_name']);
 		$templateContent->assign('USERNAME', $userData['username']);
 		$templateContent->assign('EMAIL', $userData['email']);
 		$templateContent->assign('PHONE', $userData['phone']);

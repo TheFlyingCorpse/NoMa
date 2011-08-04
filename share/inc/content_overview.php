@@ -105,7 +105,7 @@ function getContent () {
 	}
 
 
-	$query = 'select distinct n.*,concat(c.first_name,\' \',c.last_name) full_name,tz.timezone from notifications n, contacts c, timezones tz
+	$query = 'select distinct n.*,c.full_name,tz.timezone from notifications n, contacts c, timezones tz
 						where n.username=c.username and n.timezone_id=tz.id ';
 
 	if (!empty($_SESSION['user']) && !$admin) {
@@ -237,7 +237,7 @@ function getContent () {
 		// create query and fetch contactgroup notifications
 		$query = sprintf (
 			'select distinct
-				n.*, concat(c.first_name,\' \',c.last_name) full_name, tz.timezone, cg.id cg_id
+				n.*,c.ull_name, tz.timezone, cg.id cg_id
 				from notifications n
 				inner join notifications_to_contacts nc on nc.notification_id = n.id
 				inner join contacts c on c.id = nc.contact_id and c.username = n.username
@@ -384,7 +384,7 @@ function getContent () {
 		$notify = array();
 
 		// BEGIN - notify users
-		$query = 'select distinct c.username,concat(c.first_name, \' \', c.last_name) full_name from contacts c
+		$query = 'select distinct c.username,c.full_name from contacts c
 					left join notifications_to_contacts nc on c.id=nc.contact_id
 					where nc.notification_id=\'' . $rowID . '\'';
 		foreach (queryDB($query) as $subRow) {
