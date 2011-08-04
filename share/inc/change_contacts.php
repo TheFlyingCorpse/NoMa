@@ -63,8 +63,7 @@ function addContact ($p) {
 	// prepare data
 	$admin = (isset($p['admin']) && $p['admin'] == 'on') ? '1' : '0';
 	$username = prepareDBValue($p['new_user']);
-	$first_name = prepareDBValue($p['first_name']);
-	$last_name = prepareDBValue($p['last_name']);
+	$full_name = prepareDBValue($p['full_name']);
 	$email = prepareDBValue($p['email']);
 	$phone = prepareDBValue($p['phone']);
 	$mobile = prepareDBValue($p['mobile']);
@@ -76,11 +75,10 @@ function addContact ($p) {
 
 	// check whether contact already exists
 	$query = sprintf(
-		'select id from contacts where username=\'%s\' and admin=\'%s\' and first_name=\'%s\' and last_name=\'%s\' and email=\'%s\' and phone=\'%s\' and mobile=\'%s\' and netaddress=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+		'select id from contacts where username=\'%s\' and admin=\'%s\' and full_name=\'%s\' and email=\'%s\' and phone=\'%s\' and mobile=\'%s\' and netaddress=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$username,
 		$admin,
-		$first_name,
-		$last_name,
+		$full_name,
 		$email,
 		$phone,
 		$mobile,
@@ -108,13 +106,12 @@ function addContact ($p) {
 
 	// add contact
 	$query = sprintf(
-		'insert into contacts (username,admin,first_name,last_name,email,phone,mobile,netaddress,timeframe_id,timezone_id,restrict_alerts%s)
-			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'%s)',
+		'insert into contacts (username,admin,full_name,email,phone,mobile,netaddress,timeframe_id,timezone_id,restrict_alerts%s)
+			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'%s)',
 		$passwordMask,
 		$username,
 		$admin,
-		$first_name,
-		$last_name,
+		$full_name,
 		$email,
 		$phone,
 		$mobile,
@@ -129,11 +126,10 @@ function addContact ($p) {
 
 	// get contact's ID
 	$query = sprintf(
-		'select id from contacts where username=\'%s\' and admin=\'%s\' and first_name=\'%s\' and last_name=\'%s\' and email=\'%s\' and phone=\'%s\' and mobile=\'%s\' and netaddress=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+		'select id from contacts where username=\'%s\' and admin=\'%s\' and full_name=\'%s\' and email=\'%s\' and phone=\'%s\' and mobile=\'%s\' and netaddress=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$username,
 		$admin,
-		$first_name,
-		$last_name,
+		$full_name,
 		$email,
 		$phone,
 		$mobile,
@@ -188,8 +184,7 @@ function updateContact ($p) {
 
 	// prepare data
 	$admin = (isset($p['admin']) && $p['admin'] == 'on') ? '1' : '0';
-	$first_name = prepareDBValue($p['first_name']);
-	$last_name = prepareDBValue($p['last_name']);
+	$full_name = prepareDBValue($p['full_name']);
 	$email = prepareDBValue($p['email']);
 	$phone = prepareDBValue($p['phone']);
 	$mobile = prepareDBValue($p['mobile']);
@@ -200,10 +195,9 @@ function updateContact ($p) {
 
 	// update contact
 	$query = sprintf(
-		'update contacts set admin=\'%s\', first_name=\'%s\', last_name=\'%s\', email=\'%s\', phone=\'%s\', mobile=\'%s\', netaddress=\'%s\', timeframe_id=\'%s\', timezone_id=\'%s\', restrict_alerts=\'%s\'%s where id=\'%s\'',
+		'update contacts set admin=\'%s\', full_name=\'%s\', email=\'%s\', phone=\'%s\', mobile=\'%s\', netaddress=\'%s\', timeframe_id=\'%s\', timezone_id=\'%s\', restrict_alerts=\'%s\'%s where id=\'%s\'',
 		$admin,
-		$first_name,
-		$last_name,
+		$full_name,
 		$email,
 		$phone,
 		$mobile,

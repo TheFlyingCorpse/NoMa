@@ -74,7 +74,6 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
         //$log->lwrite($query);
 
         // query database
-        //$result = mysql_query($query) or die("Could not execute query: " . mysql_error());
 	$result = $db->query($query);
 
 
@@ -85,17 +84,27 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
         // fetch result if it makes sense
         $queryCmd = strtolower(substr($query, 0, 6));
         if ($queryCmd == 'select') {
-                foreach ($db->query($query) as $row) {
-			$dbResult[] = $row;
-		}
 
-		/*
-		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-                        $dbResult[] = $row;
-                }
-                // free result memory
-                mysql_free_result($result);
-		*/
+	                // Replace between SELECT and FROM with COUNT(*) to count the rows.
+	                $start = 'select';
+	                $end = 'from';
+	                $replace_with = ' COUNT(*) ';
+			echo "Original Query: ".$query."<br>";
+			$countquery = replace_content_inside_delimiters($start, $end, $replace_with, $query);
+			echo "Count Query   : ".$countquery."<br/>";
+		
+			if ($result = $db->query($countquery)) {
+
+				/* Check the number of rows that match the SELECT statement */
+				if ( $result->fetchColumn() > 0) {
+
+					/* Issue the real SELECT statement and work with the results */
+		                	foreach ($db->query($query) as $row) {
+						$count = $count++;
+						$dbResult[] = $row;
+					}
+				}
+			}
         } else {
 	        // Count results. ONLY valid for UPDATE; INSERT; DELETE statements.
 	        if ($return_count) {
@@ -114,14 +123,8 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 
 }
 
-function SQLite3dbNumRows ($qid) { 
-  global $db, $query; 
-
-  $numRows = 0; 
-  $res = $db->query ($query); 
-  while (dbFetchArray ($res)) 
-    $numRows ++; 
-  return ($numRows); 
+function replace_content_inside_delimiters($start, $end, $new, $source) {
+        return preg_replace('#('.preg_quote($start).')(.*)('.preg_quote($end).')#si', '$1'.$new.'$3', $source);
 }
 
 ?>

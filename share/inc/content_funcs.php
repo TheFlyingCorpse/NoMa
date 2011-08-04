@@ -99,11 +99,11 @@ function getTimeZone ($id = null) {
  * @return									array of users and corresponding ids
  */
 function getContacts ($exclude = null) {
-	$query = 'select username,concat(first_name, \' \', last_name) full_name from contacts where username != \'[---]\'';
+	$query = 'select username,full_name from contacts where username != \'[---]\'';
 	if ($exclude) {
 		$query .= ' and username != \'' . prepareDBValue($exclude) . '\'';
 	}
-	$query .= ' order by first_name';
+	$query .= ' order by full_name';
 	$dbResult = queryDB($query);
 	$users = array();
 	if (is_array($users)) {
