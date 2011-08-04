@@ -28,8 +28,9 @@ sub queryDB
     my $database_type = $conf->{db}->{type};
     my $dbh;
 
-
+    debug('Database type: '.$database_type,2);
     if ($database_type == 'mysql'){
+            debug('Going to use MySQL as backend...',3);
 	    $dbh = DBI->connect(
 	        'DBI:mysql:host='
 	          . $conf->{db}->{mysql}->{host}	# MySQL NoMa Host
@@ -39,6 +40,7 @@ sub queryDB
 		$conf->{db}->{mysql}->{password}	# MySQL Password
 	    ) or debug($DBI::errstr,1);
     } elsif ($database_type == 'sqlite3'){
+            debug('Going to use SQLite3 as backend...',3);
 	    $dbh = DBI->connect(
 		"dbi:SQLite:dbname="
 		. $conf->{db}->{sqlite3}->{dbfile},     # SQLite DB file
