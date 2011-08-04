@@ -56,22 +56,19 @@ require_once('inc/general_app.php');
 // options: 'en' | 'de'
 $language = 'en';
 
-
-<<<<<<< HEAD
 // DATABASE
 $dbConf = array (
 	'type'			=> 'mysql', // Valid are 'mysql', ToDo: 'sqlite3'
-=======
+);
 
 // NoMa MySQL database options
 $dbConfMySQL = array (
 	'type'			=> 'mysql',    // Dont change this value!
->>>>>>> rdarrud/additions
 	'host'			=> 'localhost',
 	'user'			=> 'noma',
 	'password'		=> 'noma',
 	'database'		=> 'noma',
-	'persistent'	=> '0',
+	'persistent'		=> '0',
 );
 
 // NoMa SQLite3 database options

@@ -89,9 +89,9 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 	                $start = 'select';
 	                $end = 'from';
 	                $replace_with = ' COUNT(*) ';
-			echo "Original Query: ".$query."<br>";
+			//echo "Original Query: ".$query."<br>";
 			$countquery = replace_content_inside_delimiters($start, $end, $replace_with, $query);
-			echo "Count Query   : ".$countquery."<br/>";
+			//echo "Count Query   : ".$countquery."<br/>";
 		
 			if ($result = $db->query($countquery)) {
 
