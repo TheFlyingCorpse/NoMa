@@ -57,15 +57,51 @@ require_once('inc/general_app.php');
 $language = 'en';
 
 
-// DATABASE
-$dbConf = array (
-	'type'			=> 'mysql', // Valid are 'mysql', 'sqlite'
+
+// NoMa MySQL database options
+$dbConfMySQL = array (
+	'type'			=> 'mysql',    // Dont change this value!
 	'host'			=> 'localhost',
 	'user'			=> 'noma',
 	'password'		=> 'noma',
 	'database'		=> 'noma',
 	'persistent'	=> '0',
 );
+
+// NoMa SQLite3 database options
+$dbConfSQLite3 = array (
+	'type'			=> 'sqlite3',  // Dont change this value!
+	'dbFilePath'		=> '/usr/local/nagios/noma/etc/NoMa.db',
+);
+
+// Database type to use for NoMa (not NDO/IDO!)
+// options: 'mysql' | 'sqlite3'
+$dbType = 'sqlite3';
+//$dbType = 'mysql';
+
+
+
+// NDO access - only required if host_service_preview is true
+// Currently only supports one backend to query for preview.
+$dbNDO = array (
+	// type options: 'mysql'
+        'type'                  => 'mysql',
+        'host'                  => 'localhost',
+        'user'                  => 'nagios',
+        'password'              => 'nagios',
+        'database'              => 'nagios',
+        'persistent'    => '0',
+        'table_prefix'  => 'nagios_',
+);
+
+
+// Setting the proper value.
+if ($dbType == 'mysql'){
+	$dbConf = $dbConfMySQL;
+};
+if ($dbType == 'sqlite3'){
+	$dbConf = $dbConfSQLite3;
+};
 
 
 // authentication type
@@ -102,17 +138,6 @@ $notifications = array (
 	'preview_max_length' => 1000,
 	'preview_scroll' => true,
 	'preview_max_height' => 120,
-);
-
-// NDO access - only required if host_service_preview is true
-$dbNDO = array (
-	'type'			=> 'mysql',
-	'host'			=> 'localhost',
-	'user'			=> 'nagios',
-	'password'		=> 'nagios',
-	'database'		=> 'nagios',
-	'persistent'	=> '0',
-	'table_prefix'	=> 'nagios_',
 );
 
 // contactgroup manager
