@@ -57,59 +57,26 @@
 function queryDB ($query, $return_count = false, $ndo = false) { 	 
 
 	// set shortcut to database configuration
+
+	// FIGURE OUT WHAT BACKEND!!
 	if (!$ndo) {
 		global $dbConf;
 	} else {
 		global $dbNDO;
 		$dbConf = &$dbNDO;
 	}
+	if ($dbConf['type'] == 'mysql'){
+		// Require the function for MySQL query.
+		require_once('noma-backend-mysql.php');
 
-	// connect to database host
-	if ($dbConf['persistent']) {
-		$dbh = mysql_connect($dbConf['host'], $dbConf['user'], $dbConf['password'])
-			or die("Could not connect to database: " . mysql_error());
-	} else {
-		$dbh = mysql_pconnect($dbConf['host'], $dbConf['user'], $dbConf['password'])
-			or die("Could not connect to database: " . mysql_error());
-	}
-
-	// select database
-	mysql_select_db($dbConf['database']) or die("Could not select database!");
-
-	// Uncomment below to log all queries to file.
-	//$log = new Logging();
-	//$log->lwrite($query);
-
-	// query database
-	$result = mysql_query($query) or die("Could not execute query: " . mysql_error());
-
-	$count = 0;
-	if ($return_count) {
-		$count = mysql_num_rows($result);
-	}
-
-	// initialize result variable
-	$dbResult = array();
-
-	// fetch result if it makes sense
-	$queryCmd = strtolower(substr($query, 0, 6));
-	if ($queryCmd == 'select') {
-		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$dbResult[] = $row;
+		if ($return_count == true){
+			list($count, $dbResult) = queryMySQLDB($query, $return_count, $ndo);
+                        return array($count, $dbResult);
+		} else {
+			$dbResult = queryMySQLDB($query, false, $ndo);
+			return $dbResult;
 		}
-		// free result memory
-		mysql_free_result($result);
 	}
-
-	// close database connection if not persistent
-	if (!$dbConf['persistent']) mysql_close($dbh);
-
-	if ($return_count) {
-		return array($count, $dbResult);
-	} else {
-		return $dbResult;
-	}
-
 }
 
 

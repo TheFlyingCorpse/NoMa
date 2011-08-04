@@ -59,6 +59,7 @@ $language = 'en';
 
 // DATABASE
 $dbConf = array (
+	'type'			=> 'mysql', // Valid are 'mysql', 'sqlite'
 	'host'			=> 'localhost',
 	'user'			=> 'noma',
 	'password'		=> 'noma',
@@ -105,6 +106,7 @@ $notifications = array (
 
 // NDO access - only required if host_service_preview is true
 $dbNDO = array (
+	'type'			=> 'mysql',
 	'host'			=> 'localhost',
 	'user'			=> 'nagios',
 	'password'		=> 'nagios',
