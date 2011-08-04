@@ -65,6 +65,8 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 		global $dbNDO;
 		$dbConf = &$dbNDO;
 	}
+
+	// MySQL backend
 	if ($dbConf['type'] == 'mysql'){
 		// Require the function for MySQL query.
 		require_once('noma-backend-mysql.php');
@@ -77,6 +79,20 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 			return $dbResult;
 		}
 	}
+
+	// SQLite 3 backend
+        if ($dbConf['type'] == 'sqlite3'){
+                // Require the function for MySQL query.
+                require_once('noma-backend-sqlite3.php');
+
+                if ($return_count == true){
+                        list($count, $dbResult) = querySQLite3DB($query, $return_count, $ndo);
+                        return array($count, $dbResult);
+                } else {
+                        $dbResult = querySQLite3DB($query, false, $ndo);
+                        return $dbResult;
+                }
+        }
 }
 
 
