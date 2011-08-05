@@ -197,16 +197,15 @@ define('TIMEFRAME_HEADING', 'Manage timeframes');
 define('TIMEFRAME_HEADING_SELECT', 'Select timeframe:');
 define('TIMEFRAME_HEADING_ADD', 'Add timeframe:');
 define('TIMEFRAME_HEADING_NAME' , 'Timeframe');
-define('TIMEFRAME_HEADING_EDIT', 'Edit contact timeframe:');
+define('TIMEFRAME_HEADING_EDIT', 'Edit timeframe:');
 
 define('TIMEFRAME_SELECT_FRAME_NEW', 'create new');
-define('TIMEFRAME_EDIT_FRAMES', 'Contacttimeframe:');
+define('TIMEFRAME_EDIT_FRAMES', 'Edit timeframe:');
 define('TIMEFRAME_EDIT_USERS', 'User(s):');
 define('TIMEFRAME_EDIT_BUTTON', 'Edit timeframe');
 define('TIMEFRAME_ADD_BUTTON', 'Add timeframe');
 define('TIMEFRAME_DELETE_BUTTON', 'Delete timeframe');
-define('TIMEFRAME_ADD_NAME_SHORT', 'New timeframe (short name):');
-define('TIMEFRAME_ADD_NAME', 'New timeframe (long name):');
+define('TIMEFRAME_ADD_FRAME', 'New timeframe:');
 define('TIMEFRAME_SUBMIT_CHANGES_BUTTON', 'Submit changes');
 define('TIMEFRAME_FRAME_ADDED', 'Successfully created new timeframe!');
 define('TIMEFRAME_ADDING_FAILED', 'Could not add new timeframe!');
@@ -294,5 +293,6 @@ define('CONTACTGROUPS_EDIT_NAME', 'Name:');
 define('CONTACTGROUP_CONFIRM_DEL', 'Do you really want to delete this contactgroup?');
 define('CONTACTGROUPS_VIEW_ONLY', 'Do not send notifications to members:');
 define('CONTACTGROUPS_TIMEFRAME', 'Notification hours:');
+define('CONTACTGROUPS_TIMEZONE', 'Group TimeZone:');
 
 ?>

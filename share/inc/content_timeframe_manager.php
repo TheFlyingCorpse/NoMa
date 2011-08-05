@@ -204,9 +204,9 @@ function getContent () {
 	} else {
 		$templateSubContent = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_ADD);
 		$templateSubContent->assign('TIMEFRAME_HEADING_ADD', TIMEFRAME_HEADING_ADD);
-		$templateSubContent->assign('TIMEFRAME_ADD_NAME', TIMEFRAME_ADD_NAME);
 		$templateSubContent->assign('TIMEFRAME_ADD_BUTTON', TIMEFRAME_ADD_BUTTON);
 
+		$templateSubContent->assign('TIMEFRAME_ADD_FRAME', TIMEFRAME_ADD_FRAME);
                 $templateSubContent->assign('TIMEFRAME_FRAME_VALID_FROM', TIMEFRAME_FRAME_VALID_FROM);
                 $templateSubContent->assign('TIMEFRAME_FRAME_VALID_TO', TIMEFRAME_FRAME_VALID_TO);
                 $templateSubContent->assign('TIMEFRAME_TIME_FROM', TIMEFRAME_TIME_FROM);

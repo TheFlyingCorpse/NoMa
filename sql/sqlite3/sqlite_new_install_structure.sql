@@ -3,6 +3,7 @@ CREATE TABLE [contactgroups] (
 [name_short] varchar(255)  NOT NULL,
 [name] varchar(255)  NOT NULL,
 [view_only] tinyint(1) DEFAULT '0' NOT NULL,
+[timezone_id] int(11) DEFAULT '0' NOT NULL,
 [timeframe_id] int(11) DEFAULT '0' NOT NULL
 );
 

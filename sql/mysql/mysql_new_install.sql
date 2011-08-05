@@ -5,6 +5,7 @@ CREATE TABLE `contactgroups` (
   `name_short` varchar(255) CHARACTER SET latin1 NOT NULL,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `view_only` tinyint(1) NOT NULL DEFAULT '0',
+  `timezone_id` int(11) NOT NULL DEFAULT '0',
   `timeframe_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),

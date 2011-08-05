@@ -58,7 +58,7 @@ function addTimeFrame () {
 	global $p;
 
 	$timeframe = ((isset($p['timeframe_name'])) ? $p['timeframe_name'] : null);
-	if (empty($timeframe_name)) return false;
+	if (empty($timeframe)) return false;
 	$timeframe_name = prepareDBValue($p['timeframe_name']);
         //$timeframe_id = prepareDBValue($timeframe_id);
         $dt_validFrom = prepareDBValue($p['dt_validFrom']);
@@ -194,24 +194,24 @@ function addTimeFrame () {
                 $day_sunday_last,
                 $time_monday_start,
                 $time_monday_stop,
+                $time_monday_invert,
                 $time_tuesday_start,
                 $time_tuesday_stop,
+                $time_tuesday_invert,
                 $time_wednesday_start,
                 $time_wednesday_stop,
+                $time_wednesday_invert,
                 $time_thursday_start,
                 $time_thursday_stop,
+                $time_thursday_invert,
                 $time_friday_start,
                 $time_friday_stop,
+                $time_friday_invert,
                 $time_saturday_start,
                 $time_saturday_stop,
+                $time_saturday_invert,
                 $time_sunday_start,
                 $time_sunday_stop,
-                $time_monday_invert,
-                $time_tuesday_invert,
-                $time_wednesday_invert,
-                $time_thursday_invert,
-                $time_friday_invert,
-                $time_saturday_invert,
                 $time_sunday_invert
         );
         queryDB($query);
@@ -295,10 +295,10 @@ function addTimeFrame () {
                 $day_sunday_last
         );
         $dbResult = queryDB($query);
-        //if (!empty($dbResult[0]['id'])) return TIMEFRAME_ADD_ADDED_BUT_NOT_IN_DB;
-	if (!is_array($dbResult)) return false;
-	if(!count($dbResult)) return false;
-	$p['timeframe'] = $dbResult[0]['id'];
+        if (!empty($dbResult[0]['id'])) return TIMEFRAME_ADD_ADDED_BUT_NOT_IN_DB;
+	//if (!is_array($dbResult)) return false;
+	//if(!count($dbResult)) return false;
+	//$p['timeframe'] = $dbResult[0]['id'];
 
 	return true;
 
@@ -504,7 +504,7 @@ function updateTimeFrame () {
 
 
 /**
- * deleteTimeFrame - delete a timeframe and reset relations to existing contacts, timeframes and notifications.
+ * deleteTimeFrame - delete a timeframe and reset relations to existing contacts, contacgroups and notifications.
  *
  * @param		none
  * @return		boolean value
@@ -518,23 +518,33 @@ function deleteTimeFrame () {
 	$id = prepareDBValue($id);
 
 
-	// delete group
+	// set all notifications using this timeframe to the inactive schedule.
 	$query = sprintf(
-		'delete from timeframes where id=\'%s\'',
+		'UPDATE notifications SET timeframe_id=0 WHERE timeframe_id=\'%s\'',
 		$id
 	);
 	queryDB($query);
 
+        // set all contacts using this timeframe to the inactive schedule.
+        $query = sprintf(
+                'UPDATE contacts SET timeframe_id=0 WHERE timeframe_id=\'%s\'',
+                $id
+        );
+        queryDB($query);
 
-	// set all notifications, contacts and timeframes using this timeframe to the inactive schedule.
-	// ToDo
-	/*
-	$query = sprintf(
-		'delete from timeframes_to_contacts where timeframe_id=\'%s\'',
-		$id
-	);
-	queryDB($query);
-	*/
+        // set all contacgroups using this timeframe to the inactive schedule.
+        $query = sprintf(
+                'UPDATE contactgroups SET timeframe_id=0 WHERE timeframe_id=\'%s\'',
+                $id
+        );
+        queryDB($query);
+
+        // delete timeframe
+        $query = sprintf(
+                'delete from timeframes where id=\'%s\'',
+                $id
+        );
+        queryDB($query);
 
 	return true;
 
