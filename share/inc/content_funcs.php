@@ -115,23 +115,6 @@ function getContacts ($exclude = null) {
 }
 
 /**
- * getTimeframes - give back associative array of timeframes and corresponding ids
- *
- * @param               none
- * @return              array of timeframes and corresponding ids
- */
-function getTimeFrames () {
-        $timeframes = array();
-        $dbResult = queryDB('select id,timeframe_name from timeframes');
-        if (is_array($dbResult)) {
-                foreach ($dbResult as $row) {
-                        $timeframes[$row['id']] = $row['timeframe_name'];
-                }
-        }
-        return $timeframes;
-}
-
-/**
  * getNotificytionMethods - give back associative array of methods and corresponding ids
  *
  * @param		none
@@ -226,6 +209,35 @@ function getContactGroupById ($id) {
 	return $dbResult[0];
 }
 
+/**
+ * getContactGroups - gives back an associative array of contactgroups and corresponding ids
+ *
+ * @param               none
+ * @return              array of contactgroups and corresponding ids
+ */
+function getTimeFrames () {
+        $dbResult = queryDB('select * from timeframes order by timeframe_name');
+        $timeframes = array();
+        if (is_array($dbResult)) {
+                foreach($dbResult as $row) {
+                        $timeframes[$row['id']] = $row['timeframe_name'];
+                }
+        }
+        return $timeframes;
+}
+
+/**
+ * getContactGroupById - queryies database for information about a certain contactgroup
+ *
+ * @param               string          $id                     id of contact group
+ * @return              string                                  short name of contact group
+ */
+function getTimeFrameById ($id) {
+        $dbResult = queryDB('select * from timeframes where id=\'' . prepareDBValue($id) . '\'');
+        if (count($dbResult) != 1) return false;
+        if (!is_array($dbResult[0])) return false;
+        return $dbResult[0];
+}
 
 
 
@@ -233,6 +245,7 @@ function getNavigationContent ($action, $admin = false) {
 	global $authentication_type;
 	global $logs;
 	global $contactgroups;
+	global $timeframes;
 	global $statuspage;
 
 	$navigation = array (
@@ -265,7 +278,7 @@ function getNavigationContent ($action, $admin = false) {
 		),
                 array(
                         'actions'                               => array('timeframes'),
-                        'admin_only'                    => $contactgroups['admin_only'],
+                        'admin_only'                    => $timeframes['admin_only'],
                         'auth_type_required'    => false,
                         'title'                                 => NAVIGATION_TIMEFRAMES,
                 ),

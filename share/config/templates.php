@@ -78,8 +78,10 @@ define('TEMPLATE_CONTACTGROUP_MANAGER_ADD', TEMPLATE_DIR . 'contactgroup_manager
 define('TEMPLATE_CONTACTGROUP_MANAGER_EDIT', TEMPLATE_DIR . 'contactgroup_manager_edit.html');
 define('TEMPLATE_CONTACTGROUP_MANAGER_DELETE', TEMPLATE_DIR . 'contactgroup_manager_delete.html');
 
+
 define('TEMPLATE_TIMEFRAME_MANAGER', TEMPLATE_DIR . 'timeframe_manager.html');
-define('TEMPLATE_TIMEFRAME_MANAGER_ADMIN', TEMPLATE_DIR . 'timeframe_manager_admin.html');
-define('TEMPLATE_TIMEFRAME_MANAGER_ADMIN_DELETE', TEMPLATE_DIR . 'timeframe_manager_admin_delete.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_ADD', TEMPLATE_DIR . 'timeframe_manager_add.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_EDIT', TEMPLATE_DIR . 'timeframe_manager_edit.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_DELETE', TEMPLATE_DIR . 'timeframe_manager_delete.html');
 
 ?>

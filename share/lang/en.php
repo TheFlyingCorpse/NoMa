@@ -193,23 +193,43 @@ define('CONTACTS_ADD_ADDED_BUT_NOT_IN_DB', 'Contact added but database has not b
 
 // timeframe manager
 define('TIMEFRAME_OVERVIEW_LINK', 'Overview');
-define('TIMEFRAME_HEADING_TIME' , 'Time:');
+define('TIMEFRAME_HEADING', 'Manage timeframes');
+define('TIMEFRAME_HEADING_SELECT', 'Select timeframe:');
+define('TIMEFRAME_HEADING_ADD', 'Add timeframe:');
+define('TIMEFRAME_HEADING_NAME' , 'Timeframe');
+define('TIMEFRAME_HEADING_EDIT', 'Edit contact timeframe:');
+
+define('TIMEFRAME_SELECT_FRAME_NEW', 'create new');
+define('TIMEFRAME_EDIT_FRAMES', 'Contacttimeframe:');
+define('TIMEFRAME_EDIT_USERS', 'User(s):');
+define('TIMEFRAME_EDIT_BUTTON', 'Edit timeframe');
+define('TIMEFRAME_ADD_BUTTON', 'Add timeframe');
+define('TIMEFRAME_DELETE_BUTTON', 'Delete timeframe');
+define('TIMEFRAME_ADD_NAME_SHORT', 'New timeframe (short name):');
+define('TIMEFRAME_ADD_NAME', 'New timeframe (long name):');
+define('TIMEFRAME_SUBMIT_CHANGES_BUTTON', 'Submit changes');
+define('TIMEFRAME_FRAME_ADDED', 'Successfully created new timeframe!');
+define('TIMEFRAME_ADDING_FAILED', 'Could not add new timeframe!');
+define('TIMEFRAME_FRAME_UPDATE', 'Timeframe updated!');
+define('TIMEFRAME_UPDATE_FAILED', 'Could not update timeframe!');
+define('TIMEFRAME_FRAME_DELETED', 'Timeframe deleted!');
+define('TIMEFRAME_DELETE_FAILED', 'Could not delete timeframe!');
+define('TIMEFRAME_EDIT_NAME_SHORT', 'Name (short):');
+define('TIMEFRAME_EDIT_NAME', 'Name:');
+define('TIMEFRAME_CONFIRM_DEL', 'Do you really want to delete this timeframe?');
+define('TIMEFRAME_TIMEFRAME', 'Notification hours:');
+
 define('TIMEFRAME_HEADING_ADMIN' , 'Admin functions:');
 define('TIMEFRAME_ADD_EDIT_FRAME', 'Add and edit timeframes');
-define('TIMEFRAME_EDIT_BUTTON', 'Edit timeframe');
 define('TIMEFRAME_DEL_BUTTON', 'Delete timeframe');
 define('TIMEFRAME_SUBMIT_ADD', 'Add timeframe');
 define('TIMEFRAME_SUBMIT_UPDATE', 'Update timeframe data');
-define('TIMEFRAME_CONFIRM_DEL', 'Do you really want to delete this timeframe?');
 define('TIMEFRAME_ADMIN', 'Administrator:');
 define('TIMEFRAME_FRAMES', 'Timeframes:');
 define('TIMEFRAME_FRAME_VALID_FROM', 'Valid from:');
 define('TIMEFRAME_FRAME_VALID_TO', 'Valid to:');
-define('TIMEFRAME_SELECT_FRAME_NEW', 'create new');
-define('TIMEFRAME_HEADING_NAME' , 'Timeframe');
 define('TIMEFRAME_FRAME' , 'Timeframe:');
-define('TIMEFRAME_TIMEZONE' , 'Timezone:');
-define('TIMEFRAME_NEW_FRAME', 'Add timeframe (name):');
+
 define('TIMEFRAME_TIME_FROM', 'From time');
 define('TIMEFRAME_TIME_TO', 'To time');
 define('TIMEFRAME_TIME_INVERT', 'Invert time');
@@ -228,13 +248,6 @@ define('TIMEFRAME_DAY_THURSDAY', 'Thursday');
 define('TIMEFRAME_DAY_FRIDAY', 'Friday');
 define('TIMEFRAME_DAY_SATURDAY', 'Saturday');
 define('TIMEFRAME_DAY_SUNDAY', 'Sunday');
-define('TIMEFRAME_UPDATED', 'Timeframe has been updated.');
-define('TIMEFRAME_ADDED', 'Timeframe has been added.');
-define('TIMEFRAME_DELETED', 'Timeframe has been deleted.');
-define('TIMEFRAME_ADD_UPDATE_DEL_ERROR', 'An error occurred!');
-define('TIMEFRAME_ADD_UPDATE_ERROR_INSUFF_RIGHTS', 'Insufficient rights to apply changes!');
-define('TIMEFRAME_ADD_USER_EXISTS', 'Timeframe already exists!');
-define('TIMEFRAME_ADD_ADDED_BUT_NOT_IN_DB', 'Timeframe added but database has not been updated, yet.');
 
 // log viewer
 define('LOG_VIEWER_OVERVIEW_LINK', 'Overview');
