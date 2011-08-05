@@ -191,7 +191,7 @@ function d ($parm) {
  * - message is written with the following format: hh:mm:ss (script name) message
  */
 // REMOVE COMMENT BELOW TO ENABLE CLASS!
-/*
+
 class Logging{
     // define default log file
     private $log_file = '/tmp/logfile.log';
@@ -208,6 +208,7 @@ class Logging{
         // define script name
         $script_name = pathinfo($_SERVER['PHP_SELF'], PATHINFO_FILENAME);
         // define current time
+	date_default_timezone_set('Europe/Berlin');
         $time = date('H:i:s');
         // write current time, script name and message to the log file
         fwrite($this->fp, "$time ($script_name) $message\n");
@@ -223,6 +224,6 @@ class Logging{
         $this->fp = fopen($lfile . '_' . $today, 'a') or exit("Can't open $lfile!");
     }
 }
-*/
+
 
 ?>

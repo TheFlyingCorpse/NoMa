@@ -58,9 +58,9 @@ function addTimeFrame () {
 	global $p;
 
 	$timeframe = ((isset($p['timeframe_name'])) ? $p['timeframe_name'] : null);
-	if (empty($timeframe)) return false;
-	$timeframe = prepareDBValue($timeframe);
-        $timeframe_id = prepareDBValue($timeframe_id);
+	if (empty($timeframe_name)) return false;
+	$timeframe_name = prepareDBValue($p['timeframe_name']);
+        //$timeframe_id = prepareDBValue($timeframe_id);
         $dt_validFrom = prepareDBValue($p['dt_validFrom']);
         $dt_validTo = prepareDBValue($p['dt_validTo']);
         $time_monday_start = prepareDBValue($p['time_monday_from']);
@@ -325,7 +325,7 @@ function updateTimeFrame () {
 	if (empty($p['update_timeframe_name'])) return false;
 	$timeframe_name = prepareDBValue($p['update_timeframe_name']);
 
-        $timeframe_id = prepareDBValue($p['timeframe_id']);
+        //$timeframe_id = prepareDBValue($p['timeframe_id']);
         $dt_validFrom = prepareDBValue($p['dt_validFrom']);
         $dt_validTo = prepareDBValue($p['dt_validTo']);
         $time_monday_start = prepareDBValue($p['time_monday_from']);

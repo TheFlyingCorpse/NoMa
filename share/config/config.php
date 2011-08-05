@@ -79,8 +79,8 @@ $dbConfSQLite3 = array (
 
 // Database type to use for NoMa (not NDO/IDO!)
 // options: 'mysql' | 'sqlite3'
-$dbType = 'sqlite3';
-//$dbType = 'mysql';
+//$dbType = 'sqlite3';
+$dbType = 'mysql';
 
 
 
@@ -135,22 +135,22 @@ $http = array (
 
 // notifications /add/del/edit)
 $notifications = array (
-	'add_owner' => true,
-	'host_service_preview' => true,
-	'preview_width' => 250,
-	'preview_max_length' => 1000,
-	'preview_scroll' => true,
-	'preview_max_height' => 120,
+	'add_owner' 		=> true,
+	'host_service_preview' 	=> true,
+	'preview_width' 	=> 250,
+	'preview_max_length' 	=> 1000,
+	'preview_scroll' 	=> true,
+	'preview_max_height' 	=> 120,
 );
 
 // contactgroup manager
 $contactgroups = array (
-	'admin_only' => true,
+	'admin_only' 		=> true,
 );
 
 // status page
 $statuspage = array (
-    'admin_only'        => true,
+	'admin_only'		=> true,
 );
 
 
@@ -159,20 +159,24 @@ $logs = array (
 	'admin_only'		=> true,
 	'pages_per_line'	=> 10,
 	'num_results'		=> array (
-		10	=> '10',
-		20	=> '20',
-		50	=> '50',
-		100	=> '100',
+					10	=> '10',
+					20	=> '20',
+					50	=> '50',
+					100	=> '100',
 	),
 );
 
+// timeframe
+$timeframes = array (
+	'admin_only'		=> true,
+);
 
 // length of overview fields
 $str_maxlen = array (
 	'overview_recipients'		=> 40,
 	'overview_hostgroups'	        => 50,
 	'overview_host'	                => 40,
-        'overview_servicegroups'        => 50,
+        'overview_servicegroups'	=> 50,
         'overview_service'              => 40,
 );
 

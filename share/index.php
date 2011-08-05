@@ -140,26 +140,37 @@ switch ($action) {
 		break;
 
         case 'timeframes':
-                if (isset($p['submit'])) $do = 'add';
-                else if (isset($p['edit'])) $do = 'edit';
-                else if (isset($p['del'])) $do = 'del';
-                else $do = null;
-
-                if ($do == 'add') {
-                        if (empty($p['id'])) {
-                                $message = addTimeframe($p);
-                        } else {
-                                $message = updateTimeframe($p);
-                        }
-                } else if ($do == 'del') {
-                        if (isset($p['timeframe'])) {
-                                if (!delTimeframe($p)) $message = TIMEFRAME_ADD_UPDATE_DEL_ERROR;
-                                else $message = TIMEFRAME_DELETED;
-                        } else {
-                                $message = TIMEFRAME_ADD_UPDATE_DEL_ERROR;
-                        }
+                $valid_user = false;
+                if ($timeframes['admin_only']) {
+                        if (isAdmin()) $valid_user = true;
+                } else {
+                        $valid_user = true;
                 }
-                $require = 'inc/content_timeframes.php';
+
+                if ($valid_user) {
+
+                        if (isset($p['add'])) {
+                                if(addTimeFrame()) $message = TIMEFRAME_FRAME_ADDED;
+                                else $message = TIMEFRAME_ADDING_FAILED;
+                        } elseif (isset($p['update'])) {
+                                if(updateTimeFrame()) $message = TIMEFRAME_FRAME_UPDATE;
+                                else $message = TIMEFRAME_UPDATE_FAILED;
+                        } elseif (isset($p['delete'])) {
+                                if (deleteTimeFrame()) {
+                                        $message = TIMEFRAME_FRAME_DELETED;
+                                        unset($p['id']);
+                                        unset($p['timeframe']);
+                                } else $message = TIMEFRAME_DELETE_FAILED;
+                        }
+
+                        $require = 'inc/content_timeframe_manager.php';
+
+                } else {
+
+                        $require = 'inc/content_overview.php';
+
+                }
+
                 break;
 
 	case 'contacts':
