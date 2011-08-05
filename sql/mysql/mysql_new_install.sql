@@ -246,7 +246,6 @@ CREATE TABLE `timeframes` (
   `timeframe_name` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `dt_validFrom` datetime NOT NULL,
   `dt_validTo` datetime NOT NULL,
-  `timezone_id` int(11) NOT NULL,
   `day_monday_all` tinyint(1) DEFAULT '1',
   `day_monday_1st` tinyint(1) DEFAULT '0',
   `day_monday_2nd` tinyint(1) DEFAULT '0',
