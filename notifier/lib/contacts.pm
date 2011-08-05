@@ -477,7 +477,7 @@ sub checkContactWorkingHours
         my %dbResult = queryDB($query);
 
 	    # drop contact and break loop if outside time period
-	    if ( (objectInTimeFrame($dbResult{0}->{timeframe_id}) eq 0 ))
+	    if ( (objectInTimeFrame($dbResult{0}->{timeframe_id},'contacts') eq 0 ))
 	    {
 		debug( "username: ".$contacts{$contact}->{username}." outside timeframe, dropping", 2);
 		$away = 1;

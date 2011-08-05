@@ -46,7 +46,7 @@ sub notificationInTimeFrame
 
 	my $timeframe_id = $dbResult{0}->{timeframe_id};
 	
-	my $result = objectInTimeFrame($timeframe_id);
+	my $result = objectInTimeFrame($timeframe_id,'notifications');
 
 	return $result;
 }
@@ -64,7 +64,7 @@ sub contactInTimeFrame
 
         my $timeframe_id = $dbResult{0}->{timeframe_id};
 
-        my $result = objectInTimeFrame($timeframe_id);
+        my $result = objectInTimeFrame($timeframe_id,'contacts');
 
         return $result;
 }
@@ -82,16 +82,16 @@ sub contactgroupInTimeFrame
 
         my $timeframe_id = $dbResult{0}->{timeframe_id};
 
-        my $result = objectInTimeFrame($timeframe_id);
+        my $result = objectInTimeFrame($timeframe_id,'contactgroups');
 
         return $result;
 }
 
-# Get the of the timeframe_id and calculate if its inside or outside.
+# Get the timeframe_id,objectType and calculate if its inside or outside.
 sub objectInTimeFrame
 {
 	# Get the timeframe_id from parent function.
-        my ($timeframe_id) = @_;
+        my ($timeframe_id,$objectType) = @_;
 
         # Create a bunch of variables to be filled.
         my (@today,$current_dow,$current_dow_en,$dt_validFrom,$dt_validTo,$dt_timeFrom,$dt_timeTo,$notify_status,@notify_date,$day_today_all,$day_today_1st,$day_today_2nd,$day_today_3rd,$day_today_4th,$day_today_5th,$day_today_last,$time_today_start,$time_today_stop,$time_today_invert,$tf_timezone);
@@ -125,7 +125,7 @@ sub objectInTimeFrame
         $day_today_last = 'day_'.$current_dow_en.'_last';
 
         # query
-	my $query = 'SELECT timeframes.id, timezones.id, timeframes.dt_validFrom, timeframes.dt_validTo, timezones.timezone, timeframes.day_'.$current_dow_en.'_all, timeframes.day_'.$current_dow_en.'_1st, timeframes.day_'.$current_dow_en.'_2nd, timeframes.day_'.$current_dow_en.'_3rd, timeframes.day_'.$current_dow_en.'_4th, timeframes.day_'.$current_dow_en.'_5th, timeframes.day_'.$current_dow_en.'_last, timeframes.time_'.$current_dow_en.'_start, timeframes.time_'.$current_dow_en.'_stop, timeframes.time_'.$current_dow_en.'_invert FROM timeframes, timezones WHERE timeframes.timezone_id = timezones.id AND timeframes.id=\''.$timeframe_id.'\'';
+	my $query = 'SELECT timeframes.id, '.$objectType.'.timezone_id, timeframes.dt_validFrom, timeframes.dt_validTo, timezones.timezone, timeframes.day_'.$current_dow_en.'_all, timeframes.day_'.$current_dow_en.'_1st, timeframes.day_'.$current_dow_en.'_2nd, timeframes.day_'.$current_dow_en.'_3rd, timeframes.day_'.$current_dow_en.'_4th, timeframes.day_'.$current_dow_en.'_5th, timeframes.day_'.$current_dow_en.'_last, timeframes.time_'.$current_dow_en.'_start, timeframes.time_'.$current_dow_en.'_stop, timeframes.time_'.$current_dow_en.'_invert FROM timeframes, timezones, '.$objectType.' WHERE '.$objectType.'.timezone_id = timezones.id AND timeframes.id=\''.$timeframe_id.'\'';
 
         # Query DB, no need to log query.
         my %dbResult = queryDB($query);
