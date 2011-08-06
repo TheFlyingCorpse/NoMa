@@ -3,8 +3,8 @@ CREATE TABLE [contactgroups] (
 [name_short] varchar(255)  NOT NULL,
 [name] varchar(255)  NOT NULL,
 [view_only] tinyint(1) DEFAULT '0' NOT NULL,
-[timezone_id] int(11) DEFAULT '0' NOT NULL,
-[timeframe_id] int(11) DEFAULT '0' NOT NULL
+[timeframe_id] int(11) DEFAULT '0' NOT NULL,
+[timezone_id] int(11) DEFAULT '0' NOT NULL
 );
 
 CREATE TABLE [contactgroups_to_contacts] (
@@ -45,6 +45,8 @@ CREATE TABLE [escalation_stati] (
 [status] varchar(255) DEFAULT 'NULL' NULL,
 [time_string] varchar(255) DEFAULT 'NULL' NULL,
 [type] varchar(255) DEFAULT 'NULL' NULL,
+[authors] varchar(255) DEFAULT 'NULL' NULL,
+[comments] varchar(255) DEFAULT 'NULL' NULL,
 [output] varchar(4096) DEFAULT 'NULL' NULL
 );
 
@@ -91,6 +93,12 @@ CREATE TABLE [holidays] (
 [contact_id] int(11)  NOT NULL,
 [start] datetime  NOT NULL,
 [end] datetime  NOT NULL
+);
+
+CREATE TABLE [information] (
+[id] INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,
+[type] varchar(20) NOT NULL,
+[content] varchar(20)  NOT NULL
 );
 
 CREATE TABLE [notification_logs] (
