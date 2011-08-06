@@ -62,6 +62,9 @@ $html = new nwTemplate(TEMPLATE_INDEX);
 $p = array_merge($_GET, $_POST);
 
 
+# currentdbversion, do NOT change this value!
+$currentdbversion = 200;
+
 #var_dump($p);exit;
 
 session_start();
@@ -313,6 +316,13 @@ if (file_exists('../doc/VERSION.txt') && is_readable('../doc/VERSION.txt')) {
 	}
 }
 $html->assign('VERSION', $version);
+$dbversion = getDBVersion();
+if ($dbversion != $currentdbversion) {
+        $dbversion = ' SQL schema is out of date - DB version: '.$dbversion.' Expected version: '.$currentdbversion.'!<br>';
+} else {
+	$dbversion = '';
+}
+$html->assign('DBVERSION', $dbversion);
 if (!empty($_SERVER['TRACKING_ID'])) {
     $html->assign('TRACKING_ID', '<script type="text/javascript">var gaJsHost=(("https:"==document.location.protocol)?"https://ssl.":"http://www.");document.write(unescape("%3Cscript src=\'"+gaJsHost+"google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script><script type="text/javascript">try{var pageTracker=_gat._getTracker("'.$_SERVER['TRACKING_ID'].'");pageTracker._trackPageview();}catch(err){}</script>');
 }

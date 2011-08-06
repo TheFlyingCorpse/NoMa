@@ -528,7 +528,7 @@ do
                     }
 
                 }
-                elsif ($cmdh{status} ne 'OK' or $cmdh{status} ne 'UP' and $cmdh{notification_type} ne 'ACKNOWLEDGEMENT' and $cmdh{notification_type} ne 'CUSTOM')
+                elsif ($cmdh{status} ne 'OK' and $cmdh{status} ne 'UP' and $cmdh{notification_type} ne 'ACKNOWLEDGEMENT' and $cmdh{notification_type} ne 'CUSTOM')
                 {
                     debug("creating a new escalation for rule $esc_rule", 2);
                     # create status entry
@@ -1453,10 +1453,21 @@ sub createLog
 sub updateLog
 {
     my ( $id, $result ) = @_;
+    my $query;
+    my %dbResult;
 
-    my $query =
-      sprintf(
-'update notification_logs set result=concat(result, \'%s\') where unique_id=\'%s\'',
+    # Because SQLite and MySQL doesnt use the same form of concat syntax, it needs to select, process and then update.
+
+    # Query to find the existing result
+    $query = 'select result from notification_logs where unique_id=\''.$id.'\'';
+    %dbResult = queryDB($query);
+
+    # Create the new result, by merging existing and new.
+    $result = $dbResult{0}->{result}.$result;
+    debug('Updated result: '.$result.' for unique_id: '.$id,3);
+    # Update logentry.
+    $query = sprintf(
+	'update notification_logs set result=\'%s\' where unique_id=\'%s\'',
         $result, $id );
     updateDB($query);
 }

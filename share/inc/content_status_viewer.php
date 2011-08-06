@@ -55,7 +55,7 @@
 function getContent () {
 
 	// get global variables
-	global $authentication_type, $p, $logs;
+	global $authentication_type, $p, $logs, $dbConf;
 
 	// init
 	$cols = array (
@@ -206,12 +206,26 @@ function getContent () {
 		$allCount*=2;
 	}
 
+
+	// Sorry, this is the only way I could solve concat differences between backends without rewriting the frontend too much!
+        if ($dbConf['type'] == 'mysql')
+	{
+		$concat1 = 'concat("ACTIVE ",retries) as result ';
+                $concat2 = 'concat("ESC ",counter) as result ';
+	} 
+	elseif ($dbConf['type'] == 'sqlite3')
+	{
+                $concat1 = '"ACTIVE "||retries as result ';
+                $concat2 = '"ESC "||counter as result ';
+	}
+
+
 	// get logs
 	$query = sprintf(
 		$query . ' order by %s %s',
-		'a.id as id,dest,time_string,method,notify_cmd,retries,rule, host,host_alias,service,check_type,status,a.stime as stime,notification_type,concat("ACTIVE ",retries) as result ',
+		'a.id as id,dest,time_string,method,notify_cmd,retries,rule, host,host_alias,service,check_type,status,a.stime as stime,notification_type,'.$concat1,
 		null,
-		'id,"" as dest,time_string,"(internal escalation)" as method,"" as notify_cmd, counter as retries,notification_rule as rule,host,host_alias,service,check_type,status,starttime as stime,type as notification_type,concat("ESC ",counter) as result',
+		'id,"" as dest,time_string,"(internal escalation)" as method,"" as notify_cmd, counter as retries,notification_rule as rule,host,host_alias,service,check_type,status,starttime as stime,type as notification_type,'.$concat2,
 		$order_by,
 		$limit
 	);

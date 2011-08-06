@@ -64,6 +64,8 @@ function addContactGroup () {
 	$contactgroup_short = ((isset($p['contactgroup_name_short'])) ? $p['contactgroup_name_short'] : null);
 	if (empty($contactgroup_short)) return false;
 	$contactgroup_short = prepareDBValue($contactgroup_short);
+	$timeframe_id =  ((isset($p['timeframe'])) ? $p['timeframe'] : '0');
+	$timezone_id =  ((isset($p['timezone'])) ? $p['timezone'] : '372');
         $timeframe_id = prepareDBValue($timeframe_id);
         $timezone_id = prepareDBValue($timezone_id);
 	
@@ -122,7 +124,10 @@ function updateContactGroup () {
 	if (empty($p['update_contactgroup_name_short'])) return false;
 	$contactgroup_name_short = prepareDBValue($p['update_contactgroup_name_short']);
 
-        $timeframe_id = prepareDBValue($p['timeframe_id']);
+        $timeframe_id =  ((isset($p['timeframe'])) ? $p['timeframe'] : '0');
+        $timezone_id =  ((isset($p['timezone'])) ? $p['timezone'] : '372');
+        $timeframe_id = prepareDBValue($timeframe_id);
+        $timezone_id = prepareDBValue($timezone_id);
 
 	$contactgroup_view_only = (isset($p['contactgroup_view_only'])) ? (int)$p['contactgroup_view_only'] : '0';
 

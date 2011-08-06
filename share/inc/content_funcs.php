@@ -239,6 +239,18 @@ function getTimeFrameById ($id) {
         return $dbResult[0];
 }
 
+/**
+ * getDBVersion - queryies database for information about what dbversion it is.
+ *
+ * @param               string          $id                     id of contact group
+ * @return              string                                  short name of contact group
+ */
+function getDBVersion () {
+        $dbResult = queryDB('select content from information where type=\'dbversion\'');
+        if (count($dbResult) != 1) return false;
+        return $dbResult[0]['content'];
+}
+
 
 
 function getNavigationContent ($action, $admin = false) {

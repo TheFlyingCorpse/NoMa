@@ -7,7 +7,7 @@ command:
   sendsms: /usr/local/nagios/noma/notifier/sendSMS.pl
   voicecall: /usr/local/nagios/noma/notifier/sendVoice.pl
 db:
-  type: sqlite3
+  type: mysql
   mysql:
    database: noma
    host: localhost
@@ -16,9 +16,9 @@ db:
   sqlite3:
    dbfile: /usr/local/nagios/noma/etc/NoMa.db
 debug: 
-  daemonize: 1
+  daemonize: 0
   file: /usr/local/nagios/noma/var/noma_debug.log
-  logging: 1
+  logging: 3
   paramlog: ~
   queries: 1
   sms: ~

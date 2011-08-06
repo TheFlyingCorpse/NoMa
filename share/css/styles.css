@@ -121,6 +121,11 @@ td {
 	text-decoration: none;
 }
 
+#footer a.db_message {
+        font-weight: bold;
+        color: #ff0000;
+}
+
 .row {
 	background-color: #f0f0f0;
 }

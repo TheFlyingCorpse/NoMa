@@ -29,7 +29,7 @@ sub queryDB
     my $dbh;
 
     debug('Database type: '.$database_type,2);
-    if ($database_type == 'mysql'){
+    if ($database_type eq 'mysql'){
             debug('Going to use MySQL as backend...',3);
 	    $dbh = DBI->connect(
 	        'DBI:mysql:host='
@@ -39,7 +39,7 @@ sub queryDB
 	        $conf->{db}->{mysql}->{user}, 		# MySQL Username
 		$conf->{db}->{mysql}->{password}	# MySQL Password
 	    ) or debug($DBI::errstr,1);
-    } elsif ($database_type == 'sqlite3'){
+    } elsif ($database_type eq 'sqlite3'){
             debug('Going to use SQLite3 as backend...',3);
 	    $dbh = DBI->connect(
 		"dbi:SQLite:dbname="
@@ -51,7 +51,7 @@ sub queryDB
 	
     }
 
-    debug("QUERY: " . $queryStr) if (defined($debug_queries) and ($debug_queries != 0) and not defined($nolog), 2);
+    debug("QUERY: " . $queryStr, 2) if (defined($debug_queries) and ($debug_queries != 0) and not defined($nolog));
     my $query = $dbh->prepare($queryStr) or return undef;
     $query->execute or return undef;
 

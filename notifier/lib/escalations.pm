@@ -125,11 +125,11 @@ sub createEscalationCounter
 #        $output
 
     my $query =
-            sprintf('insert into escalation_stati (notification_rule,starttime,counter,incident_id,host,host_alias,host_address,hostgroups,service,servicegroups,check_type,status,time_string,type,output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+            sprintf('insert into escalation_stati (notification_rule,starttime,counter,incident_id,recipients,host,host_alias,host_address,hostgroups,service,servicegroups,check_type,status,time_string,type,authors,comments,output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
             $esc_rule,time(),
-            '1',$eventh{external_id},
+            '1',$eventh{external_id},$eventh{recipients},
             $eventh{host},$eventh{host_alias},$eventh{host_address},$eventh{hostgroups},$eventh{service},$eventh{servicegroups},
-            $eventh{check_type},$eventh{status},$eventh{stime},$eventh{notification_type},$eventh{output});
+            $eventh{check_type},$eventh{status},$eventh{stime},$eventh{notification_type},$eventh{authors},$eventh{comments},$eventh{output});
 
     updateDB($query);
 
@@ -154,6 +154,7 @@ sub escalate
     my $query;
     my %dbResult;
     my @dbResult;
+    my $cmd;
     my $wait = 60;
     my $maxwait = 7200;
 
@@ -177,10 +178,17 @@ sub escalate
       # $query = "update escalation_stati set counter=counter+1 where id='".$res->{id}."'";
       # %dbResult = updateDB($query);
 
-      $query = "select concat('escalation;',incident_id,';',host,';',host_alias,';',host_address,';',hostgroups,';',service,';',servicegroups,';',check_type,';',status,';',unix_timestamp(),';',type,';',output) as cmd from escalation_stati where id='".$res->{id}."'";
+      $query = 'select incident_id,recipients,host,host_alias,host_address,hostgroups,service,servicegroups,check_type,status,time_string,type,authors,comments,output from escalation_stati where id=\''.$res->{id}.'\'';
       %dbResult = queryDB($query);
 
-      $cmdq->enqueue($dbResult{0}{cmd});
+      debug('incident with escalation without alert active, dbResult: '.Dumper(\%dbResult),3);
+
+      # Make a command for escalation notification.
+      $cmd = 'escalation;'.$dbResult{0}{incident_id}.';'.$dbResult{0}{recipients}.";".$dbResult{0}{host}.";".$dbResult{0}{host_alias}.';'.$dbResult{0}{host_address}.';'.$dbResult{0}{hostgroups}.';'.$dbResult{0}{service}.';'.$dbResult{0}{servicegroups}.';'.$dbResult{0}{check_type}.';'.$dbResult{0}{status}.';'.$dbResult{0}{time_string}.';'.$dbResult{0}{type}.';'.$dbResult{0}{authors}.';'.$dbResult{0}{comments}.';'.$dbResult{0}->{output};
+
+      debug('incident with escalatiion without active alert, $cmd: '.$cmd,2);
+
+      $cmdq->enqueue($cmd);
     }
 }
 

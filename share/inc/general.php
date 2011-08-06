@@ -46,7 +46,6 @@
 #
 # Nagios and the Nagios logo are registered trademarks of Ethan Galstad.
 
-
 /**
  * queryDB - queries db and return result as array
  *
