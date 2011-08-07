@@ -166,10 +166,14 @@ function getAuthUser () {
  */
 function authenticate_NATIVE ($user, $password) {
 
+	//workaround for SQLite's lack of crypt functions.
+	//$password=sha1($password);
+	$password=sha1($_POST['password']);
+	print($password);
 	$query = sprintf(
-		'select id from contacts where username=\'%s\' and password=sha1(\'%s\')',
+		'select id from contacts where username=\'%s\' and password=\'%s\'',
 		prepareDBValue($_POST['username']),
-		prepareDBValue($_POST['password'])
+		prepareDBValue($password)
 	);
 	$dbResult = queryDB($query);
 

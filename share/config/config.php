@@ -56,11 +56,6 @@ require_once('inc/general_app.php');
 // options: 'en' | 'de'
 $language = 'en';
 
-// DATABASE
-$dbConf = array (
-	'type'			=> 'mysql', // Valid are 'mysql', ToDo: 'sqlite3'
-);
-
 // NoMa MySQL database options
 $dbConfMySQL = array (
 	'type'			=> 'mysql',    // Dont change this value!
@@ -80,7 +75,7 @@ $dbConfSQLite3 = array (
 // Database type to use for NoMa (not NDO/IDO!)
 // options: 'mysql' | 'sqlite3'
 //$dbType = 'sqlite3';
-$dbType = 'mysql';
+$dbType = 'sqlite3';
 
 
 
@@ -109,7 +104,7 @@ if ($dbType == 'sqlite3'){
 
 // authentication type
 // options: false | 'native' | 'ldap' | 'http'
-$authentication_type = false;
+$authentication_type = 'native';
 
 
 // ldap

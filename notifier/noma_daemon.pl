@@ -267,6 +267,15 @@ if ( defined($daemonize) and $daemonize == 1)
 # TODO: read escalations in and push into Queue???
 # deleteFromEscalations();
 
+##############################################################################
+# DATABASE VERSION VERIFICATION
+##############################################################################
+# Check version before anything else connects to the database!
+my $expecteddbversion = '200'; # Do NOT change this value!
+if (dbVersion($expecteddbversion,0) ne $expecteddbversion){
+        debug( ' Schema is wrong version: '.dbVersion($expecteddbversion,0).' expected: '.$expecteddbversion, 1);
+        exit;
+}
 
 
 ##############################################################################
@@ -1033,7 +1042,9 @@ sub deleteAllFromCommands
 
 sub deleteOrphanCommands
 {
-    my $query = "delete from tmp_commands where external_id not in (select distinct incident_id from notification_logs right join tmp_active on notification_logs.unique_id=tmp_active.notify_id union select distinct incident_id from escalation_stati)";
+    #my $query = "delete from tmp_commands where external_id not in (select distinct incident_id from notification_logs right join tmp_active on notification_logs.unique_id=tmp_active.notify_id union select distinct incident_id from escalation_stati)";# DEFAULT
+#    my $query = "delete from tmp_commands where external_id not in (select distinct incident_id from notification_logs left join tmp_active on notification_logs.unique_id=tmp_active.notify_id union select distinct incident_id from escalation_stati)"; #RUNE
+    my $query = 'DELETE FROM tmp_commands WHERE external_id NOT IN (SELECT DISTINCT incident_id FROM tmp_active LEFT JOIN notification_logs ON tmp_active.notify_id=notification_logs.unique_id UNION SELECT DISTINCT incident_id FROM escalation_stati)'; # MJ
     updateDB($query, 1);
 }
 
@@ -1505,5 +1516,6 @@ sub counterExceededMax
     debug("notification counter rollover: $counter exceeds $maxval -> continuing at $retval", 2);
     return $retval;
 }
+
 # vim: ts=4 sw=4 expandtab
 # EOF

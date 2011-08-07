@@ -60,10 +60,18 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 	// FIGURE OUT WHAT BACKEND!!
 	if (!$ndo) {
 		global $dbConf;
+		global $dbType;
 	} else {
 		global $dbNDO;
 		$dbConf = &$dbNDO;
 	}
+
+	// Choose NoMa backend type.
+/*	if (!$ndo && $dbType == 'sqlite3'){
+		$dbConf = &$dbConfMySQL;
+	} elseif (!$ndo && $dbType == 'mysql'){
+		$dbConf = &$dbConfSQLite3;
+	}*/
 
 	// MySQL backend
 	if ($dbConf['type'] == 'mysql'){

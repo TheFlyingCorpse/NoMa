@@ -7,7 +7,9 @@ command:
   sendsms: /usr/local/nagios/noma/notifier/sendSMS.pl
   voicecall: /usr/local/nagios/noma/notifier/sendVoice.pl
 db:
-  type: mysql
+  type: sqlite3
+  automatic_db_upgrade: yes
+  db_example_dir: /usr/local/nagios/noma/sql
   mysql:
    database: noma
    host: localhost
