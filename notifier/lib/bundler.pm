@@ -236,6 +236,10 @@ sub sendNotifications
             updateLog($dbResult{$item}{notify_id}, ", single alert");
             # queue notification "host + service is output"
             debug("no bundle enqueue", 2);
+	    debug('Bundler: no bundles, notify_cmd: '.$dbResult{$item}{notify_cmd},3);
+            debug('Bundler: no bundles, notify_id: '.$dbResult{$item}{notify_id},3);
+            debug('Bundler: no bundles, stime: '.$dbResult{$item}{stime},3);
+
             $queue->{$dbResult{$item}{notify_cmd}}->enqueue($dbResult{$item}{notify_id}.';'.$dbResult{$item}{stime}.';1;'.$param);
         }
     }
