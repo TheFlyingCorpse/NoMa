@@ -99,7 +99,11 @@ function addContact ($p) {
 		if ($_POST['password'] != $_POST['password_verify']) return CONTACTS_ADD_UPDATE_ERROR_PASSWD_MISMATCH;
 
 		$passwordMask = ',password';
-		$password = ',sha1(\'' . prepareDBValue($_POST['password']) . '\')';
+
+		//$password = ',sha1(\'' . prepareDBValue($_POST['password']) . '\')';
+		// Because of SQLite which doesnt have native crypto, this needs to be done via PHP.
+                $password = sha1(prepareDBValue($_POST['password']));
+		$password = ',\''.prepareDBValue($password).'\'';
 
 	}
 
@@ -178,7 +182,9 @@ function updateContact ($p) {
 
 		if ($_POST['password'] != $_POST['password_verify']) return CONTACTS_ADD_UPDATE_ERROR_PASSWD_MISMATCH;
 
-		$password = ', password=sha1(\'' . prepareDBValue($_POST['password']) . '\')';
+                // Because of SQLite which doesnt have native crypto, this needs to be done via PHP.
+                $password = sha1($_POST['password']);
+                $password = ', password=\''.prepareDBValue($password).'\'';
 
 	}
 

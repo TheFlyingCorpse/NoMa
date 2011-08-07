@@ -93,10 +93,10 @@ function getTimeZone ($id = null) {
 
 
 /**
- * getUsers - give back associative array of users and corresponding ids
+ * getContacts - give back associative array of usernames and corresponding full names.
  *
  * @param		string		$exclude		username of user to exclude from list
- * @return									array of users and corresponding ids
+ * @return									array of full names and corresponding usernames
  */
 function getContacts ($exclude = null) {
 	$query = 'select username,full_name from contacts where username != \'[---]\'';
@@ -112,6 +112,42 @@ function getContacts ($exclude = null) {
 		}
 	}
 	return $users;
+}
+
+/**
+ * getContactsWithIDs - give back associative array of users and corresponding ids
+ *
+ * @param               string          $exclude                username of user to exclude from list
+ * @return                                                                      array of full names and corresponding ids
+ */
+function getContactsWithIDs ($exclude = null) {
+        $query = 'select id,full_name from contacts where username != \'[---]\'';
+        if ($exclude) {
+                $query .= ' and username != \'' . prepareDBValue($exclude) . '\'';
+        }
+        $query .= ' order by full_name';
+        $dbResult = queryDB($query);
+        $users = array();
+        if (is_array($users)) {
+                foreach ($dbResult as $row) {
+                        $users[$row['id']] = $row['full_name'];
+                }
+        }
+        return $users;
+}
+
+/**
+ * getContactID - give back given contacts username's corresponding id
+ *
+ * @param               string          $username                 username to get ID of
+ * @return                                                        id.
+ */
+function getContactID ($username){
+        $query = 'select id from contacts where username = \''.prepareDBValue($username).'\'';
+        $dbResult = queryDB($query);
+        if (count($dbResult) != 1) return false;
+        if (!is_array($dbResult[0])) return false;
+        return $dbResult[0]['id'];
 }
 
 /**

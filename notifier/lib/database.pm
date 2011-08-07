@@ -43,6 +43,8 @@ sub queryDB
             debug('Going to use SQLite3 as backend...',3);
 	    $dbh = DBI->connect(
 		"dbi:SQLite:dbname=$conf->{db}->{sqlite3}->{dbfile}","","") or debug($DBI::errstr,1);
+    } else {
+	debug(' Invalid database set: '.$database_type.' Fix your configuration!',1);
     }
 
     debug("QUERY: " . $queryStr, 2) if (defined($debug_queries) and ($debug_queries != 0) and not defined($nolog));

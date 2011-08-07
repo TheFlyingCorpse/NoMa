@@ -75,10 +75,6 @@ function queryMySQLDB ($query, $return_count = false, $ndo = false) {
         // select database
         mysql_select_db($dbConf['database']) or die("Could not select database!");
 
-        // Uncomment below to log all queries to file.
-        $log = new Logging();
-        $log->lwrite($query);
-
         // query database
         $result = mysql_query($query) or die("Could not execute query: " . mysql_error());
 

@@ -90,15 +90,13 @@ function getContent () {
 
 	if (empty($id)) {
 		$templateContent->assign('HEADING', CONTACTS_ADD_EDIT_USER);
-                if (!isset($userData['timeframe_id'])) $userData['timeframe_id'] = null;
-                if (!isset($userData['timezone_id'])) $userData['timezone_id'] = null;
-                $templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $userData['timeframe_id']));
-                $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $userData['timezone_id']));
-
+	        if (!isset($userData['timeframe_id'])) $userData['timeframe_id'] = null;
+        	if (!isset($userData['timezone_id'])) $userData['timezone_id'] = null;
+	       	$templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $userData['timeframe_id']));
+	        $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $userData['timezone_id']));
 	} else {
 		$templateContent->assign('HEADING', CONTACTS_EDIT_USER);
 	}
-
 
 	// check whether user is admin
 	$admin = false;

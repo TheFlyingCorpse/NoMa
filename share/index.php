@@ -65,7 +65,10 @@ $p = array_merge($_GET, $_POST);
 # currentdbversion, do NOT change this value!
 $currentdbversion = 200;
 
-#var_dump($p);exit;
+$sqllog = true;
+
+var_dump($p);//exit;
+print "<br>\n";
 
 session_start();
 

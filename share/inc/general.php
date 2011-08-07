@@ -61,10 +61,16 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 	if (!$ndo) {
 		global $dbConf;
 		global $dbType;
+		global $sqllog;
 	} else {
 		global $dbNDO;
+		global $sqllog;
 		$dbConf = &$dbNDO;
 	}
+
+        // Uncomment below to log all queries to file.
+        $log = new Logging();
+        $log->lwrite('Query: '.$query);
 
 	// Choose NoMa backend type.
 /*	if (!$ndo && $dbType == 'sqlite3'){
@@ -80,9 +86,11 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 
 		if ($return_count == true){
 			list($count, $dbResult) = queryMySQLDB($query, $return_count, $ndo);
+			if ($sqllog == true){$log->lwrite("Result - Count: $count - dbResult: ".var_dump($dbResult));};
                         return array($count, $dbResult);
 		} else {
 			$dbResult = queryMySQLDB($query, false, $ndo);
+                        if ($sqllog == true){$log->lwrite("Result - dbResult: ".var_dump($dbResult));};
 			return $dbResult;
 		}
 	}
@@ -94,9 +102,11 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 
                 if ($return_count == true){
                         list($count, $dbResult) = querySQLite3DB($query, $return_count, $ndo);
+                        if ($sqllog == true){$log->lwrite("Result - Count: $count - dbResult: ".var_dump($dbResult));};
                         return array($count, $dbResult);
                 } else {
                         $dbResult = querySQLite3DB($query, false, $ndo);
+                        if ($sqllog == true){$log->lwrite("Result - dbResult: ".var_export($dbResult));};
                         return $dbResult;
                 }
         }

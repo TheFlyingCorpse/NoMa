@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `contacts` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(1, 0, '[---]', '', '', '', '', '', '', '', 0, 0, NULL);
-INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(2, 1, 'nagiosadmin', 'Nagios Administrator', 'root@localhost', '', '', '', '192.168.1.109', sha1('nagiosadmin'), 1, 305, 1);
+INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(2, 1, 'nagiosadmin', 'Nagios Administrator', 'root@localhost', '', '', '', '192.168.1.109', sha1('nagiosadmin'), 1, 305, 0);
 
 DROP TABLE IF EXISTS `escalations_contacts`;
 CREATE TABLE IF NOT EXISTS `escalations_contacts` (
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-INSERT INTO `notifications` (`id`, `active`, `username`, `recipients_include`, `recipients_exclude`, `hosts_include`, `hosts_exclude`, `hostgroups_include`, `hostgroups_exclude`, `services_include`, `services_exclude`, `servicegroups_include`, `servicegroups_exclude`, `notify_after_tries`, `let_notifier_handle`, `rollover`, `reloop_delay`, `on_ok`, `on_warning`, `on_unknown`, `on_host_unreachable`, `on_critical`, `on_host_up`, `on_host_down`, `on_type_problem`, `on_type_recovery`, `on_type_flappingstart`, `on_type_flappingstop`, `on_type_flappingdisabled`, `on_type_downtimestart`, `on_type_downtimeend`, `on_type_downtimecancelled`, `on_type_acknowledgement`, `on_type_custom`, `timezone_id`, `timeframe_id`) VALUES(1, 1, 'nagiosadmin', '', '', '*', '', '*', '', '*', '', '*', '', '1', 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1);
+INSERT INTO `notifications` (`id`, `active`, `username`, `recipients_include`, `recipients_exclude`, `hosts_include`, `hosts_exclude`, `hostgroups_include`, `hostgroups_exclude`, `services_include`, `services_exclude`, `servicegroups_include`, `servicegroups_exclude`, `notify_after_tries`, `let_notifier_handle`, `rollover`, `reloop_delay`, `on_ok`, `on_warning`, `on_unknown`, `on_host_unreachable`, `on_critical`, `on_host_up`, `on_host_down`, `on_type_problem`, `on_type_recovery`, `on_type_flappingstart`, `on_type_flappingstop`, `on_type_flappingdisabled`, `on_type_downtimestart`, `on_type_downtimeend`, `on_type_downtimecancelled`, `on_type_acknowledgement`, `on_type_custom`, `timezone_id`, `timeframe_id`) VALUES(1, 1, 'nagiosadmin', '', '', '*', '', '*', '', '*', '', '*', '', '1', 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1);
 
 DROP TABLE IF EXISTS `notifications_to_contactgroups`;
 CREATE TABLE IF NOT EXISTS `notifications_to_contactgroups` (

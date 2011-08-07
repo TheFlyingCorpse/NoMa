@@ -148,11 +148,6 @@ function getContent () {
 		$templateContent->assign('INCLUDE_SERVICES', $dbResult[0]['services_include']);
 		$templateContent->assign('EXCLUDE_SERVICES', $dbResult[0]['services_exclude']);
 
-                if (!isset($dbResult[0]['timeframe_id'])) $dbResult[0]['timeframe_id'] = null;
-                if (!isset($dbResult[0]['timezone_id'])) $dbResult[0]['timezone_id'] = null;
-                $templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $dbResult[0]['timeframe_id']));
-                $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $dbResult[0]['timezone_id']));
-
 		// get notification users
 		$dbSub = queryDB('select c.username from contacts c
 							left join notifications_to_contacts nc on nc.contact_id=c.id
@@ -187,14 +182,11 @@ function getContent () {
 
 		$templateContent->assign('ACTION', 'add_new');
 		$templateContent->assign('HEADING', ADD_EDIT_HEADING_NEW);
-                if (!isset($dbResult[0]['timeframe_id'])) $dbResult[0]['timeframe_id'] = null;
-                if (!isset($dbResult[0]['timezone_id'])) $dbResult[0]['timezone_id'] = null;
-                $templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $dbResult[0]['timeframe_id']));
-                $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $dbResult[0]['timezone_id']));
-
 
 	}
 
+        $templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $dbResult[0]['timeframe_id']));
+        $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $dbResult[0]['timezone_id']));
 
 	// assign form elements and defaults
 	// $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $dbResult[0]['timezone_id']));
@@ -204,6 +196,11 @@ function getContent () {
 	} else {
 		$templateContent->assign('OWNER_SELECT', htmlSelect('owner', getContacts(), $dbResult[0]['username']));
 	}
+
+//        if (!isset($userData['timeframe_id'])) $userData['timeframe_id'] = null;
+ //       if (!isset($userData['timezone_id'])) $userData['timezone_id'] = null;
+//        $templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $dbResult[0]['timeframe_id']));
+ //       $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $dbResult[0]['timezone_id']));
 
 
 	// BEGIN - assign content for contacts and methods
@@ -364,7 +361,8 @@ function getContent () {
 		$templateSubContent->assign('ADD_EDIT_NOTIFY_BY', ADD_EDIT_NOTIFY_BY);
 		$templateSubContent->assign('ADD_EDIT_NOTIFY_ON', ADD_EDIT_NOTIFY_ON);
 
-		$templateSubContent->assign('NOTIFY_USERS_SELECT', htmlSelect('notify_users' . $formArray . '[]', getContacts(), $notify_users, 'size="5" multiple="multiple"'));
+		//$templateSubContent->assign('NOTIFY_USERS_SELECT', htmlSelect('notify_users' . $formArray . '[]', getContacts(), $notify_users, 'size="5" multiple="multiple"'));
+                $templateSubContent->assign('NOTIFY_USERS_SELECT', htmlSelect('notify_users' . $formArray . '[]', getContactsWithIDs(), $notify_users, 'size="5" multiple="multiple"'));
 		$templateSubContent->assign('NOTIFY_GROUPS_SELECT', htmlSelect('notify_groups' . $formArray . '[]', getContactGroups(), $notify_groups, 'size="5" multiple="multiple"'));
 
 		$templateSubContent->assign('NOTIFY_BY_SELECT', htmlSelect('notify_by' . $formArray . '[]', getNotificationMethods(), $notify_by, 'size="5" multiple="multiple"'));

@@ -91,8 +91,8 @@ function addNotification ($p) {
         $notify_on_type_custom = prepareDBValue((isset($p['notify_on_type_custom']) && $p['notify_on_type_custom'] == 'on') ? '1' : '0');
         $timeframe_id = prepareDBValue($p['timeframe']);
         $timezone_id = prepareDBValue($p['timezone']);
-	$let_notifier_handle = ($p['let_notifier_handle']);
-	$rollover = ($p['rollover']);
+	$let_notifier_handle = prepareDBValue((isset($p['let_notifier_handle']) && ($p['let_notifier_handle']) == 'on') ? '1' : '0');
+	$rollover = prepareDBValue((isset($p['rollover']) && $p['rollover'] == 'on') ? '1' : '0');
 
 
 	// perform securicy checks
@@ -100,9 +100,9 @@ function addNotification ($p) {
 
 
 	// check whether notification exists
-		$query = sprintf(
+	$query = sprintf(
 		'select id from notifications
-			where active=0 and username=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\'  and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+			where active=0 and username=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\'  and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and let_notifier_handle=\'%s\' and rollover=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$owner,
 		$recipients_include,
 		$recipients_exclude,
@@ -115,6 +115,8 @@ function addNotification ($p) {
 		$services_include,
 		$services_exclude,
 		$notify_after_tries,
+                $let_notifier_handle,
+                $rollover,
 		$notify_on_ok,
 		$notify_on_warning,
 		$notify_on_unknown,
@@ -177,7 +179,7 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
                 $notify_on_type_acknowledgement,
                 $notify_on_type_custom,
                 $timezone_id,
-                $timetimeframe_id
+                $timeframe_id
 	);
 
 	queryDB($query);
@@ -185,7 +187,7 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
 	// get new id
 	$query = sprintf(
 		'SELECT id FROM notifications
-			WHERE active=\'0\' and username=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and  hosts_include=\'%s\' and hosts_exclude=\'%s\' and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+			WHERE active=\'0\' and username=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and  hosts_include=\'%s\' and hosts_exclude=\'%s\' and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and let_notifier_handle=\'%s\' and rollover=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$owner,
 		$recipients_include,
 		$recipients_exclude,
@@ -198,6 +200,8 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
 		$services_include,
 		$services_exclude,
 		$notify_after_tries,
+                $let_notifier_handle,
+                $rollover,
 		$notify_on_ok,
 		$notify_on_warning,
 		$notify_on_unknown,
@@ -224,56 +228,54 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
 	if (!$id) return false;
 
 
-	// get notification users' usernames and add them
-	// get user IDs
-	$query = 'select id from contacts where ';
-	$sep = null;
+        // add owner to notifications list, if configured
+        if ($notifications['add_owner'] === true) {
 
-	// add owner to notifications list, if configured
-	if ($notifications['add_owner'] === true) {
-		if (is_array($p['notify_users']) === false) {
-			$p['notify_users'][] = $p['owner'];
-		} elseif (in_array($p['owner'], $p['notify_users']) === false) {
-			$p['notify_users'][] = $p['owner'];
-		}
-	}
+	        $owner_id = getContactID($owner);
+
+                if (is_array($p['notify_users']) === false) {
+
+                        $p['notify_users'][] = $owner_id;
+
+                } elseif (in_array($owner_id, $p['notify_users']) === false) {
+
+                        $p['notify_users'][] = $owner_id;
+
+                }
+
+        }
+
+
+        $log2 = new Logging();
+        $log2->lwrite('Owner/owner id: '.$owner.'/'.$owner_id);
 
 	if (isset($p['notify_users']) && is_array($p['notify_users'])) {
 
-		foreach ($p['notify_users'] as $username) {
-			if (!empty($username)) {
-				$query .= sprintf('%susername=\'%s\'', $sep, prepareDBValue($username));
-				if (!$sep) $sep = ' or ';
-			}
-		}
+                // Because of SQLite3, this needs to be split into several transactions.
+                foreach ($p['notify_users'] as $user) {
 
-		$dbResult = queryDB($query);
+                        if (!empty($user)){
+                                $query = sprintf('INSERT INTO notifications_to_contacts (notification_id,contact_id) VALUES (\'%s\',\'%s\');', $id, prepareDBValue($user));
+                                queryDB($query);
 
-		// add user IDs
-		$query = 'insert into notifications_to_contacts (notification_id,contact_id) values ';
-		$sep = null;
-		foreach ($dbResult as $row) {
-			if (!empty($row['id'])) {
-				$query .= sprintf('%s(%s,%s)', $sep, $id, $row['id']);
-				if (!$sep) $sep = ',';
 			}
-		}
-		queryDB($query);
+
+                }
 
 	}
 
 	// store contactgroups
 	if (isset($p['notify_groups']) && is_array($p['notify_groups'])) {
 
-		$contactgroups = null;
-		$sep = null;
+                // Because of SQLite3, this needs to be split into several transactions.
+                foreach ($p['notify_groups'] as $group) {
 
-		foreach ($p['notify_groups'] as $group) {
-			$contactgroups .= $sep . '(\'' . $id . '\',\'' . prepareDBValue($group) . '\')';
-			if(!$sep) $sep = ',';
-		}
+                         if (!empty($group)){
+                                $query = sprintf('INSERT INTO notifications_to_contactgroups (notification_id,contactgroup_id) VALUES (\'%s\',\'%s\');', $id, prepareDBValue($group));
+                                queryDB($query);
+                         }
 
-		queryDB('insert into notifications_to_contactgroups values ' . $contactgroups);
+                }
 
 	}
 
@@ -281,17 +283,14 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
 	// add notification methods
 	if (isset($p['notify_by']) && is_array($p['notify_by'])) {
 
-		$query = 'insert into notifications_to_methods (notification_id,method_id) values ';
-		$sep = null;
+                // Because of SQLite3, this needs to be split into several transactions.
+                foreach ($p['notify_by'] as $methodID) {
+                         if (!empty($methodID)){
+                                $query = 'INSERT INTO notifications_to_methods (notification_id,method_id) VALUES (\''.$id.'\',\''.prepareDBValue($methodID).'\')';
+                                queryDB($query);
+                         }
 
-		foreach ($p['notify_by'] as $methodID) {
-			if (!empty($methodID)) {
-				$query .= sprintf('%s(%s,%s)', $sep, $id, prepareDBValue($methodID));
-				if (!$sep) $sep = ',';
-			}
-		}
-
-		queryDB($query);
+                }
 
 	}
 
@@ -347,13 +346,13 @@ function updateNotification ($p) {
         $notify_on_type_downtimecancelled = prepareDBValue((isset($p['notify_on_type_downtimecancelled'][0]) && ($p['notify_on_type_downtimecancelled'][0]) == 'on') ? '1' : '0');
         $notify_on_type_acknowledgement = prepareDBValue((isset($p['notify_on_type_acknowledgement'][0]) && ($p['notify_on_type_acknowledgement'][0]) == 'on') ? '1' : '0');
         $notify_on_type_custom = prepareDBValue((isset($p['notify_on_type_custom'][0]) && ($p['notify_on_type_custom'][0]) == 'on') ? '1' : '0');
-	$let_notifier_handle = ($p['let_notifier_handle'][0]);
-	$rollover = ($p['rollover'][0]);
-        $timeframe_id = prepareDBValue($p['timeframe'][0]);
-        $timezone_id = prepareDBValue($p['timezone'][0]);
+	$let_notifier_handle = prepareDBValue((isset($p['let_notifier_handle'][0]) && ($p['let_notifier_handle'][0]) == 'on') ? '1' : '0');
+	$rollover = prepareDBValue((isset($p['rollover'][0]) && ($p['rollover'][0]) == 'on') ? '1' : '0');
+        $timeframe_id = prepareDBValue($p['timeframe']);
+        $timezone_id = prepareDBValue($p['timezone']);
 
 
-	// perform securicy checksme_id = prepareDBValue($p['timeframe']);
+	// perform securicy checks
 	if (!isAdmin()) {
 		$dbResult = queryDB('select username from notifications where id=\'' . $id . '\'');
 		if ($dbResult[0]['username'] != $owner) return false;
@@ -402,18 +401,21 @@ function updateNotification ($p) {
 	// delete old notification users
 	queryDB('delete from notifications_to_contacts where notification_id=\'' . $id . '\'');	
 
-	// get notification users' usernames and add them
-	// get user IDs
-	$query = 'select id from contacts where ';
-	$sep = null;
-
 	// add owner to notifications list, if configured
 	if ($notifications['add_owner'] === true) {
-		if (is_array($p['notify_users']) === false) {
-			$p['notify_users'][] = $p['owner'];
-		} elseif (in_array($p['owner'], $p['notify_users']) === false) {
-			$p['notify_users'][] = $p['owner'];
-		}
+
+                $owner_id = getContactID($owner);
+
+                if (is_array($p['notify_users']) === false) {
+
+                        $p['notify_users'][] = $owner_id;
+
+                } elseif (in_array($owner_id, $p['notify_users']) === false) {
+
+                        $p['notify_users'][] = $owner_id;
+
+                }
+
 	}
 
 	// only update when users have been set
@@ -421,24 +423,14 @@ function updateNotification ($p) {
 
 		if (is_array($p['notify_users'][0]) && count($p['notify_users'][0])) {
 
-			foreach ($p['notify_users'][0] as $username) {
-				if (!empty($username)) {
-					$query .= sprintf('%susername=\'%s\'', $sep, prepareDBValue($username));
-					if (!$sep) $sep = ' or ';
-				}
-			}
-			$dbResult = queryDB($query);
+                        foreach ($p['notify_users'][0] as $user) {
+                                if (!empty($user)){
+                                        $query = sprintf('insert into notifications_to_contacts (notification_id,contact_id) values(\'%s\',\'%s\')', $id, prepareDBValue($user));
+                                        queryDB($query);
 
-			// add user IDs
-			$query = 'insert into notifications_to_contacts (notification_id,contact_id) values ';
-			$sep = null;
-			foreach ($dbResult as $row) {
-				if (!empty($row['id'])) {
-					$query .= sprintf('%s(%s,%s)', $sep, $id, $row['id']);
-					if (!$sep) $sep = ',';
-				}
-			}
-			queryDB($query);
+                                }
+
+                        }
 
 		}
 
@@ -453,15 +445,15 @@ function updateNotification ($p) {
 
 		if (is_array($p['notify_groups'][0]) && count($p['notify_groups'][0])) {
 
-			$contactgroups = null;
-			$sep = null;
+                        // Because of SQLite3, this needs to be split into several transactions.
+                        foreach ($p['notify_groups'][0] as $group) {
+                                if (!empty($group)){
+                                        $query = sprintf('insert into notifications_to_contactgroups (notification_id,contactgroup_id) values(\'%s\',\'%s\')', $id, prepareDBValue($group));
+                                        queryDB($query);
 
-			foreach ($p['notify_groups'][0] as $group) {
-				$contactgroups .= $sep . '(\'' . $id . '\',\'' . prepareDBValue($group) . '\')';
-				if (!$sep) $sep = ',';
-			}
+                                }
 
-			queryDB('insert into notifications_to_contactgroups values ' . $contactgroups);
+                        }
 
 		}
 
@@ -476,15 +468,16 @@ function updateNotification ($p) {
 
 		if (is_array($p['notify_by'][0]) && count($p['notify_by'][0])) {
 
-			$query = 'insert into notifications_to_methods (notification_id,method_id) values ';
-			$sep = null;
+			// Because of SQLite3, this has been split into several transactions.
 			foreach ($p['notify_by'][0] as $methodID) {
 				if (!empty($methodID)) {
-					$query .= sprintf('%s(\'%s\',\'%s\')', $sep, $id, prepareDBValue($methodID));
-					if (!$sep) $sep = ',';
+					$query = sprintf('insert into notifications_to_methods (notification_id,method_id) values(\'%s\',\'%s\')', $id, prepareDBValue($methodID));
+		                        queryDB($query);
+
 				}
+
 			}
-			queryDB($query);
+
 		}
 
 	}
@@ -587,23 +580,16 @@ function updateNotification ($p) {
 
 				if (is_array($p['notify_users'][$x]) && count($p['notify_users'][$x])) {
 
-					// get contact ids
-					$where = null;
-					$sep = null;
-					foreach($p['notify_users'][$x] as $contact) {
-						$where .= $sep . 'username=\'' . prepareDBValue($contact) . '\'';
-						if (!$sep) $sep = ' or ';
-					}
-					$dbResult = queryDB('select distinct id from contacts where ' . $where);
+			                // Because of SQLite3, this needs to be split into several transactions.
+			                foreach ($p['notify_users'] as $user) {
 
-					// store escalation contacts
-					$values = null;
-					$sep = null;
-					foreach ($dbResult as $row) {
-						$values .= sprintf('%s(\'%s\',\'%s\')', $sep, $eid, $row['id']);
-						if (!$sep) $sep = ',';
-					}
-					queryDB('INSERT INTO escalations_contacts_to_contacts (escalation_contacts_id,contacts_id) VALUES ' . $values);
+			                        if (!empty($user) and (prepareDBValue($user) != '')){
+			                                $query = sprintf('INSERT INTO escalations_contacts_to_contacts (escalation_contacts_id,contacts_id)) VALUES (\'%s\',\'%s\');', $id, prepareDBValue($user));
+			                                queryDB($query);
+
+			                        }
+
+			                }
 
 				}
 
@@ -615,13 +601,18 @@ function updateNotification ($p) {
 
 				if (is_array($p['notify_groups'][$x]) && count($p['notify_groups'][$x])) {
 
-					$values = null;
-					$sep = null;
-					foreach ($p['notify_groups'][$x] as $groupID) {
-						$values .= sprintf('%s(\'%s\',\'%s\')', $sep, $eid, $groupID);
-						if (!$sep) $sep = ',';
-					}
-					queryDB('INSERT INTO escalations_contacts_to_contactgroups (escalation_contacts_id,contactgroup_id) VALUES ' . $values);
+		                        // Because of SQLite3, this has been split into several transactions.
+		                        foreach ($p['notify_groups'][$x] as $groupID) {
+
+		                                if (!empty($groupID)) {
+
+		                                        $query = sprintf('INSERT INTO escalations_contacts_to_contactgroups (escalation_contacts_id,contactgroup_id) VALUES (\'%s\',\'%s\');', $eid, prepareDBValue($groupID));
+
+		                                        queryDB($query);
+
+		       	                        }
+
+		                        }
 
 				}
 
@@ -633,13 +624,18 @@ function updateNotification ($p) {
 
 				if (is_array($p['notify_by'][$x]) && count($p['notify_by'][$x])) {
 
-					$values = null;
-					$sep = null;
-					foreach ($p['notify_by'][$x] as $methodID) {
-						$values .= sprintf('%s(\'%s\',\'%s\')', $sep, $eid, $methodID);
-						if (!$sep) $sep = ',';
-					}
-					queryDB('INSERT INTO escalations_contacts_to_methods (escalation_contacts_id,method_id) VALUES ' . $values);
+                                        // Because of SQLite3, this has been split into several transactions.
+                                        foreach ($p['notify_by'][$x] as $methodID) {
+
+                                                if (!empty($methodID)) {
+
+                                                        $query = sprintf('INSERT INTO escalations_contacts_to_methods (escalation_contacts_id,method_id) VALUES (\'%s\',\'%s\')', $eid, prepareDBValue($methodID));
+
+                                                        queryDB($query);
+
+                                                }
+
+                                        }
 
 				}
 
