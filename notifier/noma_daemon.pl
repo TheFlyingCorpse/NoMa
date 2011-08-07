@@ -965,10 +965,10 @@ sub prepareNotification
     # if there is a configured delay, add it to the start time
     my $delay = $conf->{notifier}->{delay};
     $delay = 0 unless (defined($delay) and not defined($nodelay));
-
+    $delay = $delay + time;
 
 	# insert the command into our active notification list
-	my $query = sprintf('insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) (select \'%s\',\'%s\',\'%s\', \'%s\',\'%s\',\'%s\', \'%s\', \'%s\', id,(stime+\'%s\') from tmp_commands where external_id = \'%s\')',
+	my $query = sprintf('insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) (select \'%s\',\'%s\',\'%s\', \'%s\',\'%s\',\'%s\', \'%s\', \'%s\', id,\'%s\' from tmp_commands where external_id = \'%s\')',
 		$user, $method, $short_cmd, $datetime, $id, $dest, $from, $rule, $delay, $incident_id);
     	
 	updateDB($query);
