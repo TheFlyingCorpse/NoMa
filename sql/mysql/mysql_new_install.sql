@@ -237,20 +237,20 @@ CREATE TABLE IF NOT EXISTS `notification_methods` (
   `method` varchar(255) NOT NULL,
   `command` varchar(255) NOT NULL,
   `contact_field` varchar(255) NOT NULL,
-  `from` varchar(255) NOT NULL,
+  `sender` varchar(255) NOT NULL,
   `on_fail` int(11) NOT NULL,
   `ack_able` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES(5, 'Voice + SMS fallback', 'voicecall', 'phone', '', 2, 1);
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES(6, 'Growl', 'growl', 'netaddress', '', 0, 0);
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES(4, 'Voice + E-Mail fallback', 'voicecall', 'phone', '', 1, 1);
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES(3, 'Voice', 'voicecall', 'phone', '', 0, 1);
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES(2, 'SMS', 'sendsms', 'mobile', '', 0, 0);
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES(1, 'E-Mail', 'sendemail', 'email', 'noma@netways.de', 0, 0);
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES(7, 'Growl + E-Mail fallback', 'growl', 'netaddress', '', 1, 1);
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `from`, `on_fail`, `ack_able`) VALUES(8, 'Growl + SMS fallback', 'growl', 'netaddress', '', 2, 1);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(5, 'Voice + SMS fallback', 'voicecall', 'phone', '', 2, 1);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(6, 'Growl', 'growl', 'netaddress', '', 0, 0);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(4, 'Voice + E-Mail fallback', 'voicecall', 'phone', '', 1, 1);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(3, 'Voice', 'voicecall', 'phone', '', 0, 1);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(2, 'SMS', 'sendsms', 'mobile', '', 0, 0);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(1, 'E-Mail', 'sendemail', 'email', 'noma@netways.de', 0, 0);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(7, 'Growl + E-Mail fallback', 'growl', 'netaddress', '', 1, 1);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(8, 'Growl + SMS fallback', 'growl', 'netaddress', '', 2, 1);
 
 DROP TABLE IF EXISTS `notification_stati`;
 CREATE TABLE IF NOT EXISTS `notification_stati` (

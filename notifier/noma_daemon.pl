@@ -371,7 +371,7 @@ do
 
             # generate query and get list of possible users to notify
             my $query =
-            'select id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude from notifications';
+            'SELECT id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude FROM notifications';
             if ( $cmdh{check_type} eq 'h' )
             {
                 $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\' and ' . $stati_type{$cmdh{notification_type}} . '=\'1\'';
@@ -557,16 +557,15 @@ do
 ##############################################################################
             # SEND COMMANDS
 ##############################################################################
-
             # loop through list of contacts
             for my $contact (@contactsArr)
             {
-
+		debug('contact dump: '.Dumper(@contactsArr),3);
                 my $user   = $contact->{username};
                 my $method = $contact->{method};
                 my $cmd    = $contact->{command};
                 my $dest   = $contact->{ $contact->{contact_field} };
-                my $from   = $contact->{from};
+                my $sender = $contact->{sender};
                 my $id    = unique_id();
                 my $flag  = 0;
                 my $notifyUnique = 1;
@@ -620,7 +619,7 @@ do
                 } else {
 # TODO: pass hashes?
                     prepareNotification($cmdh{external_id}, $user, $method, 
-			$cmd, $dest, $from, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
+			$cmd, $dest, $sender, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
                         $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, 
 			$cmdh{hostgroups}, $cmdh{service}, $cmdh{servicegroups}, $cmdh{authors}, $cmdh{comments}, $cmdh{output}, 
 			$contact->{rule});
@@ -912,7 +911,7 @@ sub getNotificationCounter
 }
 sub prepareNotification
 {
-	my ($incident_id, $user, $method, $short_cmd, $dest, $from, $id,
+	my ($incident_id, $user, $method, $short_cmd, $dest, $sender, $id,
 	$datetime, $check_type, $status,
 	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $authors, $comments, $output, $rule, $nodelay) = @_;
 
@@ -944,10 +943,10 @@ sub prepareNotification
         return 0;
     }
 
-	# default 'from'
-	unless ( defined($from) )
+	# default 'sender' (previously $from)
+	unless ( defined($sender) )
 	{
-	    my $from = '';
+	    my $sender = '';
 	}
 
 	# create parameter (FROM DESTINATION CHECK-TYPE DATETIME STATUS NOTIFICATION-TYPE HOST-NAME HOST-ALIAS HOST-IP OUTPUT [SERVICE])
@@ -965,13 +964,31 @@ sub prepareNotification
     # if there is a configured delay, add it to the start time
     my $delay = $conf->{notifier}->{delay};
     $delay = 0 unless (defined($delay) and not defined($nodelay));
-    $delay = $delay + time;
 
 	# insert the command into our active notification list
-	my $query = sprintf('insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) (select \'%s\',\'%s\',\'%s\', \'%s\',\'%s\',\'%s\', \'%s\', \'%s\', id,\'%s\' from tmp_commands where external_id = \'%s\')',
-		$user, $method, $short_cmd, $datetime, $id, $dest, $from, $rule, $delay, $incident_id);
+	my $query = sprintf('select \'%s\',\'%s\',\'%s\', \'%s\',\'%s\',\'%s\', \'%s\', \'%s\', id,(stime+\'%s\') as stime from tmp_commands where external_id = \'%s\'',
+		$user, $method, $short_cmd, $datetime, $id, $dest, $sender, $rule, $delay, $incident_id);
+	my %dbResult = queryDB($query);
+	
+	my $query2 = sprintf('insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+		$dbResult{0}{user},
+		$dbResult{0}{method},
+		$dbResult{0}{notify_cmd},
+		$dbResult{0}{time_string},
+                $dbResult{0}{notify_id},
+                $dbResult{0}{dest},
+                $dbResult{0}{from_user},
+                $dbResult{0}{rule},
+                $dbResult{0}{command_id},
+                $dbResult{0}{stime}
+	);
+
+
+#	my $query = sprintf('insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) (select \'%s\',\'%s\',\'%s\', \'%s\',\'%s\',\'%s\', \'%s\', \'%s\', id,stime from tmp_commands where external_id = \'%s\')',
+#		$user, $method, $short_cmd, $datetime, $id, $dest, $sender, $rule, $incident_id); # TESTING WITHOUT DELAY
+#        my $query = 'insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) (select \''.$user.',\''.$method.'\',\''.$short_cmd.'\', \''.$datetime.'\',\''.$id.'\',\''.$dest.'\', \''.$sender.'\', \''.$rule.'\', id,\''.$delay.'\' from tmp_commands where external_id = \''.$incident_id.'\')';
     	
-	updateDB($query);
+	updateDB($query2);
 
 	# return("$id;$start;1;$param");
 	return 1;

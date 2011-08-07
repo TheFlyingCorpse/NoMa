@@ -309,7 +309,6 @@ sub setProgressFlag
     my ($arrptr) = @_;
     my $list;
 
-
     $list = join(',', @$arrptr);
     debug("setting progress flag for $list", 2);
     updateDB("update tmp_active set progress='1' where notify_id in (".$list.")");
