@@ -69,10 +69,6 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 		die('Something wrong\n');
 	};
 
-        // Uncomment below to log all queries to file.
-        //$log = new Logging();
-        //$log->lwrite($query);
-
         // query database
 	$result = $db->query($query);
 
@@ -89,9 +85,8 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 	                $start = 'select';
 	                $end = 'from';
 	                $replace_with = ' COUNT(*) ';
-			//echo "Original Query: ".$query."<br>";
+
 			$countquery = replace_content_inside_delimiters($start, $end, $replace_with, $query);
-			//echo "Count Query   : ".$countquery."<br/>";
 		
 			if ($result = $db->query($countquery)) {
 

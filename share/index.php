@@ -48,6 +48,7 @@
 
 require_once('config/config.php');
 require_once('classes/class_nwTemplate.php');
+require_once('classes/class_Logging.php');
 require_once('inc/html.php');
 require_once('inc/change_notifications.php');
 require_once('inc/change_contacts.php');
@@ -65,10 +66,7 @@ $p = array_merge($_GET, $_POST);
 # currentdbversion, do NOT change this value!
 $currentdbversion = 200;
 
-$sqllog = true;
-
-var_dump($p);//exit;
-print "<br>\n";
+//var_dump($p);//exit;
 
 session_start();
 

@@ -56,6 +56,14 @@ require_once('inc/general_app.php');
 // options: 'en' | 'de'
 $language = 'en';
 
+// logging
+// output dir
+$log_file = '/tmp/NoMa-logfile.log';
+// debug logging (where implemented) in frontend, options: true | false
+$debug = false;
+// sql frontend logging options: true | false
+$sqllog = false;
+
 // NoMa MySQL database options
 $dbConfMySQL = array (
 	'type'			=> 'mysql',    // Dont change this value!

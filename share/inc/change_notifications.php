@@ -245,10 +245,6 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
 
         }
 
-
-        $log2 = new Logging();
-        $log2->lwrite('Owner/owner id: '.$owner.'/'.$owner_id);
-
 	if (isset($p['notify_users']) && is_array($p['notify_users'])) {
 
                 // Because of SQLite3, this needs to be split into several transactions.
