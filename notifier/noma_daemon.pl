@@ -271,8 +271,9 @@ if ( defined($daemonize) and $daemonize == 1)
 # DATABASE VERSION VERIFICATION
 ##############################################################################
 # Check version before anything else connects to the database!
-my $expecteddbversion = '200'; # Do NOT change this value!
+my $expecteddbversion = '2000'; # Do NOT change this value!
 if (dbVersion($expecteddbversion,0) ne $expecteddbversion){
+	print("Wrong schema version!! Please upgrade DB schema, see documentation and log for more information...");
         debug( ' Schema is wrong version: '.dbVersion($expecteddbversion,0).' expected: '.$expecteddbversion, 1);
         exit;
 }
@@ -576,7 +577,7 @@ do
                 # insert into DB
                 createLog(
                     '1', $id, $cmdh{external_id}, $contact->{rule},
-                    $check_type_str{$cmdh{check_type}},          $cmdh{status},
+                    $check_type_str{$cmdh{check_type}},          $cmdh{status},$cmdh{notification_type},
                     $cmdh{host},                $cmdh{service},
                     $method,           $contact->{mid}, $user,
                     'processing notification'
@@ -869,7 +870,7 @@ sub parseCommand
     {
 
         $suppressionHash{$1} = time();
-        createLog('1', unique_id(), unique_id(), 0, '(internal)','OK','localhost','NoMa','(none)', '0',$2, "All $1 alerts have been suppressed by $2");
+        createLog('1', unique_id(), unique_id(), 0, '(internal)','OK','(supression)','localhost','NoMa','(none)', '0',$2, "All $1 alerts have been suppressed by $2");
 	deleteAllFromActive();
 	deleteAllFromEscalations();
 	deleteAllFromCommands();
@@ -966,11 +967,11 @@ sub prepareNotification
     $delay = 0 unless (defined($delay) and not defined($nodelay));
 
 	# insert the command into our active notification list
-	my $query = sprintf('select \'%s\',\'%s\',\'%s\', \'%s\',\'%s\',\'%s\', \'%s\', \'%s\', id,(stime+\'%s\') as stime from tmp_commands where external_id = \'%s\'',
+	my $query = sprintf('SELECT \'%s\' AS user,\'%s\' AS method,\'%s\' AS notify_cmd, \'%s\' AS time_string,\'%s\' AS notify_id,\'%s\' AS dest, \'%s\' AS from_user, \'%s\' AS rule, id,(stime+\'%s\') AS stime FROM tmp_commands WHERE external_id = \'%s\'',
 		$user, $method, $short_cmd, $datetime, $id, $dest, $sender, $rule, $delay, $incident_id);
 	my %dbResult = queryDB($query);
 	
-	my $query2 = sprintf('insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+	my $query2 = sprintf('INSERT INTO tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
 		$dbResult{0}{user},
 		$dbResult{0}{method},
 		$dbResult{0}{notify_cmd},
@@ -979,14 +980,10 @@ sub prepareNotification
                 $dbResult{0}{dest},
                 $dbResult{0}{from_user},
                 $dbResult{0}{rule},
-                $dbResult{0}{command_id},
+                $dbResult{0}{id},
                 $dbResult{0}{stime}
 	);
 
-
-#	my $query = sprintf('insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) (select \'%s\',\'%s\',\'%s\', \'%s\',\'%s\',\'%s\', \'%s\', \'%s\', id,stime from tmp_commands where external_id = \'%s\')',
-#		$user, $method, $short_cmd, $datetime, $id, $dest, $sender, $rule, $incident_id); # TESTING WITHOUT DELAY
-#        my $query = 'insert into tmp_active (user, method, notify_cmd, time_string, notify_id, dest, from_user, rule, command_id, stime) (select \''.$user.',\''.$method.'\',\''.$short_cmd.'\', \''.$datetime.'\',\''.$id.'\',\''.$dest.'\', \''.$sender.'\', \''.$rule.'\', id,\''.$delay.'\' from tmp_commands where external_id = \''.$incident_id.'\')';
     	
 	updateDB($query2);
 
@@ -1425,7 +1422,7 @@ sub createLog
 
     # get parameter values
     my (
-        $counter, $cur_id, $incident_id, $rule, $check_type_str, $status, $host,
+        $counter, $cur_id, $incident_id, $rule, $check_type_str, $status, $notification_type,$host,
         $service, $method, $mid, $user,       $result
     ) = @_;
 
@@ -1456,8 +1453,8 @@ sub createLog
     }
 
     my $query = sprintf(
-'insert into notification_logs (unique_id, incident_id, notification_rule, timestamp,counter,check_type,check_result,host,service,method,last_method,user,result)
-			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+'insert into notification_logs (unique_id, incident_id, notification_rule, timestamp,counter,check_type,check_result,notification_type,host,service,method,last_method,user,result)
+			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
         $cur_id,
 	$incident_id,
 	$rule,
@@ -1465,6 +1462,7 @@ sub createLog
         $counter,
         $check_type_str,
         $status,
+	$notification_type,
         $host,
         $service,
         $method,

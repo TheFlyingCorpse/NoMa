@@ -64,7 +64,7 @@ $p = array_merge($_GET, $_POST);
 
 
 # currentdbversion, do NOT change this value!
-$currentdbversion = 200;
+$currentdbversion = 2000;
 
 //var_dump($p);//exit;
 
