@@ -61,6 +61,7 @@ function getContent () {
 	// init
 	$cols = array (
 		'n.id' => 'NOTIFICATION_RULE',
+		'n.notification_name' => 'NOTIFICATION_NAME',
                 'n.recipients_include' => 'RECIPIENT',
                 'n.servicegroups_include' => 'SERVICEGROUP',
 		'n.hostgroups_include' => 'HOSTGROUP',
@@ -77,6 +78,7 @@ function getContent () {
 	// BEGIN - assign static
 	$templateContent->assign('OVERVIEW_ADD_NEW_NOTIFICATION', OVERVIEW_ADD_NEW_NOTIFICATION);
 	$templateContent->assign('OVERVIEW_HEADING_NOTIFICATION_RULE', OVERVIEW_HEADING_NOTIFICATION_RULE);
+        $templateContent->assign('OVERVIEW_HEADING_NOTIFICATION_NAME', OVERVIEW_HEADING_NOTIFICATION_NAME);
 	$templateContent->assign('OVERVIEW_HEADING_ACTIONS', OVERVIEW_HEADING_ACTIONS);
         $templateContent->assign('OVERVIEW_HEADING_RECIPIENTS', OVERVIEW_HEADING_RECIPIENTS);
         $templateContent->assign('OVERVIEW_HEADING_SERVICEGROUPS', OVERVIEW_HEADING_SERVICEGROUPS);
@@ -410,6 +412,10 @@ function getContent () {
 		// BEGIN - rule no.
 		$templateSubContent->assign('NOTIFICATION_RULE', $rowID);
 		// END   - rule no.
+
+                // BEGIN - name to no.
+                $templateSubContent->assign('NOTIFICATION_NAME', $row['notification_name']);
+                // END   - name to no.
 
 		$content .= $templateSubContent->getHTML();
 

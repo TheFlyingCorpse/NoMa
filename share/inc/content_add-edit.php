@@ -79,6 +79,7 @@ function getContent () {
 	$templateContent->assign('ADD_EDIT_EXCLUDE_HOSTS', ADD_EDIT_EXCLUDE_HOSTS);
 	$templateContent->assign('ADD_EDIT_INCLUDE_SERVICES', ADD_EDIT_INCLUDE_SERVICES);
 	$templateContent->assign('ADD_EDIT_EXCLUDE_SERVICES', ADD_EDIT_EXCLUDE_SERVICES);
+        $templateContent->assign('ADD_EDIT_NOTIFICATION_NAME', ADD_EDIT_NOTIFICATION_NAME);
 	$templateContent->assign('ADD_EDIT_TIMEZONE', ADD_EDIT_TIMEZONE);
         $templateContent->assign('ADD_EDIT_TIMEFRAME', ADD_EDIT_TIMEFRAME);
 	$templateContent->assign('ADD_EDIT_SUBMIT', ADD_EDIT_SUBMIT);
@@ -147,6 +148,8 @@ function getContent () {
 
 		$templateContent->assign('INCLUDE_SERVICES', $dbResult[0]['services_include']);
 		$templateContent->assign('EXCLUDE_SERVICES', $dbResult[0]['services_exclude']);
+
+                $templateContent->assign('NOTIFICATION_NAME', $dbResult[0]['notification_name']);
 
 		// get notification users
 		$dbSub = queryDB('select c.username from contacts c
