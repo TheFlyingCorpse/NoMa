@@ -251,7 +251,7 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
                 foreach ($p['notify_users'] as $user) {
 
                         if (!empty($user)){
-                                $query = sprintf('INSERT INTO notifications_to_contacts (notification_id,contact_id) VALUES (\'%s\',\'%s\');', $id, prepareDBValue($user));
+                                $query = sprintf('INSERT INTO notifications_to_contacts (notification_id,contact_id) VALUES (\'%s\',\'%s\');', $id, getContactID($user));
                                 queryDB($query);
 
 			}
@@ -423,7 +423,7 @@ function updateNotification ($p) {
 
                         foreach ($p['notify_users'][0] as $user) {
                                 if (!empty($user)){
-                                        $query = sprintf('insert into notifications_to_contacts (notification_id,contact_id) values(\'%s\',\'%s\')', $id, prepareDBValue($user));
+                                        $query = sprintf('insert into notifications_to_contacts (notification_id,contact_id) values(\'%s\',\'%s\')', $id, getContactID($user));
                                         queryDB($query);
 
                                 }

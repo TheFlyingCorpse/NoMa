@@ -361,7 +361,7 @@ function getContent () {
 		$templateSubContent->assign('ADD_EDIT_NOTIFY_ON', ADD_EDIT_NOTIFY_ON);
 
 		//$templateSubContent->assign('NOTIFY_USERS_SELECT', htmlSelect('notify_users' . $formArray . '[]', getContacts(), $notify_users, 'size="5" multiple="multiple"'));
-                $templateSubContent->assign('NOTIFY_USERS_SELECT', htmlSelect('notify_users' . $formArray . '[]', getContactsWithIDs(), $notify_users, 'size="5" multiple="multiple"'));
+                $templateSubContent->assign('NOTIFY_USERS_SELECT', htmlSelect('notify_users' . $formArray . '[]', getContacts(), $notify_users, 'size="5" multiple="multiple"'));
 		$templateSubContent->assign('NOTIFY_GROUPS_SELECT', htmlSelect('notify_groups' . $formArray . '[]', getContactGroups(), $notify_groups, 'size="5" multiple="multiple"'));
 
 		$templateSubContent->assign('NOTIFY_BY_SELECT', htmlSelect('notify_by' . $formArray . '[]', getNotificationMethods(), $notify_by, 'size="5" multiple="multiple"'));
