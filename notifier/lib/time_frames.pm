@@ -153,7 +153,6 @@ sub objectInTimeFrame
                                                 locale      => $conf->{notifier}->{locale}, #to get the valid days of week in english, like friday or sunday.
                                                 time_zone   => $tf_timezone, #from database
                                                 );
-
         # Fill in the missing information
         $time_today_start = $today[0].'-'.$today[1].'-'.$today[2].' '.$time_today_start;
         $time_today_stop = $today[0].'-'.$today[1].'-'.$today[2].' '.$time_today_stop;
@@ -165,6 +164,10 @@ sub objectInTimeFrame
 	$time_today_stop = $dt->parse_datetime( $time_today_stop );
 
 	# HOLIDAY FUNCTION HERE
+	if(TimeFrameOnHoliday($timeframe_id, $tf_timezone) == '1'){
+		debug (' Timeframe is on holiday... ',2);
+		return 0;
+	}
 
         # IF $now is after $validFrom and before $validTo
         if ($dt_validFrom lt $dt_Now and $dt_validTo gt $dt_Now)
@@ -344,5 +347,24 @@ sub TimeFrameInTime
         return 0; # Not in bounds of time.
 }
 
+sub TimeFrameOnHoliday
+{
+	my ($timeframe_id,$timezone) = @_;
+
+	# Fetch the TimeFrame Holidays and return 0 if in office or 1 if on holiday.
+	my $query = 'SELECT `holiday_name`, `start` as holiday_start, `end` as holiday_end FROM holidays WHERE  `timeframe_id`=\''.$timeframe_id.'\'';
+
+	my %dbResult = queryDB($query);
+
+	foreach my $key (keys %dbResult){
+		debug(' Checking to see if holiday #'.$key.' / '.$dbResult{$key}{holiday_name}.' is active',3);
+		# Convert the datetime to unix epoch for easy comparison.
+		debug(' From/To: '.$dbResult{$key}{holiday_start}.' - '.$dbResult{$key}{holiday_end},3);
+		#if ($dbResult{$key}{holiday_start} )
+	}
+	# Not on holiday
+	return 0;
+
+}
 
 1;

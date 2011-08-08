@@ -99,5 +99,5 @@
 * added new method of notification: Growl, see documentation for how to use.
 * replaced the timeperiod table with a new timeframe setup, editable through the frontend for better flexibillity of notification rules, contactgroups and contacts.
 * holidays can now have names when used with timeframes for easier identification. (ToDo)
-* notifications can now have names for easier identification. (ToDo)
+* notifications can now have names for easier identification.
 * updated documentation++
