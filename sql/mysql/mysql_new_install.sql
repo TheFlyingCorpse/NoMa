@@ -1,51 +1,40 @@
-DROP TABLE IF EXISTS `contactgroups`;
 CREATE TABLE IF NOT EXISTS `contactgroups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name_short` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `name` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `name_short` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `view_only` tinyint(1) NOT NULL DEFAULT '0',
   `timeframe_id` int(11) NOT NULL DEFAULT '0',
   `timezone_id` int(11) NOT NULL DEFAULT '372',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `name_short` (`name_short`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+);
 
-INSERT INTO `contactgroups` (`id`, `name_short`, `name`, `view_only`, `timeframe_id`, `timezone_id`) VALUES(1, 'group1', 'Group 1', 0, 1, 305);
-
-DROP TABLE IF EXISTS `contactgroups_to_contacts`;
 CREATE TABLE IF NOT EXISTS `contactgroups_to_contacts` (
   `contactgroup_id` int(11) NOT NULL,
   `contact_id` int(11) NOT NULL,
   KEY `contactgroup_id` (`contactgroup_id`),
   KEY `contact_id` (`contact_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
-INSERT INTO `contactgroups_to_contacts` (`contactgroup_id`, `contact_id`) VALUES(1, 2);
-
-DROP TABLE IF EXISTS `contacts`;
 CREATE TABLE IF NOT EXISTS `contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `admin` tinyint(1) NOT NULL,
-  `username` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `full_name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `email` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `phone` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `mobile` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `mobile` varchar(255) NOT NULL,
   `section` varchar(255) NOT NULL,
   `netaddress` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `timeframe_id` int(11) NOT NULL DEFAULT '0',
-  `timezone_id` int(11) NOT NULL,
-  `restrict_alerts` tinyint(1) DEFAULT NULL,
+  `timezone_id` int(11) NOT NULL DEFAULT '372',
+  `restrict_alerts` tinyint(1) NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+);
 
-INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(1, 0, '[---]', '', '', '', '', '', '', '', 0, 0, NULL);
-INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(2, 1, 'nagiosadmin', 'Nagios Administrator', 'root@localhost', '', '', '', '192.168.1.109', sha1('nagiosadmin'), 1, 305, 0);
-
-DROP TABLE IF EXISTS `escalations_contacts`;
 CREATE TABLE IF NOT EXISTS `escalations_contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `notification_id` int(11) NOT NULL,
@@ -66,48 +55,44 @@ CREATE TABLE IF NOT EXISTS `escalations_contacts` (
   `on_type_downtimecancelled` tinyint(1) NOT NULL,
   `on_type_acknowledgement` tinyint(1) NOT NULL,
   `on_type_custom` tinyint(1) NOT NULL,
-  `notify_after_tries` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '0',
+  `notify_after_tries` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `notification_id` (`notification_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+);
 
-DROP TABLE IF EXISTS `escalations_contacts_to_contactgroups`;
 CREATE TABLE IF NOT EXISTS `escalations_contacts_to_contactgroups` (
   `escalation_contacts_id` int(11) NOT NULL,
   `contactgroup_id` int(11) NOT NULL,
   KEY `contactgroup_id` (`contactgroup_id`),
   KEY `escalation_contacts_id` (`escalation_contacts_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
-DROP TABLE IF EXISTS `escalations_contacts_to_contacts`;
 CREATE TABLE IF NOT EXISTS `escalations_contacts_to_contacts` (
   `escalation_contacts_id` int(11) NOT NULL,
   `contacts_id` int(11) NOT NULL,
   KEY `escalation_contacts_id` (`escalation_contacts_id`),
   KEY `contacts_id` (`contacts_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
-DROP TABLE IF EXISTS `escalations_contacts_to_methods`;
 CREATE TABLE IF NOT EXISTS `escalations_contacts_to_methods` (
   `escalation_contacts_id` int(11) NOT NULL,
   `method_id` int(11) NOT NULL,
   KEY `escalation_contacts_id` (`escalation_contacts_id`),
   KEY `method_id` (`method_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
-DROP TABLE IF EXISTS `escalation_stati`;
 CREATE TABLE IF NOT EXISTS `escalation_stati` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `notification_rule` int(11) DEFAULT NULL,
+  `notification_rule` int(11) NULL,
   `starttime` int(11) NOT NULL,
   `counter` int(11) NOT NULL,
   `incident_id` bigint(20) NOT NULL,
   `recipients` varchar(255) NOT NULL,
-  `host` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `host` varchar(255) NOT NULL,
   `host_alias` varchar(255) NOT NULL,
   `host_address` varchar(255) NOT NULL,
   `hostgroups` varchar(255) NOT NULL,
-  `service` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `service` varchar(255) NOT NULL,
   `servicegroups` varchar(255) NOT NULL,
   `check_type` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
@@ -118,46 +103,47 @@ CREATE TABLE IF NOT EXISTS `escalation_stati` (
   `output` varchar(4096) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `incident_id` (`incident_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+);
 
-DROP TABLE IF EXISTS `holidays`;
 CREATE TABLE IF NOT EXISTS `holidays` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `contact_id` int(11) NOT NULL,
+  `holiday_name` varchar(255) NULL,
+  `timeframe_id` int(11) NULL,
+  `contact_id` int(11) NULL,
   `start` datetime NOT NULL,
   `end` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `contact_id` (`contact_id`),
+  KEY `timeframe_id` (`timeframe_id`)
+);
 
-DROP TABLE IF EXISTS `information`;
 CREATE TABLE IF NOT EXISTS `information` (
   `id` int(11) NOT NULL,
-  `type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `content` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `content` varchar(20) NOT NULL,
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+);
 
-INSERT INTO `information` (`id`, `type`, `content`) VALUES(0, 'dbversion', '200');
-
-DROP TABLE IF EXISTS `notifications`;
 CREATE TABLE IF NOT EXISTS `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `notification_name` varchar(40) NULL,
+  `notification_description` varchar(1024) NULL,
   `active` tinyint(1) NOT NULL,
-  `username` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `username` varchar(255) NOT NULL,
   `recipients_include` varchar(255) NOT NULL,
   `recipients_exclude` varchar(255) NOT NULL,
-  `hosts_include` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `hosts_exclude` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `hostgroups_include` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `hostgroups_exclude` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `services_include` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `services_exclude` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `servicegroups_include` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `servicegroups_exclude` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `notify_after_tries` varchar(10) CHARACTER SET latin1 NOT NULL DEFAULT '0',
-  `let_notifier_handle` tinyint(1) NOT NULL,
+  `hosts_include` varchar(255) NOT NULL,
+  `hosts_exclude` varchar(255) NOT NULL,
+  `hostgroups_include` varchar(255) NOT NULL,
+  `hostgroups_exclude` varchar(255) NOT NULL,
+  `services_include` varchar(255) NOT NULL,
+  `services_exclude` varchar(255) NOT NULL,
+  `servicegroups_include` varchar(255) NOT NULL,
+  `servicegroups_exclude` varchar(255) NOT NULL,
+  `notify_after_tries` varchar(10) NOT NULL DEFAULT '0',
+  `let_notifier_handle` tinyint(1) DEFAULT '0',
   `rollover` tinyint(1) DEFAULT '0',
-  `reloop_delay` int(11) NOT NULL DEFAULT '0',
+  `reloop_delay` int(11) DEFAULT '0',
   `on_ok` tinyint(1) NOT NULL,
   `on_warning` tinyint(1) NOT NULL,
   `on_unknown` tinyint(1) NOT NULL,
@@ -177,71 +163,227 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `on_type_custom` tinyint(1) NOT NULL,
   `timezone_id` int(11) NOT NULL DEFAULT '372',
   `timeframe_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `time` (`timezone_id`,`timeframe_id`)
+);
 
-INSERT INTO `notifications` (`id`, `active`, `username`, `recipients_include`, `recipients_exclude`, `hosts_include`, `hosts_exclude`, `hostgroups_include`, `hostgroups_exclude`, `services_include`, `services_exclude`, `servicegroups_include`, `servicegroups_exclude`, `notify_after_tries`, `let_notifier_handle`, `rollover`, `reloop_delay`, `on_ok`, `on_warning`, `on_unknown`, `on_host_unreachable`, `on_critical`, `on_host_up`, `on_host_down`, `on_type_problem`, `on_type_recovery`, `on_type_flappingstart`, `on_type_flappingstop`, `on_type_flappingdisabled`, `on_type_downtimestart`, `on_type_downtimeend`, `on_type_downtimecancelled`, `on_type_acknowledgement`, `on_type_custom`, `timezone_id`, `timeframe_id`) VALUES(1, 1, 'nagiosadmin', '', '', '*', '', '*', '', '*', '', '*', '', '1', 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1);
-
-DROP TABLE IF EXISTS `notifications_to_contactgroups`;
 CREATE TABLE IF NOT EXISTS `notifications_to_contactgroups` (
   `notification_id` int(11) NOT NULL,
   `contactgroup_id` int(11) NOT NULL,
   KEY `notification_id` (`notification_id`),
   KEY `contactgroup_id` (`contactgroup_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
-DROP TABLE IF EXISTS `notifications_to_contacts`;
 CREATE TABLE IF NOT EXISTS `notifications_to_contacts` (
   `notification_id` int(11) NOT NULL,
   `contact_id` int(11) NOT NULL,
   KEY `notification_id` (`notification_id`),
   KEY `contact_id` (`contact_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
-INSERT INTO `notifications_to_contacts` (`notification_id`, `contact_id`) VALUES(1, 2);
-
-DROP TABLE IF EXISTS `notifications_to_methods`;
 CREATE TABLE IF NOT EXISTS `notifications_to_methods` (
   `notification_id` int(11) NOT NULL,
   `method_id` int(11) NOT NULL,
   KEY `notification_id` (`notification_id`),
   KEY `method_id` (`method_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+);
 
-INSERT INTO `notifications_to_methods` (`notification_id`, `method_id`) VALUES(1, 1);
-
-DROP TABLE IF EXISTS `notification_logs`;
 CREATE TABLE IF NOT EXISTS `notification_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `timestamp` datetime NOT NULL,
   `counter` int(11) NOT NULL,
-  `check_type` varchar(10) CHARACTER SET latin1 NOT NULL,
-  `check_result` varchar(15) CHARACTER SET latin1 NOT NULL,
-  `host` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `service` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `notification_type` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `check_type` varchar(10) NOT NULL,
+  `check_result` varchar(15) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `service` varchar(255) NOT NULL,
+  `notification_type` varchar(255) NOT NULL,
   `method` varchar(255) NOT NULL,
-  `user` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `user` varchar(255) NOT NULL,
   `result` varchar(1023) NOT NULL,
-  `unique_id` bigint(20) DEFAULT NULL,
-  `incident_id` bigint(20) DEFAULT NULL,
-  `notification_rule` int(11) DEFAULT NULL,
-  `last_method` int(11) DEFAULT NULL,
+  `unique_id` bigint(20) NULL,
+  `incident_id` bigint(20) NULL,
+  `notification_rule` int(11) NULL,
+  `last_method` int(11) NULL,
   PRIMARY KEY (`id`),
-  KEY `unique_id` (`unique_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+  KEY `unique_id` (`unique_id`),
+  KEY `incident_id` (`incident_id`)
+);
 
-DROP TABLE IF EXISTS `notification_methods`;
 CREATE TABLE IF NOT EXISTS `notification_methods` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `method` varchar(255) NOT NULL,
   `command` varchar(255) NOT NULL,
   `contact_field` varchar(255) NOT NULL,
-  `sender` varchar(255) NOT NULL,
+  `sender` varchar(255) NULL,
   `on_fail` int(11) NOT NULL,
   `ack_able` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+);
+
+CREATE TABLE IF NOT EXISTS `notification_stati` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `host` varchar(255) NOT NULL,
+  `service` varchar(255) NOT NULL,
+  `check_type` varchar(10) NOT NULL,
+  `check_result` varchar(15) NOT NULL,
+  `counter` int(11) NOT NULL,
+  `pid` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `timeframes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `timeframe_name` varchar(60) NOT NULL,
+  `dt_validFrom` datetime NOT NULL,
+  `dt_validTo` datetime NOT NULL,
+  `day_monday_all` tinyint(1) DEFAULT '0',
+  `day_monday_1st` tinyint(1) DEFAULT '0',
+  `day_monday_2nd` tinyint(1) DEFAULT '0',
+  `day_monday_3rd` tinyint(1) DEFAULT '0',
+  `day_monday_4th` tinyint(1) DEFAULT '0',
+  `day_monday_5th` tinyint(1) DEFAULT '0',
+  `day_monday_last` tinyint(1) DEFAULT '0',
+  `day_tuesday_all` tinyint(1) DEFAULT '0',
+  `day_tuesday_1st` tinyint(1) DEFAULT '0',
+  `day_tuesday_2nd` tinyint(1) DEFAULT '0',
+  `day_tuesday_3rd` tinyint(1) DEFAULT '0',
+  `day_tuesday_4th` tinyint(1) DEFAULT '0',
+  `day_tuesday_5th` tinyint(1) DEFAULT '0',
+  `day_tuesday_last` tinyint(1) DEFAULT '0',
+  `day_wednesday_all` tinyint(1) DEFAULT '0',
+  `day_wednesday_1st` tinyint(1) DEFAULT '0',
+  `day_wednesday_2nd` tinyint(1) DEFAULT '0',
+  `day_wednesday_3rd` tinyint(1) DEFAULT '0',
+  `day_wednesday_4th` tinyint(1) DEFAULT '0',
+  `day_wednesday_5th` tinyint(1) DEFAULT '0',
+  `day_wednesday_last` tinyint(1) DEFAULT '0',
+  `day_thursday_all` tinyint(1) DEFAULT '0',
+  `day_thursday_1st` tinyint(1) DEFAULT '0',
+  `day_thursday_2nd` tinyint(1) DEFAULT '0',
+  `day_thursday_3rd` tinyint(1) DEFAULT '0',
+  `day_thursday_4th` tinyint(1) DEFAULT '0',
+  `day_thursday_5th` tinyint(1) DEFAULT '0',
+  `day_thursday_last` tinyint(1) DEFAULT '0',
+  `day_friday_all` tinyint(1) DEFAULT '0',
+  `day_friday_1st` tinyint(1) DEFAULT '0',
+  `day_friday_2nd` tinyint(1) DEFAULT '0',
+  `day_friday_3rd` tinyint(1) DEFAULT '0',
+  `day_friday_4th` tinyint(1) DEFAULT '0',
+  `day_friday_5th` tinyint(1) DEFAULT '0',
+  `day_friday_last` tinyint(1) DEFAULT '0',
+  `day_saturday_all` tinyint(1) DEFAULT '0',
+  `day_saturday_1st` tinyint(1) DEFAULT '0',
+  `day_saturday_2nd` tinyint(1) DEFAULT '0',
+  `day_saturday_3rd` tinyint(1) DEFAULT '0',
+  `day_saturday_4th` tinyint(1) DEFAULT '0',
+  `day_saturday_5th` tinyint(1) DEFAULT '0',
+  `day_saturday_last` tinyint(1) DEFAULT '0',
+  `day_sunday_all` tinyint(1) DEFAULT '0',
+  `day_sunday_1st` tinyint(1) DEFAULT '0',
+  `day_sunday_2nd` tinyint(1) DEFAULT '0',
+  `day_sunday_3rd` tinyint(1) DEFAULT '0',
+  `day_sunday_4th` tinyint(1) DEFAULT '0',
+  `day_sunday_5th` tinyint(1) DEFAULT '0',
+  `day_sunday_last` tinyint(1) DEFAULT '0',
+  `time_monday_start` time DEFAULT '00:00:00',
+  `time_monday_stop` time DEFAULT '00:00:00',
+  `time_monday_invert` tinyint(1) DEFAULT '0',
+  `time_tuesday_start` time DEFAULT '00:00:00',
+  `time_tuesday_stop` time DEFAULT '00:00:00',
+  `time_tuesday_invert` tinyint(1) DEFAULT '0',
+  `time_wednesday_start` time DEFAULT '00:00:00',
+  `time_wednesday_stop` time DEFAULT '00:00:00',
+  `time_wednesday_invert` tinyint(1) DEFAULT '0',
+  `time_thursday_start` time DEFAULT '00:00:00',
+  `time_thursday_stop` time DEFAULT '00:00:00',
+  `time_thursday_invert` tinyint(1) DEFAULT '0',
+  `time_friday_start` time DEFAULT '00:00:00',
+  `time_friday_stop` time DEFAULT '00:00:00',
+  `time_friday_invert` tinyint(1) DEFAULT '0',
+  `time_saturday_start` time DEFAULT '00:00:00',
+  `time_saturday_stop` time DEFAULT '00:00:00',
+  `time_saturday_invert` tinyint(1) DEFAULT '0',
+  `time_sunday_start` time DEFAULT '00:00:00',
+  `time_sunday_stop` time DEFAULT '00:00:00',
+  `time_sunday_invert` tinyint(1) DEFAULT '0',
+  KEY `id` (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `timezones` (
+  `id` int(11) NOT NULL,
+  `timezone` varchar(255) NOT NULL,
+  `time_diff` tinyint(11) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `tmp_active` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `notify_id` bigint(20) NOT NULL,
+  `command_id` int(11) NULL,
+  `dest` varchar(255) NULL,
+  `from_user` varchar(255) NULL,
+  `time_string` varchar(255) NULL,
+  `user` varchar(255) NULL,
+  `method` varchar(255) NULL,
+  `notify_cmd` varchar(255) NULL,
+  `retries` int(11) DEFAULT '0',
+  `rule` int(11) DEFAULT '0',
+  `progress` tinyint(1) DEFAULT '0',
+  `esc_flag` tinyint(1) DEFAULT '0',
+  `bundled` bigint(20) DEFAULT '0',
+  `stime` int(11) DEFAULT '0',
+  UNIQUE KEY `id` (`id`),
+  KEY `command_id` (`command_id`),
+  KEY `notify_id` (`notify_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `tmp_commands` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `operation` varchar(255) NULL,
+  `external_id` bigint(20) NOT NULL,
+  `recipients` varchar(255) NOT NULL,
+  `host` varchar(255) NULL,
+  `host_alias` varchar(255) NULL,
+  `host_address` varchar(255) NULL,
+  `hostgroups` varchar(255) NOT NULL,
+  `service` varchar(255) NULL,
+  `servicegroups` varchar(255) NULL,
+  `check_type` varchar(255) NULL,
+  `status` varchar(255) NULL,
+  `stime` int(11) DEFAULT '0',
+  `notification_type` varchar(255) NULL,
+  `authors` varchar(255) NULL,
+  `comments` varchar(255) NULL,
+  `output` varchar(4096) NULL,
+  UNIQUE KEY `id` (`id`),
+  KEY `external_id` (`external_id`)
+);
+
+
+ALTER TABLE `tmp_active`
+  ADD CONSTRAINT `tmp_active_ibfk_1` FOREIGN KEY (`command_id`) REFERENCES `tmp_commands` (`id`) ON DELETE CASCADE;
+
+INSERT INTO `contactgroups` (`id`, `name_short`, `name`, `view_only`, `timeframe_id`, `timezone_id`) VALUES(1, 'group1', 'Group 1', 0, 1, 305);
+
+INSERT INTO `contactgroups_to_contacts` (`contactgroup_id`, `contact_id`) VALUES(1, 2);
+
+INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(1, 0, '[---]', '', '', '', '', '', '', '', 0, 0, NULL);
+INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(2, 1, 'nagiosadmin', 'Nagios Administrator', 'root@localhost', '', '', '', '192.168.1.109', '9e2b1592bd13bea759dab1e3011cab7ef47930cd', 1, 305, 1);
+
+INSERT INTO `escalations_contacts_to_contacts` (`escalation_contacts_id`, `contacts_id`) VALUES(105, 2);
+
+INSERT INTO `escalations_contacts_to_methods` (`escalation_contacts_id`, `method_id`) VALUES(105, 6);
+
+INSERT INTO `escalation_stati` (`id`, `notification_rule`, `starttime`, `counter`, `incident_id`, `recipients`, `host`, `host_alias`, `host_address`, `hostgroups`, `service`, `servicegroups`, `check_type`, `status`, `time_string`, `type`, `authors`, `comments`, `output`) VALUES(1, NULL, 0, 0, 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+INSERT INTO `escalation_stati` (`id`, `notification_rule`, `starttime`, `counter`, `incident_id`, `recipients`, `host`, `host_alias`, `host_address`, `hostgroups`, `service`, `servicegroups`, `check_type`, `status`, `time_string`, `type`, `authors`, `comments`, `output`) VALUES(2, 1, 1312741151, 0, 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '');
+
+INSERT INTO `information` (`id`, `type`, `content`) VALUES(0, 'dbversion', '2000');
+
+INSERT INTO `notifications` (`id`, `notification_name`, `notification_description`, `active`, `username`, `recipients_include`, `recipients_exclude`, `hosts_include`, `hosts_exclude`, `hostgroups_include`, `hostgroups_exclude`, `services_include`, `services_exclude`, `servicegroups_include`, `servicegroups_exclude`, `notify_after_tries`, `let_notifier_handle`, `rollover`, `reloop_delay`, `on_ok`, `on_warning`, `on_unknown`, `on_host_unreachable`, `on_critical`, `on_host_up`, `on_host_down`, `on_type_problem`, `on_type_recovery`, `on_type_flappingstart`, `on_type_flappingstop`, `on_type_flappingdisabled`, `on_type_downtimestart`, `on_type_downtimeend`, `on_type_downtimecancelled`, `on_type_acknowledgement`, `on_type_custom`, `timezone_id`, `timeframe_id`) VALUES(1, '', NULL, 1, 'nagiosadmin', '', '', '*', '', '*', '', '*', '', '*', '', '1', 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1);
+
+INSERT INTO `notifications_to_contacts` (`notification_id`, `contact_id`) VALUES(1, 2);
+
+INSERT INTO `notifications_to_methods` (`notification_id`, `method_id`) VALUES(1, 1);
 
 INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(5, 'Voice + SMS fallback', 'voicecall', 'phone', '', 2, 1);
 INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(6, 'Growl', 'growl', 'netaddress', '', 0, 0);
@@ -252,109 +394,13 @@ INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, 
 INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(7, 'Growl + E-Mail fallback', 'growl', 'netaddress', '', 1, 1);
 INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(8, 'Growl + SMS fallback', 'growl', 'netaddress', '', 2, 1);
 
-DROP TABLE IF EXISTS `notification_stati`;
-CREATE TABLE IF NOT EXISTS `notification_stati` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `host` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `service` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `check_type` varchar(10) CHARACTER SET latin1 NOT NULL,
-  `check_result` varchar(15) CHARACTER SET latin1 NOT NULL,
-  `counter` int(11) NOT NULL,
-  `pid` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `timeframes`;
-CREATE TABLE IF NOT EXISTS `timeframes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `timeframe_name` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
-  `dt_validFrom` datetime NOT NULL,
-  `dt_validTo` datetime NOT NULL,
-  `day_monday_all` tinyint(1) DEFAULT '1',
-  `day_monday_1st` tinyint(1) DEFAULT '0',
-  `day_monday_2nd` tinyint(1) DEFAULT '0',
-  `day_monday_3rd` tinyint(1) DEFAULT '0',
-  `day_monday_4th` tinyint(1) DEFAULT '0',
-  `day_monday_5th` tinyint(1) DEFAULT '0',
-  `day_monday_last` tinyint(1) DEFAULT '0',
-  `day_tuesday_all` tinyint(1) DEFAULT '1',
-  `day_tuesday_1st` tinyint(1) DEFAULT '0',
-  `day_tuesday_2nd` tinyint(1) DEFAULT '0',
-  `day_tuesday_3rd` tinyint(1) DEFAULT '0',
-  `day_tuesday_4th` tinyint(1) DEFAULT '0',
-  `day_tuesday_5th` tinyint(1) DEFAULT '0',
-  `day_tuesday_last` tinyint(1) DEFAULT '0',
-  `day_wednesday_all` tinyint(1) DEFAULT '1',
-  `day_wednesday_1st` tinyint(1) DEFAULT '0',
-  `day_wednesday_2nd` tinyint(1) DEFAULT '0',
-  `day_wednesday_3rd` tinyint(1) DEFAULT '0',
-  `day_wednesday_4th` tinyint(1) DEFAULT '0',
-  `day_wednesday_5th` tinyint(1) DEFAULT '0',
-  `day_wednesday_last` tinyint(1) DEFAULT '0',
-  `day_thursday_all` tinyint(1) DEFAULT '1',
-  `day_thursday_1st` tinyint(1) DEFAULT '0',
-  `day_thursday_2nd` tinyint(1) DEFAULT '0',
-  `day_thursday_3rd` tinyint(1) DEFAULT '0',
-  `day_thursday_4th` tinyint(1) DEFAULT '0',
-  `day_thursday_5th` tinyint(1) DEFAULT '0',
-  `day_thursday_last` tinyint(1) DEFAULT '0',
-  `day_friday_all` tinyint(1) DEFAULT '1',
-  `day_friday_1st` tinyint(1) DEFAULT '0',
-  `day_friday_2nd` tinyint(1) DEFAULT '0',
-  `day_friday_3rd` tinyint(1) DEFAULT '0',
-  `day_friday_4th` tinyint(1) DEFAULT '0',
-  `day_friday_5th` tinyint(1) DEFAULT '0',
-  `day_friday_last` tinyint(1) DEFAULT '0',
-  `day_saturday_all` tinyint(1) DEFAULT '1',
-  `day_saturday_1st` tinyint(1) DEFAULT '0',
-  `day_saturday_2nd` tinyint(1) DEFAULT '0',
-  `day_saturday_3rd` tinyint(1) DEFAULT '0',
-  `day_saturday_4th` tinyint(1) DEFAULT '0',
-  `day_saturday_5th` tinyint(1) DEFAULT '0',
-  `day_saturday_last` tinyint(1) DEFAULT '0',
-  `day_sunday_all` tinyint(1) DEFAULT '1',
-  `day_sunday_1st` tinyint(1) DEFAULT '0',
-  `day_sunday_2nd` tinyint(1) DEFAULT '0',
-  `day_sunday_3rd` tinyint(1) DEFAULT '0',
-  `day_sunday_4th` tinyint(1) DEFAULT '0',
-  `day_sunday_5th` tinyint(1) DEFAULT '0',
-  `day_sunday_last` tinyint(1) DEFAULT '0',
-  `time_monday_start` time DEFAULT NULL,
-  `time_monday_stop` time DEFAULT NULL,
-  `time_monday_invert` tinyint(1) DEFAULT '0',
-  `time_tuesday_start` time DEFAULT NULL,
-  `time_tuesday_stop` time DEFAULT NULL,
-  `time_tuesday_invert` tinyint(1) DEFAULT '0',
-  `time_wednesday_start` time DEFAULT NULL,
-  `time_wednesday_stop` time DEFAULT NULL,
-  `time_wednesday_invert` tinyint(1) DEFAULT '0',
-  `time_thursday_start` time DEFAULT NULL,
-  `time_thursday_stop` time DEFAULT NULL,
-  `time_thursday_invert` tinyint(1) DEFAULT '0',
-  `time_friday_start` time DEFAULT NULL,
-  `time_friday_stop` time DEFAULT NULL,
-  `time_friday_invert` tinyint(1) DEFAULT '0',
-  `time_saturday_start` time DEFAULT NULL,
-  `time_saturday_stop` time DEFAULT NULL,
-  `time_saturday_invert` tinyint(1) DEFAULT '0',
-  `time_sunday_start` time DEFAULT NULL,
-  `time_sunday_stop` time DEFAULT NULL,
-  `time_sunday_invert` tinyint(1) DEFAULT '0',
-  KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `timeframes` (`id`, `timeframe_name`, `dt_validFrom`, `dt_validTo`, `day_monday_all`, `day_monday_1st`, `day_monday_2nd`, `day_monday_3rd`, `day_monday_4th`, `day_monday_5th`, `day_monday_last`, `day_tuesday_all`, `day_tuesday_1st`, `day_tuesday_2nd`, `day_tuesday_3rd`, `day_tuesday_4th`, `day_tuesday_5th`, `day_tuesday_last`, `day_wednesday_all`, `day_wednesday_1st`, `day_wednesday_2nd`, `day_wednesday_3rd`, `day_wednesday_4th`, `day_wednesday_5th`, `day_wednesday_last`, `day_thursday_all`, `day_thursday_1st`, `day_thursday_2nd`, `day_thursday_3rd`, `day_thursday_4th`, `day_thursday_5th`, `day_thursday_last`, `day_friday_all`, `day_friday_1st`, `day_friday_2nd`, `day_friday_3rd`, `day_friday_4th`, `day_friday_5th`, `day_friday_last`, `day_saturday_all`, `day_saturday_1st`, `day_saturday_2nd`, `day_saturday_3rd`, `day_saturday_4th`, `day_saturday_5th`, `day_saturday_last`, `day_sunday_all`, `day_sunday_1st`, `day_sunday_2nd`, `day_sunday_3rd`, `day_sunday_4th`, `day_sunday_5th`, `day_sunday_last`, `time_monday_start`, `time_monday_stop`, `time_monday_invert`, `time_tuesday_start`, `time_tuesday_stop`, `time_tuesday_invert`, `time_wednesday_start`, `time_wednesday_stop`, `time_wednesday_invert`, `time_thursday_start`, `time_thursday_stop`, `time_thursday_invert`, `time_friday_start`, `time_friday_stop`, `time_friday_invert`, `time_saturday_start`, `time_saturday_stop`, `time_saturday_invert`, `time_sunday_start`, `time_sunday_stop`, `time_sunday_invert`) VALUES(0, 'inactive', '2001-01-01 00:00:00', '2001-01-01 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0);
 INSERT INTO `timeframes` (`id`, `timeframe_name`, `dt_validFrom`, `dt_validTo`, `day_monday_all`, `day_monday_1st`, `day_monday_2nd`, `day_monday_3rd`, `day_monday_4th`, `day_monday_5th`, `day_monday_last`, `day_tuesday_all`, `day_tuesday_1st`, `day_tuesday_2nd`, `day_tuesday_3rd`, `day_tuesday_4th`, `day_tuesday_5th`, `day_tuesday_last`, `day_wednesday_all`, `day_wednesday_1st`, `day_wednesday_2nd`, `day_wednesday_3rd`, `day_wednesday_4th`, `day_wednesday_5th`, `day_wednesday_last`, `day_thursday_all`, `day_thursday_1st`, `day_thursday_2nd`, `day_thursday_3rd`, `day_thursday_4th`, `day_thursday_5th`, `day_thursday_last`, `day_friday_all`, `day_friday_1st`, `day_friday_2nd`, `day_friday_3rd`, `day_friday_4th`, `day_friday_5th`, `day_friday_last`, `day_saturday_all`, `day_saturday_1st`, `day_saturday_2nd`, `day_saturday_3rd`, `day_saturday_4th`, `day_saturday_5th`, `day_saturday_last`, `day_sunday_all`, `day_sunday_1st`, `day_sunday_2nd`, `day_sunday_3rd`, `day_sunday_4th`, `day_sunday_5th`, `day_sunday_last`, `time_monday_start`, `time_monday_stop`, `time_monday_invert`, `time_tuesday_start`, `time_tuesday_stop`, `time_tuesday_invert`, `time_wednesday_start`, `time_wednesday_stop`, `time_wednesday_invert`, `time_thursday_start`, `time_thursday_stop`, `time_thursday_invert`, `time_friday_start`, `time_friday_stop`, `time_friday_invert`, `time_saturday_start`, `time_saturday_stop`, `time_saturday_invert`, `time_sunday_start`, `time_sunday_stop`, `time_sunday_invert`) VALUES(1, '24x7', '2011-08-01 00:00:00', '2021-12-31 23:59:59', 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, '00:00:00', '00:00:00', 1, '00:00:00', '00:00:00', 1, '00:00:00', '00:00:00', 1, '00:00:00', '00:00:00', 1, '00:00:00', '00:00:00', 1, '00:00:00', '00:00:00', 1, '00:00:00', '00:00:00', 1);
 INSERT INTO `timeframes` (`id`, `timeframe_name`, `dt_validFrom`, `dt_validTo`, `day_monday_all`, `day_monday_1st`, `day_monday_2nd`, `day_monday_3rd`, `day_monday_4th`, `day_monday_5th`, `day_monday_last`, `day_tuesday_all`, `day_tuesday_1st`, `day_tuesday_2nd`, `day_tuesday_3rd`, `day_tuesday_4th`, `day_tuesday_5th`, `day_tuesday_last`, `day_wednesday_all`, `day_wednesday_1st`, `day_wednesday_2nd`, `day_wednesday_3rd`, `day_wednesday_4th`, `day_wednesday_5th`, `day_wednesday_last`, `day_thursday_all`, `day_thursday_1st`, `day_thursday_2nd`, `day_thursday_3rd`, `day_thursday_4th`, `day_thursday_5th`, `day_thursday_last`, `day_friday_all`, `day_friday_1st`, `day_friday_2nd`, `day_friday_3rd`, `day_friday_4th`, `day_friday_5th`, `day_friday_last`, `day_saturday_all`, `day_saturday_1st`, `day_saturday_2nd`, `day_saturday_3rd`, `day_saturday_4th`, `day_saturday_5th`, `day_saturday_last`, `day_sunday_all`, `day_sunday_1st`, `day_sunday_2nd`, `day_sunday_3rd`, `day_sunday_4th`, `day_sunday_5th`, `day_sunday_last`, `time_monday_start`, `time_monday_stop`, `time_monday_invert`, `time_tuesday_start`, `time_tuesday_stop`, `time_tuesday_invert`, `time_wednesday_start`, `time_wednesday_stop`, `time_wednesday_invert`, `time_thursday_start`, `time_thursday_stop`, `time_thursday_invert`, `time_friday_start`, `time_friday_stop`, `time_friday_invert`, `time_saturday_start`, `time_saturday_stop`, `time_saturday_invert`, `time_sunday_start`, `time_sunday_stop`, `time_sunday_invert`) VALUES(2, 'workhours', '2011-08-01 00:00:00', '2021-12-31 23:59:59', 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '08:00:00', '16:00:00', 0, '08:00:00', '16:00:00', 0, '08:00:00', '16:00:00', 0, '08:00:00', '16:00:00', 0, '08:00:00', '16:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0);
 INSERT INTO `timeframes` (`id`, `timeframe_name`, `dt_validFrom`, `dt_validTo`, `day_monday_all`, `day_monday_1st`, `day_monday_2nd`, `day_monday_3rd`, `day_monday_4th`, `day_monday_5th`, `day_monday_last`, `day_tuesday_all`, `day_tuesday_1st`, `day_tuesday_2nd`, `day_tuesday_3rd`, `day_tuesday_4th`, `day_tuesday_5th`, `day_tuesday_last`, `day_wednesday_all`, `day_wednesday_1st`, `day_wednesday_2nd`, `day_wednesday_3rd`, `day_wednesday_4th`, `day_wednesday_5th`, `day_wednesday_last`, `day_thursday_all`, `day_thursday_1st`, `day_thursday_2nd`, `day_thursday_3rd`, `day_thursday_4th`, `day_thursday_5th`, `day_thursday_last`, `day_friday_all`, `day_friday_1st`, `day_friday_2nd`, `day_friday_3rd`, `day_friday_4th`, `day_friday_5th`, `day_friday_last`, `day_saturday_all`, `day_saturday_1st`, `day_saturday_2nd`, `day_saturday_3rd`, `day_saturday_4th`, `day_saturday_5th`, `day_saturday_last`, `day_sunday_all`, `day_sunday_1st`, `day_sunday_2nd`, `day_sunday_3rd`, `day_sunday_4th`, `day_sunday_5th`, `day_sunday_last`, `time_monday_start`, `time_monday_stop`, `time_monday_invert`, `time_tuesday_start`, `time_tuesday_stop`, `time_tuesday_invert`, `time_wednesday_start`, `time_wednesday_stop`, `time_wednesday_invert`, `time_thursday_start`, `time_thursday_stop`, `time_thursday_invert`, `time_friday_start`, `time_friday_stop`, `time_friday_invert`, `time_saturday_start`, `time_saturday_stop`, `time_saturday_invert`, `time_sunday_start`, `time_sunday_stop`, `time_sunday_invert`) VALUES(3, 'outside workhours', '2011-08-01 00:00:00', '2021-12-31 23:59:59', 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, '08:00:00', '16:00:00', 1, '08:00:00', '16:00:00', 1, '08:00:00', '16:00:00', 1, '08:00:00', '16:00:00', 1, '08:00:00', '16:00:00', 1, '00:00:00', '00:00:00', 1, '00:00:00', '00:00:00', 1);
 
-DROP TABLE IF EXISTS `timezones`;
-CREATE TABLE IF NOT EXISTS `timezones` (
-  `id` int(11) NOT NULL,
-  `timezone` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `time_diff` tinyint(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO `notification_logs` (`id`, `timestamp`, `counter`, `check_type`, `check_result`, `host`, `service`, `notification_type`, `method`, `user`, `result`, `unique_id`, `incident_id`, `notification_rule`, `last_method`) VALUES ('1', now(), '1', '(internal)', 'OK', 'localhost', 'NoMa', '(none)', '(none)', 'NoMa', 'NoMa successfully installed', '123565999600001', '123565999600001', '0', '1');
 
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(1, 'Africa/Abidjan', 0);
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(2, 'Africa/Accra', 0);
@@ -729,50 +775,3 @@ INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(370, 'Pacific/Wak
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(371, 'Pacific/Wallis', 12);
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(372, 'GMT', 0);
 
-DROP TABLE IF EXISTS `tmp_active`;
-CREATE TABLE IF NOT EXISTS `tmp_active` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `notify_id` bigint(20) NOT NULL,
-  `command_id` int(11) DEFAULT NULL,
-  `dest` varchar(255) DEFAULT NULL,
-  `from_user` varchar(255) DEFAULT NULL,
-  `time_string` varchar(255) DEFAULT NULL,
-  `user` varchar(255) DEFAULT NULL,
-  `method` varchar(255) DEFAULT NULL,
-  `notify_cmd` varchar(255) DEFAULT NULL,
-  `retries` int(11) DEFAULT '0',
-  `rule` int(11) DEFAULT '0',
-  `progress` tinyint(1) DEFAULT '0',
-  `esc_flag` tinyint(1) DEFAULT '0',
-  `bundled` bigint(20) DEFAULT '0',
-  `stime` int(11) DEFAULT '0',
-  UNIQUE KEY `id` (`id`),
-  KEY `command_id` (`command_id`),
-  KEY `notify_id` (`notify_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `tmp_commands`;
-CREATE TABLE IF NOT EXISTS `tmp_commands` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `operation` varchar(255) DEFAULT NULL,
-  `external_id` bigint(20) NOT NULL,
-  `recipients` varchar(255) NOT NULL,
-  `host` varchar(255) DEFAULT NULL,
-  `host_alias` varchar(255) DEFAULT NULL,
-  `host_address` varchar(255) DEFAULT NULL,
-  `hostgroups` varchar(255) NOT NULL,
-  `service` varchar(255) DEFAULT NULL,
-  `servicegroups` varchar(255) DEFAULT NULL,
-  `check_type` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `stime` int(11) DEFAULT '0',
-  `notification_type` varchar(255) DEFAULT NULL,
-  `authors` varchar(255) DEFAULT NULL,
-  `comments` varchar(255) DEFAULT NULL,
-  `output` varchar(4096) DEFAULT NULL,
-  UNIQUE KEY `id` (`id`),
-  KEY `external_id` (`external_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
-ALTER TABLE `tmp_active`
-  ADD CONSTRAINT `tmp_active_ibfk_1` FOREIGN KEY (`command_id`) REFERENCES `tmp_commands` (`id`) ON DELETE CASCADE;

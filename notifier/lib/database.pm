@@ -193,9 +193,7 @@ sub dbSchemaUpdate
         my $database_upgrade = $conf->{db}->{automatic_db_upgrade};
 	my $database_example_dir = $conf->{db}->{db_example_dir};
 	my %dbSchemaFiles = (
-#		'sqlite_new_install_structure'	=> 'sqlite3/sqlite_new_install_structure.sql',
-#		'sqlite_new_install_structure'	=> 'sqlite3/install/structure',
-		'sqlite_new_install_structure'	=> 'sqlite3/install/schema_struct.sql',
+                'sqlite_new_install_structure'  => 'sqlite3/install/default_schema.sql',
                 'sqlite_new_install_data'	=> 'sqlite3/install/default_data.sql',
 		'mysql_upgrade_200'		=> ''
  	);
