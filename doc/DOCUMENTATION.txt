@@ -63,17 +63,13 @@ Table of Contents
   6.2 Embedding of notification plugins into the application
   6.3 Language files
 
-7. Advanced Features 
+7. Advanced Features
 
-  7.1 Timeperiods
+  7.1 Timezone support
 
-    7.1.1 Adding a time period
+  7.2 Debugging
 
-  7.2 Timezone support
-
-  7.3 Debugging
-
-  7.4 Watchdog
+  7.3 Watchdog
 
 
 1. Copyright
@@ -549,13 +545,13 @@ define contact {
 4.4 Configuring the individual notifiers
 -----------------------------------------
 
-The various notifier scripts are configured in noma_conf.pm and need to be installed.
+The various notifier scripts are configured in NoMa.yaml and need to be installed.
 
 
 4.4.1 sendEmail.pl
 -------------------
 
-The email text can be customized in noma_conf.pm
+The email text can be customized in NoMa.yaml
 
 This notifier provides the following options:
 
@@ -880,7 +876,7 @@ You can have a look at the example 'sendVoice.pl'.
 To make the notifier use your plugin, simply add a row to the table
 'notification_methods' and define method (as it should be displayed
 in the frontend), command (the name of your plugin as configured in
-noma_conf.pm), the column name of the table 'contacts' where the
+NoMa.yaml), the column name of the table 'contacts' where the
 recipient's data is stored and the sender (e.g. an E-Mail address
 for the 'From:' info).  The on_fail field specifies which method will
 come next if a plugins returns an error.  This is currently only
@@ -907,60 +903,7 @@ the data by an other language. Thanks!
 7. Advanced Features 
 =====================
 
-
-7.1 Timeperiods
-----------------
-
-Adding or changing timeperiods requires direct access to the database.
-
-A time period is comprised of 1 or more time slices.
-e.g. the "out of hours" period has the following slices;
-
-* Saturday and Sunday 00:00 - 24:00
-* Monday to Friday 00:00 - 08:00
-* Monday to Friday 18:00 - 24:00
-
-
-7.1.1 Adding a time period
----------------------------
-
-To create a new time period we need to add it to the time_periods table
-
-* insert into time_periods values ('', 'weekends');
-
-* select * from time_periods;
-  +----+------------------------+
-  | id | description            |
-  +----+------------------------+
-  |  1 | 24x7                   |
-  |  2 | "Normal" Working Hours |
-  |  3 | out of hours           |
-  |  4 | weekends               |
-  +----+------------------------+
-
-Then we need to add at least one time slice for this period.
-
-* insert into time_slices values ('', '4', '65', '00:00:00', '24:00:00');
-
-where 4 is the ID we want to assign it to,
-and 65 is a binary field representing the days of the week for which this is valid;
-
-  Day             Binary Bit     Decimal
-  Sunday             1              1
-  Monday             2              2
-  Tuesday            3              4
-  Wednesday          4              8
-  Thursday           5              16
-  Friday             6              32
-  Saturday           7              64
-
-
-Example: Monday, Thursday = 2+16 = 18
-
-
-
-
-7.2 Timezone support
+7.1 Timezone support
 ---------------------
 
 NoMa makes use of the perl DateTime::TimeZone to provide proper timezone support
@@ -978,19 +921,19 @@ occasionally (e.g.  Western Australia) and you will need to ensure that your
 DateTime::TimeZone module is current if you have contacts in one of these zones.
 
 
-7.3 Debugging
+7.2 Debugging
 --------------
 
 NoMa provides comprehensive debugging support.  Notification errors are logged
-into the database, but you can increase the logging by setting debug to 1 in
-noma_conf.pm (debugging will be to the file specified).  See 4.2.10 for further
+into the database, but you can increase the logging by setting debug to 1,2 or 3
+in NoMa.yaml (debugging will be to the file specified).  See 4.2.10 for further
 details.
 
 On receiving the command "status", the notifier will dump some basic statistics
 to the statusfile.
 
 
-7.4 Watchdog
+7.3 Watchdog
 -------------
 
 Some versions of the perl threading implementation leak memory.  To prevent
