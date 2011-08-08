@@ -2,3 +2,5 @@
 * sort function in overview -> disable for actions
 * host-service preview: show only services for configured hosts
 * "what if?" to show who would be notified
+* multiple select and removal in status view.
+* easy cleanup of notification logs for admins, like a button.

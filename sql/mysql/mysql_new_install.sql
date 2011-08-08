@@ -368,7 +368,7 @@ INSERT INTO `contactgroups` (`id`, `name_short`, `name`, `view_only`, `timeframe
 INSERT INTO `contactgroups_to_contacts` (`contactgroup_id`, `contact_id`) VALUES(1, 2);
 
 INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(1, 0, '[---]', '', '', '', '', '', '', '', 0, 0, NULL);
-INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(2, 1, 'nagiosadmin', 'Nagios Administrator', 'root@localhost', '', '', '', '192.168.1.109', '9e2b1592bd13bea759dab1e3011cab7ef47930cd', 1, 305, 1);
+INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `netaddress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(2, 1, 'nagiosadmin', 'Nagios Administrator', 'root@localhost', '', '', '', '192.168.1.109', '9e2b1592bd13bea759dab1e3011cab7ef47930cd', 1, 305, 0);
 
 INSERT INTO `escalations_contacts_to_contacts` (`escalation_contacts_id`, `contacts_id`) VALUES(105, 2);
 

@@ -1,2 +1,44 @@
-THIS IS A README!
+NoMa - Notification Manager for Nagios 
+(++ Icinga, Shinken, Centreon Engine++)
+=======================================
 
+Notification Manager or NoMa (https://www.netways.org/projects/noma)
+makes managing Nagios notifications easier. It lets you create and
+modify standard notifications, escalations, schedules and vacations
+for your monitoring system.
+
+
+Support & Questions
+-------------------
+Please use the issue tracker at the project page to submit any
+issues you encounter with NoMaa
+
+
+How does it work
+----------------
+When Nagios/Icinga/Shinken/Centreon Engine notifies NoMa, instead of
+the core blocking each notification to every user through every
+method used in your setup, its one single notification to NoMa.
+NoMa then uses the configured filters to notify contacts via
+the preconfigured methods, E-Mail, SMS, Voicecall, Growl etc.
+
+The beuty of NoMa is that its a graphical interface to managing
+notifications rather than complex configuration files. Its easy
+for other admins in your environment to set themselves to vacation,
+change what they want to be notified about and most importantly,
+WHEN to be notified.
+
+Installation
+------------
+Pre Requirements:
+- Lots of Perl(s).
+
+Download NoMa from a trusted source.
+.....
+ #> ./configure --help (to view available switches for easy install)
+ #> ./configure <switches> (or none for default paths)
+ #> make install
+ #> make install-init (to install the init script of NoMa daemon)
+.....
+
+HAVE fun and dont get spammed!

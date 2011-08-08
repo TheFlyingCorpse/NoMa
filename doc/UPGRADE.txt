@@ -1,3 +1,7 @@
+1.0.x -> 2.0.0
+--------------
+Not supported.
+
 1.0.5 -> 1.0.6
 --------------
 * ALTER TABLE `notifications` ADD `hostgroups_include` VARCHAR(255) NOT NULL DEFAULT;

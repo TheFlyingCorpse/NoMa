@@ -69,30 +69,124 @@ mysql> describe tmp_commands;
 | id                | int(11)       | NO   | PRI | NULL    | auto_increment | id
 | operation         | varchar(255)  | YES  |     | NULL    |                | notification or escalation
 | external_id       | bigint(20)    | NO   |     | NULL    |                | unique for this command
-| host              | varchar(255)  | YES  |     | NULL    |                | the following fields are as recieved by NoMa
-| hostgroups        | varchar(255)  | YES  |     | NULL    |                |
+| recipients        | varchar(255)  | NO   |     | NULL    |                | the following fields are as recieved by NoMa
+| host              | varchar(255)  | YES  |     | NULL    |                |
 | host_alias        | varchar(255)  | YES  |     | NULL    |                |
 | host_address      | varchar(255)  | YES  |     | NULL    |                |
+| hostgroups        | varchar(255)  | NO   |     | NULL    |                |
 | service           | varchar(255)  | YES  |     | NULL    |                |
 | servicegroups     | varchar(255)  | YES  |     | NULL    |                |
 | check_type        | varchar(255)  | YES  |     | NULL    |                |
 | status            | varchar(255)  | YES  |     | NULL    |                |
 | stime             | int(11)       | YES  |     | 0       |                |
 | notification_type | varchar(255)  | YES  |     | NULL    |                |
+| authors           | varchar(255)  | YES  |     | NULL    |                |
+| comments          | varchar(255)  | YES  |     | NULL    |                |
 | output            | varchar(4096) | YES  |     | NULL    |                |
 +-------------------+---------------+------+-----+---------+----------------+
 
 
 
-time_periods / time_slices / timezones
----------------------------------------
+timezones
+---------
 
-Used to configure time windows (see DOCUMENTATION.txt).
-The timezone is referred to by the contacts table.
+List over default timezones included in NoMa, used on notifications, contactgroups and contacts tables for filtering with the correct time.
 
-N.B. the field in the notifications table is no longer used because timezones are considered
-to be contact specific
+mysql> describe timezones;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| id        | int(11)      | NO   | PRI | NULL    |       | id
+| timezone  | varchar(255) | NO   |     | NULL    |       | timezone name (Ex: 'Europe/Berlin')
+| time_diff | tinyint(11)  | NO   |     | NULL    |       | time_diff, (Ex: +1)
++-----------+--------------+------+-----+---------+-------+
 
+
+
+timeframes
+----------
+
+Timeframes are stored in this table, for use by notifications, contactgroups and contact tables who reference this. It contains the rows made via the web gui.
+
+mysql> describe timeframes;
++-----------------------+-------------+------+-----+---------+----------------+
+| Field                 | Type        | Null | Key | Default | Extra          |
++-----------------------+-------------+------+-----+---------+----------------+
+| id                    | int(11)     | NO   | MUL | NULL    | auto_increment |
+| timeframe_name        | varchar(60) | NO   |     | NULL    |                |
+| dt_validFrom          | datetime    | NO   |     | NULL    |                |
+| dt_validTo            | datetime    | NO   |     | NULL    |                |
+| day_monday_all        | tinyint(1)  | YES  |     | 1       |                |
+| day_monday_1st        | tinyint(1)  | YES  |     | 0       |                |
+| day_monday_2nd        | tinyint(1)  | YES  |     | 0       |                |
+| day_monday_3rd        | tinyint(1)  | YES  |     | 0       |                |
+| day_monday_4th        | tinyint(1)  | YES  |     | 0       |                |
+| day_monday_5th        | tinyint(1)  | YES  |     | 0       |                |
+| day_monday_last       | tinyint(1)  | YES  |     | 0       |                |
+| day_tuesday_all       | tinyint(1)  | YES  |     | 1       |                |
+| day_tuesday_1st       | tinyint(1)  | YES  |     | 0       |                |
+| day_tuesday_2nd       | tinyint(1)  | YES  |     | 0       |                |
+| day_tuesday_3rd       | tinyint(1)  | YES  |     | 0       |                |
+| day_tuesday_4th       | tinyint(1)  | YES  |     | 0       |                |
+| day_tuesday_5th       | tinyint(1)  | YES  |     | 0       |                |
+| day_tuesday_last      | tinyint(1)  | YES  |     | 0       |                |
+| day_wednesday_all     | tinyint(1)  | YES  |     | 1       |                |
+| day_wednesday_1st     | tinyint(1)  | YES  |     | 0       |                |
+| day_wednesday_2nd     | tinyint(1)  | YES  |     | 0       |                |
+| day_wednesday_3rd     | tinyint(1)  | YES  |     | 0       |                |
+| day_wednesday_4th     | tinyint(1)  | YES  |     | 0       |                |
+| day_wednesday_5th     | tinyint(1)  | YES  |     | 0       |                |
+| day_wednesday_last    | tinyint(1)  | YES  |     | 0       |                |
+| day_thursday_all      | tinyint(1)  | YES  |     | 1       |                |
+| day_thursday_1st      | tinyint(1)  | YES  |     | 0       |                |
+| day_thursday_2nd      | tinyint(1)  | YES  |     | 0       |                |
+| day_thursday_3rd      | tinyint(1)  | YES  |     | 0       |                |
+| day_thursday_4th      | tinyint(1)  | YES  |     | 0       |                |
+| day_thursday_5th      | tinyint(1)  | YES  |     | 0       |                |
+| day_thursday_last     | tinyint(1)  | YES  |     | 0       |                |
+| day_friday_all        | tinyint(1)  | YES  |     | 1       |                |
+| day_friday_1st        | tinyint(1)  | YES  |     | 0       |                |
+| day_friday_2nd        | tinyint(1)  | YES  |     | 0       |                |
+| day_friday_3rd        | tinyint(1)  | YES  |     | 0       |                |
+| day_friday_4th        | tinyint(1)  | YES  |     | 0       |                |
+| day_friday_5th        | tinyint(1)  | YES  |     | 0       |                |
+| day_friday_last       | tinyint(1)  | YES  |     | 0       |                |
+| day_saturday_all      | tinyint(1)  | YES  |     | 1       |                |
+| day_saturday_1st      | tinyint(1)  | YES  |     | 0       |                |
+| day_saturday_2nd      | tinyint(1)  | YES  |     | 0       |                |
+| day_saturday_3rd      | tinyint(1)  | YES  |     | 0       |                |
+| day_saturday_4th      | tinyint(1)  | YES  |     | 0       |                |
+| day_saturday_5th      | tinyint(1)  | YES  |     | 0       |                |
+| day_saturday_last     | tinyint(1)  | YES  |     | 0       |                |
+| day_sunday_all        | tinyint(1)  | YES  |     | 1       |                |
+| day_sunday_1st        | tinyint(1)  | YES  |     | 0       |                |
+| day_sunday_2nd        | tinyint(1)  | YES  |     | 0       |                |
+| day_sunday_3rd        | tinyint(1)  | YES  |     | 0       |                |
+| day_sunday_4th        | tinyint(1)  | YES  |     | 0       |                |
+| day_sunday_5th        | tinyint(1)  | YES  |     | 0       |                |
+| day_sunday_last       | tinyint(1)  | YES  |     | 0       |                |
+| time_monday_start     | time        | YES  |     | NULL    |                |
+| time_monday_stop      | time        | YES  |     | NULL    |                |
+| time_monday_invert    | tinyint(1)  | YES  |     | 0       |                |
+| time_tuesday_start    | time        | YES  |     | NULL    |                |
+| time_tuesday_stop     | time        | YES  |     | NULL    |                |
+| time_tuesday_invert   | tinyint(1)  | YES  |     | 0       |                |
+| time_wednesday_start  | time        | YES  |     | NULL    |                |
+| time_wednesday_stop   | time        | YES  |     | NULL    |                |
+| time_wednesday_invert | tinyint(1)  | YES  |     | 0       |                |
+| time_thursday_start   | time        | YES  |     | NULL    |                |
+| time_thursday_stop    | time        | YES  |     | NULL    |                |
+| time_thursday_invert  | tinyint(1)  | YES  |     | 0       |                |
+| time_friday_start     | time        | YES  |     | NULL    |                |
+| time_friday_stop      | time        | YES  |     | NULL    |                |
+| time_friday_invert    | tinyint(1)  | YES  |     | 0       |                |
+| time_saturday_start   | time        | YES  |     | NULL    |                |
+| time_saturday_stop    | time        | YES  |     | NULL    |                |
+| time_saturday_invert  | tinyint(1)  | YES  |     | 0       |                |
+| time_sunday_start     | time        | YES  |     | NULL    |                |
+| time_sunday_stop      | time        | YES  |     | NULL    |                |
+| time_sunday_invert    | tinyint(1)  | YES  |     | 0       |                |
++-----------------------+-------------+------+-----+---------+----------------+
 
 
 notification_stati
@@ -131,8 +225,6 @@ the on_fail field.  E.g. "Voice + E-Mail fallback" tries the command voicecall
 first then falls back to id 1 (E-Mail) - but note this can only work with
 methods that are ack_able and return a non-OK status if they fail.
 
-
-
 mysql> describe notification_methods;
 +---------------+--------------+------+-----+---------+----------------+
 | Field         | Type         | Null | Key | Default | Extra          |
@@ -141,18 +233,21 @@ mysql> describe notification_methods;
 | method        | varchar(255) | NO   |     | NULL    |                |
 | command       | varchar(255) | NO   |     | NULL    |                |
 | contact_field | varchar(255) | NO   |     | NULL    |                |
-| from          | varchar(255) | NO   |     | NULL    |                |
+| sender        | varchar(255) | NO   |     | NULL    |                |
 | on_fail       | int(11)      | NO   |     | NULL    |                |
 | ack_able      | tinyint(1)   | NO   |     | NULL    |                |
 +---------------+--------------+------+-----+---------+----------------+
 
 mysql> select * from notification_methods;
 +----+-------------------------+-----------+---------------+-----------------+---------+----------+
-| id | method                  | command   | contact_field | from            | on_fail | ack_able |
+| id | method                  | command   | contact_field | sender          | on_fail | ack_able |
 +----+-------------------------+-----------+---------------+-----------------+---------+----------+
-|  1 | E-Mail                  | sendemail | email         | noma@netways.de |       0 |        0 |
-|  2 | SMS                     | sendsms   | mobile        |                 |       0 |        0 |
-|  3 | Voice                   | voicecall | phone         |                 |       0 |        1 |
-|  4 | Voice + E-Mail fallback | voicecall | phone         |                 |       1 |        1 |
 |  5 | Voice + SMS fallback    | voicecall | phone         |                 |       2 |        1 |
+|  6 | Growl                   | growl     | netaddress    |                 |       0 |        0 |
+|  4 | Voice + E-Mail fallback | voicecall | phone         |                 |       1 |        1 |
+|  3 | Voice                   | voicecall | phone         |                 |       0 |        1 |
+|  2 | SMS                     | sendsms   | mobile        |                 |       0 |        0 |
+|  1 | E-Mail                  | sendemail | email         | noma@netways.de |       0 |        0 |
+|  7 | Growl + E-Mail fallback | growl     | netaddress    |                 |       1 |        1 |
+|  8 | Growl + SMS fallback    | growl     | netaddress    |                 |       2 |        1 |
 +----+-------------------------+-----------+---------------+-----------------+---------+----------+
