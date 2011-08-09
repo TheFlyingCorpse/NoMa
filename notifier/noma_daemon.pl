@@ -1322,8 +1322,8 @@ sub hmsToSecs
 #
 # e.g.
 # {
-#  'start' => '2008-12-20 00:00:00',
-#  'end' => '2008-12-28 24:00:00',
+#  'holiday_start' => '2008-12-20 00:00:00',
+#  'holiday_end' => '2008-12-28 24:00:00',
 # };
 #
 sub datetimeInPeriod
@@ -1332,11 +1332,12 @@ sub datetimeInPeriod
 	my ($periods, $date) = @_;
 
 	my $checktime = getUnixTime( $date );
+	print ($periods.'\n');
 
 	foreach my $period (@$periods)
 	{
-		if ($checktime >= getUnixTime($period->{'start'}) and 
-			$checktime <= getUnixTime($period->{'end'}))
+		if ($checktime >= getUnixTime($period->{'holiday_start'}) and 
+			$checktime <= getUnixTime($period->{'holiday_end'}))
 		{
 			return 1;
 		}

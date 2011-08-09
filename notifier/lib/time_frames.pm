@@ -352,19 +352,51 @@ sub TimeFrameOnHoliday
 	my ($timeframe_id,$timezone) = @_;
 
 	# Fetch the TimeFrame Holidays and return 0 if in office or 1 if on holiday.
-	my $query = 'SELECT `holiday_name`, `start` as holiday_start, `end` as holiday_end FROM holidays WHERE  `timeframe_id`=\''.$timeframe_id.'\'';
+	my $query = 'SELECT tf.timeframe_name, h.id, h.holiday_name, h.holiday_start, h.holiday_end
+			FROM holidays h
+			LEFT JOIN timeframes tf ON h.timeframe_id = tf.id
+			WHERE tf.id =\''.$timeframe_id.'\'';
 
 	my %dbResult = queryDB($query);
 
 	foreach my $key (keys %dbResult){
 		debug(' Checking to see if holiday #'.$key.' / '.$dbResult{$key}{holiday_name}.' is active',3);
 		# Convert the datetime to unix epoch for easy comparison.
-		debug(' From/To: '.$dbResult{$key}{holiday_start}.' - '.$dbResult{$key}{holiday_end},3);
-		#if ($dbResult{$key}{holiday_start} )
+
+	        # set timezone
+	        my $tz = DateTime::TimeZone->new( name => $timezone );
+	        my $dt = DateTime->now()->set_time_zone($tz);
+
+	        # check holiday data
+	        if (datetime2InPeriod($dbResult{$key}{holiday_start},$dbResult{$key}{holiday_end}, $dt->ymd." ".$dt->hms))
+       		{
+                	debug( 'TimeFrame '.$dbResult{$key}{timeframe_name}.' with inherited TZ (GMT+'.$dt->offset($dt).'s) is on holiday leave: '.$dbResult{$key}{holiday_name}.', dropping', 2);
+			return 1;
+
+        	} else {
+			debug( 'TimeFrame '.$dbResult{$key}{timeframe_name}.' with inherited TZ (GMT+'.$dt->offset($dt).'s) is not holiday leave: '.$dbResult{$key}{holiday_name}.', proceeding', 2);
+		}
+
 	}
+
+	#debug( 'No registered holidays for TimeFrame: '.$dbResult{$key}{timeframe_name}, 2); # NOTHING TO PRINT BECAUSE ITS EMPTY IF NONE FOUND
+	
 	# Not on holiday
 	return 0;
 
+}
+
+sub datetime2InPeriod
+{
+
+        my ($datetime_start,$datetime_end, $date) = @_;
+
+        my $checktime = getUnixTime( $date );
+
+        if ($checktime >= getUnixTime($datetime_start) and $checktime <= getUnixTime($datetime_end)){
+        	return 1;
+        }
+        return 0;
 }
 
 1;

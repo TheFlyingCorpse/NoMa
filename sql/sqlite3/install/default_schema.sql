@@ -10,7 +10,7 @@ CREATE TABLE if not exists [escalations_contacts_to_contacts] (  [escalation_con
 CREATE TABLE if not exists [escalations_contacts_to_methods] (  [escalation_contacts_id] int(11) NOT NULL, [method_id] int(11) NOT NULL, CONSTRAINT [] PRIMARY KEY ([escalation_contacts_id], [method_id]));
 CREATE TABLE if not exists [escalation_stati] (  [id] INTEGER PRIMARY KEY AUTOINCREMENT, [notification_rule] int(11), [starttime] int(11) NOT NULL, [counter] int(11) NOT NULL, [incident_id] bigint(20) NOT NULL, [recipients] varchar(255), [host] varchar(255) NOT NULL, [host_alias] varchar(255), [host_address] varchar(255), [hostgroups] varchar(255), [service] varchar(255), [servicegroups] varchar(255), [check_type] varchar(255) NOT NULL, [status] varchar(255) NOT NULL, [time_string] varchar(255), [type] varchar(255), [authors] varchar(255), [comments] varchar(255), [output] varchar(4096));
 CREATE INDEX [idx_escalation_stati_incident_id] ON [escalation_stati] ([incident_id]);
-CREATE TABLE if not exists [holidays] (  [id] INTEGER PRIMARY KEY AUTOINCREMENT, [holiday_name] varchar(255), [timeframe_id] int(11), [contact_id] int(11), [start] datetime NOT NULL, [end] datetime NOT NULL);
+CREATE TABLE if not exists [holidays] (  [id] INTEGER PRIMARY KEY AUTOINCREMENT, [holiday_name] varchar(255), [timeframe_id] int(11), [contact_id] int(11), [holiday_start] datetime NOT NULL, [holiday_end] datetime NOT NULL);
 CREATE INDEX [idx_holidays_contact_id] ON [holidays] ([id], [contact_id]);
 CREATE INDEX [idx_holidays_timeframe_id] ON [holidays] ([id], [timeframe_id]);
 CREATE TABLE if not exists [information] (  [id] INTEGER PRIMARY KEY AUTOINCREMENT, [type] varchar(20) NOT NULL, [content] varchar(20) NOT NULL);

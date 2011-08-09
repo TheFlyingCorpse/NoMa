@@ -110,8 +110,8 @@ CREATE TABLE IF NOT EXISTS `holidays` (
   `holiday_name` varchar(255) NULL,
   `timeframe_id` int(11) NULL,
   `contact_id` int(11) NULL,
-  `start` datetime NOT NULL,
-  `end` datetime NOT NULL,
+  `holiday_start` datetime NOT NULL,
+  `holiday_end` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `contact_id` (`contact_id`),
   KEY `timeframe_id` (`timeframe_id`)

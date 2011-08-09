@@ -425,7 +425,7 @@ sub checkHolidays
         $on_holiday = 0;
 
         # get holiday entries for current contact
-        $query = 'select h.start,h.end from holidays h
+        $query = 'select h.holiday_start,h.holiday_end from holidays h
 					left join contacts c on c.id=h.contact_id
 					where c.username=\'' . $contacts{$contact}->{username} . '\'';
 
