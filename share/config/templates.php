@@ -83,5 +83,5 @@ define('TEMPLATE_TIMEFRAME_MANAGER', TEMPLATE_DIR . 'timeframe_manager.html');
 define('TEMPLATE_TIMEFRAME_MANAGER_ADD', TEMPLATE_DIR . 'timeframe_manager_add.html');
 define('TEMPLATE_TIMEFRAME_MANAGER_EDIT', TEMPLATE_DIR . 'timeframe_manager_edit.html');
 define('TEMPLATE_TIMEFRAME_MANAGER_DELETE', TEMPLATE_DIR . 'timeframe_manager_delete.html');
-
+define('TEMPLATE_TIMEFRAME_MANAGER_HOLIDAYS_ROW', TEMPLATE_DIR . 'timeframe_manager_holidays_row.html');
 ?>

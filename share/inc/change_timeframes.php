@@ -300,6 +300,11 @@ function addTimeFrame () {
 	//if(!count($dbResult)) return false;
 	//$p['timeframe'] = $dbResult[0]['id'];
 
+        // add holidays
+        if (!empty($p['holiday_start']) && !empty($p['holiday_end'])) {
+                addHolidays($dbResult[0]['timeframe_id'], $p['timeframe_name'], $p['holiday_start'], $p['holiday_end']);
+        }
+
 	return true;
 
 }
@@ -496,6 +501,22 @@ function updateTimeFrame () {
 	);
 	queryDB($query);
 
+        // delete holidays
+        if (isset($p['del_holiday']) && is_array($p['del_holiday'])) {
+
+                foreach ($p['del_holiday'] as $key => $value) {
+			$query = 'delete from holidays where id=\''. prepareDBValue($key) . '\' and timeframe_id=\'' . $id . '\'';
+			queryDB($query);
+                }
+
+        }
+
+
+        // add holidays
+        if (!empty($p['holiday_start']) && !empty($p['holiday_end']) && !empty($p['holiday_name'])) {
+                addTFHolidays($id, $p['holiday_name'], $p['holiday_start'], $p['holiday_end']);
+        }
+
 	return true;
 
 }
@@ -547,6 +568,45 @@ function deleteTimeFrame () {
         queryDB($query);
 
 	return true;
+
+}
+
+/**
+ * addTFHolidays - adds holidays for a certain contact
+ *
+ * @param               integer                 $timeframe_id    timeframe id
+ * @param               string                  $holiday_start   start of holidays
+ * @param               string                  $holiday_end     end of holidays
+ * @return                                                                           boolean value (false on error)
+ */
+function addTFHolidays ($timeframe_id, $timeframe_name, $holiday_start, $holiday_end) {
+
+        // prepare data
+        $holiday_start = prepareDBValue($holiday_start);
+        $holiday_end = prepareDBValue($holiday_end);
+
+        // check whether holidays exist
+        $query =  sprintf(
+                'select count(*) cnt from holidays where timeframe_id=\'%s\' and holiday_name=\'%s\' and holiday_start=\'%s\' and holiday_end=\'%s\'',
+                $timeframe_id,
+		$holiday_name,
+                $holiday_start,
+                $holiday_end
+        );
+        $dbResult = queryDB($query);
+        if ($dbResult[0]['cnt'] != '0') return false;
+
+        // add holidays
+        $query = sprintf(
+                'insert into holidays (timeframe_id,holiday_name,holiday_start,holiday_end) values (\'%s\',\'%s\',\'%s\',\'%s\')',
+                $timeframe_id,
+		$holiday_name,
+                $holiday_start,
+                $holiday_end
+        );
+        queryDB($query);
+
+        return true;
 
 }
 

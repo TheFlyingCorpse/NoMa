@@ -166,7 +166,7 @@ function getContent () {
 	// fill template w/ found data
 	if (count($userData)) {
 		// get user's holidays from database
-		$userHolidays = queryDB('select * from holidays where contact_id=\'' . $userData['id'] . '\' order by start asc');
+		$userHolidays = queryDB('select * from holidays where contact_id=\'' . $userData['id'] . '\' order by holiday_start asc');
 		if ($userData['admin'] == '1' && $admin) $templateSubContent->assign('CHECKED_ADMIN', ' checked');
 		$templateContent->assign('ID', $userData['id']);
 		$templateContent->assign('FULL_NAME', $userData['full_name']);

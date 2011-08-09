@@ -148,7 +148,7 @@ function addContact ($p) {
 
 	// add holidays
 	if (!empty($p['holiday_start']) && !empty($p['holiday_end'])) {
-		addHolidays($dbResult[0]['id'], $p['holiday_start'], $p['holiday_end']);
+		addCHolidays($dbResult[0]['id'], $p['holiday_start'], $p['holiday_end']);
 	}
 
 
@@ -234,7 +234,7 @@ function updateContact ($p) {
 
 	// add holidays
 	if (!empty($p['holiday_start']) && !empty($p['holiday_end'])) {
-		addHolidays($id, $p['holiday_start'], $p['holiday_end']);
+		addCHolidays($id, $p['holiday_start'], $p['holiday_end']);
 	}
 
 
@@ -324,35 +324,35 @@ function checkContactsMod ($id = null) {
 
 
 /**
- * addHolidays - adds holidays for a certain contact
+ * addCHolidays - adds holidays for a certain contact
  *
- * @param		integer			$id			contact's ID
- * @param		string			$start		start of holidays
- * @param		string			$end		end of holidays
+ * @param		integer			$contact_id	contact's ID
+ * @param		string			$holiday_start	start of holidays
+ * @param		string			$holiday_end	end of holidays
  * @return									boolean value (false on error)
  */
-function addHolidays ($id, $start, $end) {
+function addCHolidays ($contact_id, $holiday_start, $holiday_end) {
 
 	// prepare data
-	$start = prepareDBValue($start);
-	$end = prepareDBValue($end);
+	$holiday_start = prepareDBValue($holiday_start);
+	$holiday_end = prepareDBValue($holiday_end);
 
 	// check whether holidays exist
 	$query =  sprintf(
-		'select count(*) cnt from holidays where contact_id=\'%s\' and start=\'%s\' and end=\'%s\'',
-		$id,
-		$start,
-		$end
+		'select count(*) cnt from holidays where contact_id=\'%s\' and holiday_start=\'%s\' and end=\'%s\'',
+		$contact_id,
+		$holiday_start,
+		$holiday_end
 	);
 	$dbResult = queryDB($query);
 	if ($dbResult[0]['cnt'] != '0') return false;
 
 	// add holidays
 	$query = sprintf(
-		'insert into holidays (contact_id,start,end) values (\'%s\',\'%s\',\'%s\')',
-		$id,
-		$start,
-		$end
+		'insert into holidays (contact_id,holiday_start,holiday_end) values (\'%s\',\'%s\',\'%s\')',
+		$contact_id,
+		$holiday_start,
+		$holiday_end
 	);
 	queryDB($query);
 

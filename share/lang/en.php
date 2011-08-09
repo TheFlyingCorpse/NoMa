@@ -200,6 +200,7 @@ define('TIMEFRAME_HEADING_SELECT', 'Select timeframe:');
 define('TIMEFRAME_HEADING_ADD', 'Add timeframe:');
 define('TIMEFRAME_HEADING_NAME' , 'Timeframe');
 define('TIMEFRAME_HEADING_EDIT', 'Edit timeframe:');
+define('TIMEFRAME_HEADING_HOLIDAYS' , 'Holidays:');
 
 define('TIMEFRAME_SELECT_FRAME_NEW', 'create new');
 define('TIMEFRAME_EDIT_FRAMES', 'Edit timeframe:');
@@ -225,6 +226,10 @@ define('TIMEFRAME_ADD_EDIT_FRAME', 'Add and edit timeframes');
 define('TIMEFRAME_DEL_BUTTON', 'Delete timeframe');
 define('TIMEFRAME_SUBMIT_ADD', 'Add timeframe');
 define('TIMEFRAME_SUBMIT_UPDATE', 'Update timeframe data');
+define('TIMEFRAME_HOLIDAYS_DELETE', 'Delete');
+define('TIMEFRAME_HOLIDAY_NAME','Holiday name: ');
+define('TIMEFRAME_HOLIDAY_START','Holiday start: ');
+define('TIMEFRAME_HOLIDAY_END','Holiday end: ');
 define('TIMEFRAME_ADMIN', 'Administrator:');
 define('TIMEFRAME_FRAMES', 'Timeframes:');
 define('TIMEFRAME_FRAME_VALID_FROM', 'Valid from:');

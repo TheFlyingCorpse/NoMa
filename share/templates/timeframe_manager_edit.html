@@ -135,8 +135,27 @@
   <td><input type="text" class="text" name="dt_validTo" id="dt_validTo" align=right value="{$TIME_VALID_DATETIME_TO}"</td>
  </tr>
 </table>
+<br/>
+<table>
+<tr><td colspan="2" height="5"></td></tr>
+<tr><td colspan="2">{$TIMEFRAME_HEADING_HOLIDAYS}</td></tr>{$HOLIDAYS}
+<tr>
+<td>{$TIMEFRAME_HOLIDAY_DESC_NAME}</td>
+<td><input class="text" name="holiday_name" size="40" value=""/></td>
+</tr>
+<tr>
+<td>{$TIMEFRAME_HOLIDAY_DESC_START}</td>
+<td><input class="text" id="holiday_start" name="holiday_start" size="40" value=""/></td>
+</tr>
+<tr>
+<td>{$TIMEFRAME_HOLIDAY_DESC_END}</td>
+<td><input class="text" id="holiday_end" name="holiday_end" size="40" value=""/></td>
+</tr>
+</table>
 
 <script type="text/javascript">
+AnyTime.picker( "holiday_start", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
+AnyTime.picker( "holiday_end", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "dt_validTo", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "dt_validFrom", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "time_monday_from", { format: "%H:%i:%s" } );

@@ -251,8 +251,13 @@ function getContactGroupById ($id) {
  * @param               none
  * @return              array of contactgroups and corresponding ids
  */
-function getTimeFrames () {
-        $dbResult = queryDB('select * from timeframes where timeframes.timeframe_name != \'[---]\' order by timeframe_name');
+function getTimeFrames ($exclude = null) {
+	$query = 'select * from timeframes where timeframe_name != \'[---]\'';
+        if ($exclude) {
+                $query .= ' and timeframe_name != \'' . prepareDBValue($exclude) . '\'';
+        }
+	$query .= '  order by timeframe_name';
+        $dbResult = queryDB($query);
         $timeframes = array();
         if (is_array($dbResult)) {
                 foreach($dbResult as $row) {
