@@ -18,9 +18,9 @@ db:
   sqlite3:
    dbfile: /usr/local/nagios/noma/etc/NoMa.db
 debug: 
-  daemonize: 0
+  daemonize: 1
   file: /usr/local/nagios/noma/var/noma_debug.log
-  logging: 3
+  logging: 1
   paramlog: ~
   queries: 1
   sms: ~

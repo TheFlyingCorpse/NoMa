@@ -115,7 +115,7 @@ use DBI;
 
 our $processStart = time();
 our %suppressionHash;
-my $versionStr = 'current (2.0.0-dev)';
+my $versionStr = 'current (2.0.0-beta)';
 
 my %stati_service = (
     'OK'       => 'on_ok',
@@ -266,6 +266,11 @@ if ( defined($daemonize) and $daemonize == 1)
 
 # TODO: read escalations in and push into Queue???
 # deleteFromEscalations();
+
+##############################################################################
+# NOMA STARTUP LOG
+##############################################################################
+debug('NoMa '.$versionStr.' starting @ '.localtime, 1);
 
 ##############################################################################
 # DATABASE VERSION VERIFICATION

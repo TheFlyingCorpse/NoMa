@@ -81,7 +81,7 @@
 * fixed messages containing ';' being truncated
 * updated documentation
 
-2.0.0 (current) - WORK IN PROGRESS
+2.0.0 (current) - BETA
 ----------------
 New:
 * new folder structure to make it easier to work with NoMa. (Ticket #813)
