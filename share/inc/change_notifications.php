@@ -72,6 +72,7 @@ function addNotification ($p) {
 	$services_include = prepareDBValue($p['services_include']);
 	$services_exclude = prepareDBValue($p['services_exclude']);
         $notification_name = prepareDBValue($p['notification_name']);
+        $notification_description = prepareDBValue($p['notification_description']);
 	$notify_after_tries = prepareDBValue($p['notify_after_tries']);
         $notify_on_ok = prepareDBValue((isset($p['notify_on_ok']) && $p['notify_on_ok'] == 'on') ? '1' : '0');
         $notify_on_warning = prepareDBValue((isset($p['notify_on_warning']) && $p['notify_on_warning'] == 'on') ? '1' : '0');
@@ -103,9 +104,10 @@ function addNotification ($p) {
 	// check whether notification exists
 	$query = sprintf(
 		'select id from notifications
-			where active=0 and username=\'%s\' and noticication_name=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\'  and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+			where active=0 and username=\'%s\' and noticication_name=\'%s\' and noticication_description=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\'  and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$owner,
 		$notification_name,
+		$notification_description,
 		$recipients_include,
 		$recipients_exclude,
 		$hostgroups_include,
@@ -144,11 +146,12 @@ function addNotification ($p) {
 	// add notification
 	$query = sprintf(
 		'INSERT INTO notifications 
-		(active,username,notification_name,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude,notify_after_tries,let_notifier_handle,rollover,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,on_type_problem,on_type_recovery,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,timezone_id,timeframe_id)
+		(active,username,notification_name,notification_description,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude,notify_after_tries,let_notifier_handle,rollover,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,on_type_problem,on_type_recovery,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,timezone_id,timeframe_id)
 VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                 '0',
                 $owner,
 		$notification_name,
+                $notification_description,
                 $recipients_include,
                 $recipients_exclude,
                 $hosts_include,
@@ -188,9 +191,10 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
 	// get new id
 	$query = sprintf(
 		'SELECT id FROM notifications
-			WHERE active=\'0\' and username=\'%s\' and notification_name=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and  hosts_include=\'%s\' and hosts_exclude=\'%s\' and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+			WHERE active=\'0\' and username=\'%s\' and notification_name=\'%s\' and notification_description=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and  hosts_include=\'%s\' and hosts_exclude=\'%s\' and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$owner,
 		$notification_name,
+		$notification_description,
 		$recipients_include,
 		$recipients_exclude,
 		$hostgroups_include,
@@ -325,6 +329,7 @@ function updateNotification ($p) {
 	$services_include = prepareDBValue($p['services_include']);
 	$services_exclude = prepareDBValue($p['services_exclude']);
         $notification_name = prepareDBValue($p['notification_name']);
+        $notification_description = prepareDBValue($p['notification_description']);
 	$notify_after_tries = prepareDBValue($p['notify_after_tries'][0]);
         $notify_on_ok = prepareDBValue((isset($p['notify_on_ok'][0]) && ($p['notify_on_ok'][0]) == 'on') ? '1' : '0');
         $notify_on_warning = prepareDBValue((isset($p['notify_on_warning'][0]) && ($p['notify_on_warning'][0]) == 'on') ? '1' : '0');
@@ -357,9 +362,10 @@ function updateNotification ($p) {
 
 	// update notification
 	$query = sprintf(
-		'UPDATE notifications SET username=\'%s\', notification_name=\'%s\', recipients_include=\'%s\', recipients_exclude=\'%s\', hostgroups_include=\'%s\', hostgroups_exclude=\'%s\', hosts_include=\'%s\', hosts_exclude=\'%s\', servicegroups_include=\'%s\', servicegroups_exclude=\'%s\', services_include=\'%s\', services_exclude=\'%s\', notify_after_tries=\'%s\',on_ok=\'%s\', on_warning=\'%s\', on_unknown=\'%s\', on_host_unreachable=\'%s\', on_critical=\'%s\', on_host_up=\'%s\', on_host_down=\'%s\', on_type_problem=\'%s\', on_type_recovery=\'%s\', on_type_flappingstart=\'%s\', on_type_flappingstop=\'%s\', on_type_flappingdisabled=\'%s\', on_type_downtimestart=\'%s\', on_type_downtimeend=\'%s\', on_type_downtimecancelled=\'%s\', on_type_acknowledgement=\'%s\', on_type_custom=\'%s\', let_notifier_handle=\'%s\', rollover=\'%s\', timeframe_id=\'%s\', timezone_id=\'%s\' WHERE id=\'%s\';',
+		'UPDATE notifications SET username=\'%s\', notification_name=\'%s\', notification_description=\'%s\', recipients_include=\'%s\', recipients_exclude=\'%s\', hostgroups_include=\'%s\', hostgroups_exclude=\'%s\', hosts_include=\'%s\', hosts_exclude=\'%s\', servicegroups_include=\'%s\', servicegroups_exclude=\'%s\', services_include=\'%s\', services_exclude=\'%s\', notify_after_tries=\'%s\',on_ok=\'%s\', on_warning=\'%s\', on_unknown=\'%s\', on_host_unreachable=\'%s\', on_critical=\'%s\', on_host_up=\'%s\', on_host_down=\'%s\', on_type_problem=\'%s\', on_type_recovery=\'%s\', on_type_flappingstart=\'%s\', on_type_flappingstop=\'%s\', on_type_flappingdisabled=\'%s\', on_type_downtimestart=\'%s\', on_type_downtimeend=\'%s\', on_type_downtimecancelled=\'%s\', on_type_acknowledgement=\'%s\', on_type_custom=\'%s\', let_notifier_handle=\'%s\', rollover=\'%s\', timeframe_id=\'%s\', timezone_id=\'%s\' WHERE id=\'%s\';',
 		$owner,
 		$notification_name,
+		$notification_description,
 		$recipients_include,
 		$recipients_exclude,
 		$hostgroups_include,

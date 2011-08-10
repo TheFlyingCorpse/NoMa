@@ -66,7 +66,8 @@ function getContent () {
 	// assign labels
 	$templateContent->assign('ADD_EDIT_OVERVIEW_LINK', ADD_EDIT_OVERVIEW_LINK);
 	$templateContent->assign('HEADING_HOSTS_AND_SERVICES', ADD_EDIT_HEADING_HOSTS_AND_SERVICES);
-	$templateContent->assign('HEADING_TIME', ADD_EDIT_HEADING_TIME);
+        $templateContent->assign('ADD_EDIT_HEADING_NOTIFICATION_NAME', ADD_EDIT_HEADING_NOTIFICATION_NAME);
+	$templateContent->assign('ADD_EDIT_HEADING_TIME', ADD_EDIT_HEADING_TIME);
 	$templateContent->assign('ADD_EDIT_HEADING_OWNER', ADD_EDIT_HEADING_OWNER);
 	$templateContent->assign('ADD_EDIT_OWNER', ADD_EDIT_OWNER);
         $templateContent->assign('ADD_EDIT_INCLUDE_RECIPIENTS', ADD_EDIT_INCLUDE_RECIPIENTS);
@@ -80,6 +81,7 @@ function getContent () {
 	$templateContent->assign('ADD_EDIT_INCLUDE_SERVICES', ADD_EDIT_INCLUDE_SERVICES);
 	$templateContent->assign('ADD_EDIT_EXCLUDE_SERVICES', ADD_EDIT_EXCLUDE_SERVICES);
         $templateContent->assign('ADD_EDIT_NOTIFICATION_NAME', ADD_EDIT_NOTIFICATION_NAME);
+        $templateContent->assign('ADD_EDIT_NOTIFICATION_DESC', ADD_EDIT_NOTIFICATION_DESC);
 	$templateContent->assign('ADD_EDIT_TIMEZONE', ADD_EDIT_TIMEZONE);
         $templateContent->assign('ADD_EDIT_TIMEFRAME', ADD_EDIT_TIMEFRAME);
 	$templateContent->assign('ADD_EDIT_SUBMIT', ADD_EDIT_SUBMIT);
@@ -150,6 +152,7 @@ function getContent () {
 		$templateContent->assign('EXCLUDE_SERVICES', $dbResult[0]['services_exclude']);
 
                 $templateContent->assign('NOTIFICATION_NAME', $dbResult[0]['notification_name']);
+                $templateContent->assign('NOTIFICATION_DESCRIPTION', $dbResult[0]['notification_description']);
 
 		// get notification users
 		$dbSub = queryDB('select c.username from contacts c

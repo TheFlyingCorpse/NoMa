@@ -140,7 +140,8 @@ define('ADD_EDIT_ESCALATION_ERROR', 'An error occurred!');
 define('ADD_EDIT_NOTIFICATION_ADD_UPDATE_ERROR', 'An error occurred!');
 define('ADD_EDIT_NOTIFICATION_UPDATED', 'Notification updated.');
 define('ADD_EDIT_PREVIEW_NO_RESULTS', 'No results.');
-
+define('ADD_EDIT_HEADING_NOTIFICATION_NAME', 'Notification information');
+define('ADD_EDIT_NOTIFICATION_DESC', 'Description(optional)');
 
 // login
 define('LOGIN_HEADING', 'Please login:');

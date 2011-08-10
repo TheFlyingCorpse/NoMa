@@ -5,6 +5,16 @@
 <table cellpadding="5" cellspacing="0" border="0" width="990">
 <tr><td colspan="3" class="contacts_message">{$MESSAGE}</td></tr>
 <tr><td colspan="3" height="5"></td></tr>
+<tr class="header"><td colspan="3">{$ADD_EDIT_HEADING_NOTIFICATION_NAME}<hr/></td></tr>
+<tr>
+<td>{$ADD_EDIT_NOTIFICATION_NAME}</td>
+<td><input class="text" name="notification_name" id="notification_name" size="25" value="{$NOTIFICATION_NAME}"/></td>
+</tr>
+<tr>
+<td>{$ADD_EDIT_NOTIFICATION_DESC}</td>
+<td><textarea class="text" name="notification_description" id="notification_description" size="40" rows="4">{$NOTIFICATION_DESCRIPTION}</textarea></td>
+</tr>
+<tr><td colspan="3" height="5"></td></tr>
 <tr class="header"><td colspan="3">{$HEADING_HOSTS_AND_SERVICES}<hr/></td></tr>
 <tr>
 <td>{$ADD_EDIT_INCLUDE_RECIPIENTS}</td>
@@ -50,10 +60,6 @@
 <tr>
 <td>{$ADD_EDIT_EXCLUDE_SERVICES}</td>
 <td><input class="text" name="services_exclude" id="services_exclude" size="60" value="{$EXCLUDE_SERVICES}"{$ONCHANGE_SERVICES_EXCLUDE}/></td>
-</tr>
-<tr>
-<td>{$ADD_EDIT_NOTIFICATION_NAME}</td>
-<td><input class="text" name="notification_name" id="notification_name" size="30" value="{$NOTIFICATION_NAME}"/></td>
 </tr>
 <tr><td colspan="2" height="5"></td></tr>
 <tr class="header"><td colspan="2">{$CONTACTS_HEADING_TIME}<hr/></td></tr>
