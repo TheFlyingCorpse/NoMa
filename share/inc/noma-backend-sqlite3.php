@@ -66,10 +66,11 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 	// Try to open the SQLite database.
 	$db = new PDO("sqlite:".$dbConf['dbFilePath']);
 	if (!$db){
-		die('Something wrong\n');
+		die('Something wrong');
 	};
 
         // query database
+	
 	$result = $db->query($query);
 
 
@@ -77,9 +78,12 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
         $dbResult = array();
 	$count = 0;
 
+        $log = new Logging();
+
         // fetch result if it makes sense
         $queryCmd = strtolower(substr($query, 0, 6));
-        if ($queryCmd == 'select') {
+	$queryCountCmd = strtolower(substr($query, 0, 12));
+        if ($queryCmd == 'select' && $queryCountCmd != 'select count') {
 
 	                // Replace between SELECT and FROM with COUNT(*) to count the rows.
 	                $start = 'select';
@@ -100,6 +104,21 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 					}
 				}
 			}
+	} elseif ($queryCountCmd == 'select count'){
+		if ($result = $db->query($query)){
+			if ( $result->fetchColumn() > 0) {
+			        foreach ($db->query($query) as $row) {
+                                	if ($sqllog == true){$log-lwrite(' Row result: '.$row.' from select count: '.$count);};
+
+			        	$count = $count++;
+ 	        			$dbResult[] = $row;
+	        		}
+			} else {
+				$dbResult = array (0 => array("cnt" => 0));
+                        	if ($sqllog == true){$log-lwrite(' Empty result from select count, no columns returned, set result to to be cnt 0.. ');};
+			}
+		}
+
         } else {
 	        // Count results. ONLY valid for UPDATE; INSERT; DELETE statements.
 	        if ($return_count) {

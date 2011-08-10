@@ -57,9 +57,11 @@ function queryMySQLDB ($query, $return_count = false, $ndo = false) {
 
         // set shortcut to database configuration
         if (!$ndo) {
+		global $sqllog;
                 global $dbConf;
         } else {
                 global $dbNDO;
+		global $sqllog;
                 $dbConf = &$dbNDO;
         }
 

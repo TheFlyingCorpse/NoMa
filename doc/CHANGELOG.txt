@@ -81,23 +81,32 @@
 * fixed messages containing ';' being truncated
 * updated documentation
 
-2.0.0 (current) - WORK IN PROGRESS - UNDER HEAVY DEVELOPMENT
+2.0.0 (current) - WORK IN PROGRESS
 ----------------
-* new folder structure to make it easier to work with NoMa.
-* new configuration file for the daemon.
-* new backend option for NoMa: SQLite3. Requires at least PHP 5.2.6+
-* added servicegroup include and exclude filter.
-* added recipient include and exclude filter(incase you have contacts named after a group of people to notify on error) - Thanks to Sebastian Wolf
-* redid the notification rule's in contacts.pm
-* fixed missing hostgroup column in the SQL files for new installation
-* fixed unique notification logic to sending notifications. A Contact will only get one notification per method, this to make it easier to make notification rules that may overlap, without spamming the contact excessively.
-* added indexes to speed up MySQL performance 100 fold in setups with 10k+ notification log entries.
-* added $host_alias as a default value to notify with via email. Note that there currently as of Nagios 3.2.3 is a bug regarding hostalias not being updated in the retention.dat file on reload/restart.
-* now supports more than PROBLEM and RECOVERY notifications, added support for PROBLEM, RECOVERY, ACKNOWLEDGEMENT, FLAPPINGSTART, FLAPPINGSTOP, FLAPPINGDISABLED, DOWNTIMESTART, DOWNTIMEEND, DOWNTIMECANCELLED.
-* added a sample apache-sample.conf noma file under contrib/
-* added default notification ID, notification AUTHOR and notification COMMENT support, so acknowledgements, with comments and authors can be tracked. Modified default email and sms messages to reflect this change.
-* added new method of notification: Growl, see documentation for how to use.
-* replaced the timeperiod table with a new timeframe setup, editable through the frontend for better flexibillity of notification rules, contactgroups and contacts.
-* holidays can now have names when used with timeframes for easier identification. (ToDo)
-* notifications can now have names for easier identification.
-* updated documentation++
+New:
+* new folder structure to make it easier to work with NoMa. (Ticket #813)
+* new configuration file for the daemon. (Ticket: #825)
+* new backend option for NoMa: SQLite3. Requires at least PHP 5.2.6+. (Ticket: #827)
+* replaced the timeperiod table with a new timeframe setup, editable through the frontend for better flexibillity of notification rules, contactgroups and contacts. (Ticket: #690)
+* added servicegroup include and exclude filter. (Ticket: #583)
+* added recipient include and exclude filter(incase you have contacts named after a group of people to notify on error) - Thanks to Sebastian Wolf (Ticket: #-)
+* added indexes to speed up MySQL performance 100 fold in setups with 10k+ notification log entries. (Ticket: #-)
+* added $host_alias as a default value to notify with via email. Note that there currently as of Nagios 3.2.3 is a bug regarding hostalias not being updated in the retention.dat file on reload/restart. (Ticket: #-)
+* redid the notification rule's in contacts.pm (Ticket: #-)
+* now supports more than PROBLEM and RECOVERY notifications, added support for PROBLEM, RECOVERY, ACKNOWLEDGEMENT, FLAPPINGSTART, FLAPPINGSTOP, FLAPPINGDISABLED, DOWNTIMESTART, DOWNTIMEEND, DOWNTIMECANCELLED. (Ticket: #612, Ticket: #762)
+* added a sample apache-sample.conf noma file under contrib/. (Ticket: #676)
+* added default notification ID, notification AUTHOR and notification COMMENT support, so acknowledgements, with comments and authors can be tracked. Modified default email and sms messages to reflect this change. (Ticket: #)
+* added new method of notification: Growl, see documentation for how to use. (Ticket: #800)
+* holidays can now have names when used with both contacts and timeframes for easier identification. (possible to have several holidays on both contacts and timeframes). (Ticket: #843) (bonus for contacts)
+* notifications can now have names for easier identification. (Ticket: #837)
+* extended debug function to have several options for filtering. (Ticket: #819)
+
+Fixed:
+* fixed missing hostgroup column in the SQL files for new installations. (Ticket: #479)
+* fixed unique notification logic to sending notifications. A Contact will only get one notification per method, this to make it easier to make notification rules that may overlap, without spamming the contact excessively. (Ticket: #635)
+* notifies if the database version is wrong compared to the expected version. (Ticket #831)
+* updated Debian init script LSB header due to a typo. (Ticket: #811)
+* more configuration is stored in config / database than before, and will increasingly do so. (Ticket: #390)
+
+Extra:
+* updated documentation

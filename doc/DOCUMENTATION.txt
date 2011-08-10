@@ -25,6 +25,11 @@ Table of Contents
 
   4.1 Configuring the frontend
   4.2 Configuring the notifier
+
+    4.2.9 Notification configuration
+
+       4.2.9.4 Growl
+
   4.3 Configuring Nagios to use NoMa
   4.4 Configuring the individual notifiers
 

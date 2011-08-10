@@ -105,7 +105,7 @@ function userExists ($username) {
 		'select count(*) cnt from contacts where username=\'%s\'',
 		prepareDBValue($username)
 	);
-	$dbResult = queryDB($query);
+	$dbResult = queryDB($query, true);
 
 	if ($dbResult[0]['cnt'] == '1') return true;
 

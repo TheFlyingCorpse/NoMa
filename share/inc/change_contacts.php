@@ -147,8 +147,8 @@ function addContact ($p) {
 
 
 	// add holidays
-	if (!empty($p['holiday_start']) && !empty($p['holiday_end'])) {
-		addCHolidays($dbResult[0]['id'], $p['holiday_start'], $p['holiday_end']);
+	if (!empty($p['holiday_name']) && !empty($p['holiday_start']) && !empty($p['holiday_end'])) {
+		addCHolidays($dbResult[0]['id'], $p['holiday_name'], $p['holiday_start'], $p['holiday_end']);
 	}
 
 
@@ -233,8 +233,8 @@ function updateContact ($p) {
 
 
 	// add holidays
-	if (!empty($p['holiday_start']) && !empty($p['holiday_end'])) {
-		addCHolidays($id, $p['holiday_start'], $p['holiday_end']);
+	if (!empty($p['holiday_name']) && !empty($p['holiday_start']) && !empty($p['holiday_end'])) {
+		addCHolidays($id, $p['holiday_name'], $p['holiday_start'], $p['holiday_end']);
 	}
 
 
@@ -331,16 +331,18 @@ function checkContactsMod ($id = null) {
  * @param		string			$holiday_end	end of holidays
  * @return									boolean value (false on error)
  */
-function addCHolidays ($contact_id, $holiday_start, $holiday_end) {
+function addCHolidays ($contact_id, $holiday_name, $holiday_start, $holiday_end) {
 
 	// prepare data
+        $holiday_name = prepareDBValue($holiday_name);
 	$holiday_start = prepareDBValue($holiday_start);
 	$holiday_end = prepareDBValue($holiday_end);
 
 	// check whether holidays exist
 	$query =  sprintf(
-		'select count(*) cnt from holidays where contact_id=\'%s\' and holiday_start=\'%s\' and end=\'%s\'',
+		'select count(*) as cnt from holidays where contact_id=\'%s\' and holiday_name=\'%s\' and holiday_start=\'%s\' and holiday_end=\'%s\'',
 		$contact_id,
+                $holiday_name,
 		$holiday_start,
 		$holiday_end
 	);
@@ -349,8 +351,9 @@ function addCHolidays ($contact_id, $holiday_start, $holiday_end) {
 
 	// add holidays
 	$query = sprintf(
-		'insert into holidays (contact_id,holiday_start,holiday_end) values (\'%s\',\'%s\',\'%s\')',
+		'insert into holidays (contact_id,holiday_name,holiday_start,holiday_end) values (\'%s\',\'%s\',\'%s\',\'%s\')',
 		$contact_id,
+                $holiday_name,
 		$holiday_start,
 		$holiday_end
 	);

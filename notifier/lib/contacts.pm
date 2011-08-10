@@ -320,8 +320,11 @@ sub getUsersAndMethodsFromGroups
     my @dbResult_esc_arr;
     my @dbResult_tmp_arr;
     my $where = '';
+    my @ignoreCGs;
+    my $notcg = '';
     my $query;
 
+    # get count of notification id's
     my $ids_cnt = @$ids;
 
     if ($ids_cnt)
@@ -329,11 +332,57 @@ sub getUsersAndMethodsFromGroups
 
         if ( $ids_cnt == 1 )
         {
-            $where = $ids->[0];
-        } else
-        {
-            $where = join( '\' or n.id=\'', @$ids );
+		
+		my $query_temp = 'select ncg.contactgroup_id from notifications_to_contactgroups ncg where ncg.notification_id=\''.$ids->[0].'\'';
+		my %dbResult_temp = queryDB($query_temp);
+		foreach my $cg (keys %dbResult_temp ){
+			if(contactgroupInTimeFrame($dbResult_temp{$cg}->{contactgroup_id}) eq 0){
+				debug(' Contactgroup ID to exclude from queries: '.$dbResult_temp{$cg}->{contactgroup_id},2);
+				push(@ignoreCGs, $dbResult_temp{$cg}->{contactgroup_id});
+			}
+		}
+                $query_temp = 'select eccg.contactgroup_id from escalations_contacts ec left join escalations_contacts_to_contactgroups eccg on ec.id=eccg.escalation_contacts_id where ec.notification_id=\''.$ids->[0].'\'';
+                %dbResult_temp = queryDB($query_temp);
+                foreach my $cg (keys %dbResult ){
+                        if(contactgroupInTimeFrame($dbResult_temp{$cg}->{contactgroup_id}) eq 0){
+                                debug(' Contactgroup ID to exclude from queries: '.$dbResult_temp{$cg}->{contactgroup_id},2);
+                                push(@ignoreCGs, $dbResult_temp{$cg}->{contactgroup_id});
+                        }
+                }
+        	$where = $ids->[0];
+        } else {
+                my $query_temp = 'select ncg.contactgroup_id from notifications_to_contactgroups ncg where ncg.notification_id=\''.$ids->[0].'\'';
+                my %dbResult_temp = queryDB($query_temp);
+                foreach my $cg (keys %dbResult ){
+                        if(contactgroupInTimeFrame($dbResult_temp{$cg}->{contactgroup_id}) eq 0){
+                                debug(' Contactgroup ID to exclude from queries: '.$dbResult_temp{$cg}->{contactgroup_id},2);
+                                push(@ignoreCGs, $dbResult_temp{$cg}->{contactgroup_id});
+                        }
+                }
+		$query_temp = 'select eccg.contactgroup_id from escalations_contacts ec left join escalations_contacts_to_contactgroups eccg on ec.id=eccg.escalation_contacts_id where ec.notification_id=\''.$ids->[0].'\'';
+		%dbResult_temp = queryDB($query_temp);
+                foreach my $cg (keys %dbResult ){
+                        if(contactgroupInTimeFrame($dbResult_temp{$cg}->{contactgroup_id}) eq 0){
+                                debug(' Contactgroup ID to exclude from queries: '.$dbResult_temp{$cg}->{contactgroup_id},2);
+                                push(@ignoreCGs, $dbResult_temp{$cg}->{contactgroup_id});
+                        }
+                }
+		$where = join( '\' or n.id=\'', @$ids );
         }
+
+	# get count of contactgroups to ignore.
+	my $ignoreCGs_cnt = @ignoreCGs;
+
+	if ( $ignoreCGs_cnt == 1)
+	{
+		$notcg = $ignoreCGs[0];
+	} else {
+		$notcg = join( '\' or eccg.contactgroup_id<>\'', @ignore_cgs);
+	}
+		
+
+	# get contactgroups of ID's
+	# figure out what ID's NOT to select.
 
         # query db for contacts
         $query =
@@ -345,11 +394,12 @@ sub getUsersAndMethodsFromGroups
 					left join contactgroups_to_contacts cgc on cgc.contactgroup_id=cg.id
 					left join contacts c on c.id=cgc.contact_id
 					left join timezones tz on c.timezone_id=tz.id
-					where cg.view_only=\'0\' and n.active=\'1\' and (n.id=\'' . $where . '\')';
+					where cg.view_only=\'0\' and n.active=\'1\' and (n.id=\'' . $where . '\') and (ncg.contactgroup_id<>\'' . $notcg . '\')';
 
         @dbResult_not_arr = queryDB( $query, 1 );
 
         $where =~ s/n\.id/ec\.notification_id/g;
+	$where =~ s/ncg\.contactgroup_id/eccg\.contactgroup_id/g;
 
         $query =
 'select distinct c.username, c.phone, c.mobile, c.netaddress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, ec.notify_after_tries, n.let_notifier_handle, n.id rule from escalations_contacts ec
@@ -361,7 +411,7 @@ sub getUsersAndMethodsFromGroups
 					left join timezones tz on c.timezone_id=tz.id
 					left join notifications n on ec.notification_id=n.id
 					left join contactgroups cg on cgc.contactgroup_id=cg.id
-					where cg.view_only=\'0\' and n.active=\'1\' and (ec.notification_id=\'' . $where . '\')';
+					where cg.view_only=\'0\' and n.active=\'1\' and (ec.notification_id=\'' . $where . '\')  and (eccg.contactgroup_id<>\'' . $notcg . '\')';
 
         @dbResult_tmp_arr = queryDB( $query, 1 );
 

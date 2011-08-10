@@ -80,8 +80,11 @@ function getContent () {
 	$templateContent->assign('CONTACTS_TIMEFRAME', CONTACTS_TIMEFRAME);
 	$templateContent->assign('CONTACTS_TIMEZONE', CONTACTS_TIMEZONE);
 	$templateContent->assign('CONTACTS_HEADING_HOLIDAYS', CONTACTS_HEADING_HOLIDAYS);
-	$templateContent->assign('CONTACTS_HOLIDAYS_START', CONTACTS_HOLIDAYS_START);
-	$templateContent->assign('CONTACTS_HOLIDAYS_END', CONTACTS_HOLIDAYS_END);
+        $templateContent->assign('CONTACTS_HOLIDAY_ADD_NEW', CONTACTS_HOLIDAY_ADD_NEW);
+        $templateContent->assign('CONTACTS_HOLIDAY_DESC_NAME', CONTACTS_HOLIDAY_DESC_NAME);
+        $templateContent->assign('CONTACTS_HOLIDAY_DESC_START', CONTACTS_HOLIDAY_DESC_START);
+        $templateContent->assign('CONTACTS_HOLIDAY_DESC_END', CONTACTS_HOLIDAY_DESC_END);
+        $templateContent->assign('CONTACTS_HEADING_HOLIDAYS', CONTACTS_HEADING_HOLIDAYS);
 
 
 	// assign messages
@@ -202,12 +205,14 @@ function getContent () {
 		$templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_HOLIDAYS_ROW);
 		$templateSubContent->assign('CONTACTS_HOLIDAYS_DELETE', CONTACTS_HOLIDAYS_DELETE);
 		$templateSubContent->assign('ID', $row['id']);
-		$templateSubContent->assign('START', $row['start']);
-		$templateSubContent->assign('END', $row['end']);
+                $templateSubContent->assign('CONTACTS_HOLIDAY_NAME', $row['holiday_name']);
+		$templateSubContent->assign('CONTACTS_HOLIDAY_START', $row['holiday_start']);
+		$templateSubContent->assign('CONTACTS_HOLIDAY_END', $row['holiday_end']);
+                $templateSubContent->assign('CONTACTS_HOLIDAY_DESC_SHORT_START', CONTACTS_HOLIDAY_DESC_SHORT_START);
+                $templateSubContent->assign('CONTACTS_HOLIDAY_DESC_SHORT_END', CONTACTS_HOLIDAY_DESC_SHORT_END);
 		$content .= $templateSubContent->getHTML();
 	}
 	$templateContent->assign('HOLIDAYS', $content);
-
 
 	if (empty($user)) {
 		$templateContent->assign('CONTACTS_SUBMIT', CONTACTS_SUBMIT_ADD);

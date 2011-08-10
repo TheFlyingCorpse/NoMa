@@ -58,6 +58,9 @@ function getContent () {
 
 	// security
 	if ($timeframes['admin_only'] && !isAdmin()) return null;
+
+	// sane default.
+        $timeframeHolidays = array();
 	
 	// get timeframe to edit
 	$timeframe = ((isset($p['timeframe'])) ? $p['timeframe'] : null);
@@ -71,9 +74,6 @@ function getContent () {
 	$templateContent->assign('TIMEFRAME_HEADING', TIMEFRAME_HEADING);
 	$templateContent->assign('TIMEFRAME_HEADING_EDIT', TIMEFRAME_HEADING_EDIT);
 	$templateContent->assign('TIMEFRAME_HEADING_SELECT', TIMEFRAME_HEADING_SELECT);
-        $templateContent->assign('TIMEFRAME_HEADING_HOLIDAYS', TIMEFRAME_HEADING_HOLIDAYS);
-        $templateContent->assign('TIMEFRAME_HOLIDAY_START', TIMEFRAME_HOLIDAY_START);
-        $templateContent->assign('TIMEFRAME_HOLIDAY_END', TIMEFRAME_HOLIDAY_END);
 	$templateContent->assign('TIMEFRAME_EDIT_FRAMES', TIMEFRAME_EDIT_FRAMES);
 	$templateContent->assign('TIMEFRAME_EDIT_BUTTON', TIMEFRAME_EDIT_BUTTON);
         $templateContent->assign('TIMEFRAME_TIMEFRAME', TIMEFRAME_TIMEFRAME);
@@ -122,6 +122,12 @@ function getContent () {
 		$templateSubContent->assign('TIMEFRAME_DAY_FRIDAY', TIMEFRAME_DAY_FRIDAY);
 		$templateSubContent->assign('TIMEFRAME_DAY_SATURDAY', TIMEFRAME_DAY_SATURDAY);
 		$templateSubContent->assign('TIMEFRAME_DAY_SUNDAY', TIMEFRAME_DAY_SUNDAY);
+                $templateSubContent->assign('TIMEFRAME_HOLIDAY_ADD_NEW', TIMEFRAME_HOLIDAY_ADD_NEW);
+                $templateSubContent->assign('TIMEFRAME_HOLIDAY_DESC_NAME', TIMEFRAME_HOLIDAY_DESC_NAME);
+                $templateSubContent->assign('TIMEFRAME_HOLIDAY_DESC_START', TIMEFRAME_HOLIDAY_DESC_START);
+                $templateSubContent->assign('TIMEFRAME_HOLIDAY_DESC_END', TIMEFRAME_HOLIDAY_DESC_END);
+	        $templateSubContent->assign('TIMEFRAME_HEADING_HOLIDAYS', TIMEFRAME_HEADING_HOLIDAYS);
+
 
 		// From DB
                 $templateSubContent->assign('ID', $timeframeData['id']);
@@ -198,6 +204,7 @@ function getContent () {
                 $templateSubContent->assign('CHECKED_DAY_SUNDAY_4TH', ($timeframeData['day_sunday_4th']==1)?' checked="checked" ':'');
                 $templateSubContent->assign('CHECKED_DAY_SUNDAY_5TH', ($timeframeData['day_sunday_5th']==1)?' checked="checked" ':'');
                 $templateSubContent->assign('CHECKED_DAY_SUNDAY_LAST', ($timeframeData['day_sunday_last']==1)?' checked="checked" ':'');
+
                 $timeframeHolidays = queryDB('select * from holidays where timeframe_id=\'' . $id . '\' order by holiday_start asc');
 
 	        // add timeframe's holiday data
@@ -205,13 +212,14 @@ function getContent () {
 	        foreach ($timeframeHolidays as $row) {
         	        $templateSubSubContent = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_HOLIDAYS_ROW);
                 	$templateSubSubContent->assign('TIMEFRAME_HOLIDAYS_DELETE', TIMEFRAME_HOLIDAYS_DELETE);
-	                $templateSubSubContent->assign('HOLIDAY_ID', $row['holiday_id']);
-        	        $templateSubSubContent->assign('HOLIDAY_NAME', $row['holiday_name']);
-                	$templateSubSubContent->assign('HOLIDAY_START', $row['holiday_start']);
-	                $templateSubSubContent->assign('HOLIDAY_END', $row['holiday_end']);
-		        $templateSubSubContent->assign('TIMEFRAME_HOLIDAY_START', TIMEFRAME_HOLIDAY_START);
-		        $templateSubSubContent->assign('TIMEFRAME_HOLIDAY_END', TIMEFRAME_HOLIDAY_END);
+	                $templateSubSubContent->assign('ID', $row['id']);
+        	        $templateSubSubContent->assign('TIMEFRAME_HOLIDAY_NAME', $row['holiday_name']);
+                	$templateSubSubContent->assign('TIMEFRAME_HOLIDAY_START', $row['holiday_start']);
+	                $templateSubSubContent->assign('TIMEFRAME_HOLIDAY_END', $row['holiday_end']);
+                        $templateSubSubContent->assign('TIMEFRAME_HOLIDAY_DESC_SHORT_START', TIMEFRAME_HOLIDAY_DESC_SHORT_START);
+                        $templateSubSubContent->assign('TIMEFRAME_HOLIDAY_DESC_SHORT_END', TIMEFRAME_HOLIDAY_DESC_SHORT_END);
         	        $content .= $templateSubSubContent->getHTML();
+			//var_dump($content);
 	        }
         	$templateSubContent->assign('HOLIDAYS', $content);
 
@@ -248,6 +256,11 @@ function getContent () {
                 $templateSubContent->assign('TIMEFRAME_DAY_FRIDAY', TIMEFRAME_DAY_FRIDAY);
                 $templateSubContent->assign('TIMEFRAME_DAY_SATURDAY', TIMEFRAME_DAY_SATURDAY);
                 $templateSubContent->assign('TIMEFRAME_DAY_SUNDAY', TIMEFRAME_DAY_SUNDAY);
+                $templateSubContent->assign('TIMEFRAME_HEADING_HOLIDAYS', TIMEFRAME_HEADING_HOLIDAYS);
+                $templateSubContent->assign('TIMEFRAME_HOLIDAY_ADD_NEW', TIMEFRAME_HOLIDAY_ADD_NEW);
+                $templateSubContent->assign('TIMEFRAME_HOLIDAY_DESC_NAME', TIMEFRAME_HOLIDAY_DESC_NAME);
+                $templateSubContent->assign('TIMEFRAME_HOLIDAY_DESC_START', TIMEFRAME_HOLIDAY_DESC_START);
+                $templateSubContent->assign('TIMEFRAME_HOLIDAY_DESC_END', TIMEFRAME_HOLIDAY_DESC_END);
 
 
 	}

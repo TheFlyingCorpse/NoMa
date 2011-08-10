@@ -82,10 +82,11 @@ $dbConfSQLite3 = array (
 
 // Database type to use for NoMa (not NDO/IDO!)
 // options: 'mysql' | 'sqlite3'
-//$dbType = 'sqlite3';
 $dbType = 'sqlite3';
 
-
+// Database type to use for NDO / IDO
+// options: 'mysql'
+$dbTypeNDO = 'mysql';
 
 // NDO access - only required if host_service_preview is true
 // Currently only supports one backend to query for preview.
@@ -100,7 +101,6 @@ $dbNDO = array (
         'table_prefix'  => 'nagios_',
 );
 
-
 // Setting the proper value.
 if ($dbType == 'mysql'){
 	$dbConf = $dbConfMySQL;
@@ -108,7 +108,6 @@ if ($dbType == 'mysql'){
 if ($dbType == 'sqlite3'){
 	$dbConf = $dbConfSQLite3;
 };
-
 
 // authentication type
 // options: false | 'native' | 'ldap' | 'http'

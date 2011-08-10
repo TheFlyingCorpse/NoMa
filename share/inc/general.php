@@ -53,30 +53,37 @@
  * @param		boolean		$return_count	give back number of rows (optional)
  * @return									array of result rows
  */
-function queryDB ($query, $return_count = false, $ndo = false) { 	 
+function queryDB ($query, $return_count = false, $ndo = false) {
 
 	// set shortcut to database configuration
 
 	// FIGURE OUT WHAT BACKEND!!
 	if (!$ndo) {
 		global $dbConf;
-		global $dbType;
 		global $sqllog;
+		global $dbType;
+/*		$dbType = &$dbType;
+
+        	// Setting the proper value.
+	        if ($dbType == 'mysql'){
+			global $dbConfMySQL;
+	                $dbConf = &$dbConfMySQL;
+	        };
+	        if ($dbType == 'sqlite3'){
+			global $dbConfSQLite3;
+        	        $dbConf = &$dbConfSQLite3;
+	        };
+*/
 	} else {
 		global $dbNDO;
+		global $dbTypeNDO;
 		global $sqllog;
 		$dbConf = &$dbNDO;
+		$dbType = &$dbTypeNDO;
 	}
 
         $log = new Logging(); // Will only be used later on if its enabled.
-        if ($sqllog == true){$log->lwrite('SQL Query: '.$query);};
-
-	// Choose NoMa backend type.
-/*	if (!$ndo && $dbType == 'sqlite3'){
-		$dbConf = &$dbConfMySQL;
-	} elseif (!$ndo && $dbType == 'mysql'){
-		$dbConf = &$dbConfSQLite3;
-	}*/
+        if ($sqllog == true){$log->lwrite($dbConf['type'].' SQL Query: '.$query);};
 
 	// MySQL backend
 	if ($dbConf['type'] == 'mysql'){
@@ -85,11 +92,11 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 
 		if ($return_count == true){
 			list($count, $dbResult) = queryMySQLDB($query, $return_count, $ndo);
-			if ($sqllog == true){$log->lwrite("Result - Count: $count - dbResult: ".var_dump($dbResult));};
+			if ($sqllog == true){$log->lwrite("MySQL Result - Count: $count - dbResult: ".var_dump($dbResult));};
                         return array($count, $dbResult);
 		} else {
 			$dbResult = queryMySQLDB($query, false, $ndo);
-                        if ($sqllog == true){$log->lwrite("Result - dbResult: ".var_export($dbResult));};
+                        if ($sqllog == true){$log->lwrite("MySQL Result - dbResult: ".var_export($dbResult));};
 			return $dbResult;
 		}
 	}
@@ -101,14 +108,18 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 
                 if ($return_count == true){
                         list($count, $dbResult) = querySQLite3DB($query, $return_count, $ndo);
-                        if ($sqllog == true){$log->lwrite("Result - Count: $count - dbResult: ".var_dump($dbResult));};
+                        if ($sqllog == true){$log->lwrite("SQLite3 Result - Count: $count - dbResult: ".var_dump($dbResult));};
                         return array($count, $dbResult);
                 } else {
                         $dbResult = querySQLite3DB($query, false, $ndo);
-                        if ($sqllog == true){$log->lwrite("Result - dbResult: ".var_export($dbResult));};
+                        if ($sqllog == true){$log->lwrite("SQLite3 Result - dbResult: ".var_export($dbResult));};
                         return $dbResult;
                 }
         }
+
+	if ($dbConf['type'] != 'sqlite3' && $dbConf['type'] != 'mysql'){
+		die('Invalid database type selected, check your configuration!');
+	}
 }
 
 

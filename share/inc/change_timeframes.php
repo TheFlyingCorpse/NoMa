@@ -301,8 +301,8 @@ function addTimeFrame () {
 	//$p['timeframe'] = $dbResult[0]['id'];
 
         // add holidays
-        if (!empty($p['holiday_start']) && !empty($p['holiday_end'])) {
-                addHolidays($dbResult[0]['timeframe_id'], $p['timeframe_name'], $p['holiday_start'], $p['holiday_end']);
+        if (!empty($p['holiday_start']) && !empty($p['holiday_start']) && !empty($p['holiday_end'])) {
+                addHolidays($dbResult[0]['timeframe_id'], $p['holiday_name'], $p['holiday_start'], $p['holiday_end']);
         }
 
 	return true;
@@ -511,7 +511,6 @@ function updateTimeFrame () {
 
         }
 
-
         // add holidays
         if (!empty($p['holiday_start']) && !empty($p['holiday_end']) && !empty($p['holiday_name'])) {
                 addTFHolidays($id, $p['holiday_name'], $p['holiday_start'], $p['holiday_end']);
@@ -579,15 +578,21 @@ function deleteTimeFrame () {
  * @param               string                  $holiday_end     end of holidays
  * @return                                                                           boolean value (false on error)
  */
-function addTFHolidays ($timeframe_id, $timeframe_name, $holiday_start, $holiday_end) {
+function addTFHolidays ($timeframe_id, $holiday_name, $holiday_start, $holiday_end) {
 
         // prepare data
+	$holiday_name = prepareDBValue($holiday_name);
         $holiday_start = prepareDBValue($holiday_start);
         $holiday_end = prepareDBValue($holiday_end);
 
+	// Verify we've got everything we need!
+	if (empty($holiday_name)) return false;
+	if (empty($holiday_start)) return false;
+	if (empty($holiday_end)) return false;
+
         // check whether holidays exist
         $query =  sprintf(
-                'select count(*) cnt from holidays where timeframe_id=\'%s\' and holiday_name=\'%s\' and holiday_start=\'%s\' and holiday_end=\'%s\'',
+                'select count(*) as cnt from holidays where timeframe_id=\'%s\' and holiday_name=\'%s\' and holiday_start=\'%s\' and holiday_end=\'%s\'',
                 $timeframe_id,
 		$holiday_name,
                 $holiday_start,
