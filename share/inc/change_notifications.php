@@ -145,7 +145,7 @@ function addNotification ($p) {
 	$query = sprintf(
 		'INSERT INTO notifications 
 		(active,username,notification_name,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude,notify_after_tries,let_notifier_handle,rollover,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,on_type_problem,on_type_recovery,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,timezone_id,timeframe_id)
-VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                 '0',
                 $owner,
 		$notification_name,
@@ -343,8 +343,8 @@ function updateNotification ($p) {
         $notify_on_type_downtimecancelled = prepareDBValue((isset($p['notify_on_type_downtimecancelled'][0]) && ($p['notify_on_type_downtimecancelled'][0]) == 'on') ? '1' : '0');
         $notify_on_type_acknowledgement = prepareDBValue((isset($p['notify_on_type_acknowledgement'][0]) && ($p['notify_on_type_acknowledgement'][0]) == 'on') ? '1' : '0');
         $notify_on_type_custom = prepareDBValue((isset($p['notify_on_type_custom'][0]) && ($p['notify_on_type_custom'][0]) == 'on') ? '1' : '0');
-	$let_notifier_handle = prepareDBValue((isset($p['let_notifier_handle'][0]) && ($p['let_notifier_handle'][0]) == 'on') ? '1' : '0');
-	$rollover = prepareDBValue((isset($p['rollover'][0]) && ($p['rollover'][0]) == 'on') ? '1' : '0');
+	$let_notifier_handle = prepareDBValue((isset($p['let_notifier_handle']) && ($p['let_notifier_handle']) == 'on') ? '1' : '0');
+	$rollover = prepareDBValue((isset($p['rollover']) && ($p['rollover']) == 'on') ? '1' : '0');
         $timeframe_id = prepareDBValue($p['timeframe']);
         $timezone_id = prepareDBValue($p['timezone']);
 
