@@ -102,10 +102,10 @@ function authenticateUser () {
 function userExists ($username) {
 
 	$query = sprintf(
-		'select count(*) cnt from contacts where username=\'%s\'',
+		'select count(*) as cnt from contacts where username=\'%s\'',
 		prepareDBValue($username)
 	);
-	$dbResult = queryDB($query, true);
+	$dbResult = queryDB($query);
 
 	if ($dbResult[0]['cnt'] == '1') return true;
 
