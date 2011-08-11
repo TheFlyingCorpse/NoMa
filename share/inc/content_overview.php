@@ -239,7 +239,7 @@ function getContent () {
 		// create query and fetch contactgroup notifications
 		$query = sprintf (
 			'select distinct
-				n.*,c.ull_name, tz.timezone, cg.id cg_id
+				n.*,c.full_name, tz.timezone, cg.id cg_id
 				from notifications n
 				inner join notifications_to_contacts nc on nc.notification_id = n.id
 				inner join contacts c on c.id = nc.contact_id and c.username = n.username
