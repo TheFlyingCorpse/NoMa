@@ -99,6 +99,7 @@ New:
 * added new method of notification: Growl, see documentation for how to use. (Ticket: #800)
 * holidays can now have names when used with both contacts and timeframes for easier identification. (possible to have several holidays on both contacts and timeframes). (Ticket: #843) (bonus for contacts)
 * notifications can now have names for easier identification. (Ticket: #837)
+* linked objects: one can now see linked objects relevant to the selected type, ie for a contact relevant links are; groups, notifications and escalations. added similar for contactgroups and timeframes. Should be less clicking around to get the information needed now. (Tickets: #845, #847, #849)
 * extended debug function to have several options for filtering. (Ticket: #819)
 
 Fixed:
