@@ -588,7 +588,7 @@ function updateNotification ($p) {
 			                foreach ($p['notify_users'] as $user) {
 
 			                        if (!empty($user) and (prepareDBValue($user) != '')){
-			                                $query = sprintf('INSERT INTO escalations_contacts_to_contacts (escalation_contacts_id,contacts_id)) VALUES (\'%s\',\'%s\');', $id, prepareDBValue($user));
+			                                $query = sprintf('INSERT INTO escalations_contacts_to_contacts (escalation_contacts_id,contacts_id) VALUES (\'%s\',\'%s\');', $id, prepareDBValue($user));
 			                                queryDB($query);
 
 			                        }

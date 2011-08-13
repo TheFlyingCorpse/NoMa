@@ -73,6 +73,8 @@ define('TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TITLEROW', TEMPLATE_DIR . 'contac
 define('TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_ROW', TEMPLATE_DIR . 'contact_manager_notifications_row.html');
 define('TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TO_GROUPS_TITLEROW', TEMPLATE_DIR . 'contact_manager_notifications_to_groups_header.html');
 define('TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TO_GROUPS_ROW', TEMPLATE_DIR . 'contact_manager_notifications_to_groups_row.html');
+define('TEMPLATE_CONTACT_MANAGER_ESCALATIONS_TITLEROW', TEMPLATE_DIR . 'contact_manager_escalations_header.html');
+define('TEMPLATE_CONTACT_MANAGER_ESCALATIONS_ROW', TEMPLATE_DIR . 'contact_manager_escalations_row.html');
 
 define('TEMPLATE_LOG_VIEWER', TEMPLATE_DIR . 'log_viewer.html');
 define('TEMPLATE_LOG_VIEWER_ROW', TEMPLATE_DIR . 'log_viewer_row.html');
@@ -83,7 +85,10 @@ define('TEMPLATE_CONTACTGROUP_MANAGER', TEMPLATE_DIR . 'contactgroup_manager.htm
 define('TEMPLATE_CONTACTGROUP_MANAGER_ADD', TEMPLATE_DIR . 'contactgroup_manager_add.html');
 define('TEMPLATE_CONTACTGROUP_MANAGER_EDIT', TEMPLATE_DIR . 'contactgroup_manager_edit.html');
 define('TEMPLATE_CONTACTGROUP_MANAGER_DELETE', TEMPLATE_DIR . 'contactgroup_manager_delete.html');
-
+define('TEMPLATE_CONTACTGROUP_MANAGER_NOTIFICATIONS_TITLEROW', TEMPLATE_DIR . 'contactgroup_manager_notifications_header.html');
+define('TEMPLATE_CONTACTGROUP_MANAGER_NOTIFICATIONS_ROW', TEMPLATE_DIR . 'contactgroup_manager_notifications_row.html');
+define('TEMPLATE_CONTACTGROUP_MANAGER_ESCALATIONS_TITLEROW', TEMPLATE_DIR . 'contactgroup_manager_escalations_header.html');
+define('TEMPLATE_CONTACTGROUP_MANAGER_ESCALATIONS_ROW', TEMPLATE_DIR . 'contactgroup_manager_escalations_row.html');
 
 define('TEMPLATE_TIMEFRAME_MANAGER', TEMPLATE_DIR . 'timeframe_manager.html');
 define('TEMPLATE_TIMEFRAME_MANAGER_ADD', TEMPLATE_DIR . 'timeframe_manager_add.html');

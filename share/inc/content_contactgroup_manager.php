@@ -58,6 +58,10 @@ function getContent () {
 
 	// security
 	if ($contactgroups['admin_only'] && !isAdmin()) return null;
+
+	// set some sane defaults
+	$groupNotificationsDirect = array();
+	$groupEscalationsDirect = array();
 	
 	// get contactgroup to edit
 	$contactgroup = ((isset($p['contactgroup'])) ? $p['contactgroup'] : null);
@@ -81,7 +85,6 @@ function getContent () {
 	// assign contactgroup id
 	$id = $contactgroup;
 	$templateContent->assign('ID', $id);
-
 
 	// assign select fields for contactgroups and contacts
 	$contactgroups = getContactGroups();
@@ -108,6 +111,57 @@ function getContent () {
                 $templateSubContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $groupData['timezone_id']));
 		$templateSubContent->assign('CONTACTGROUPS_EDIT_USERS_SELECT', htmlSelect('contacts[]', getContacts(), getContactGroupMembers($contactgroup), 'size="5" multiple="multiple"'));
 		$templateSubContent->assign('VIEW_ONLY_CHECKED', ($groupData['view_only'] == '1') ? ' checked="true"' : null);
+
+                $groupNotificationsDirect = queryDB('SELECT distinct n.notification_name, n.active, n.notify_after_tries, tf.timeframe_name FROM notifications as n, notifications_to_contactgroups as ncg, timeframes as tf WHERE n.timeframe_id=tf.id AND n.id=ncg.notification_id AND ncg.contactgroup_id=\'' . $groupData['id'] . '\'');
+                $groupEscalationsDirect = queryDB('SELECT distinct n.notification_name, n.active, ec.notify_after_tries FROM notifications as n, escalations_contacts as ec, escalations_contacts_to_contactgroups as eccg WHERE ec.id=eccg.escalation_contacts_id AND n.id=ec.notification_id AND eccg.contactgroup_id=\'' . $groupData['id'] . '\'');
+
+	        $templateSubContent->assign('LINKED_OBJECTS', LINKED_OBJECTS);
+
+		// add group's assigned notifications
+		$content = null;
+		$titlerow = 0;
+		foreach ($groupNotificationsDirect as $row) {
+				// Title row needed for table?
+				if ($titlerow == 0) {
+						$templateSubSubContent = new nwTemplate(TEMPLATE_CONTACTGROUP_MANAGER_NOTIFICATIONS_TITLEROW);
+						$templateSubSubContent->assign('CONTACTGROUPS_HEADING_NOTIFICATION_MEMBERSHIPS', CONTACTGROUPS_HEADING_NOTIFICATION_MEMBERSHIPS);
+						$templateSubSubContent->assign('CONTACTGROUPS_TITLE_NOTIFICATION_NAME', CONTACTGROUPS_TITLE_NOTIFICATION_NAME);
+						$templateSubSubContent->assign('CONTACTGROUPS_TITLE_NOTIFICATION_ACTIVE', CONTACTGROUPS_TITLE_NOTIFICATION_ACTIVE);
+						$templateSubSubContent->assign('CONTACTGROUPS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES', CONTACTGROUPS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES);
+						$templateSubSubContent->assign('CONTACTGROUPS_TITLE_TIMEFRAME_NAME', CONTACTGROUPS_TITLE_TIMEFRAME_NAME);
+						$content .= $templateSubSubContent->getHTML();
+						$titlerow = 1; // Title has been added, continue.
+				}
+				$templateSubSubContent = new nwTemplate(TEMPLATE_CONTACTGROUP_MANAGER_NOTIFICATIONS_ROW);
+				$templateSubSubContent->assign('CONTACTGROUPS_NOTIFICATION_NAME', $row['notification_name']);
+				$templateSubSubContent->assign('CONTACTGROUPS_NOTIFICATION_ACTIVE', ($row['active']==1? GENERIC_YES : GENERIC_NO));
+				$templateSubSubContent->assign('CONTACTGROUPS_NOTIFICATION_NOTIFY_AFTER_TRIES', $row['notify_after_tries']);
+				$templateSubSubContent->assign('CONTACTGROUPS_TIMEFRAME_NAME', $row['timeframe_name']);
+				$content .= $templateSubSubContent->getHTML();
+		}
+		$templateSubContent->assign('NOTIFICATIONS', $content);
+
+		// add group's assigned notification escalations.
+		$content = null;
+		$titlerow = 0;
+		foreach ($groupEscalationsDirect as $row) {
+				// Title row needed for table?
+				if ($titlerow == 0) {
+						$templateSubSubContent = new nwTemplate(TEMPLATE_CONTACTGROUP_MANAGER_ESCALATIONS_TITLEROW);
+						$templateSubSubContent->assign('CONTACTGROUPS_HEADING_ESCALATION_MEMBERSHIPS', CONTACTGROUPS_HEADING_ESCALATION_MEMBERSHIPS);
+						$templateSubSubContent->assign('CONTACTGROUPS_TITLE_NOTIFICATION_NAME', CONTACTGROUPS_TITLE_NOTIFICATION_NAME);
+						$templateSubSubContent->assign('CONTACTGROUPS_TITLE_NOTIFICATION_ACTIVE', CONTACTGROUPS_TITLE_NOTIFICATION_ACTIVE);
+						$templateSubSubContent->assign('CONTACTGROUPS_TITLE_ESCALATION_NOTIFY_AFTER_TRIES', CONTACTGROUPS_TITLE_ESCALATION_NOTIFY_AFTER_TRIES);
+						$content .= $templateSubSubContent->getHTML();
+						$titlerow = 1; // Title has been added, continue.
+				}
+				$templateSubSubContent = new nwTemplate(TEMPLATE_CONTACTGROUP_MANAGER_ESCALATIONS_ROW);
+				$templateSubSubContent->assign('CONTACTGROUPS_NOTIFICATION_NAME', $row['notification_name']);
+				$templateSubSubContent->assign('CONTACTGROUPS_NOTIFICATION_ACTIVE', ($row['active']==1? GENERIC_YES : GENERIC_NO));
+				$templateSubSubContent->assign('CONTACTGROUPS_ESCALATION_NOTIFY_AFTER_TRIES', $row['notify_after_tries']);
+				$content .= $templateSubSubContent->getHTML();
+		}
+		$templateSubContent->assign('ESCALATIONS', $content);
 
 		$templateSubContentDelete = new nwTemplate(TEMPLATE_CONTACTGROUP_MANAGER_DELETE);
 		$templateSubContentDelete->assign('CONTACTGROUPS_DELETE_BUTTON', CONTACTGROUPS_DELETE_BUTTON);

@@ -62,8 +62,9 @@ function getContent () {
 	$userHolidays = array();
 	$userGroups = array();
 	$userNotificationsDirect = array();
-	$userNotificationsInDirect = array();
-	$userNotificationsInDirectRaw = array();
+	//$userNotificationsInDirect = array();
+	//$userNotificationsInDirectRaw = array();
+	$userEscalationsDirect = array();
 
 
 	$templateContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER);
@@ -178,6 +179,8 @@ function getContent () {
 		$userGroups = queryDB('SELECT distinct cg.id,cg.name,cg.name_short,cg.view_only,tf.timeframe_name FROM contactgroups as cg, contactgroups_to_contacts as cgc, timeframes as tf WHERE cgc.contactgroup_id=cg.id and cg.timeframe_id=tf.id and cgc.contact_id=\'' . $userData['id'] . '\'');
 		$userNotificationsDirect = queryDB('SELECT distinct n.notification_name, n.active, n.notify_after_tries, tf.timeframe_name 
 FROM notifications as n, notifications_to_contacts as nc, timeframes as tf WHERE n.timeframe_id=tf.id AND n.id=nc.notification_id AND nc.contact_id=\'' . $userData['id'] . '\'');
+                $userEscalationsDirect = queryDB('SELECT distinct n.notification_name, n.active, ec.notify_after_tries
+FROM notifications as n, escalations_contacts as ec, escalations_contacts_to_contacts as ecc WHERE ec.id=ecc.escalation_contacts_id AND n.id=ec.notification_id AND ecc.contacts_id=\'' . $userData['id'] . '\'');
 		if ($userData['admin'] == '1' && $admin) $templateSubContent->assign('CHECKED_ADMIN', ' checked');
 		$templateContent->assign('ID', $userData['id']);
 		$templateContent->assign('FULL_NAME', $userData['full_name']);
@@ -270,6 +273,28 @@ FROM notifications as n, notifications_to_contacts as nc, timeframes as tf WHERE
         }
         $templateContent->assign('NOTIFICATIONS', $content);
 
+        // add user's assigned notification escalations.
+        $content = null;
+        $titlerow = 0;
+        foreach ($userEscalationsDirect as $row) {
+                // Title row needed for table?
+                if ($titlerow == 0) {
+                        $templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_ESCALATIONS_TITLEROW);
+                        $templateSubContent->assign('CONTACTS_HEADING_ESCALATION_MEMBERSHIPS', CONTACTS_HEADING_ESCALATION_MEMBERSHIPS);
+                        $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_NAME', CONTACTS_TITLE_NOTIFICATION_NAME);
+                        $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_ACTIVE', CONTACTS_TITLE_NOTIFICATION_ACTIVE);
+                        $templateSubContent->assign('CONTACTS_TITLE_ESCALATION_NOTIFY_AFTER_TRIES', CONTACTS_TITLE_ESCALATION_NOTIFY_AFTER_TRIES);
+                        $content .= $templateSubContent->getHTML();
+                        $titlerow = 1; // Title has been added, continue.
+                }
+                $templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_ESCALATIONS_ROW);
+                $templateSubContent->assign('CONTACTS_NOTIFICATION_NAME', $row['notification_name']);
+                $templateSubContent->assign('CONTACTS_NOTIFICATION_ACTIVE', ($row['active']==1? GENERIC_YES : GENERIC_NO));
+                $templateSubContent->assign('CONTACTS_ESCALATION_NOTIFY_AFTER_TRIES', $row['notify_after_tries']);
+                $content .= $templateSubContent->getHTML();
+        }
+        $templateContent->assign('ESCALATIONS', $content);
+
 /*
         // add user's assigned notificiations inherited through groups
         $content = null;
@@ -305,7 +330,7 @@ WHERE (cg.id='.$contactgroups_to_query.')');
         	        // Title row needed for table?
 	                if ($titlerow == 0) {
                         	$templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TO_GROUPS_TITLEROW);
-                	        $templateSubContent->assign('CONTACTS_HEADING_NOTIFICATION_TO_GROUP_MEMBERSHIPS', CONTACTS_HEADING_NOTIFICATION_TO_GROUP_MEMBERSHIPS);
+                	        $templateSubContent->assign('CONTACTS_HEADING_NOTIFICATION_TO_CONTACTGROUP_MEMBERSHIPS', CONTACTS_HEADING_NOTIFICATION_TO_CONTACTGROUP_MEMBERSHIPS);
         	                $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_NAME', CONTACTS_TITLE_NOTIFICATION_NAME);
 	                        $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_ACTIVE', CONTACTS_TITLE_NOTIFICATION_ACTIVE);
                                 $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES', CONTACTS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES);
