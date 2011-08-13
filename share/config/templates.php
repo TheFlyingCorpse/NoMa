@@ -90,4 +90,11 @@ define('TEMPLATE_TIMEFRAME_MANAGER_ADD', TEMPLATE_DIR . 'timeframe_manager_add.h
 define('TEMPLATE_TIMEFRAME_MANAGER_EDIT', TEMPLATE_DIR . 'timeframe_manager_edit.html');
 define('TEMPLATE_TIMEFRAME_MANAGER_DELETE', TEMPLATE_DIR . 'timeframe_manager_delete.html');
 define('TEMPLATE_TIMEFRAME_MANAGER_HOLIDAYS_ROW', TEMPLATE_DIR . 'timeframe_manager_holidays_row.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_CONTACTS_TITLEROW', TEMPLATE_DIR . 'timeframe_manager_contacts_header.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_CONTACTS_ROW', TEMPLATE_DIR . 'timeframe_manager_contacts_row.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_CONTACTGROUPS_TITLEROW', TEMPLATE_DIR . 'timeframe_manager_contactgroups_header.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_CONTACTGROUPS_ROW', TEMPLATE_DIR . 'timeframe_manager_contactgroups_row.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_NOTIFICATIONS_TITLEROW', TEMPLATE_DIR . 'timeframe_manager_notifications_header.html');
+define('TEMPLATE_TIMEFRAME_MANAGER_NOTIFICATIONS_ROW', TEMPLATE_DIR . 'timeframe_manager_notifications_row.html');
+
 ?>

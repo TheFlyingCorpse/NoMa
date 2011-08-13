@@ -136,3 +136,16 @@ function show_preview_result () {
 	element.innerHTML = content;
 
 }
+
+function toggle() {
+	var ele = document.getElementById("toggleAffectedObjects");
+	var text = document.getElementById("displayAffectedObjects");
+	if(ele.style.display == "block") {
+    		ele.style.display = "none";
+		text.innerHTML = "show linked objects";
+  	}
+	else {
+		ele.style.display = "block";
+		text.innerHTML = "hide linked objects";
+	}
+}

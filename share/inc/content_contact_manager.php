@@ -90,6 +90,7 @@ function getContent () {
         $templateContent->assign('CONTACTS_HOLIDAY_DESC_END', CONTACTS_HOLIDAY_DESC_END);
         $templateContent->assign('CONTACTS_HEADING_HOLIDAYS', CONTACTS_HEADING_HOLIDAYS);
         $templateContent->assign('CONTACTS_HEADING_MEMBERSHIPS', CONTACTS_HEADING_MEMBERSHIPS);
+        $templateContent->assign('LINKED_OBJECTS', LINKED_OBJECTS);
 
 	// assign messages
 	if (!empty($message)) $templateContent->assign('MESSAGE', $message);

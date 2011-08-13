@@ -61,6 +61,9 @@ define('NAVIGATION_LOGOUT', 'LOGOUT');
 // generic
 define('GENERIC_YES', 'Yes');
 define('GENERIC_NO', 'No');
+define('LINKED_OBJECTS','Show linked objects');
+define('LINKED_OBJECTS_SHOW','Show linked objects');
+define('LINKED_OBJECTS_HIDE','Hide linked objects');
 
 // overview
 define('OVERVIEW_LOGOUT', 'Logout');
@@ -200,7 +203,7 @@ define('CONTACTS_TITLE_GROUP_NAME','Contactgroup name ');
 define('CONTACTS_TITLE_GROUP_VIEW_ONLY','Group view only ');
 define('CONTACTS_TITLE_TIMEFRAME_NAME','Timeframe: ');
 define('CONTACTS_TITLE_NOTIFICATION_NAME','Notification: ');
-define('CONTACTS_TITLE_NOTIFICATION_ACTIVE', 'Active notification');
+define('CONTACTS_TITLE_NOTIFICATION_ACTIVE', 'Active rule');
 define('CONTACTS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES', 'Notify after tries');
 define('CONTACTS_UPDATED', 'Contact has been updated.');
 define('CONTACTS_ADDED', 'Contact has been added.');
@@ -220,7 +223,20 @@ define('TIMEFRAME_HEADING_ADD', 'Add timeframe:');
 define('TIMEFRAME_HEADING_NAME' , 'Timeframe');
 define('TIMEFRAME_HEADING_EDIT', 'Edit timeframe:');
 define('TIMEFRAME_HEADING_HOLIDAYS' , 'Holidays:');
+define('TIMEFRAME_HEADING_MEMBERSHIPS' , 'Memberships:');
+define('TIMEFRAME_HEADING_NOTIFICATION_MEMBERSHIPS' , 'Notifications:');
+define('TIMEFRAME_HEADING_CONTACTGROUP_MEMBERSHIPS' , 'Contactgroups:');
+define('TIMEFRAME_HEADING_CONTACT_MEMBERSHIPS' , 'Contacts:');
 
+define('TIMEFRAME_TITLE_GROUP_NAME_SHORT','Contacgroup short name');
+define('TIMEFRAME_TITLE_GROUP_NAME','Contactgroup name ');
+define('TIMEFRAME_TITLE_GROUP_VIEW_ONLY','Group view only ');
+define('TIMEFRAME_TITLE_NOTIFICATION_NAME','Notification: ');
+define('TIMEFRAME_TITLE_NOTIFICATION_ACTIVE', 'Active rule');
+define('TIMEFRAME_TITLE_CONTACT_USERNAME', 'Username');
+define('TIMEFRAME_TITLE_CONTACT_FULL_NAME', 'Full name');
+define('TIMEFRAME_TITLE_SUPPRESS_MULTIPLE', 'Suppress multiple alerts');
+define('TIMEFRAME_TITLE_TIMEZONE','Timezone');
 define('TIMEFRAME_SELECT_FRAME_NEW', 'create new');
 define('TIMEFRAME_EDIT_FRAMES', 'Edit timeframe:');
 define('TIMEFRAME_EDIT_USERS', 'User(s):');

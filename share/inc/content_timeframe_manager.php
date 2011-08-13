@@ -61,6 +61,9 @@ function getContent () {
 
 	// sane default.
         $timeframeHolidays = array();
+	$timeframeContacts = array();
+	$timeframeContactGroups = array();
+	$timeframeNotifications = array();
 	
 	// get timeframe to edit
 	$timeframe = ((isset($p['timeframe'])) ? $p['timeframe'] : null);
@@ -77,6 +80,7 @@ function getContent () {
 	$templateContent->assign('TIMEFRAME_EDIT_FRAMES', TIMEFRAME_EDIT_FRAMES);
 	$templateContent->assign('TIMEFRAME_EDIT_BUTTON', TIMEFRAME_EDIT_BUTTON);
         $templateContent->assign('TIMEFRAME_TIMEFRAME', TIMEFRAME_TIMEFRAME);
+        $templateContent->assign('TIMEFRAME_HEADING_MEMBERSHIPS', TIMEFRAME_HEADING_MEMBERSHIPS);
 
 	// add message
 	if (!empty($message)) $templateContent->assign('MESSAGE', $message);
@@ -127,6 +131,7 @@ function getContent () {
                 $templateSubContent->assign('TIMEFRAME_HOLIDAY_DESC_START', TIMEFRAME_HOLIDAY_DESC_START);
                 $templateSubContent->assign('TIMEFRAME_HOLIDAY_DESC_END', TIMEFRAME_HOLIDAY_DESC_END);
 	        $templateSubContent->assign('TIMEFRAME_HEADING_HOLIDAYS', TIMEFRAME_HEADING_HOLIDAYS);
+		$templateSubContent->assign('LINKED_OBJECTS', LINKED_OBJECTS);
 
 
 		// From DB
@@ -205,7 +210,10 @@ function getContent () {
                 $templateSubContent->assign('CHECKED_DAY_SUNDAY_5TH', ($timeframeData['day_sunday_5th']==1)?' checked="checked" ':'');
                 $templateSubContent->assign('CHECKED_DAY_SUNDAY_LAST', ($timeframeData['day_sunday_last']==1)?' checked="checked" ':'');
 
-                $timeframeHolidays = queryDB('select * from holidays where timeframe_id=\'' . $id . '\' order by holiday_start asc');
+                $timeframeHolidays = queryDB('SELECT * from holidays WHERE timeframe_id=\'' . $id . '\' ORDER BY holiday_start asc');
+                $timeframeContacts = queryDB('SELECT contacts.username,contacts.full_name,timezones.timezone FROM contacts,timezones WHERE contacts.timezone_id=timezones.id AND contacts.timeframe_id=\'' . $id . '\' order by username asc');
+                $timeframeContactGroups = queryDB('SELECT contactgroups.name, contactgroups.name_short,contactgroups.view_only, timezones.timezone FROM contactgroups,timezones WHERE contactgroups.timezone_id=timezones.id AND timeframe_id=\'' . $id . '\' ORDER BY contactgroups.name asc');
+                $timeframeNotifications = queryDB('SELECT notifications.notification_name,notifications.active,timezones.timezone FROM notifications, timezones WHERE notifications.timezone_id=timezones.id AND notifications.timeframe_id=\'' . $id . '\' ORDER BY notifications.notification_name asc');
 
 	        // add timeframe's holiday data
 	        $content = null;
@@ -223,6 +231,73 @@ function getContent () {
 	        }
         	$templateSubContent->assign('HOLIDAYS', $content);
 
+		// add timeframe's assigned contacts
+		$content = null;
+		$titlerow = 0;
+		foreach ($timeframeContacts as $row) {
+				// Title row needed for table?
+				if ($titlerow == 0) {
+						$templateSubSubContent = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_CONTACTS_TITLEROW);
+						$templateSubSubContent->assign('TIMEFRAME_HEADING_CONTACT_MEMBERSHIPS', TIMEFRAME_HEADING_CONTACT_MEMBERSHIPS);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_CONTACT_USERNAME', TIMEFRAME_TITLE_CONTACT_USERNAME);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_CONTACT_FULL_NAME', TIMEFRAME_TITLE_CONTACT_FULL_NAME);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_TIMEZONE', TIMEFRAME_TITLE_TIMEZONE);
+						$content .= $templateSubSubContent->getHTML();
+						$titlerow = 1; // Title has been added, continue.
+				}
+				$templateSubSubContent = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_CONTACTS_ROW);
+				$templateSubSubContent->assign('TIMEFRAME_CONTACT_USERNAME', $row['username']);
+				$templateSubSubContent->assign('TIMEFRAME_CONTACT_FULL_NAME', $row['full_name']);
+				$templateSubSubContent->assign('TIMEFRAME_TIMEZONE', $row['timezone']);
+				$content .= $templateSubSubContent->getHTML();
+		}
+		$templateSubContent->assign('CONTACTS', $content);
+
+		// add timeframe's assigned contactgroups
+		$content = null;
+		$titlerow = 0;
+		foreach ($timeframeContactGroups as $row) {
+				// Title row needed for table?
+				if ($titlerow == 0) {
+						$templateSubSubContent = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_CONTACTGROUPS_TITLEROW);
+						$templateSubSubContent->assign('TIMEFRAME_HEADING_CONTACTGROUP_MEMBERSHIPS', TIMEFRAME_HEADING_CONTACTGROUP_MEMBERSHIPS);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_GROUP_NAME', TIMEFRAME_TITLE_GROUP_NAME);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_GROUP_NAME_SHORT', TIMEFRAME_TITLE_GROUP_NAME_SHORT);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_GROUP_VIEW_ONLY', TIMEFRAME_TITLE_GROUP_VIEW_ONLY);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_TIMEZONE', TIMEFRAME_TITLE_TIMEZONE);
+						$content .= $templateSubSubContent->getHTML();
+						$titlerow = 1; // Title has been added, continue.
+				}
+				$templateSubSubContent = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_CONTACTGROUPS_ROW);
+				$templateSubSubContent->assign('TIMEFRAME_GROUP_NAME', $row['name']);
+				$templateSubSubContent->assign('TIMEFRAME_GROUP_NAME_SHORT', $row['name_short']);
+				$templateSubSubContent->assign('TIMEFRAME_GROUP_VIEW_ONLY', ($row['view_only']==1? GENERIC_YES : GENERIC_NO));
+				$templateSubSubContent->assign('TIMEFRAME_TIMEZONE', $row['timezone']);
+				$content .= $templateSubSubContent->getHTML();
+		}
+		$templateSubContent->assign('CONTACTGROUPS', $content);
+
+		// add timeframe's assigned notifications
+		$content = null;
+		$titlerow = 0;
+		foreach ($timeframeNotifications as $row) {
+				// Title row needed for table?
+				if ($titlerow == 0) {
+						$templateSubSubContent = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_NOTIFICATIONS_TITLEROW);
+						$templateSubSubContent->assign('TIMEFRAME_HEADING_NOTIFICATION_MEMBERSHIPS', TIMEFRAME_HEADING_NOTIFICATION_MEMBERSHIPS);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_NOTIFICATION_NAME', TIMEFRAME_TITLE_NOTIFICATION_NAME);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_NOTIFICATION_ACTIVE', TIMEFRAME_TITLE_NOTIFICATION_ACTIVE);
+						$templateSubSubContent->assign('TIMEFRAME_TITLE_TIMEZONE', TIMEFRAME_TITLE_TIMEZONE);
+						$content .= $templateSubSubContent->getHTML();
+						$titlerow = 1; // Title has been added, continue.
+				}
+				$templateSubSubContent = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_NOTIFICATIONS_ROW);
+				$templateSubSubContent->assign('TIMEFRAME_NOTIFICATION_NAME', $row['notification_name']);
+				$templateSubSubContent->assign('TIMEFRAME_NOTIFICATION_ACTIVE', ($row['active']==1? GENERIC_YES : GENERIC_NO));
+				$templateSubSubContent->assign('TIMEFRAME_TIMEZONE', $row['timezone']);
+				$content .= $templateSubSubContent->getHTML();
+		}
+		$templateSubContent->assign('NOTIFICATIONS', $content);
 
 		// Delete button + translations.
 		$templateSubContentDelete = new nwTemplate(TEMPLATE_TIMEFRAME_MANAGER_DELETE);
