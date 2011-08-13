@@ -58,6 +58,9 @@ define('NAVIGATION_STATUS', 'Status');
 define('NAVIGATION_LOGS', 'Logs');
 define('NAVIGATION_LOGOUT', 'LOGOUT');
 
+// generic
+define('GENERIC_YES', 'Yes');
+define('GENERIC_NO', 'No');
 
 // overview
 define('OVERVIEW_LOGOUT', 'Logout');
@@ -162,6 +165,10 @@ define('CONTACTS_HEADING_CONTACT' , 'Contact:');
 define('CONTACTS_HEADING_TIME' , 'Time:');
 define('CONTACTS_HEADING_ADMIN' , 'Admin functions:');
 define('CONTACTS_HEADING_HOLIDAYS' , 'Holidays:');
+define('CONTACTS_HEADING_MEMBERSHIPS' , 'Memberships:');
+define('CONTACTS_HEADING_NOTIFICATION_MEMBERSHIPS' , 'Notifications(direct membership):');
+define('CONTACTS_HEADING_CONTACTGROUP_MEMBERSHIPS' , 'Contactgroups:');
+define('CONTACTS_HEADING_NOTIFICATION_TO_GROUP_MEMBERSHIPS', 'Notifications(inherited):');
 define('CONTACTS_NEW_USERNAME', 'Add user (username):');
 define('CONTACTS_FULL_NAME', 'Full name:');
 define('CONTACTS_USERNAME', 'User login:');
@@ -188,6 +195,13 @@ define('CONTACTS_HOLIDAY_DESC_START','Holiday start: ');
 define('CONTACTS_HOLIDAY_DESC_END','Holiday end: ');
 define('CONTACTS_HOLIDAY_DESC_SHORT_START','Starts: ');
 define('CONTACTS_HOLIDAY_DESC_SHORT_END','Ends: ');
+define('CONTACTS_TITLE_GROUP_NAME_SHORT','Contacgroup short name');
+define('CONTACTS_TITLE_GROUP_NAME','Contactgroup name ');
+define('CONTACTS_TITLE_GROUP_VIEW_ONLY','Group view only ');
+define('CONTACTS_TITLE_TIMEFRAME_NAME','Timeframe: ');
+define('CONTACTS_TITLE_NOTIFICATION_NAME','Notification: ');
+define('CONTACTS_TITLE_NOTIFICATION_ACTIVE', 'Active notification');
+define('CONTACTS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES', 'Notify after tries');
 define('CONTACTS_UPDATED', 'Contact has been updated.');
 define('CONTACTS_ADDED', 'Contact has been added.');
 define('CONTACTS_DELETED', 'Contact has been deleted.');

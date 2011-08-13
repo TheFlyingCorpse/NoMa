@@ -67,6 +67,12 @@ define('TEMPLATE_CONTACT_MANAGER_ADMIN', TEMPLATE_DIR . 'contact_manager_admin.h
 define('TEMPLATE_CONTACT_MANAGER_ADMIN_DELETE', TEMPLATE_DIR . 'contact_manager_admin_delete.html');
 define('TEMPLATE_CONTACT_MANAGER_PASSWORD', TEMPLATE_DIR . 'contact_manager_password.html');
 define('TEMPLATE_CONTACT_MANAGER_HOLIDAYS_ROW', TEMPLATE_DIR . 'contact_manager_holidays_row.html');
+define('TEMPLATE_CONTACT_MANAGER_GROUPS_TITLEROW', TEMPLATE_DIR . 'contact_manager_groups_header.html');
+define('TEMPLATE_CONTACT_MANAGER_GROUPS_ROW', TEMPLATE_DIR . 'contact_manager_groups_row.html');
+define('TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TITLEROW', TEMPLATE_DIR . 'contact_manager_notifications_header.html');
+define('TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_ROW', TEMPLATE_DIR . 'contact_manager_notifications_row.html');
+define('TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TO_GROUPS_TITLEROW', TEMPLATE_DIR . 'contact_manager_notifications_to_groups_header.html');
+define('TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TO_GROUPS_ROW', TEMPLATE_DIR . 'contact_manager_notifications_to_groups_row.html');
 
 define('TEMPLATE_LOG_VIEWER', TEMPLATE_DIR . 'log_viewer.html');
 define('TEMPLATE_LOG_VIEWER_ROW', TEMPLATE_DIR . 'log_viewer_row.html');

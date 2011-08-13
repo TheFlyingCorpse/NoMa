@@ -60,6 +60,10 @@ function getContent () {
 	//init
 	$userData = array();
 	$userHolidays = array();
+	$userGroups = array();
+	$userNotificationsDirect = array();
+	$userNotificationsInDirect = array();
+	$userNotificationsInDirectRaw = array();
 
 
 	$templateContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER);
@@ -85,7 +89,7 @@ function getContent () {
         $templateContent->assign('CONTACTS_HOLIDAY_DESC_START', CONTACTS_HOLIDAY_DESC_START);
         $templateContent->assign('CONTACTS_HOLIDAY_DESC_END', CONTACTS_HOLIDAY_DESC_END);
         $templateContent->assign('CONTACTS_HEADING_HOLIDAYS', CONTACTS_HEADING_HOLIDAYS);
-
+        $templateContent->assign('CONTACTS_HEADING_MEMBERSHIPS', CONTACTS_HEADING_MEMBERSHIPS);
 
 	// assign messages
 	if (!empty($message)) $templateContent->assign('MESSAGE', $message);
@@ -170,6 +174,9 @@ function getContent () {
 	if (count($userData)) {
 		// get user's holidays from database
 		$userHolidays = queryDB('select * from holidays where contact_id=\'' . $userData['id'] . '\' order by holiday_start asc');
+		$userGroups = queryDB('SELECT distinct cg.id,cg.name,cg.name_short,cg.view_only,tf.timeframe_name FROM contactgroups as cg, contactgroups_to_contacts as cgc, timeframes as tf WHERE cgc.contactgroup_id=cg.id and cg.timeframe_id=tf.id and cgc.contact_id=\'' . $userData['id'] . '\'');
+		$userNotificationsDirect = queryDB('SELECT distinct n.notification_name, n.active, n.notify_after_tries, tf.timeframe_name 
+FROM notifications as n, notifications_to_contacts as nc, timeframes as tf WHERE n.timeframe_id=tf.id AND n.id=nc.notification_id AND nc.contact_id=\'' . $userData['id'] . '\'');
 		if ($userData['admin'] == '1' && $admin) $templateSubContent->assign('CHECKED_ADMIN', ' checked');
 		$templateContent->assign('ID', $userData['id']);
 		$templateContent->assign('FULL_NAME', $userData['full_name']);
@@ -185,13 +192,13 @@ function getContent () {
 	        $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $userData['timezone_id']));
 
 
-        if ($admin) {
-            // display delete button
-            $templateSubContentDelete = new nwTemplate(TEMPLATE_CONTACT_MANAGER_ADMIN_DELETE);
-            $templateSubContentDelete->assign('CONTACTS_DEL_BUTTON', CONTACTS_DEL_BUTTON);
-            $templateSubContentDelete->assign('CONTACTS_CONFIRM_DEL', CONTACTS_CONFIRM_DEL);
-            $templateSubContent->assign('CONTACTS_DEL_BUTTON', $templateSubContentDelete->getHTML());
-        }
+	        if ($admin) {
+	            // display delete button
+	            $templateSubContentDelete = new nwTemplate(TEMPLATE_CONTACT_MANAGER_ADMIN_DELETE);
+	            $templateSubContentDelete->assign('CONTACTS_DEL_BUTTON', CONTACTS_DEL_BUTTON);
+	            $templateSubContentDelete->assign('CONTACTS_CONFIRM_DEL', CONTACTS_CONFIRM_DEL);
+	            $templateSubContent->assign('CONTACTS_DEL_BUTTON', $templateSubContentDelete->getHTML());
+	        }
 	}
 
 
@@ -201,18 +208,124 @@ function getContent () {
 
 	// add user's holiday data
 	$content = null;
-	foreach ($userHolidays as $row) {
-		$templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_HOLIDAYS_ROW);
-		$templateSubContent->assign('CONTACTS_HOLIDAYS_DELETE', CONTACTS_HOLIDAYS_DELETE);
-		$templateSubContent->assign('ID', $row['id']);
+        foreach ($userHolidays as $row) {
+                $templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_HOLIDAYS_ROW);
+                $templateSubContent->assign('CONTACTS_HOLIDAYS_DELETE', CONTACTS_HOLIDAYS_DELETE);
+                $templateSubContent->assign('ID', $row['id']);
                 $templateSubContent->assign('CONTACTS_HOLIDAY_NAME', $row['holiday_name']);
-		$templateSubContent->assign('CONTACTS_HOLIDAY_START', $row['holiday_start']);
-		$templateSubContent->assign('CONTACTS_HOLIDAY_END', $row['holiday_end']);
+                $templateSubContent->assign('CONTACTS_HOLIDAY_START', $row['holiday_start']);
+                $templateSubContent->assign('CONTACTS_HOLIDAY_END', $row['holiday_end']);
                 $templateSubContent->assign('CONTACTS_HOLIDAY_DESC_SHORT_START', CONTACTS_HOLIDAY_DESC_SHORT_START);
                 $templateSubContent->assign('CONTACTS_HOLIDAY_DESC_SHORT_END', CONTACTS_HOLIDAY_DESC_SHORT_END);
+                $content .= $templateSubContent->getHTML();
+        }
+        $templateContent->assign('HOLIDAYS', $content);
+
+        // add user's assigned contactgroups
+	$content = null;
+	$titlerow = 0;
+	foreach ($userGroups as $row) {
+		// Title row needed for table?
+		if ($titlerow == 0) {
+	                $templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_GROUPS_TITLEROW);
+		        $templateSubContent->assign('CONTACTS_HEADING_CONTACTGROUP_MEMBERSHIPS', CONTACTS_HEADING_CONTACTGROUP_MEMBERSHIPS);
+        	        $templateSubContent->assign('CONTACTS_TITLE_GROUP_NAME', CONTACTS_TITLE_GROUP_NAME);
+                	$templateSubContent->assign('CONTACTS_TITLE_GROUP_NAME_SHORT', CONTACTS_TITLE_GROUP_NAME_SHORT);
+                        $templateSubContent->assign('CONTACTS_TITLE_GROUP_VIEW_ONLY', CONTACTS_TITLE_GROUP_VIEW_ONLY);
+	                $templateSubContent->assign('CONTACTS_TITLE_TIMEFRAME_NAME', CONTACTS_TITLE_TIMEFRAME_NAME);
+        	        $content .= $templateSubContent->getHTML();
+			$titlerow = 1; // Title has been added, continue.
+		}
+		$templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_GROUPS_ROW);
+                $templateSubContent->assign('CONTACTS_GROUP_NAME', $row['name']);
+                $templateSubContent->assign('CONTACTS_GROUP_NAME_SHORT', $row['name_short']);
+                $templateSubContent->assign('CONTACTS_GROUP_VIEW_ONLY', ($row['view_only']==1? GENERIC_YES : GENERIC_NO));
+		$templateSubContent->assign('CONTACTS_TIMEFRAME_NAME', $row['timeframe_name']);
 		$content .= $templateSubContent->getHTML();
 	}
-	$templateContent->assign('HOLIDAYS', $content);
+	$templateContent->assign('CONTACTGROUPS', $content);
+
+	// add user's assigned notifications
+        $content = null;
+        $titlerow = 0;
+        foreach ($userNotificationsDirect as $row) {
+                // Title row needed for table?
+                if ($titlerow == 0) {
+                        $templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TITLEROW);
+		        $templateSubContent->assign('CONTACTS_HEADING_NOTIFICATION_MEMBERSHIPS', CONTACTS_HEADING_NOTIFICATION_MEMBERSHIPS);
+                        $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_NAME', CONTACTS_TITLE_NOTIFICATION_NAME);
+                        $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_ACTIVE', CONTACTS_TITLE_NOTIFICATION_ACTIVE);
+                        $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES', CONTACTS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES);
+                        $templateSubContent->assign('CONTACTS_TITLE_TIMEFRAME_NAME', CONTACTS_TITLE_TIMEFRAME_NAME);
+                        $content .= $templateSubContent->getHTML();
+                        $titlerow = 1; // Title has been added, continue.
+                }
+                $templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_ROW);
+                $templateSubContent->assign('CONTACTS_NOTIFICATION_NAME', $row['notification_name']);
+                $templateSubContent->assign('CONTACTS_NOTIFICATION_ACTIVE', ($row['active']==1? GENERIC_YES : GENERIC_NO));
+                $templateSubContent->assign('CONTACTS_NOTIFICATION_NOTIFY_AFTER_TRIES', $row['notify_after_tries']);
+                $templateSubContent->assign('CONTACTS_TIMEFRAME_NAME', $row['timeframe_name']);
+                $content .= $templateSubContent->getHTML();
+        }
+        $templateContent->assign('NOTIFICATIONS', $content);
+
+/*
+        // add user's assigned notificiations inherited through groups
+        $content = null;
+	$contactgroups = array();
+        $titlerow = 0;
+	$groupcounter = 0;
+	if (!empty($userGroups)){
+		foreach($userGroups as $row){
+			if ($row['id']!=""){
+				array_push($contactgroups, $row['id']);
+				$groupcounter=$groupcounter+1;
+			}
+		}
+		if ($groupcounter == 1){
+			foreach ($contactgroups as $contactgroup){
+				$contactgroups_to_query = $contactgroup;
+			}
+		} elseif ($groupcounter > 1) {
+			$contactgroups_to_query = join(" or cg.id=", $contactgroups);
+		}
+
+		if ($groupcounter > 0){
+			$userNotificationsInDirect = queryDB('select distinct n.id, n.notification_name, n.active, n.notify_after_tries, cg.name, cg.name_short, cg.view_only from notifications n
+                                        left join notifications_to_contactgroups ncg on n.id=ncg.notification_id
+                                        left join contactgroups cg on ncg.contactgroup_id=cg.id
+WHERE (cg.id='.$contactgroups_to_query.')');
+		}
+	}
+//	print"TITT TITT<br>";
+//	var_dump($userNotificationsInDirect[$counter]);
+        foreach ($userNotificationsInDirect as $row) {
+		if ($userNotificationsInDirect['id']!=""){
+        	        // Title row needed for table?
+	                if ($titlerow == 0) {
+                        	$templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TO_GROUPS_TITLEROW);
+                	        $templateSubContent->assign('CONTACTS_HEADING_NOTIFICATION_TO_GROUP_MEMBERSHIPS', CONTACTS_HEADING_NOTIFICATION_TO_GROUP_MEMBERSHIPS);
+        	                $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_NAME', CONTACTS_TITLE_NOTIFICATION_NAME);
+	                        $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_ACTIVE', CONTACTS_TITLE_NOTIFICATION_ACTIVE);
+                                $templateSubContent->assign('CONTACTS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES', CONTACTS_TITLE_NOTIFICATION_NOTIFY_AFTER_TRIES);
+                        	$templateSubContent->assign('CONTACTS_TITLE_GROUP_NAME', CONTACTS_TITLE_GROUP_NAME);
+                	        $templateSubContent->assign('CONTACTS_TITLE_GROUP_VIEW_ONLY', CONTACTS_TITLE_GROUP_VIEW_ONLY);
+        	                $templateSubContent->assign('CONTACTS_TITLE_TIMEFRAME_NAME', CONTACTS_TITLE_TIMEFRAME_NAME);
+	                        $content .= $templateSubContent->getHTML();
+                        	$titlerow = 1; // Title has been added, continue.
+                	}
+        	        $templateSubContent = new nwTemplate(TEMPLATE_CONTACT_MANAGER_NOTIFICATIONS_TO_GROUPS_ROW);
+	                $templateSubContent->assign('CONTACTS_NOTIFICATION_NAME', $row['notification_name']);
+                	$templateSubcontent->assign('CONTACTS_NOTIFICATION_ACTIVE', ($row['active']==1? GENERIC_YES : GENERIC_NO));
+        	        $templateSubContent->assign('CONTACTS_NOTIFICATION_NOTIFY_AFTER_TRIES', $row['notify_after_tries']);
+	                $templateSubContent->assign('CONTACTS_GROUP_NAME', $row['name']);
+                	$templateSubContent->assign('CONTACTS_GROUP_VIEW_ONLY', $row['view_only']);
+        	        $templateSubContent->assign('CONTACTS_TIMEFRAME_NAME', $row['timeframe_name']);
+	                $content .= $templateSubContent->getHTML();
+		}
+	}
+        $templateContent->assign('NOTIFICATIONS_FROM_GROUPS', $content);
+*/
 
 	if (empty($user)) {
 		$templateContent->assign('CONTACTS_SUBMIT', CONTACTS_SUBMIT_ADD);
