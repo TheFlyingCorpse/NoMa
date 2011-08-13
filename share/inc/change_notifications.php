@@ -104,7 +104,7 @@ function addNotification ($p) {
 	// check whether notification exists
 	$query = sprintf(
 		'select id from notifications
-			where active=0 and username=\'%s\' and noticication_name=\'%s\' and noticication_description=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\'  and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+			where active=0 and username=\'%s\' and notification_name=\'%s\' and notification_description=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\'  and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=\'%s\' and on_warning=\'%s\' and on_unknown=\'%s\' and on_host_unreachable=\'%s\' and on_critical=\'%s\' and on_host_up=\'%s\' and on_host_down=\'%s\' and on_type_problem=\'%s\' and on_type_recovery=\'%s\' and on_type_flappingstart=\'%s\' and on_type_flappingstop=\'%s\' and on_type_flappingdisabled=\'%s\' and on_type_downtimestart=\'%s\' and on_type_downtimeend=\'%s\' and on_type_downtimecancelled=\'%s\' and on_type_acknowledgement=\'%s\' and on_type_custom=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$owner,
 		$notification_name,
 		$notification_description,
@@ -147,7 +147,7 @@ function addNotification ($p) {
 	$query = sprintf(
 		'INSERT INTO notifications 
 		(active,username,notification_name,notification_description,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude,notify_after_tries,let_notifier_handle,rollover,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,on_type_problem,on_type_recovery,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,timezone_id,timeframe_id)
-VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                 '0',
                 $owner,
 		$notification_name,
