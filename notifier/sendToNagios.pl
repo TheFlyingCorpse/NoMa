@@ -60,10 +60,6 @@ use YAML::Syck;
 my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
 my $conf = LoadFile($notifierConfig);
 
-#use noma_conf;
-#my $conf = conf();
-
-
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
 exit 1 if ($numArgs != 13 && $numArgs != 14);

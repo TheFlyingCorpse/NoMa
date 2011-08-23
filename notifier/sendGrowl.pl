@@ -54,15 +54,11 @@
 
 
 use strict;
-#use CGI; # Uncomment if problems.
 use Net::Growl;
 use YAML::Syck;
 
 my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
 my $conf = LoadFile($notifierConfig);
-#use noma_conf;
-#my $conf = conf();
-
 
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
@@ -94,14 +90,6 @@ $service = $ARGV[13] if ($numArgs == 14);
 
 
 my $message = '';
-
-#if ($check_type eq 'h') {
-#	$message .= "NoMa: ID $incident_id - Host $host is $status! $datetime";
-#} elsif ($check_type eq 's') {
-#	$message .= "NoMa: ID $incident_id - $host - $service is $status! $datetime";
-#} else {
-#	exit 1;
-#}
 
 if ($check_type eq 'h')
 {
@@ -155,6 +143,22 @@ if (($notification_type eq 'FLAPPINGDISABLED') or ($notification_type eq 'DOWNTI
 #
 # Main program
 #
+print($message);
+#register(
+#	host => $to,
+#	application => $application,
+#	password => $password);
+#
+#notify(
+#	application => $application,
+#	title       => $subject,
+#	description => $message,
+#	priority    => $priority,
+#	sticky      => $sticky,
+#	password    => $password
+#);
+#exit 0;
+	
  
 # Set up the Socket
 my %addr = (

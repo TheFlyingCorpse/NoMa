@@ -80,7 +80,8 @@ function getContent () {
 	$templateContent->assign('CONTACTS_EMAIL', CONTACTS_EMAIL);
 	$templateContent->assign('CONTACTS_PHONE', CONTACTS_PHONE);
 	$templateContent->assign('CONTACTS_MOBILE', CONTACTS_MOBILE);
-        $templateContent->assign('CONTACTS_NETADDRESS', CONTACTS_NETADDRESS);
+        $templateContent->assign('CONTACTS_GROWLADDRESS', CONTACTS_GROWLADDRESS);
+        $templateContent->assign('CONTACTS_GROWLREGISTER', CONTACTS_GROWLREGISTER);
 	$templateContent->assign('CONTACTS_RESTRICT_ALERTS', CONTACTS_RESTRICT_ALERTS);
 	$templateContent->assign('CONTACTS_TIMEFRAME', CONTACTS_TIMEFRAME);
 	$templateContent->assign('CONTACTS_TIMEZONE', CONTACTS_TIMEZONE);
@@ -188,7 +189,7 @@ FROM notifications as n, escalations_contacts as ec, escalations_contacts_to_con
 		$templateContent->assign('EMAIL', $userData['email']);
 		$templateContent->assign('PHONE', $userData['phone']);
 		$templateContent->assign('MOBILE', $userData['mobile']);
-                $templateContent->assign('NETADDRESS', $userData['netaddress']);
+                $templateContent->assign('GROWLADDRESS', $userData['growladdress']);
 		$templateContent->assign('RESTRICT_ALERTS', ($userData['restrict_alerts']==1)?'checked="checked"':'');
        		if (!isset($userData['timeframe_id'])) $userData['timeframe_id'] = null;
        		if (!isset($userData['timezone_id'])) $userData['timezone_id'] = null;

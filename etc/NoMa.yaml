@@ -47,7 +47,7 @@ log:
 methods: 
   growl: 
     ackmessage: 
-      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime"
+      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Author $authors. Comment $comments. Time: $datetime"
       service: "$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime"
     application_name: NoMa
     message: 
@@ -70,7 +70,7 @@ methods:
     sendmail: /usr/sbin/sendmail -t
   sendsms: 
     ackmessage: 
-      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Time: $datetime"
+      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Author $authors. Comment $comments. Time: $datetime"
       service: "$incident_id: $notification_type for service $service on host $host. State is $status. Author $authors Comment $comments. Time: $datetime"
     check_command: /usr/local/nagios/libexec/check_smsfinder.pl -H $server -u admin -p admin -w 2 -c 1
     message: 

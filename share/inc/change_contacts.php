@@ -67,22 +67,23 @@ function addContact ($p) {
 	$email = prepareDBValue($p['email']);
 	$phone = prepareDBValue($p['phone']);
 	$mobile = prepareDBValue($p['mobile']);
-	$netaddress = prepareDBValue($p['netaddress']);
+	$growladdress = prepareDBValue($p['growladdress']);
 	$timeframe_id = prepareDBValue($p['timeframe']);
 	$timezone_id = prepareDBValue($p['timezone']);
 	$restrict_alerts = prepareDBValue((isset($p['restrict_alerts']) && $p['restrict_alerts'] == 'on') ? '1' : '0');
+        $growl_registration = ((isset($p['growl_register']) && $p['growl_register'] == 'on') ? registerWithGrowl($growladdress) : null);
 	$passwordMask = "";
 
 	// check whether contact already exists
 	$query = sprintf(
-		'select id from contacts where username=\'%s\' and admin=\'%s\' and full_name=\'%s\' and email=\'%s\' and phone=\'%s\' and mobile=\'%s\' and netaddress=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+		'select id from contacts where username=\'%s\' and admin=\'%s\' and full_name=\'%s\' and email=\'%s\' and phone=\'%s\' and mobile=\'%s\' and growladdress=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$username,
 		$admin,
 		$full_name,
 		$email,
 		$phone,
 		$mobile,
-		$netaddress,
+		$growladdress,
 		$timeframe_id,
 		$timezone_id
 	);
@@ -110,7 +111,7 @@ function addContact ($p) {
 
 	// add contact
 	$query = sprintf(
-		'insert into contacts (username,admin,full_name,email,phone,mobile,netaddress,timeframe_id,timezone_id,restrict_alerts%s)
+		'insert into contacts (username,admin,full_name,email,phone,mobile,growladdress,timeframe_id,timezone_id,restrict_alerts%s)
 			values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'%s)',
 		$passwordMask,
 		$username,
@@ -119,7 +120,7 @@ function addContact ($p) {
 		$email,
 		$phone,
 		$mobile,
-		$netaddress,
+		$growladdress,
 		$timeframe_id,
 		$timezone_id,
 		$restrict_alerts,
@@ -130,21 +131,19 @@ function addContact ($p) {
 
 	// get contact's ID
 	$query = sprintf(
-		'select id from contacts where username=\'%s\' and admin=\'%s\' and full_name=\'%s\' and email=\'%s\' and phone=\'%s\' and mobile=\'%s\' and netaddress=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+		'select id from contacts where username=\'%s\' and admin=\'%s\' and full_name=\'%s\' and email=\'%s\' and phone=\'%s\' and mobile=\'%s\' and growladdress=\'%s\' and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$username,
 		$admin,
 		$full_name,
 		$email,
 		$phone,
 		$mobile,
-		$netaddress,
+		$growladdress,
 		$timeframe_id,
 		$timezone_id
 	);
 	$dbResult = queryDB($query);
 	if (!empty($dbResult[0]['id'])) return CONTACTS_ADD_ADDED_BUT_NOT_IN_DB;
-
-
 
 	// add holidays
 	if (!empty($p['holiday_name']) && !empty($p['holiday_start']) && !empty($p['holiday_end'])) {
@@ -194,20 +193,21 @@ function updateContact ($p) {
 	$email = prepareDBValue($p['email']);
 	$phone = prepareDBValue($p['phone']);
 	$mobile = prepareDBValue($p['mobile']);
-        $netaddress = prepareDBValue($p['netaddress']);
+        $growladdress = prepareDBValue($p['growladdress']);
 	$timeframe_id = prepareDBValue($p['timeframe']);
 	$timezone_id = prepareDBValue($p['timezone']);
 	$restrict_alerts = prepareDBValue((isset($p['restrict_alerts']) && $p['restrict_alerts'] == 'on') ? '1' : '0');
+        $growl_registration = ((isset($p['growl_register']) && $p['growl_register'] == 'on') ? registerWithGrowl($growladdress) : null);
 
 	// update contact
 	$query = sprintf(
-		'update contacts set admin=\'%s\', full_name=\'%s\', email=\'%s\', phone=\'%s\', mobile=\'%s\', netaddress=\'%s\', timeframe_id=\'%s\', timezone_id=\'%s\', restrict_alerts=\'%s\'%s where id=\'%s\'',
+		'update contacts set admin=\'%s\', full_name=\'%s\', email=\'%s\', phone=\'%s\', mobile=\'%s\', growladdress=\'%s\', timeframe_id=\'%s\', timezone_id=\'%s\', restrict_alerts=\'%s\'%s where id=\'%s\'',
 		$admin,
 		$full_name,
 		$email,
 		$phone,
 		$mobile,
-		$netaddress,
+		$growladdress,
 		$timeframe_id,
 		$timezone_id,
 		$restrict_alerts,

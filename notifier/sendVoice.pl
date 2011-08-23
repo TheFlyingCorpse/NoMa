@@ -65,8 +65,6 @@ use YAML::Syck;
 my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
 my $conf = LoadFile($notifierConfig);
 
-#use noma_conf;
-#my $conf = conf();
 my $scriptName = 'voicecall.pl';
 
 

@@ -49,6 +49,7 @@
 require_once('config/config.php');
 require_once('classes/class_nwTemplate.php');
 require_once('classes/class_Logging.php');
+require_once('classes/class_Growl.php');
 require_once('inc/html.php');
 require_once('inc/change_notifications.php');
 require_once('inc/change_contacts.php');

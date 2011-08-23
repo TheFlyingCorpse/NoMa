@@ -57,8 +57,6 @@
 
 
 use strict;
-#use CGI; #Uncomment if problems!
-#use Email::Valid;
 use YAML::Syck;
 
 my $notifierConfig      = '/usr/local/nagios/noma/etc/NoMa.yaml';
@@ -95,8 +93,6 @@ $service = $ARGV[13] if ($numArgs == 14);
 
 
 # check email format
-#exit 1 unless (Email::Valid->address($from));
-#exit 1 unless (Email::Valid->address($to));
 
 $from = "From: " . $from;
 $to = "To: " . $to;
@@ -130,7 +126,6 @@ if ($filename ne "")
     # expand $service / $host etc.
     $filename =~ s/(\$\w+)/$1/gee;
     $filename =~ s/[^\w\.\/]/_/g;
-    # print "got filename $filename\n";
     if (-e $filename)
     {
         # read into $file

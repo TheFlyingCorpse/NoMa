@@ -101,6 +101,12 @@ $dbNDO = array (
         'table_prefix'  => 'nagios_',
 );
 
+// Growl settings, make sure they are identical to etc/NoMa.yaml!
+$growlSettings = array (
+	'application'		=> 'NoMa',
+	'password'		=> 'somepassw0rd'
+);
+
 // Setting the proper value.
 if ($dbType == 'mysql'){
 	$dbConf = $dbConfMySQL;

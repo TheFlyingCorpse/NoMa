@@ -243,11 +243,9 @@ mysql> select * from notification_methods;
 | id | method                  | command   | contact_field | sender          | on_fail | ack_able |
 +----+-------------------------+-----------+---------------+-----------------+---------+----------+
 |  5 | Voice + SMS fallback    | voicecall | phone         |                 |       2 |        1 |
-|  6 | Growl                   | growl     | netaddress    |                 |       0 |        0 |
+|  6 | Growl                   | growl     | growladdress  |                 |       0 |        0 |
 |  4 | Voice + E-Mail fallback | voicecall | phone         |                 |       1 |        1 |
 |  3 | Voice                   | voicecall | phone         |                 |       0 |        1 |
 |  2 | SMS                     | sendsms   | mobile        |                 |       0 |        0 |
 |  1 | E-Mail                  | sendemail | email         | noma@netways.de |       0 |        0 |
-|  7 | Growl + E-Mail fallback | growl     | netaddress    |                 |       1 |        1 |
-|  8 | Growl + SMS fallback    | growl     | netaddress    |                 |       2 |        1 |
 +----+-------------------------+-----------+---------------+-----------------+---------+----------+

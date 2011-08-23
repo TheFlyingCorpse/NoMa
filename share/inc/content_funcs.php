@@ -292,6 +292,20 @@ function getDBVersion () {
         return $dbResult[0]['content'];
 }
 
+/**
+ *
+ */
+function registerWithGrowl($growladdress){
+		$log = new Logging();
+		$log->lwrite('Growl time, dest:'.$growladdress);
+		global $growlSettings;
+			$g = new Growl();
+			$g->setAppName($growlSettings['application']);
+			$g->setAddress($growladdress,$growlSettings['password']);
+			$g->addNotification("Successfully registered!");
+			$g->register();	
+}
+
 
 
 function getNavigationContent ($action, $admin = false) {

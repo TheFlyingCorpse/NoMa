@@ -269,7 +269,7 @@ sub getUsersAndMethods
         }
 
         $query =
-'select distinct c.username, c.phone, c.mobile, c.netaddress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, n.notify_after_tries, n.let_notifier_handle, n.id rule from notifications n
+'select distinct c.username, c.phone, c.mobile, c.growladdress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, n.notify_after_tries, n.let_notifier_handle, n.id rule from notifications n
 					left join notifications_to_methods nm on n.id=nm.notification_id
 					left join notification_methods m on m.id=nm.method_id
 					left join notifications_to_contacts nc on n.id=nc.notification_id
@@ -281,7 +281,7 @@ sub getUsersAndMethods
         $where =~ s/n\.id/ec\.notification_id/g;
 
         $query =
-'select distinct c.username, c.phone, c.mobile, c.netaddress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, ec.notify_after_tries, n.let_notifier_handle, n.id rule from escalations_contacts ec
+'select distinct c.username, c.phone, c.mobile, c.growladdress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, ec.notify_after_tries, n.let_notifier_handle, n.id rule from escalations_contacts ec
 					left join escalations_contacts_to_contacts ecc on ec.id=ecc.escalation_contacts_id
 					left join contacts c on c.id=ecc.contacts_id
 					left join escalations_contacts_to_methods ecm on ec.id=ecm.escalation_contacts_id
@@ -386,7 +386,7 @@ sub getUsersAndMethodsFromGroups
 
         # query db for contacts
         $query =
-'select distinct c.username, c.phone, c.mobile, c.netaddress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, n.notify_after_tries, n.let_notifier_handle, n.id rule from notifications n
+'select distinct c.username, c.phone, c.mobile, c.growladdress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, n.notify_after_tries, n.let_notifier_handle, n.id rule from notifications n
 					left join notifications_to_methods nm on n.id=nm.notification_id
 					left join notification_methods m on m.id=nm.method_id
 					left join notifications_to_contactgroups ncg on n.id=ncg.notification_id
@@ -402,7 +402,7 @@ sub getUsersAndMethodsFromGroups
 	$where =~ s/ncg\.contactgroup_id/eccg\.contactgroup_id/g;
 
         $query =
-'select distinct c.username, c.phone, c.mobile, c.netaddress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, ec.notify_after_tries, n.let_notifier_handle, n.id rule from escalations_contacts ec
+'select distinct c.username, c.phone, c.mobile, c.growladdress, c.email, tz.timezone, m.id mid, m.method, m.command, m.contact_field, m.sender, m.on_fail, m.ack_able, ec.notify_after_tries, n.let_notifier_handle, n.id rule from escalations_contacts ec
 					left join escalations_contacts_to_contactgroups eccg on ec.id=eccg.escalation_contacts_id
 					left join contactgroups_to_contacts cgc on eccg.contactgroup_id=cgc.contactgroup_id
 					left join contacts c on cgc.contact_id=c.id
