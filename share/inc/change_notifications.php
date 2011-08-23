@@ -248,13 +248,13 @@ VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'
                 }
 
         }
-
+                        $log = new Logging;
 	if (isset($p['notify_users']) && is_array($p['notify_users'])) {
 
                 // Because of SQLite3, this needs to be split into several transactions.
                 foreach ($p['notify_users'] as $user) {
-
                         if (!empty($user)){
+                        $log->lwrite('User: '.$user);
                                 $query = sprintf('INSERT INTO notifications_to_contacts (notification_id,contact_id) VALUES (\'%s\',\'%s\');', $id, getContactID($user));
                                 queryDB($query);
 
@@ -421,6 +421,7 @@ function updateNotification ($p) {
                 }
 
 	}
+       $log = new Logging;
 
 	// only update when users have been set
 	if (isset($p['notify_users'][0])) {
@@ -429,6 +430,7 @@ function updateNotification ($p) {
 
                         foreach ($p['notify_users'][0] as $user) {
                                 if (!empty($user)){
+					$log->lwrite('User: '.$user);
                                         $query = sprintf('insert into notifications_to_contacts (notification_id,contact_id) values(\'%s\',\'%s\')', $id, getContactID($user));
                                         queryDB($query);
 
@@ -585,13 +587,12 @@ function updateNotification ($p) {
 				if (is_array($p['notify_users'][$x]) && count($p['notify_users'][$x])) {
 
 			                // Because of SQLite3, this needs to be split into several transactions.
-			                foreach ($p['notify_users'] as $user) {
+			                foreach ($p['notify_users'][$x] as $notify_contact) {
 
-			                        if (!empty($user) and (prepareDBValue($user) != '')){
-			                                $query = sprintf('INSERT INTO escalations_contacts_to_contacts (escalation_contacts_id,contacts_id) VALUES (\'%s\',\'%s\');', $id, prepareDBValue($user));
-			                                queryDB($query);
-
-			                        }
+				                if (!empty($notify_contact) and (prepareDBValue($notify_contact) != '')){
+				                                $query = sprintf('INSERT INTO escalations_contacts_to_contacts (escalation_contacts_id,contacts_id) VALUES (\'%s\',\'%s\');', $eid, getContactID($notify_contact));
+				                                queryDB($query);
+						}
 
 			                }
 
