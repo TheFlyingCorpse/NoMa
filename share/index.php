@@ -318,12 +318,18 @@ if (file_exists('../doc/VERSION.txt') && is_readable('../doc/VERSION.txt')) {
 	}
 }
 $html->assign('VERSION', $version);
-$dbversion = getDBVersion();
-if ($dbversion != $currentdbversion) {
-        $dbversion = ' SQL schema is out of date - DB version: '.$dbversion.' Expected version: '.$currentdbversion.'!<br>';
-} else {
-	$dbversion = '';
+
+try {
+    $dbversion = getDBVersion();
+    if ($dbversion != $currentdbversion) {
+            $dbversion = ' SQL schema is out of date - DB version: '.$dbversion.' Expected version: '.$currentdbversion.'!<br>';
+    } else {
+        $dbversion = '';
+    }
+} catch(Exception $e) {
+    $dbversion = 'No php sql module found. NoMa will not work!<br>';
 }
+
 $html->assign('DBVERSION', $dbversion);
 if (!empty($_SERVER['TRACKING_ID'])) {
     $html->assign('TRACKING_ID', '<script type="text/javascript">var gaJsHost=(("https:"==document.location.protocol)?"https://ssl.":"http://www.");document.write(unescape("%3Cscript src=\'"+gaJsHost+"google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script><script type="text/javascript">try{var pageTracker=_gat._getTracker("'.$_SERVER['TRACKING_ID'].'");pageTracker._trackPageview();}catch(err){}</script>');

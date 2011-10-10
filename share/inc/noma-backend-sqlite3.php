@@ -108,14 +108,14 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 		if ($result = $db->query($query)){
 			if ( $result->fetchColumn() > 0) {
 			        foreach ($db->query($query) as $row) {
-                                	if ($sqllog == true){$log-lwrite(' Row result: '.$row.' from select count: '.$count);};
+                                	if (isset($sqllog) and $sqllog == true){$log-lwrite(' Row result: '.$row.' from select count: '.$count);};
 
 			        	$count = $count++;
  	        			$dbResult[] = $row;
 	        		}
 			} else {
 				$dbResult = array (0 => array("cnt" => 0));
-                        	if ($sqllog == true){$log-lwrite(' Empty result from select count, no columns returned, set result to to be cnt 0.. ');};
+                        	if (isset($sqllog) and $sqllog == true){$log-lwrite(' Empty result from select count, no columns returned, set result to to be cnt 0.. ');};
 			}
 		}
 

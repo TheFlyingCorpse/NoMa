@@ -296,10 +296,10 @@ function getDBVersion () {
  *
  */
 function registerWithGrowl($growladdress){
-		global $debug
+		global $debug;
 		global $growlSettings;
 		$log = new Logging();
-		if($debug == 'true')($log->lwrite('Growl time, dest:'.$growladdress););
+		if($debug == 'true'){$log->lwrite('Growl time, dest:'.$growladdress);}
 
 		$g = new Growl();
 		$g->setAppName($growlSettings['application']);
