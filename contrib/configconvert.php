@@ -1,11 +1,9 @@
-#!/usr/bin/perl
+<?php
+
 # COPYRIGHT:
 #  
-# This software is Copyright (c) 2011 NETWAYS GmbH
-#                                       <support@netways.de>
-#                                  and
-#                                     Rune "TheFlyingCorpse" Darrud
-#                                       <theflyingcorpse@gmail.com>
+# This software is Copyright (c) 2011 NETWAYS GmbH, William Preston
+#                                <support@netways.de>
 # 
 # (Except where explicitly superseded by other copyright notices)
 # 
@@ -45,64 +43,62 @@
 # royalty-free, perpetual, license to use, copy, create derivative
 # works based on those contributions, and sublicense and distribute
 # those contributions and any derivatives thereof.
-
 #
-# Use this script to convert your existing noma_conf.pm to NoMa.yaml, the new configuration file format introduced with NoMa 2.0
-#
-
-# Copy noma_conf.pm and the OLD config.php to the same directory as this file, execute and copy the output file to the new location.
+# Nagios and the Nagios logo are registered trademarks of Ethan Galstad.
 
 
-# Output file
-$file = '/tmp/NoMa.yaml';
-use FindBin qw($Bin);
-use lib "$Bin"; # Find all libraries...
-use lib "$Bin/../notifier";
-$newconffile = "$Bin/../etc/NoMa.yaml";
-$phpconffile = "$Bin/config.php";
-use Hash::Merge::Simple qw/ merge /;
 
-print "Loading old configuration from noma_conf\n";
-eval "use noma_conf"; # Load old noma_conf.pm library.
-if ($@)
-{
-    print "Failed to load noma_conf, skipping\n";
-    sub conf {return undef;}
+if ($argc != 2) {
+    print "Do not run this script directly\nPlease use the perl script\n";
+    exit(1);
 }
+ini_set('include_path', '.:../share:../share/config');
+include($argv[1]);
 
-use YAML::Syck;
-our $conf  = conf();
 
-# Set this for interoperability with other YAML/Syck bindings:
-# e.g. Load('Yes') becomes 1 and Load('No') becomes ''.
-$YAML::Syck::ImplicitTyping = 1;
+$conf['db']['sqlite3']['type'] = 'sqlite3';
+$conf['db']['mysql']['type'] = 'mysql';
+$conf['frontend']['language'] =     $language;
 
-# add the php configuration
-if (-e $phpconffile)
-{
-    print "Merging configuration from $phpconffile\n";
 
-    my $phpconfyaml = `php -f ./configconvert.php $phpconffile`;
-    my $phpconf = Load($phpconfyaml);
-
-    $conf = merge($conf, $phpconf);
+if (isset($debug)) {
+    $conf['frontend']['debug']['logging'] = $debug;
+} else {
+    $conf['frontend']['debug']['logging'] = FALSE;
 }
-
-# read in any existing config
-if (-e $newconffile)
-{
-    print "Merging over new configuration in $newconffile\n";
-    my $newconf = LoadFile($newconffile);
-
-
-    $conf = merge($newconf, $conf);
+if (isset($log_file)) {
+    $conf['frontend']['debug']['file'] = $log_file;
+} else {
+    $conf['frontend']['debug']['file'] = '/tmp/NoMa-logfile.log';
 }
+if (isset($sqllog)) {
+    $conf['frontend']['debug']['queries'] = $sqllog;
+} else {
+    $conf['frontend']['debug']['queries'] = FALSE;
+}
+$conf['api'] =     $dbNDO;
+$conf['api']['type'] = 'mysql';
+    
+    
+$conf['frontend']['authentication_type'] =     $authentication_type;
+if (isset($ldap)) {
+    $conf['frontend']['ldap'] = 		$ldap;
+}
+$conf['frontend']['http'] =     $http;
+$conf['frontend']['notifications'] =     $notifications;
+$conf['frontend']['contactgroups'] =     $contactgroups;
+$conf['frontend']['statuspage'] =     $statuspage;
+$conf['frontend']['logs'] =     $logs;
 
-# Dump to file.
-DumpFile($file, $conf);
+if (isset($timeframes)) {
+    $conf['frontend']['timeframes'] =     $timeframes;
+} else {
+    $conf['frontend']['timeframes']['admin_only'] = TRUE;
+}
+$conf['frontend']['overview'] =     $str_maxlen;
 
 
-# No
+print yaml_emit($conf);
 
-print("New config saved to $file\n");
 
+?>

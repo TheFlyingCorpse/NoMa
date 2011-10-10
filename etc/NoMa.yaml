@@ -11,12 +11,70 @@ db:
   automatic_db_upgrade: yes
   db_example_dir: /usr/local/nagios/noma/sql
   mysql:
+   type: mysql
    database: noma
    host: localhost
    password: noma
    user: noma
+   persistent: 0
   sqlite3:
+   type: sqlite3
    dbfile: /usr/local/nagios/noma/etc/NoMa.db
+api:
+  type: mysql
+  database: nagios
+  host: localhost
+  password: nagios
+  user: nagios
+  persistent: 0
+  table_prefix: nagios_
+frontend:
+  language: en
+  authentication_type: native # false, native, ldap, http
+  ldap:
+   version: 3
+   server: ldap://
+   base_dn: OU=someUnit,DC=some,DC=org
+   dir_user: CN=DirUser,OU=someUnit,DC=some,DC=org
+   dir_password: secret
+   filter: "(|(objectClass=contact)(objectClass=user))" # simple filter
+#   filter: "(|(objectClass=person)(uid=###USER###))" # complex filter: ###USER### will be replaced by the login name
+   key_find_user: samaccountname # LDAP key to find login name
+   key_set_user: distinguishedname # LDAP key to return login name to set in session
+  http:
+   username_is_email: true
+   check_local_user: true
+  notifications:
+   add_owner: true
+   host_service_preview: true
+   preview_width: 250
+   preview_max_length: 1000
+   preview_scroll: true
+   preview_max_height: 120
+  contactgroups:
+   admin_only: true
+  statuspage:
+   admin_only: true
+  logs:
+   admin_only: true
+   pages_per_line: 10
+   num_results:
+    10: 10
+    20: 20
+    50: 50
+    100: 100
+  timeframes:
+   admin_only: true
+  overview: # length of overview fields
+   overview_recipients: 40
+   overview_hostgroups: 50
+   overview_host: 40
+   overview_servicegroups: 50
+   overview_service: 40
+  debug:
+   file: /tmp/NoMa-logfile.log
+   logging: false
+   queries: false
 debug: 
   daemonize: 1
   file: /usr/local/nagios/noma/var/noma_debug.log

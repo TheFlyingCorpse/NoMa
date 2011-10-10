@@ -207,43 +207,25 @@ See the sample file for examples of configuration.
 4. Configuration
 =================
 
+Starting with Version 2.0.2 there is a single configuration file for both
+the frontend and backend.  You will need to install the YAML::Syck module
+for perl and the yaml extension for php (e.g. with pear install yaml).
+
+Change settings in your 'NoMa.yaml', located in the directory
+'etc'. 
+
 4.1 Configuring the frontend
 -----------------------------
 
-Configuration of the frontend is done in the file 'config.php' located
-in the NoMa sub directory 'config'.
+4.1.1 frontend
+---------------
 
 1. Setting the frontend language:
-   The language is set via the variable '$language'. Valid parameters
-   are 'en' and 'de' at the time.
+   The language is set via the variable 'language'. Valid parameters
+   are 'en' and 'de'.
 
-2. Choosing the backend. NoMa currently supports using SQLite3 or MySQL
-   as backends to be used in conjunction with its daemon. MySQL is 
-   recommended for large installations with thousands of notifications on
-   a daily basis. There might be special considerations to leaverage when
-   choosing SQLite3 as backend:
-   - No remote connections from outside the server directly to DB.
-   - Speed is determined by disk I/O on how fast it can commit to disk.
-   - No easy way to maintain the DB while its running.
+2. authentication_type - setting up authentication
 
-3. Setting the database connection:
-   Set $dbType to the chosen backend, either 'mysql' or 'sqlite3'.
-
-   Credentials if MySQL:
-   Database credentials are set via the array '$dbConfMySQL'.
-   Please define your database host, user, password and the name of your
-   database here. You can also set 'persistent' to '1' to enable
-   persistent connections.
-
-   "Credentials" if SQLite3:
-   This does NOT use credentials and access is controlled via user/group
-   permissions to the database and its parent folder.
-   Normal fileowner/filegroup/filerights on the database would be:
-   - user:   nagios, alternatively icinga, depending on what source is.
-   - group:  wwwrun, alternatively  apache or whatever your webserver uses.
-   - chmod 660 (rw / rw / -)
-
-4. Setting up authentication:
    User data is stored in the table 'contacts'.
    NoMa can be used without any authentication but also supports
    the following authentication methods:
@@ -260,9 +242,9 @@ in the NoMa sub directory 'config'.
 
                     If your usernames are passed as email (like when you
                     are using kerberos tickets) you have to set
-                    'username_is_email' in '$http' to true.
+                    'username_is_email' in 'http' to true.
 
-                    'check_local_user' in '$http' has to be set to true if
+                    'check_local_user' in 'http' has to be set to true if
                     you are using the same users for multiple frontends
                     such as Nagios and NoMa. Otherwise a user can login
                     to Nagios and can bypass the NoMa login afterwards.
@@ -276,10 +258,10 @@ in the NoMa sub directory 'config'.
 
                     NoMa has to be configured correctly to work with
                     ldap authentication. These settings are done via the
-                    array '$ldap' in your configuration file.
+                    array 'ldap' in your configuration file.
 
-5. Setting up the notification manager (add/edit/delete)
-   Notification management is set up via '$notifications':
+3. Setting up the notification manager (add/edit/delete)
+   Notification management is set up via 'notifications':
 
    * 'add_owner'      - automatically add the person, who is owner of a
                         notification, when submitting a new notification
@@ -288,8 +270,8 @@ in the NoMa sub directory 'config'.
    * 'host_service_preview'
                       - enable host and service preview when entering include-/
                         exclude hosts and services
-                        this option requires NDO access to be set up via option
-                        '$dbNDO' (see below)
+                        this option requires NDO access to be set up in the 
+                        'api' section (see below)
 
    * 'preview_width'  - width (in pixels) of preview area (default: 250)
 
@@ -305,22 +287,15 @@ in the NoMa sub directory 'config'.
                       - maximum height (in pixels) of preview area when
             scrolling is enabled
 
-6. Setting up NDO access for host and service previews
-   NDO-database credentials are set via the array '$dbNDO'.
-   Please define your database host, user, password and the name of your
-   database here. You can also set 'persistent' to '1' to enable
-   persistent connections.
-   Additionally, you need to define your NDO-table prefix via 'table_prefix'
-   which is usually 'nagios_'.
 
-7. Setting up the contactgroup manager
-   The contactgroup manager is set up via '$contactgroups':
+4. Setting up the contactgroup manager
+   The contactgroup manager is set up via 'contactgroups':
 
    * 'admin_only'     -    set this to true to grant access to the contactgroup
                            manager to admins only
 
-8. Setting up the log viewer:
-   Log viewing is set up via '$logs':
+5. Setting up the log viewer:
+   Log viewing is set up via 'logs':
 
    * 'admin_only'      -   set this to true to grant viewing logs to admin
                            users only
@@ -332,8 +307,8 @@ in the NoMa sub directory 'config'.
    * 'num_results'     -   define the drop down box of the log viewer enabling
                            the users to select the number of results per page
 
-9. Setting up the overview page:
-   Set '$str_maxlen' to trim large columns on the overview page.
+6. Setting up the overview page:
+   Set 'overview' to trim large columns on the overview page.
 
    * 'overview_host'     -   maximum length of host definitions
                              (minus 3 for '...')
@@ -341,17 +316,60 @@ in the NoMa sub directory 'config'.
    * 'overview_service'  -   maximum length for service definitions
                              (minus 3 for '...')
 
-10. Setting up the status page:
-   Viewing is set up via '$statuspage':
+7. Setting up the status page:
+   Viewing is set up via 'statuspage':
 
    * 'admin_only'      -   set this to true to grant viewing the status page to
                admin users only
 
-11. Setting up the timeframe page:
-   Viewing is set up via '$timeframes':
+8. Setting up the timeframe page:
+   Viewing is set up via 'timeframes':
 
    * 'admin_only'      -   set this to true to grant viewing and editing the 
                            timeframes page to admin users only
+
+4.1.2 db - the database setup
+------------------------------
+
+This section is valid for both the frontend and the backend.
+
+Choosing the backend: NoMa currently supports using SQLite3 or MySQL
+   as backends to be used in conjunction with its daemon. MySQL is 
+   recommended for large installations with thousands of notifications on
+   a daily basis. There might be special considerations to leaverage when
+   choosing SQLite3 as backend:
+   - No remote connections from outside the server directly to DB.
+   - Speed is determined by disk I/O on how fast it can commit to disk.
+   - No easy way to maintain the DB while its running.
+
+Setting the database connection:
+   Set type to the chosen backend, either 'mysql' or 'sqlite3'.
+
+   Credentials if MySQL:
+   Database credentials are set via the array 'mysql'.
+   Please define your database host, user, password and the name of your
+   database here. You can also set 'persistent' to '1' to enable
+   persistent connections.
+
+   "Credentials" if SQLite3:
+   This does NOT use credentials and access is controlled via user/group
+   permissions to the database and its parent folder.
+   Normal fileowner/filegroup/filerights on the database would be:
+   - user:   nagios, alternatively icinga, depending on what source is.
+   - group:  wwwrun, alternatively  apache or whatever your webserver uses.
+   - chmod 660 (rw / rw / -)
+
+
+4.1.3 api - previews
+---------------------
+
+Setting up NDO access for host and service previews
+   NDO-database credentials are set via the array 'api'.
+   Please define your database host, user, password and the name of your
+   database here. You can also set 'persistent' to '1' to enable
+   persistent connections.
+   Additionally, you need to define your NDO-table prefix via 'table_prefix'
+   which is usually 'nagios_'.
 
 
 4.2 Configuring the notifier
@@ -366,9 +384,11 @@ The notifier's configuration parameters are described below.
 4.2.1 db - the database setup for the notifier
 -----------------------------------------------
 
-dbtype                - the dbtype to use, either 'mysql' or 'sqlite3'
+(see also 4.1.2)
+
+type                  - the dbtype to use, either 'mysql' or 'sqlite3'
 automatic_db_upgrade  - currently only supported when using SQLite3, to setup
-                        the standard database on startup of the daemon if its
+                        the standard database on startup of the daemon if it's
                         unable to find any content.
 
 if MySQL:
@@ -379,7 +399,7 @@ mysql:
  password:    - the database password; example 'noma_secret'
 
 if SQLite3:
-dbfilepath:  - the path to the database file.
+dbfile:  - the path to the database file.
 
 4.2.3 log - the logging setup for the notifier
 -----------------------------------------------
@@ -625,8 +645,8 @@ message         - the texts to be spoken by the Text-to-Speech engine.  "header"
 5. The Frontend
 ================
 
-Authentication is disabled by default. If you set $authentication_type in
-config.php to 'native', you can login as 'nagiosadmin' by using the password
+Authentication is disabled by default. If you set authentication_type in
+to 'native', you can login as 'nagiosadmin' by using the password
 'nagios'.
 
 5.1 Managing contacts
