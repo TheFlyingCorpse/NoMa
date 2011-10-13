@@ -7,9 +7,9 @@
 # 4. Restart apache to get the config read.
 #
 
-Alias /noma "/usr/local/nagios/noma/share" 
+Alias /noma "@datadir@" 
 
-<Directory "/usr/local/nagios/noma/share">
+<Directory "@datadir@">
 ## For internal authentication
 ## Keep the lines below standard. Optionally, set a range of allowed ip-adresses.
 #  SSLRequireSSL

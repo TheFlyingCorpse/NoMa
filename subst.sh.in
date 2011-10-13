@@ -1,0 +1,22 @@
+#!/bin/sh
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+datarootdir=@datarootdir@
+
+@SED@ \
+    -e "s#\@prefix\@#@prefix@#g" \
+    -e "s#\@bindir\@#@bindir@#g" \
+    -e "s#\@localstatedir\@#@localstatedir@#g" \
+    -e "s#\@datadir\@#@datadir@#g" \
+    -e "s#\@sysconfdir\@#@sysconfdir@#g" \
+    -e "s#\@localstatedir\@#@localstatedir@#g" \
+    -e "s#\@NOTIFIERDIR\@#@prefix@/notifier#g" \
+    -e "s#\@PERL\@#@PERL@#g" \
+    -e "s#\@SENDMAIL\@#@SENDMAIL@#g" \
+    -e "s#\@NAGIOSLIBEXEC\@#@NAGIOSLIBEXEC@#g" \
+    -e "s#\@NAGIOSPIPE\@#@NAGIOSPIPE@#g" \
+    -e "s#\@RUNAS\@#@RUNAS@#g" \
+    -e "s#\@RUNASGRP\@#@RUNASGRP@#g" \
+    $1
+chmod a+x $1

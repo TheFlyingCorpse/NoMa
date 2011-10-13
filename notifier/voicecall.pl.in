@@ -230,6 +230,7 @@ v1.0 initial release
 use Getopt::Long qw(:config bundling no_ignore_case);;
 use Pod::Usage;
 use IO::Socket;
+use lib '@NAGIOSLIBEXEC@';
 use lib '/usr/local/nagios/libexec/';
 use lib '/usr/lib/nagios/plugins/';
 use utils qw(%ERRORS &print_revision);

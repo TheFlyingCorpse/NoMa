@@ -54,7 +54,7 @@ require_once('inc/general_app.php');
 
 # attempt to read the configuration with YAML
 try {
-    $conf = yaml_parse_file('/usr/local/nagios/noma/etc/NoMa.yaml');
+    $conf = yaml_parse_file('@sysconfdir@/NoMa.yaml');
 
     $dbType = $conf['db']['type'];
     $dbConfSQLite3 = array (
@@ -102,7 +102,7 @@ try {
     // NoMa SQLite3 database options
     $dbConfSQLite3 = array (
             'type'			=> 'sqlite3',  // Dont change this value!
-            'dbFilePath'		=> '/usr/local/nagios/noma/etc/NoMa.db',
+            'dbFilePath'		=> '@localstatedir@/NoMa.db',
             );
 
     // Database type to use for NoMa (not NDO/IDO!)

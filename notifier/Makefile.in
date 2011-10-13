@@ -1,0 +1,38 @@
+SUBST = @abs_top_builddir@/subst.sh
+INSTALL=@INSTALL@
+datarootdir = @datarootdir@
+sysconfdir = @prefix@/etc
+prefix = @prefix@
+
+
+all: noma
+
+FILES := $(patsubst %.in,%,$(filter-out Makefile.in,$(wildcard *.in)))
+RELDIR := $(prefix)/$(subst @abs_top_builddir@/,,$(CURDIR))
+
+noma: $(FILES)
+
+%: %.in
+	$(SUBST) $< > $@
+
+clean:
+	$(RM) $(FILES)
+
+install: noma
+	$(INSTALL) -d $(RELDIR)
+	$(INSTALL) -t $(RELDIR) $(FILES)
+	$(INSTALL) -d $(RELDIR)/lib
+	$(INSTALL) -t $(RELDIR)/lib lib/*
+	@echo
+	@echo
+	@echo
+	@echo
+	@echo
+	@echo ========================================================
+	@echo Now you need to install one of the supplied init scripts
+	@echo
+	@echo
+	@echo
+
+.PHONY: install
+

@@ -19,7 +19,7 @@
 
 # Check for missing binaries (stale symlinks should not happen)
 # Note: Special treatment of stop for LSB conformance
-NOMA_BIN=/usr/local/nagios/noma/notifier/noma_daemon.pl
+NOMA_BIN=@NOTIFIERDIR@/noma_daemon.pl
 test -x $NOMA_BIN || { echo "$NOMA_BIN not installed"; 
 	if [ "$1" = "stop" ]; then exit 0;
 	else exit 5; fi; }
@@ -28,8 +28,8 @@ test -x $NOMA_BIN || { echo "$NOMA_BIN not installed";
 # Read config	
 
 ME="NoMa"
-RUNUSER="nagios"
-RUNGROUP="nagios"
+RUNUSER="@RUNAS@"
+RUNGROUP="@RUNASGRP@"
 
 . /etc/rc.status
 

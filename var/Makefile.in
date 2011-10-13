@@ -1,0 +1,16 @@
+SUBST = @abs_top_builddir@/subst.sh
+INSTALL=@INSTALL@
+datarootdir = @datarootdir@
+sysconfdir = @prefix@/etc
+prefix = @prefix@
+
+
+RELDIR = @localstatedir@
+
+clean:
+
+install:
+	$(INSTALL) -d $(RELDIR)
+
+.PHONY: install
+

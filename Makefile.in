@@ -1,0 +1,14 @@
+SUBST=@abs_top_builddir@/subst.sh
+
+SUBDIRS=share share/config var etc notifier
+
+none:
+	@echo "Please supply a target:"
+	@echo "    all test install clean"
+
+all clean install:
+	for SUBDIR in $(SUBDIRS); \
+	do \
+		echo descending into $$SUBDIR; \
+		cd @abs_top_builddir@/$$SUBDIR && $(MAKE) $@ ; \
+	done

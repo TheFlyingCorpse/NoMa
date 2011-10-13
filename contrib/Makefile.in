@@ -1,0 +1,26 @@
+SUBST = @abs_top_builddir@/subst.sh
+INSTALL=@INSTALL@
+datarootdir = @datarootdir@
+sysconfdir = @prefix@/etc
+prefix = @prefix@
+
+
+all: noma
+
+FILES := $(patsubst %.in,%,$(filter-out Makefile.in,$(wildcard *.in)))
+RELDIR := $(prefix)/$(subst @abs_top_builddir@/,,$(CURDIR))
+
+noma: $(FILES)
+
+%: %.in
+	$(SUBST) $< > $@
+
+clean:
+	$(RM) $(FILES)
+
+install: noma
+	$(INSTALL) -d $(RELDIR)
+	$(INSTALL) -t $(RELDIR) $(FILES)
+
+.PHONY: install
+

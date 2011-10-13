@@ -10,9 +10,9 @@
 
 RETVAL=0
 prog="noma_daemon.pl"
-nagios_bin="/usr/local/nagios/noma/notifier"
-RUNUSER="nagios"
-RUNGROUP="nagios"
+nagios_bin="@NOTIFIERDIR@"
+RUNUSER="@RUNAS@"
+RUNGROUP="@RUNASGRP@"
 
 start() {
 	echo -n $"Starting $prog: "

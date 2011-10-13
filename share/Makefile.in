@@ -1,0 +1,29 @@
+SUBST = @abs_top_builddir@/subst.sh
+INSTALL=@INSTALL@
+datarootdir = @datarootdir@
+sysconfdir = @prefix@/etc
+prefix = @prefix@
+
+
+all: noma
+
+SUBDIRS := lang templates images classes js css inc
+FILTER := $(SUBDIRS) Makefile% config
+FILES := $(filter-out $(FILTER),$(wildcard *))
+RELDIR := $(prefix)/$(subst @abs_top_builddir@/,,$(CURDIR))
+
+noma:
+
+clean:
+
+install:
+	$(INSTALL) -d $(RELDIR)
+	$(INSTALL) -t $(RELDIR) $(FILES)
+	for subdir in $(SUBDIRS); \
+	do \
+		$(INSTALL) -d $(RELDIR)/$$subdir; \
+		$(INSTALL) -t $(RELDIR)/$$subdir $$subdir/*; \
+	done
+
+.PHONY: install
+

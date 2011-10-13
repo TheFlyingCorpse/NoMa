@@ -163,9 +163,9 @@ my $help              = undef;	# command option
 my $query               = '';
 my $notificationCounter = 0;
 my $notifierPID         = 0;
-my $notifierUser        = 'nagios';
+my $notifierUser        = '@RUNAS@';
 my $notifierBin         = 'noma_notifier.pl';
-my $notifierConfig	= '/usr/local/nagios/noma/etc/NoMa.yaml';
+my $notifierConfig	= '@sysconfdir@/NoMa.yaml';
 my $now                 = 0;
 
 my $reloop_delay    = 1;

@@ -19,10 +19,10 @@
 
 RETVAL=0
 PROG="noma_daemon.pl"
-PROGPATH="/usr/local/nagios/noma/notifier"
+PROGPATH="@NOTIFIERDIR@"
 DAEMON="$PROGPATH/$PROG"
-RUNUSER="nagios"
-PIDFILE="/usr/local/nagios/noma/noma.pid"
+RUNUSER="@RUNAS@"
+PIDFILE="@localstatedir@/noma.pid"
 
 start() {
 	log_daemon_msg "Starting NoMa" "$PROG" 
