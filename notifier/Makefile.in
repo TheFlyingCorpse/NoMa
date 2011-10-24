@@ -1,5 +1,6 @@
 SUBST = @abs_top_builddir@/subst.sh
 INSTALL=@INSTALL@
+INSTALLOPTS=@INSTALLOPTS@
 datarootdir = @datarootdir@
 sysconfdir = @prefix@/etc
 prefix = @prefix@
@@ -19,10 +20,10 @@ clean:
 	$(RM) $(FILES)
 
 install: noma
-	$(INSTALL) -d $(RELDIR)
-	$(INSTALL) -t $(RELDIR) $(FILES)
-	$(INSTALL) -d $(RELDIR)/lib
-	$(INSTALL) -t $(RELDIR)/lib lib/*
+	$(INSTALL) $(INSTALLOPTS) -d $(RELDIR)
+	$(INSTALL) $(INSTALLOPTS) -t $(RELDIR) $(FILES)
+	$(INSTALL) $(INSTALLOPTS) -d $(RELDIR)/lib
+	$(INSTALL) $(INSTALLOPTS) -t $(RELDIR)/lib lib/*
 	@echo
 	@echo
 	@echo

@@ -8,7 +8,7 @@ prefix = @prefix@
 
 all: noma
 
-SUBDIRS := lang templates images classes js css inc
+SUBDIRS := mysql sqlite3 sqlite3/install
 FILTER := $(SUBDIRS) Makefile% config
 FILES := $(filter-out $(FILTER),$(wildcard *))
 RELDIR := $(prefix)/$(subst @abs_top_builddir@/,,$(CURDIR))
@@ -19,7 +19,7 @@ clean:
 
 install: noma
 	$(INSTALL) $(INSTALLOPTS) -d $(RELDIR)
-	$(INSTALL) $(INSTALLOPTS) -t $(RELDIR) $(FILES)
+	# $(INSTALL) $(INSTALLOPTS) -t $(RELDIR) $(FILES)
 	for subdir in $(SUBDIRS); \
 	do \
 		$(INSTALL) $(INSTALLOPTS) -d $(RELDIR)/$$subdir; \

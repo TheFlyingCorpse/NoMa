@@ -59,6 +59,12 @@ noma_daemon.pl  -  NETWAYS Notification Manager - Daemon
 
 This script uses a configuration file
 
+=item   B<--nodaemonize>
+
+run NoMa in the foreground (for debugging, when a perl error is suspected)
+
+=back
+
 =head1 CAVEATS
 
 This script uses Thread Queues which may have memory leak problems in Perl versions
@@ -217,8 +223,9 @@ if ( defined($paramlog) )
 Getopt::Long::Configure('bundling');
 my $clps = GetOptions(
 
-    "V|version" => \$version,
-    "h|help"    => \$help
+    "V|version"  => \$version,
+    "h|help"     => \$help,
+    "daemonize!" => \$daemonize
 
 );
 

@@ -1,6 +1,6 @@
 SUBST=@abs_top_builddir@/subst.sh
 
-SUBDIRS=share share/config var etc notifier
+SUBDIRS=var contrib doc share share/config etc sql notifier
 
 none:
 	@echo "Please supply a target:"

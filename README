@@ -8,22 +8,25 @@ modify standard notifications, escalations, schedules and vacations
 for your monitoring system.
 
 
+The full documentation is available in the doc/ subdirectory of the
+source code.
+
 Support & Questions
 -------------------
 Please use the issue tracker at the project page to submit any
-issues you encounter with NoMaa
+issues you encounter with NoMa
 
 
 How does it work
 ----------------
 When Nagios/Icinga/Shinken/Centreon Engine notifies NoMa, instead of
 the core blocking each notification to every user through every
-method used in your setup, its one single notification to NoMa.
+method used in your setup, it's one single notification to NoMa.
 NoMa then uses the configured filters to notify contacts via
 the preconfigured methods, E-Mail, SMS, Voicecall, Growl etc.
 
-The beuty of NoMa is that its a graphical interface to managing
-notifications rather than complex configuration files. Its easy
+The beauty of NoMa is that it's a graphical interface for managing
+notifications rather than complex configuration files. It's easy
 for other admins in your environment to set themselves to vacation,
 change what they want to be notified about and most importantly,
 WHEN to be notified.
@@ -38,7 +41,10 @@ Download NoMa from a trusted source.
  #> ./configure --help (to view available switches for easy install)
  #> ./configure <switches> (or none for default paths)
  #> make install
- #> make install-init (to install the init script of NoMa daemon)
 .....
 
-HAVE fun and dont get spammed!
+Then copy one of the init scripts from the notifier to the appropriate
+place for your system (e.g. /etc/init.d) and install it with chkconfig
+or update-rc.d or similar.
+
+HAVE fun and don't get spammed!

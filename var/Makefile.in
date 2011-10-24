@@ -1,5 +1,6 @@
 SUBST = @abs_top_builddir@/subst.sh
 INSTALL=@INSTALL@
+INSTALLOPTS=@INSTALLOPTS@
 datarootdir = @datarootdir@
 sysconfdir = @prefix@/etc
 prefix = @prefix@
@@ -7,10 +8,14 @@ prefix = @prefix@
 
 RELDIR = @localstatedir@
 
+all: noma
+
+noma:
+
 clean:
 
-install:
-	$(INSTALL) -d $(RELDIR)
+install: noma
+	$(INSTALL) $(INSTALLOPTS) -d $(RELDIR)
 
 .PHONY: install
 

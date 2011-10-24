@@ -8,19 +8,6 @@ AC_PREFIX_DEFAULT(/usr/local/noma)
 
 AC_CONFIG_MACRO_DIR([m4])
 
-
-dnl    for module in 'YAML::Syck' \
-dnl        'Expect' 'Date::Format' 'DBI' \
-dnl        'Net::SNMP'
-dnl    do
-dnl      AC_MSG_CHECKING([presence of $module])
-dnl      if ${PERL} ${PERLOPTS} -e 'use '$module 2>/dev/null; then
-dnl          AC_MSG_RESULT([Ok])
-dnl      else
-dnl          AC_MSG_ERROR([Perl cannot find $module]);
-dnl      fi
-dnl    done
-
 dnl look for icinga user or fall back to nagios user
 AX_CHECK_USER(USER, [icinga])
 	if test x$USER != xicinga; then
@@ -36,6 +23,8 @@ AC_ARG_WITH(group,
 	RUNASGRP=$withval,
 	RUNASGRP=$USER)
 
+INSTALLOPTS="-o $RUNAS -g $RUNASGRP"
+
 AC_ARG_WITH(cmdpipe,
 	AC_HELP_STRING([--with-cmdpipe=<path to pipe>],[location of nagios/icinga command pipe]),
 	NAGIOSPIPE=$withval,
@@ -48,10 +37,11 @@ AC_ARG_WITH(plugindir,
 
 AC_SUBST(RUNAS)
 AC_SUBST(RUNASGRP)
+AC_SUBST(INSTALLOPTS)
 AC_SUBST(NAGIOSPIPE)
 AC_SUBST(NAGIOSLIBEXEC)
 
-AX_PROG_PERL_MODULES([YAML::Syck], , )
+AX_PROG_PERL_MODULES([YAML::Syck Getopt::Long Pod::Usage Digest::MD5 POSIX Data::Dumper Thread::Queue IO::Select IO::Socket Fcntl FindBin DBI DateTime::TimeZone DateTime::Format::Strptime Date::Calc], , )
 
 dnl MAKEFILES=`find . -name Makefile.in`
 dnl for makefile in $MAKEFILES
@@ -61,9 +51,11 @@ dnl 	AC_CONFIG_FILES($basefile)
 dnl done
 MAKEFILES="var/Makefile
 contrib/Makefile
-share/config/Makefile
+doc/Makefile
 share/Makefile
+share/config/Makefile
 etc/Makefile
+sql/Makefile
 Makefile
 notifier/Makefile"
 
