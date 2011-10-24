@@ -4,6 +4,7 @@ INSTALLOPTS=@INSTALLOPTS@
 datarootdir = @datarootdir@
 sysconfdir = @prefix@/etc
 prefix = @prefix@
+WWWRUNASGRP=@WWWRUNASGRP@
 
 
 RELDIR = @localstatedir@
@@ -15,7 +16,7 @@ noma:
 clean:
 
 install: noma
-	$(INSTALL) $(INSTALLOPTS) -d $(RELDIR)
+	$(INSTALL) $(INSTALLOPTS) -g $(WWWRUNASGRP) -m 2775 -d $(RELDIR)
 
 .PHONY: install
 

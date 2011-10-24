@@ -18,5 +18,7 @@ datarootdir=@datarootdir@
     -e "s#\@NAGIOSPIPE\@#@NAGIOSPIPE@#g" \
     -e "s#\@RUNAS\@#@RUNAS@#g" \
     -e "s#\@RUNASGRP\@#@RUNASGRP@#g" \
+    -e "s#\@WWWRUNASGRP\@#@WWWRUNASGRP@#g" \
+    -e "s#\@VERSION\@#@VERSION@#g" \
     $1
 chmod a+x $1

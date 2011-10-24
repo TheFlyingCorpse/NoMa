@@ -78,7 +78,7 @@ alert_via_noma.pl  -  NETWAYS Notification Manager - notification plugin
 
 =item -R|--recipients=<list of recipients>
 
-List od recipients
+List of recipients
 
 =item -H|--host=<name-or-ip>
 
@@ -102,7 +102,7 @@ Type of check: h for host, s for service
 
 =item -s|--status=<status>
 
-Numeric status of check. (= check result)
+Textual status of check. (= OK, WARNING etc.)
 
 =item -t|--datetime=<date time>
 
@@ -174,7 +174,7 @@ use IO::Select;
 use Fcntl qw(O_RDWR);
 use IO::Socket;
 
-my $versionStr = 'current (1.0.7)';
+my $versionStr = 'current (@VERSION@)';
 
 my %check_type_str = (
     'h' => 'Host',

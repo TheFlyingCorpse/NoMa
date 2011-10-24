@@ -76,6 +76,8 @@ Table of Contents
 
   7.3 Watchdog
 
+  7.4 Password reset
+
 
 1. Copyright
 =============
@@ -647,7 +649,7 @@ message         - the texts to be spoken by the Text-to-Speech engine.  "header"
 
 Authentication is disabled by default. If you set authentication_type in
 to 'native', you can login as 'nagiosadmin' by using the password
-'nagios'.
+'nagiosadmin'.
 
 5.1 Managing contacts
 ----------------------
@@ -967,6 +969,14 @@ details see 4.2.3
 
 Be aware that a restart may cause pending retries (e.g. Voice alerts) to be lost.
 
+
+7.4 Password reset
+-------------------
+
+If you forget the administrator password you can reset it in the database to 'nagiosadmin' -
+the password is stored as a SHA1 hash - using the following SQL:
+
+update contacts set admin=1,password='9e2b1592bd13bea759dab1e3011cab7ef47930cd' where username='nagiosadmin';
 
 
 # EOF

@@ -92,11 +92,11 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 
 		if ($return_count == true){
 			list($count, $dbResult) = queryMySQLDB($query, $return_count, $ndo);
-			if ($sqllog == true){$log->lwrite("MySQL Result - Count: $count - dbResult: ".var_dump($dbResult));};
+			if ($sqllog == true){$log->lwrite("MySQL Result - Count: $count - dbResult: ".var_export($dbResult, true));};
                         return array($count, $dbResult);
 		} else {
 			$dbResult = queryMySQLDB($query, false, $ndo);
-                        if ($sqllog == true){$log->lwrite("MySQL Result - dbResult: ".var_export($dbResult));};
+                        if ($sqllog == true){$log->lwrite("MySQL Result - dbResult: ".var_export($dbResult, true));};
 			return $dbResult;
 		}
 	}
@@ -108,11 +108,11 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 
                 if ($return_count == true){
                         list($count, $dbResult) = querySQLite3DB($query, $return_count, $ndo);
-                        if ($sqllog == true){$log->lwrite("SQLite3 Result - Count: $count - dbResult: ".var_dump($dbResult));};
+                        if ($sqllog == true){$log->lwrite("SQLite3 Result - Count: $count - dbResult: ".var_export($dbResult, true));};
                         return array($count, $dbResult);
                 } else {
                         $dbResult = querySQLite3DB($query, false, $ndo);
-                        if ($sqllog == true){$log->lwrite("SQLite3 Result - dbResult: ".var_export($dbResult));};
+                        if ($sqllog == true){$log->lwrite("SQLite3 Result - dbResult: ".var_export($dbResult, true));};
                         return $dbResult;
                 }
         }

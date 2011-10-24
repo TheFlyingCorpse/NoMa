@@ -203,6 +203,8 @@ sub dbSchemaUpdate
 
 	if ($database_type eq 'sqlite3'){
 		if ($operation eq 'create_structure'){
+						# first ensure that the DB is group writeable
+						chmod 0664, $conf->{db}->{sqlite3}->{dbfile};
                         # Read file, LINE BY LINE and query.
 			debug('Creating new database schema structure',1);
 

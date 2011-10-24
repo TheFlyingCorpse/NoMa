@@ -121,7 +121,7 @@ use DBI;
 
 our $processStart = time();
 our %suppressionHash;
-my $versionStr = 'current (2.0.0-beta)';
+my $versionStr = 'current (@VERSION@)';
 
 my %stati_service = (
     'OK'       => 'on_ok',
@@ -357,14 +357,14 @@ do
     {
         {
             debug( 'processing command ' . $cmd , 1);
-#             my ( $operation,
-#                 $host,         $incident_id, $host_alias,
-#                 $host_address, $service,     $check_type,
-#                 $status,       $datetime,    $notification_type,
-#                 $output
-#             ) = parseCommand($cmd);
+
             my %cmdh = parseCommand($cmd);
-            next if ( !defined $host );
+            if (!%cmdh)
+            {
+                debug("Ignoring invalid command $cmd", 2);
+                next;
+            }
+            next if ( !defined $cmdh{host} or $cmdh{host} eq '');
             debug(debugHash(%cmdh), 2);
 #                 "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, output = $output"
 
@@ -832,6 +832,27 @@ sub parseCommand
                 $cmdh{authors},         $cmdh{comments},         $cmdh{output}
         ) = split( ';', $cmd,16);
 
+
+		# sanity checks
+		if ( $cmdh{check_type} eq 'h' )
+		{
+			if (!defined($stati_host{$cmdh{status}}))
+			{
+				return;
+			}
+		}
+		elsif ( $cmdh{check_type} eq 's' )
+		{
+			if (!defined($stati_service{$cmdh{status}}))
+			{
+				return;
+			}
+		}
+		else
+		{
+			return;
+		}
+
         if ( $cmdh{external_id} eq '' or $cmdh{external_id} < 1 ) { $cmdh{external_id} = unique_id(); }
 
         $cmdh{operation} = lc($cmdh{operation});
@@ -888,7 +909,7 @@ sub parseCommand
 	deleteAllFromCommands();
     }
 
-    return undef;
+    return;
 
 }
 

@@ -4,6 +4,7 @@ INSTALLOPTS=@INSTALLOPTS@
 datarootdir = @datarootdir@
 sysconfdir = @prefix@/etc
 prefix = @prefix@
+VERSION=@VERSION@
 
 
 all: noma

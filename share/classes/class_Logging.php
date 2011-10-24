@@ -39,11 +39,9 @@ class Logging{
     private function lopen(){
         // define log file path and name
         $lfile = $this->log_file;
-        // define the current date (it will be appended to the log file name)
-        $today = date('Y-m-d');
         // open log file for writing only; place the file pointer at the end of the file
         // if the file does not exist, attempt to create it
-        $this->fp = fopen($lfile . '_' . $today, 'a') or exit("Can't open $lfile!");
+        $this->fp = fopen($lfile, 'a') or exit("Can't open $lfile!");
     }
 }
 

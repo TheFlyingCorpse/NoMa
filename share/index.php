@@ -304,8 +304,12 @@ if ($require == 'inc/content_add-edit.php') {
 	}
 }
 
-if ($require != 'inc/content_login.php') {
-	$html->assign('NAVIGATION_CONTENT', getNavigationContent($action, isAdmin()));
+try {
+	if ($require != 'inc/content_login.php') {
+		$html->assign('NAVIGATION_CONTENT', getNavigationContent($action, isAdmin()));
+	}
+} catch(Exception $e) {
+    print $e->getMessage().'<br>';
 }
 
 $version = null;

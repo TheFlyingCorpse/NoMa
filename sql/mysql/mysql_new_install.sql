@@ -368,11 +368,11 @@ INSERT INTO `contactgroups` (`id`, `name_short`, `name`, `view_only`, `timeframe
 INSERT INTO `contactgroups_to_contacts` (`contactgroup_id`, `contact_id`) VALUES(1, 2);
 
 INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `growladdress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(1, 0, '[---]', '', '', '', '', '', '', '', 0, 0, NULL);
-INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `growladdress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(2, 1, 'nagiosadmin', 'Nagios Administrator', 'root@localhost', '', '', '', '192.168.1.109', '9e2b1592bd13bea759dab1e3011cab7ef47930cd', 1, 305, 0);
+INSERT INTO `contacts` (`id`, `admin`, `username`, `full_name`, `email`, `phone`, `mobile`, `section`, `growladdress`, `password`, `timeframe_id`, `timezone_id`, `restrict_alerts`) VALUES(2, 1, 'nagiosadmin', 'Nagios Administrator', 'nagios@localhost', '', '', '', '192.168.1.109', '9e2b1592bd13bea759dab1e3011cab7ef47930cd', 1, 0, 0);
 
 INSERT INTO `information` (`id`, `type`, `content`) VALUES(0, 'dbversion', '2000');
 
-INSERT INTO `notifications` (`id`, `notification_name`, `notification_description`, `active`, `username`, `recipients_include`, `recipients_exclude`, `hosts_include`, `hosts_exclude`, `hostgroups_include`, `hostgroups_exclude`, `services_include`, `services_exclude`, `servicegroups_include`, `servicegroups_exclude`, `notify_after_tries`, `let_notifier_handle`, `rollover`, `reloop_delay`, `on_ok`, `on_warning`, `on_unknown`, `on_host_unreachable`, `on_critical`, `on_host_up`, `on_host_down`, `on_type_problem`, `on_type_recovery`, `on_type_flappingstart`, `on_type_flappingstop`, `on_type_flappingdisabled`, `on_type_downtimestart`, `on_type_downtimeend`, `on_type_downtimecancelled`, `on_type_acknowledgement`, `on_type_custom`, `timezone_id`, `timeframe_id`) VALUES(1, 'default', 'default rule', 1, 'nagiosadmin', '', '', '*', '', '*', '', '*', '', '*', '', '1', 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1);
+INSERT INTO `notifications` (`id`, `notification_name`, `notification_description`, `active`, `username`, `recipients_include`, `recipients_exclude`, `hosts_include`, `hosts_exclude`, `hostgroups_include`, `hostgroups_exclude`, `services_include`, `services_exclude`, `servicegroups_include`, `servicegroups_exclude`, `notify_after_tries`, `let_notifier_handle`, `rollover`, `reloop_delay`, `on_ok`, `on_warning`, `on_unknown`, `on_host_unreachable`, `on_critical`, `on_host_up`, `on_host_down`, `on_type_problem`, `on_type_recovery`, `on_type_flappingstart`, `on_type_flappingstop`, `on_type_flappingdisabled`, `on_type_downtimestart`, `on_type_downtimeend`, `on_type_downtimecancelled`, `on_type_acknowledgement`, `on_type_custom`, `timezone_id`, `timeframe_id`) VALUES(1, 'default', 'default rule', 1, 'nagiosadmin', '', '', '*', '', '*', '', '*', '', '*', '', '1', 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1);
 
 INSERT INTO `notifications_to_contacts` (`notification_id`, `contact_id`) VALUES(1, 2);
 
@@ -383,7 +383,7 @@ INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, 
 INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(4, 'Voice + E-Mail fallback', 'voicecall', 'phone', '', 1, 1);
 INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(3, 'Voice', 'voicecall', 'phone', '', 0, 1);
 INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(2, 'SMS', 'sendsms', 'mobile', '', 0, 0);
-INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(1, 'E-Mail', 'sendemail', 'email', 'noma@netways.de', 0, 0);
+INSERT INTO `notification_methods` (`id`, `method`, `command`, `contact_field`, `sender`, `on_fail`, `ack_able`) VALUES(1, 'E-Mail', 'sendemail', 'email', 'root@localhost', 0, 0);
 
 
 INSERT INTO `timeframes` (`id`, `timeframe_name`, `dt_validFrom`, `dt_validTo`, `day_monday_all`, `day_monday_1st`, `day_monday_2nd`, `day_monday_3rd`, `day_monday_4th`, `day_monday_5th`, `day_monday_last`, `day_tuesday_all`, `day_tuesday_1st`, `day_tuesday_2nd`, `day_tuesday_3rd`, `day_tuesday_4th`, `day_tuesday_5th`, `day_tuesday_last`, `day_wednesday_all`, `day_wednesday_1st`, `day_wednesday_2nd`, `day_wednesday_3rd`, `day_wednesday_4th`, `day_wednesday_5th`, `day_wednesday_last`, `day_thursday_all`, `day_thursday_1st`, `day_thursday_2nd`, `day_thursday_3rd`, `day_thursday_4th`, `day_thursday_5th`, `day_thursday_last`, `day_friday_all`, `day_friday_1st`, `day_friday_2nd`, `day_friday_3rd`, `day_friday_4th`, `day_friday_5th`, `day_friday_last`, `day_saturday_all`, `day_saturday_1st`, `day_saturday_2nd`, `day_saturday_3rd`, `day_saturday_4th`, `day_saturday_5th`, `day_saturday_last`, `day_sunday_all`, `day_sunday_1st`, `day_sunday_2nd`, `day_sunday_3rd`, `day_sunday_4th`, `day_sunday_5th`, `day_sunday_last`, `time_monday_start`, `time_monday_stop`, `time_monday_invert`, `time_tuesday_start`, `time_tuesday_stop`, `time_tuesday_invert`, `time_wednesday_start`, `time_wednesday_stop`, `time_wednesday_invert`, `time_thursday_start`, `time_thursday_stop`, `time_thursday_invert`, `time_friday_start`, `time_friday_stop`, `time_friday_invert`, `time_saturday_start`, `time_saturday_stop`, `time_saturday_invert`, `time_sunday_start`, `time_sunday_stop`, `time_sunday_invert`) VALUES(0, 'inactive', '2001-01-01 00:00:00', '2001-01-01 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0, '00:00:00', '00:00:00', 0);
@@ -393,6 +393,7 @@ INSERT INTO `timeframes` (`id`, `timeframe_name`, `dt_validFrom`, `dt_validTo`, 
 
 INSERT INTO `notification_logs` (`id`, `timestamp`, `counter`, `check_type`, `check_result`, `host`, `service`, `notification_type`, `method`, `user`, `result`, `unique_id`, `incident_id`, `notification_rule`, `last_method`) VALUES ('1', now(), '1', '(internal)', 'OK', 'localhost', 'NoMa', '(none)', '(none)', 'NoMa', 'NoMa successfully installed', '123565999600001', '123565999600001', '0', '1');
 
+INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(0, 'GMT', 0);
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(1, 'Africa/Abidjan', 0);
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(2, 'Africa/Accra', 0);
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(3, 'Africa/Addis_Ababa', 3);
@@ -764,5 +765,4 @@ INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(368, 'Pacific/Ton
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(369, 'Pacific/Truk', 10);
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(370, 'Pacific/Wake', 12);
 INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(371, 'Pacific/Wallis', 12);
-INSERT INTO `timezones` (`id`, `timezone`, `time_diff`) VALUES(372, 'GMT', 0);
 

@@ -312,6 +312,7 @@ if ($starface or ($scriptname eq 'voicecall_starface.pl'))
 pod2usage(1) if $help;
 if ($version)
 {
+		# N.B. this script is versioned independently of NoMa
         print_revision($scriptname, '1.5') if $version;
         exit 0;
 }

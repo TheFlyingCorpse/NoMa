@@ -4,12 +4,13 @@ INSTALLOPTS=@INSTALLOPTS@
 datarootdir = @datarootdir@
 sysconfdir = @prefix@/etc
 prefix = @prefix@
+VERSION=@VERSION@
 
 
 all: noma
 
 FILTER := Makefile%
-FILES := $(filter-out $(FILTER),$(wildcard *))
+FILES := $(sort $(patsubst %.in,%,$(filter-out $(FILTER),$(wildcard *))))
 RELDIR := $(prefix)/$(subst @abs_top_builddir@/,,$(CURDIR))
 
 noma: $(FILES)
