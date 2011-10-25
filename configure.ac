@@ -59,7 +59,18 @@ AC_SUBST(NAGIOSPIPE)
 AC_SUBST(NAGIOSLIBEXEC)
 AC_SUBST(VERSION)
 
-AX_PROG_PERL_MODULES([YAML::Syck Getopt::Long Pod::Usage Digest::MD5 POSIX Data::Dumper Thread::Queue IO::Select IO::Socket Fcntl FindBin DBI DateTime::TimeZone DateTime::Format::Strptime Date::Calc], , )
+AX_PROG_PERL_MODULES([YAML::Syck Getopt::Long Pod::Usage Digest::MD5 POSIX Data::Dumper Thread::Queue IO::Select IO::Socket Fcntl FindBin DBI DateTime::TimeZone DateTime::Format::Strptime Date::Calc], , AC_MSG_ERROR([Missing perl modules]))
+AX_PROG_PERL_MODULES([DBD::SQLite], HAVESQLITE="yes", HAVESQLITE="no")
+AX_PROG_PERL_MODULES([DBD::mysql], HAVEMYSQL="yes", HAVEMYSQL="no")
+
+if test "$HAVESQLITE" = "no" && test "$HAVEMYSQL" = "no"; then
+    AC_MSG_ERROR([You need either DBD::SQLite or DBD::mysql])
+fi
+
+if test "$HAVESQLITE" = "no"; then
+    AC_MSG_WARN([DBD::SQLite is not installed: if you want to use MySQL you will need to configure your NoMa by hand])
+fi
+
 
 dnl MAKEFILES=`find . -name Makefile.in`
 dnl for makefile in $MAKEFILES
