@@ -8,6 +8,8 @@ use lib "$Bin/../notifier/lib";
 # test the generateNotificationList() function
 #
 # it should supply an array of IDs that match the notification
+#
+# you can generate suitable test data with debug level 3
 
 use contacts;
 
@@ -34,8 +36,8 @@ my @testdata = (
 		recipients => '',
 		host => 'testhost',
 		svc => 'PING',
-		hg => '',
-		sg => '',
+		hgs => '',
+		sgs => '',
 		dbresult => {
           '0' => {
                    'hosts_include' => '*',
@@ -74,7 +76,7 @@ foreach my $test (@testdata)
 {
 	my %dbresult = %{$test->{dbresult}};
 	my @solloutput = @{$test->{solloutput}};
-	@output = generateNotificationList($test->{checktype}, $test->{recipients}, $test->{host}, $test->{svc}, $test->{hg}, $test->{sg}, %dbresult);
+	@output = generateNotificationList($test->{checktype}, $test->{recipients}, $test->{host}, $test->{svc}, $test->{hgs}, $test->{sgs}, %dbresult);
 
 	isa_ok(\@output, 'ARRAY', 'ids');
 	is_deeply (\@output, \@solloutput, 'IDs:'.join(',', @solloutput));

@@ -13,6 +13,7 @@
 # see noma_daemon.pl in parent directory for full details.
 # Please do not distribute without the above file!
 use time_frames;
+use Data::Dumper;
 
 
 ##############################################################################
@@ -64,7 +65,10 @@ sub generateNotificationList
 
     my ( $check_type, $notificationRecipients, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, %dbResult ) = @_;
 
-    debug(' notificationRecipients: '. $notificationRecipients . ' notificationHost: '.$notificationHost.' notificationService: '.$notificationService.' notificationHostgroups: '.$notificationHostgroups.' notificationServicegroups: '.$notificationServicegroups.' notificationRecipients: '.$notificationRecipients, 2);
+    debug(' notificationRecipients: '. $notificationRecipients . ' notificationHost: '.$notificationHost.' notificationService: '.$notificationService.' notificationHostgroups: '.$notificationHostgroups.' notificationServicegroups: '.$notificationServicegroups, 2);
+
+	# debugging for test suite
+	debug('Testdata: '.Dumper({checktype => $check_type, recipients => $notificationRecipients, host => $notificationHost, svc => $notificationService, hgs => $notificationHostgroups, sgs => $notificationServicegroups, dbresult => \%dbResult}), 3);
 
     my $cnt = 0;
     my %notifyList;
