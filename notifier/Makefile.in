@@ -16,6 +16,7 @@ noma: $(FILES)
 
 %: %.in
 	$(SUBST) $< > $@
+	chmod 755 $@
 
 clean:
 	$(RM) $(FILES)
