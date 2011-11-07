@@ -136,6 +136,7 @@
  </tr>
 </table>
 <br/>
+<!--
 <table>
 <tr><td colspan="2" height="5"></td></tr>
 <tr><td colspan="2">{$TIMEFRAME_HEADING_HOLIDAYS}</td></tr>{$HOLIDAYS}
@@ -152,10 +153,13 @@
 <td><input class="text" id="holiday_end" name="holiday_end" size="40" value=""/></td>
 </tr>
 </table>
+-->
 
 <script type="text/javascript">
+<!--
 AnyTime.picker( "holiday_start", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "holiday_end", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
+-->
 AnyTime.picker( "dt_validTo", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "dt_validFrom", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "time_monday_from", { format: "%H:%i:%s" } );
@@ -176,7 +180,7 @@ AnyTime.picker( "time_sunday_to", { format: "%H:%i:%s" } );
 <table cellpadding="5" cellspacing="1" border="0" width="990">
 <tr><td colspan="5" height="5"></td></tr>
 <tr class="header"><td colspan="5">{$TIMEFRAME_HEADING_MEMBERSHIPS}<hr/></td></tr>
-<tr><a id="displayAffectedObjects" href="javascript:toggle();">{$LINKED_OBJECTS}</a></tr>
+<tr><a id="displayAffectedObjects" href="javascript:toggle('{$LINKED_OBJECTS_SHOW}','{$LINKED_OBJECTS_HIDE}');">{$LINKED_OBJECTS}</a></tr>
 <tr><td><div id="toggleAffectedObjects" style="display: none">
 <table width="990" cellspacing="0" cellpadding="4" border="1">{$NOTIFICATIONS}</table>
 <table width="990" cellspacing="0" cellpadding="3" border="1">{$CONTACTGROUPS}</table>

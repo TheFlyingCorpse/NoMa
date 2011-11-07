@@ -294,8 +294,8 @@ function getContent () {
 			$templateSubContent->assign('OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP', OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP);
 			$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_ALT', OVERVIEW_TOGGLE_ACTIVE_ALT);
 			$templateSubContent->assign('OVERVIEW_EDIT_ENTRY_JS', 'onclick="javascript:editEntry(\'' . $row['id'] . '\')" ');
-			$templateSubContent->assign('OVERVIEW_DELETE_ENTRY_JS', 'onclick="javascript:deleteEntry(\'' . $row['id'] . '\')" ');
 			$templateSubContent->assign('OVERVIEW_EDIT_ENTRY_IMG', 'images/edit.png');
+			$templateSubContent->assign('OVERVIEW_DELETE_ENTRY_CONFIRM', OVERVIEW_DELETE_ENTRY_CONFIRM);
 			$templateSubContent->assign('OVERVIEW_DELETE_ENTRY_IMG', 'images/delete.png');
 		} else {
 			$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_ALT', OVERVIEW_TOGGLE_ACTIVE_ALT_DISABLED);

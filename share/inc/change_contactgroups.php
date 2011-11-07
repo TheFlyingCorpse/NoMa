@@ -172,24 +172,16 @@ function updateContactGroup () {
 
 
 		// determine new relationships
-		$relationships = null;
-		$sep = null;
 		foreach ($dbResult as $row) {
-			$relationships .= sprintf(
-				'%s(\'%s\',\'%s\')',
-				$sep,
+			// insert new contactgroup members (SQLite friendly method)
+			$query = sprintf(
+				'insert into contactgroups_to_contacts values (%s,%s)',
 				$id,
 				$row['id']
 			);
-			if(!$sep) $sep = ',';
+			queryDB($query);
 		}
 
-		// insert new contactgroup members
-		$query = sprintf(
-			'insert into contactgroups_to_contacts values %s',
-			$relationships
-		);
-		queryDB($query);
 
 	}
 

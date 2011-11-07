@@ -63,6 +63,10 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
                 $dbConf = &$dbNDO;
         };
 
+	if (!file_exists($dbConf['dbFilePath'])) {
+        die('<br><br> DB not found, have you started the daemon??<br>');
+	}
+
 	// Try to open the SQLite database.
 	$db = new PDO("sqlite:".$dbConf['dbFilePath']);
 	if (!$db){
@@ -73,7 +77,7 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 	
 	$result = $db->query($query);
     if ($result === FALSE) {
-        die(print_r($db->errorInfo()));
+        die(print_r($db->errorInfo()).'<br><br>Query: '.$query.'<br>');
     }
 
 

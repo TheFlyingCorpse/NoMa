@@ -116,6 +116,8 @@ function getContent () {
                 $groupEscalationsDirect = queryDB('SELECT distinct n.notification_name, n.active, ec.notify_after_tries FROM notifications as n, escalations_contacts as ec, escalations_contacts_to_contactgroups as eccg WHERE ec.id=eccg.escalation_contacts_id AND n.id=ec.notification_id AND eccg.contactgroup_id=\'' . $groupData['id'] . '\'');
 
 	        $templateSubContent->assign('LINKED_OBJECTS', LINKED_OBJECTS);
+		$templateSubContent->assign('LINKED_OBJECTS_SHOW', LINKED_OBJECTS_SHOW);
+		$templateSubContent->assign('LINKED_OBJECTS_HIDE', LINKED_OBJECTS_HIDE);
 
 		// add group's assigned notifications
 		$content = null;

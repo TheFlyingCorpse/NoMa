@@ -96,6 +96,7 @@ define('OVERVIEW_INACTIVE_TOOLTIP_DISABLED', 'TOGGLING DISABLED');
 define('OVERVIEW_TOGGLE_ACTIVE_ALT_DISABLED', 'TOGGLING DISABLED');
 define('OVERVIEW_EDIT_ENTRY_ALT_TOOLTIP', 'Edit entry');
 define('OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP', 'Delete entry');
+define('OVERVIEW_DELETE_ENTRY_CONFIRM', 'Do you really want to delete this notification?');
 define('OVERVIEW_NOTIFICATION_UPDATED', 'Notification updated.');
 define('OVERVIEW_NOTIFICATION_ADDED', 'Notification added.');
 define('OVERVIEW_NOTIFICATION_ADD_UPDATE_ERROR', 'An error occurred!');

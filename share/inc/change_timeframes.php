@@ -302,7 +302,7 @@ function addTimeFrame () {
 
         // add holidays
         if (!empty($p['holiday_start']) && !empty($p['holiday_start']) && !empty($p['holiday_end'])) {
-                addHolidays($dbResult[0]['timeframe_id'], $p['holiday_name'], $p['holiday_start'], $p['holiday_end']);
+                addTFHolidays($dbResult[0]['timeframe_id'], $p['holiday_name'], $p['holiday_start'], $p['holiday_end']);
         }
 
 	return true;

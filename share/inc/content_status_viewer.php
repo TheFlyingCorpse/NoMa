@@ -135,6 +135,7 @@ function getContent () {
 		$filter = 'where ';
 		$sep = null;
 		foreach ($cols as $col => $val) {
+			if ($col == 'stime' or $col == 'result') continue;
 			$filter .= $sep . $col . ' like \'%%' . $findPrep . '%%\'';
 			if (!$sep) $sep = ' or ';
 		}

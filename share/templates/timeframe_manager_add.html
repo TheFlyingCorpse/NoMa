@@ -135,6 +135,7 @@
  </tr>
 </table>
 <br/>
+<!--
 <table>
 <tr><td colspan="2" height="5"></td></tr>
 <tr><td colspan="2">{$TIMEFRAME_HEADING_HOLIDAYS}</td></tr>{$HOLIDAYS}
@@ -150,11 +151,13 @@
 <td>{$TIMEFRAME_HOLIDAY_DESC_END}</td>
 <td><input class="text" id="holiday_end" name="holiday_end" size="40" value=""/></td>
 </tr>
-</table>
+</table>-->
 
 <script type="text/javascript">
+<!--
 AnyTime.picker( "holiday_start", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "holiday_end", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
+-->
 AnyTime.picker( "dt_validTo", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "dt_validFrom", { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
 AnyTime.picker( "time_monday_from", { format: "%H:%i:%s" } );

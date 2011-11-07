@@ -82,8 +82,8 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 		$dbType = &$dbTypeNDO;
 	}
 
-        $log = new Logging(); // Will only be used later on if its enabled.
-        if ($sqllog == true){$log->lwrite($dbConf['type'].' SQL Query: '.$query);};
+	$log = new Logging(); // Will only be used later on if its enabled.
+	if ($sqllog == true){$log->lwrite($dbConf['type'].' SQL Query: '.$query);};
 
 	// MySQL backend
 	if ($dbConf['type'] == 'mysql'){
@@ -93,29 +93,29 @@ function queryDB ($query, $return_count = false, $ndo = false) {
 		if ($return_count == true){
 			list($count, $dbResult) = queryMySQLDB($query, $return_count, $ndo);
 			if ($sqllog == true){$log->lwrite("MySQL Result - Count: $count - dbResult: ".var_export($dbResult, true));};
-                        return array($count, $dbResult);
+						return array($count, $dbResult);
 		} else {
 			$dbResult = queryMySQLDB($query, false, $ndo);
-                        if ($sqllog == true){$log->lwrite("MySQL Result - dbResult: ".var_export($dbResult, true));};
+						if ($sqllog == true){$log->lwrite("MySQL Result - dbResult: ".var_export($dbResult, true));};
 			return $dbResult;
 		}
 	}
 
 	// SQLite 3 backend
-        if ($dbConf['type'] == 'sqlite3'){
-                // Require the function for MySQL query.
-                require_once('noma-backend-sqlite3.php');
+		if ($dbConf['type'] == 'sqlite3'){
+				// Require the function for MySQL query.
+				require_once('noma-backend-sqlite3.php');
 
-                if ($return_count == true){
-                        list($count, $dbResult) = querySQLite3DB($query, $return_count, $ndo);
-                        if ($sqllog == true){$log->lwrite("SQLite3 Result - Count: $count - dbResult: ".var_export($dbResult, true));};
-                        return array($count, $dbResult);
-                } else {
-                        $dbResult = querySQLite3DB($query, false, $ndo);
-                        if ($sqllog == true){$log->lwrite("SQLite3 Result - dbResult: ".var_export($dbResult, true));};
-                        return $dbResult;
-                }
-        }
+				if ($return_count == true){
+						list($count, $dbResult) = querySQLite3DB($query, $return_count, $ndo);
+						if ($sqllog == true){$log->lwrite("SQLite3 Result - Count: $count - dbResult: ".var_export($dbResult, true));};
+						return array($count, $dbResult);
+				} else {
+						$dbResult = querySQLite3DB($query, false, $ndo);
+						if ($sqllog == true){$log->lwrite("SQLite3 Result - dbResult: ".var_export($dbResult, true));};
+						return $dbResult;
+				}
+		}
 
 	if ($dbConf['type'] != 'sqlite3' && $dbConf['type'] != 'mysql'){
 		die('Invalid database type selected, check your configuration!');

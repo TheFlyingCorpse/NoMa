@@ -143,7 +143,7 @@ function addContact ($p) {
 		$timezone_id
 	);
 	$dbResult = queryDB($query);
-	if (!empty($dbResult[0]['id'])) return CONTACTS_ADD_ADDED_BUT_NOT_IN_DB;
+	if (empty($dbResult[0]['id'])) return CONTACTS_ADD_ADDED_BUT_NOT_IN_DB;
 
 	// add holidays
 	if (!empty($p['holiday_name']) && !empty($p['holiday_start']) && !empty($p['holiday_end'])) {

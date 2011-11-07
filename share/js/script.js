@@ -40,11 +40,13 @@ function editEntry (id) {
 	window.location.href='index.php?action=edit&id=' + id;
 }
 
+/*
 // delete notification
 function deleteEntry (id) {
 	if(!confirm('Do you really want to delete this notification?')) return false;
 	window.location.href='index.php?action=del&id=' + id;
 }
+*/
 
 // set value of page element
 function setValue (elementID, value) {
@@ -137,15 +139,15 @@ function show_preview_result () {
 
 }
 
-function toggle() {
+function toggle(show_text, hide_text) {
 	var ele = document.getElementById("toggleAffectedObjects");
 	var text = document.getElementById("displayAffectedObjects");
 	if(ele.style.display == "block") {
     		ele.style.display = "none";
-		text.innerHTML = "show linked objects";
+		text.innerHTML = show_text;
   	}
 	else {
 		ele.style.display = "block";
-		text.innerHTML = "hide linked objects";
+		text.innerHTML = hide_text;
 	}
 }
