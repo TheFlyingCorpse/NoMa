@@ -1,8 +1,10 @@
-<!-- 
-Thanks to tylerhall -> https://github.com/tylerhall/php-growl/
--->
-
 <?PHP
+	/*
+	<!-- 
+	Thanks to tylerhall -> https://github.com/tylerhall/php-growl/
+	-->
+	*/
+
     class Growl
     {
         const GROWL_PRIORITY_LOW = -2;
