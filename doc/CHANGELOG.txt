@@ -111,3 +111,19 @@ Fixed:
 
 Extra:
 * updated documentation
+
+
+2.0.2
+----------------
+* SQLite is now the preferred backend (but MySQL will still be supported)
+* many PHP syntax fixes + code cleanup
+* many perl syntax fixe + code cleanups
+* Unified YAML configuration (Ticket: #1059)
+* Mandatory fields for user creation (Ticket: #1071)
+* Default TZ for user creation (Ticket: #1069)
+* Translations added / hard-coded error messages converted to translateable strings (Ticket: #1067)
+* Basic Perl test suite (Ticket: #1075)
+* an autoconf installer for easier deployment (Ticket: #877)
+* UTF-8 issue with Opera (Ticket: #1097)
+* SQLite friendly method to insert contactgroup members
+

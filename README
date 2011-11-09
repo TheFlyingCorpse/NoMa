@@ -35,13 +35,18 @@ Installation
 ------------
 Pre Requirements:
 - Lots of Perl(s).
+- php5 modules - among others; yaml, sqlite (or mysql if you are feeling adventurous)
 
 Download NoMa from a trusted source.
 .....
  #> ./configure --help (to view available switches for easy install)
  #> ./configure <switches> (or none for default paths)
+ #> make all
  #> make install
 .....
+
+Don't forget: the full documentation is available in the doc/ subdirectory of the
+source code.
 
 Then copy one of the init scripts from the notifier to the appropriate
 place for your system (e.g. /etc/init.d) and install it with chkconfig

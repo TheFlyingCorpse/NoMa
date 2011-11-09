@@ -88,102 +88,95 @@ sub generateNotificationList
         $servicegroups[0] = "__NONE";
     }
     # BEGIN - generate include and exclude lists for hosts and services
-    while ( defined( $dbResult{$cnt} ) )
+
+    while ( my $res = $dbResult{$cnt++})
     {
 
-	# generate recipients-include list
+	my $matched;
+
+	# Implicit include means that we match if the include field is blank
+	$res->{recipients_include} = '*' if !$res->{recipients_include};
+	$res->{servicegroups_include} = '*' if !$res->{servicegroups_include};
+	$res->{services_include} = '*' if !$res->{services_include};
+	$res->{hostgroups_include} = '*' if !$res->{hostgroups_include};
+	$res->{hosts_include} = '*' if !$res->{hosts_include};
+
+	# generate recipients list
 	foreach my $recipient(@recipients) {
-            if (matchString( $dbResult{$cnt}->{recipients_include}, $recipient))
+            if (!$recipient
+				or (matchString($res->{recipients_include}, $recipient)
+					and !matchString($res->{recipients_exclude}, $recipient)))
             {
-                debug( "Step1: RecipientIncl: $recipient\t" . $dbResult{$cnt}->{id}, 2);
-                $notifyList{ $dbResult{$cnt}->{id} } = 1;
+                debug( "Step1: RecipientIncl: $recipient\t" . $res->{id}, 2);
+                $matched = 1;
             }
 
-            # remove recipients to be excluded
-            if (matchString( $dbResult{$cnt}->{recipients_exclude}, $recipient))
-            {
-                debug( "Step1: RecipientExcl: $recipient\t" . $dbResult{$cnt}->{id}, 2);
-                undef( $notifyList{ $dbResult{$cnt}->{id} } )
-                    if defined( $notifyList{ $dbResult{$cnt}->{id} } );
-            }
-        }
+	}
+	next unless $matched;
 
 	# If its a service(group) check.
         if ( $check_type eq 's' )
         {
 
-            # generate servicegroup-include list
+			$matched = 0;
+            # generate servicegroup list
             foreach my $servicegroup(@servicegroups) {
-                if (matchString( $dbResult{$cnt}->{servicegroups_include}, $servicegroup))
+                if (!$servicegroup or ($servicegroup eq '__NONE')
+					or (matchString($res->{servicegroups_include}, $servicegroup)
+						and !matchString($res->{servicegroups_exclude}, $servicegroup)))
                 {
-                    debug( "Step1: SvcGrpIncl: $servicegroup\t" . $dbResult{$cnt}->{id}, 2);
-                    $notifyList{ $dbResult{$cnt}->{id} } = 1;
+                    debug( "Step1: SvcGrp: $servicegroup\t" . $res->{id}, 2);
+                    $matched = 1;
                 }
 
-                    # remove services to be excluded
-                if (matchString( $dbResult{$cnt}->{servicegroups_exclude}, $servicegroup))
-                {
-                    debug( "Step1: SvcGrpExcl: $servicegroup\t" . $dbResult{$cnt}->{id}, 2);
-                    undef( $notifyList{ $dbResult{$cnt}->{id} } )
-                        if defined( $notifyList{ $dbResult{$cnt}->{id} } );
-
-                }
             }
+			next unless $matched;
 	}
-	# generate hostgroup-include list
+	# generate hostgroup list
+		$matched = 0;
         foreach my $hostgroup(@hostgroups) {
-            if (matchString( $dbResult{$cnt}->{hostgroups_include}, $hostgroup))
+            if (!$hostgroup or ($hostgroup eq '__NONE')
+				or (matchString($res->{hostgroups_include}, $hostgroup)
+					and !matchString($res->{hostgroups_exclude}, $hostgroup)))
             {
-		debug( "Step1: HostGrp:Incl: $hostgroup\t" . $dbResult{$cnt}->{id}, 2);
-                $notifyList{ $dbResult{$cnt}->{id} } = 1;
+		debug( "Step1: HostGrp: $hostgroup\t" . $res->{id}, 2);
+                $matched = 1;
             }
 
-            # remove hosts to be excluded
-            if (matchString( $dbResult{$cnt}->{hostgroups_exclude}, $hostgroup))
-            {
-                debug( "Step1: HostGrp:Excl: $hostgroup\t" . $dbResult{$cnt}->{id}, 2);
-                undef( $notifyList{ $dbResult{$cnt}->{id} } )
-                    if ( defined( $notifyList{ $dbResult{$cnt}->{id} } ) );
-            }
         }
 
+		next unless $matched;
 
-        # generate host-include list
-        if (matchString( $dbResult{$cnt}->{hosts_include}, $notificationHost))
+		$matched = 0;
+        # generate host list
+        if (!$notificationHost
+			or (matchString($res->{hosts_include}, $notificationHost)
+				and !matchString($res->{hosts_exclude}, $notificationHost)))
         {
-            debug( "Step1: HostIncl: $notificationHost\t" . $dbResult{$cnt}->{id}, 2);
-            $notifyList{ $dbResult{$cnt}->{id} } = 1;
+            debug( "Step1: Host: $notificationHost\t" . $res->{id}, 2);
+            $matched = 1;
         }
 
-        # remove hosts to be excluded
-        if (matchString( $dbResult{$cnt}->{hosts_exclude}, $notificationHost))
-        {
-            debug( "Step1: HostExcl: $notificationHost\t" . $dbResult{$cnt}->{id}, 2);
-            undef( $notifyList{ $dbResult{$cnt}->{id} } )
-                if defined( $notifyList{ $dbResult{$cnt}->{id} } );
-        }
+		next unless $matched;
 
         if ( $check_type eq 's' )
         {
-            # generate service-include list
-            if (matchString( $dbResult{$cnt}->{services_include}, $notificationService))
+			$matched = 0;
+            # generate service list
+            if (!$notificationService
+				or (matchString($res->{services_include}, $notificationService)
+					and !matchString($res->{services_exclude}, $notificationService)))
             {
-                debug( "Step1: ServiceIncl: $notificationService\t" . $dbResult{$cnt}->{id}, 2);
-                $notifyList{ $dbResult{$cnt}->{id} } = 1;
+                debug( "Step1: Service: $notificationService\t" . $res->{id}, 2);
+                $matched = 1;
             }
 
-
-            # remove services to be excluded
-            if (matchString( $dbResult{$cnt}->{services_exclude}, $notificationService))
-            {
-                debug( "Step1: ServiceExcl: $notificationService\t" . $dbResult{$cnt}->{id}, 2);
-                undef( $notifyList{ $dbResult{$cnt}->{id} } )
-                    if defined( $notifyList{ $dbResult{$cnt}->{id} } );
-            }
 
         }
-        # increase counter
-        $cnt++;
+
+		next unless $matched;
+
+		$notifyList{ $res->{id} } = 1;
 
     }
 
