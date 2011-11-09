@@ -62,8 +62,8 @@ function addContact ($p) {
 
 	// prepare data
 	$admin = (isset($p['admin']) && $p['admin'] == 'on') ? '1' : '0';
-	$username = prepareDBValue($p['new_user']);
-	$full_name = prepareDBValue($p['full_name']);
+	$username = prepareDBValue(trim($p['new_user']));
+	$full_name = prepareDBValue(trim($p['full_name']));
 	$email = prepareDBValue($p['email']);
 	$phone = prepareDBValue($p['phone']);
 	$mobile = prepareDBValue($p['mobile']);
@@ -90,6 +90,8 @@ function addContact ($p) {
 	$dbResult = queryDB($query);
 	if (!empty($dbResult[0]['id'])) return CONTACTS_ADD_USER_EXISTS;
 
+	// we need a Username otherwise things don't look pretty
+	if (empty($full_name)) return CONTACTS_ADD_UPDATE_NAME_MISSING;
 
 	// native authentication
 	$password = null;

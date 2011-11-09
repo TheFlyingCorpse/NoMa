@@ -219,6 +219,7 @@ define('CONTACTS_ADD_UPDATE_ERROR_PASSWD_MISMATCH', 'Password mismatch!');
 define('CONTACTS_ADD_UPDATE_ERROR_INSUFF_RIGHTS', 'Insufficient rights to apply changes!');
 define('CONTACTS_ADD_USER_EXISTS', 'User already exists!');
 define('CONTACTS_ADD_UPDATE_PASSWD_MISSING', 'No Password set!');
+define('CONTACTS_ADD_UPDATE_NAME_MISSING', 'No full name set!');
 define('CONTACTS_ADD_ADDED_BUT_NOT_IN_DB', 'Contact added but database has not been updated, yet.');
 
 // timeframe manager

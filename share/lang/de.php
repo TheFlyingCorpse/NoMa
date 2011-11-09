@@ -219,6 +219,7 @@ define('CONTACTS_ADD_UPDATE_ERROR_PASSWD_MISMATCH', 'Die eingegebenen Passw&ouml
 define('CONTACTS_ADD_UPDATE_ERROR_INSUFF_RIGHTS', 'Sie besitzen keine ausreichenden Rechte f&uuml;r diese &Auml;nderungen!');
 define('CONTACTS_ADD_USER_EXISTS', 'Benutzer existiert bereits!');
 define('CONTACTS_ADD_UPDATE_PASSWD_MISSING', 'Kein Passwort gesetzt!');
+define('CONTACTS_ADD_UPDATE_NAME_MISSING', 'Kein Name gesetzt!');
 define('CONTACTS_ADD_ADDED_BUT_NOT_IN_DB', 'Benutzer wurde angelegt, aber Datenbank wurde noch nicht aktualisiert.');
 
 // timeframe manager
