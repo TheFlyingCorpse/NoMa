@@ -1001,6 +1001,18 @@ Basic daemon functionality can be tested after "make"ing the code.
 The test cases are in the t/ subdirectory and can be called with
 perl t/test_name.t
 
+7.2.1 Generating alerts by hand
+--------------------------------
+
+If nothing seems to be working then you should try the following;
+
+# Alter the debug section in the NoMa.yaml configuration file and set the logging
+level to 3
+# su - to the nagios user 
+# start NoMa with /path-to-noma/notifier/noma_daemon.pl --no-daemonize
+# in another window generate an alert as follows;
+/path-to-noma/notifier/alert_via_noma.pl -c s -s "WARNING" -H testhost -G "linux" -E "" -S "PING" -o "ping not ok" -n "PROBLEM" -a "hostalias" -i 127.0.0.1 -t $(date +%s) -u 2 -A "The admin" -C "" -R "admin"
+
 
 7.3 Watchdog
 -------------
