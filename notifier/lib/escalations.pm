@@ -267,6 +267,112 @@ sub getHandledRules
 }
 
 
+sub getNextMethod
+{
+
+    # get params
+    my ( $notify_id ) = @_;
+    my $query;
+    my $next_id;
+    my $method;
+    my $command;
+    my $sender;
+    my $tofield;
+    my $to;
+
+	debug("getting next method for notify id $notify_id", 3);
+    # get next escalation method
+    $query =
+      sprintf(
+'select id, method, command, sender, contact_field from notification_methods where id = (select m.on_fail from notification_methods m left join notification_logs as l on l.last_method=m.id where l.unique_id=\'%s\')',
+	$notify_id);
+    my %dbResult = queryDB($query);
+
+    ($next_id, $method, $command, $sender, $tofield) = ($dbResult{0}->{id}, $dbResult{0}->{method}, $dbResult{0}->{command}, $dbResult{0}->{sender}, $dbResult{0}->{contact_field});
+    return (0, '/bin/true') if (!defined($next_id) or $next_id == 0);
+
+    $query = sprintf('select %s from contacts as c, notification_logs as l where c.username=l.user and l.unique_id=\'%s\'', $tofield, $notify_id);
+    %dbResult = queryDB($query);
+    $to = $dbResult{0}->{$tofield};
+
+    $query = sprintf('update notification_logs set last_method=\'%s\' where unique_id=\'%s\'', $next_id, $notify_id);
+    updateDB($query);
+
+    return ($next_id, $method, $command, $sender, $to);
+
+}
+
+sub getRetryCounter
+{
+
+    # get params
+    my ( $notify_id ) = @_;
+    my $query;
+    my $counter;
+
+    $query = sprintf('select retries from tmp_active where notify_id = \'%s\'', $notify_id);
+    my %dbResult = queryDB($query);
+
+    $counter = $dbResult{0}->{retries};
+    return 0 if (!defined($counter));
+
+    return $counter;
+
+}
+
+sub requeueNotification
+{
+	# get params
+	my ( $id ) = @_;
+	my $query;
+	my %dbResult;
+	my $counter = 0;
+	my ($ss,$mm,$hh) = localtime();
+
+	# log the retry
+	updateLog($id, " failed ($hh:$mm:$ss). Retrying. ");
+
+    # if there is no configured retry delay, add 60 to the start time
+    my $wait = $conf->{notifier}->{timeToWait};
+    $wait = 60 unless defined($wait);
+
+	# increment counter
+	$query = sprintf('update tmp_active set retries=retries+1,
+                        stime=\'%s\', progress=\'0\' where notify_id=\'%s\'', 
+                        time()+$wait, $id);
+	updateDB($query);
+}
+
+sub getNextMethodCmd
+{
+
+    # get params
+    my ( $notify_id, $method_id ) = @_;
+    my %dbResult;
+    my %dbResult2;
+    my $query;
+
+
+	$query = sprintf('select distinct n.counter, m.contact_field, m.method, n.user, n.incident_id, n.notification_rule, m.id as last_method, m.command, c.email, m.sender, t.check_type, t.status, t.type, t.host, t.host_alias, t.host_address, t.service, t.output, n.timestamp from tmp_active as t left join notification_logs as n on n.unique_id=t.notify_id left join contacts as c on c.username=n.user, notification_methods as m where n.unique_id=t.notify_id and t.notify_id=\'%s\' and m.id=\'%s\'', $notify_id, $method_id);
+    	
+    %dbResult = queryDB( $query );
+    
+    $query = sprintf('select %s from contacts where username=\'%s\'', $dbResult{0}{contact_field}, $dbResult{0}{user});
+    %dbResult2 = queryDB( $query );
+
+    # call prepareNotification and return result
+    #
+    
+
+    my $cline = prepareNotification($dbResult{0}{user}, $dbResult{0}{method}, $dbResult{0}{command},
+	    $dbResult2{0}{$dbResult{0}{contact_field}}, $dbResult{0}{sender}, $notify_id, 
+	    $dbResult{0}{timestamp},$dbResult{0}{check_type}, $dbResult{0}{status}, 
+	    $dbResult{0}{type}, $dbResult{0}{host},$dbResult{0}{host_alias}, 
+	    $dbResult{0}{host_address}, $dbResult{0}{hostgroups}, $dbResult{0}{service}, 
+	    $dbResult{0}{servicegroups}, $dbResult{0}{authors},$dbResult{0}{comments}, $dbResult{0}{output});
+    return $cline;
+
+}
 
 
 1;

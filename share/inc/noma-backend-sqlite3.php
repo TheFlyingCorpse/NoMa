@@ -93,25 +93,11 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 	$queryCountCmd = strtolower(substr($query, 0, 12));
         if ($queryCmd == 'select' && $queryCountCmd != 'select count') {
 
-	                // Replace between SELECT and FROM with COUNT(*) to count the rows.
-	                $start = 'select';
-	                $end = 'from';
-	                $replace_with = ' COUNT(*) ';
-
-			$countquery = replace_content_inside_delimiters($start, $end, $replace_with, $query);
-		
-			if ($result = $db->query($countquery)) {
-
-				/* Check the number of rows that match the SELECT statement */
-				if ( $result->fetchColumn() > 0) {
-
-					/* Issue the real SELECT statement and work with the results */
-		                	foreach ($db->query($query) as $row) {
-						$count = $count++;
-						$dbResult[] = $row;
-					}
-				}
-			}
+            /* Issue the real SELECT statement and work with the results */
+                    foreach ($db->query($query) as $row) {
+                $count = $count++;
+                $dbResult[] = $row;
+            }
 	} elseif ($queryCountCmd == 'select count'){
 		if ($result = $db->query($query)){
 			if ( $result->fetchColumn() > 0) {
@@ -145,8 +131,5 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 
 }
 
-function replace_content_inside_delimiters($start, $end, $new, $source) {
-        return preg_replace('#('.preg_quote($start).')(.*)('.preg_quote($end).')#si', '$1'.$new.'$3', $source);
-}
 
 ?>

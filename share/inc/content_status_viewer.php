@@ -200,7 +200,7 @@ function getContent () {
 	// get complete count
 	$dbResult = queryDB(sprintf($query, 'count(*) cnt', '', 'count(*) cnt'));
 	$allCount = $dbResult[0]['cnt'];
-	if (defined($dbResult[1]['cnt']))
+	if (isset($dbResult[1]) and defined($dbResult[1]['cnt']))
 	{
 		$allCount+=$dbResult[1]['cnt'];
 	} else {
@@ -233,7 +233,7 @@ function getContent () {
 	list($resultCount, $dbResult) = queryDB($query, true);
 
 
-	if (!empty($p['p'])) {
+	if (!isset($p['p']) or !empty($p['p'])) {
 		$p['p'] = 10;
 	}
 	// get page navigation
