@@ -197,14 +197,14 @@ paths and user variables in the script to match your system.
 
 For Debian:
 
-* cp noma_initscript.debian /etc/init.d/noma
+* cp /path_to_noma/notifier/noma_initscript.debian /etc/init.d/noma
 * update-rc.d noma defaults
 * /etc/init.d/noma start
 
 3.4 Apache configuration
 ----------------------------
 
-Copy the example contrib/noma.conf to your local apache2/conf.d directory, like /etc/apache2/conf.d/
+Copy the example /path_to_noma/etc/apache2-noma.conf to your local apache2/conf.d directory, like /etc/apache2/conf.d/
 Modify it to fit your needs and restart apache afterwards to load the new configuration.
 See the sample file for examples of configuration.
 
@@ -217,7 +217,7 @@ the frontend and backend.  You will need to install the YAML::Syck module
 for perl and the yaml extension for php (e.g. with pear install yaml).
 
 Change settings in your 'NoMa.yaml', located in the directory
-'etc'. 
+'etc', replacing all occurrences of "nagios" with "icinga" if using the latter.
 
 4.1 Configuring the frontend
 -----------------------------
@@ -653,9 +653,8 @@ message         - the texts to be spoken by the Text-to-Speech engine.  "header"
 5. The Frontend
 ================
 
-Authentication is disabled by default. If you set authentication_type in
-to 'native', you can login as 'nagiosadmin' by using the password
-'nagiosadmin'.
+Authentication is set to 'native' by default.  You can login as 'nagiosadmin'
+by using the password 'nagiosadmin'.
 
 5.1 Managing contacts
 ----------------------
