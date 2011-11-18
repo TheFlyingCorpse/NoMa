@@ -97,6 +97,58 @@ my @testdata = (
 		} ]
     },
     {
+        'name'       => 'group test',
+        'rule_array'  => [ '2' ],
+        'notification_counter' => '1',
+        'status'       => 'WARNING',
+        'type'        => 'PROBLEM',
+        'solloutput' => [ 
+		{
+          'ack_able' => 1,
+          'timezone' => 'GMT',
+          'rule' => 2,
+          'mobile' => '',
+          'phone' => '',
+          'username' => 'nagiosadmin',
+          'email' => 'nagios@localhost',
+          'mid' => 3,
+          'on_fail' => 0,
+          'let_notifier_handle' => 0,
+          'sender' => '',
+          'growladdress' => '192.168.1.109',
+          'method' => 'Voice',
+          'notify_after_tries' => '1',
+          'contact_field' => 'phone',
+          'command' => 'voicecall'
+		} ]
+    },
+    {
+        'name'       => 'group escalation 1',
+        'rule_array'  => [ '2' ],
+        'notification_counter' => '2',
+        'status'       => 'WARNING',
+        'type'        => 'PROBLEM',
+        'solloutput' => [ 
+		{
+          'ack_able' => 0,
+          'timezone' => 'GMT',
+          'rule' => 2,
+          'mobile' => '',
+          'phone' => '',
+          'username' => 'nagiosadmin',
+          'email' => 'nagios@localhost',
+          'mid' => 1,
+          'on_fail' => 0,
+          'let_notifier_handle' => 0,
+          'sender' => 'root@localhost',
+          'growladdress' => '192.168.1.109',
+          'method' => 'E-Mail',
+          'notify_after_tries' => '2',
+          'contact_field' => 'email',
+          'command' => 'sendemail'
+		} ]
+    },
+    {
         'name'       => 'counter exceeded',
         'rule_array'  => [ '1' ],
         'notification_counter' => '3',
@@ -106,7 +158,7 @@ my @testdata = (
     },
     {
         'name'       => 'invalid rule',
-        'rule_array'  => [ '2' ],
+        'rule_array'  => [ '3' ],
         'notification_counter' => '1',
         'status'       => 'WARNING',
         'type'        => 'PROBLEM',
