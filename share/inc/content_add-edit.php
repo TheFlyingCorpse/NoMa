@@ -191,8 +191,10 @@ function getContent () {
 
 	}
 
+		$timezone_id = $dbResult[0]['timezone_id'];
+		if (!isset($timezone_id)) $timezone_id = getServerTimeZone();
         $templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $dbResult[0]['timeframe_id']));
-        $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $dbResult[0]['timezone_id']));
+        $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $timezone_id));
 
 	if (empty($id) && !empty($_SESSION['user'])) {
 		$templateContent->assign('OWNER_SELECT', $_SESSION['user'] . htmlInput('owner', 'hidden', $_SESSION['user']));

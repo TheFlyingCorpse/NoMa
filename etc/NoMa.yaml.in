@@ -160,7 +160,7 @@ notifier:
   pattern: "%F %T"
   sleep_time: 1
   timeToWait: 60
-  timezone: Europe\Oslo
+  timezone: Europe/Berlin
 path: 
   cache: @localstatedir@/noma.cache
   pidfile: @localstatedir@/noma.pid

@@ -90,6 +90,21 @@ function getTimeZone ($id = null) {
 }
 
 
+/**
+ * getServerTimeZone - return timezone id of zone named in the configuration file
+ *
+ * @param		string		$default	id of timezone to return if not found
+ * @return								timezone id
+ */
+function getServerTimeZone ($default = 0) {
+	global $conf;
+	$dbResult = queryDB('select id from timezones where timezone=\'' . prepareDBValue($conf['notifier']['timezone']) . '\'');
+	if (count($dbResult) != 1) return $default;
+	if (!is_array($dbResult[0])) return $default;
+	return $dbResult[0]['id'];
+}
+
+
 
 
 /**

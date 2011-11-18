@@ -103,7 +103,7 @@ function getContent () {
 	if (empty($id)) {
 		$templateContent->assign('HEADING', CONTACTS_ADD_EDIT_USER);
 	        if (!isset($userData['timeframe_id'])) $userData['timeframe_id'] = null;
-        	if (!isset($userData['timezone_id'])) $userData['timezone_id'] = null;
+        	if (!isset($userData['timezone_id'])) $userData['timezone_id'] = getServerTimeZone();
 	       	$templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $userData['timeframe_id']));
 	        $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $userData['timezone_id']));
 	} else {
@@ -194,7 +194,7 @@ FROM notifications as n, escalations_contacts as ec, escalations_contacts_to_con
                 $templateContent->assign('GROWLADDRESS', $userData['growladdress']);
 		$templateContent->assign('RESTRICT_ALERTS', ($userData['restrict_alerts']==1)?'checked="checked"':'');
        		if (!isset($userData['timeframe_id'])) $userData['timeframe_id'] = null;
-       		if (!isset($userData['timezone_id'])) $userData['timezone_id'] = null;
+       		if (!isset($userData['timezone_id'])) $userData['timezone_id'] = getServerTimeZone();
        		$templateContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $userData['timeframe_id']));
 	        $templateContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $userData['timezone_id']));
 

@@ -107,7 +107,7 @@ function getContent () {
                 $templateSubContent->assign('CONTACTGROUPS_TIMEZONE', CONTACTGROUPS_TIMEZONE);
        		if (!isset($groupData['timeframe_id'])) $groupData['timeframe_id'] = null;
 	        $templateSubContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $groupData['timeframe_id']));
-                if (!isset($groupData['timezone_id'])) $groupData['timezone_id'] = null;
+                if (!isset($groupData['timezone_id'])) $groupData['timezone_id'] = getServerTimeZone();
                 $templateSubContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $groupData['timezone_id']));
 		$templateSubContent->assign('CONTACTGROUPS_EDIT_USERS_SELECT', htmlSelect('contacts[]', getContacts(), getContactGroupMembers($contactgroup), 'size="5" multiple="multiple"'));
 		$templateSubContent->assign('VIEW_ONLY_CHECKED', ($groupData['view_only'] == '1') ? ' checked="true"' : null);
@@ -178,7 +178,7 @@ function getContent () {
                 $templateSubContent->assign('CONTACTGROUPS_TIMEZONE', CONTACTGROUPS_TIMEZONE);
                 if (!isset($groupData['timeframe_id'])) $groupData['timeframe_id'] = null;
                 $templateSubContent->assign('TIMEFRAME_SELECT', htmlSelect('timeframe', getTimeFrames(), $groupData['timeframe_id']));
-                if (!isset($groupData['timezone_id'])) $groupData['timezone_id'] = null;
+                if (!isset($groupData['timezone_id'])) $groupData['timezone_id'] = getServerTimeZone();
                 $templateSubContent->assign('TIMEZONE_SELECT', htmlSelect('timezone', getTimeZone(), $groupData['timezone_id']));
 		$templateSubContent->assign('CONTACTGROUPS_VIEW_ONLY', CONTACTGROUPS_VIEW_ONLY);
 		$templateSubContent->assign('CONTACTGROUPS_ADD_BUTTON', CONTACTGROUPS_ADD_BUTTON);
