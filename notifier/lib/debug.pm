@@ -52,7 +52,7 @@ sub debugHashUsers
     my @users = ();
     while ( my ( $key, $value ) = each %hash )
     {
-        push @users, $hash{$key}{'username'}.' ('. $hash{$key}{'username'}.')';
+        push @users, $hash{$key}{'username'}.' ('. $hash{$key}{'method'}.')';
     }
     $output = join(',', @users);
     $output = "EMPTY!\n" if ( $output eq '' );

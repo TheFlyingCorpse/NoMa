@@ -13,6 +13,7 @@
 # see noma_daemon.pl in parent directory for full details.
 # Please do not distribute without the above file!
 use time_frames;
+use datetime;
 use Data::Dumper;
 
 
@@ -237,7 +238,9 @@ sub matchString
 	return 0;
 }
 
-
+# given a list of rules, the notification counter, and the type
+# it returns an array of contacts to notify
+#
 sub getUsersAndMethods
 {
 
@@ -286,13 +289,13 @@ sub getUsersAndMethods
 					left join timezones tz on c.timezone_id=tz.id
 					left join notifications n on ec.notification_id=n.id
 					where n.active=\'1\' and (ec.notification_id=\'' . $where . '\')';
-	@dbResult_tmp_arr = queryDB( $query, 1 );
+	@dbResult_esc_arr = queryDB( $query, 1 );
 
-        @dbResult_esc_arr =
+        @dbResult_tmp_arr = ( @dbResult_not_arr, @dbResult_esc_arr );
+        @dbResult_arr =
           filterNotificationsByEscalation( \@dbResult_tmp_arr, $notificationCounter, $notification_type,
             $status );
 
-        @dbResult_arr = ( @dbResult_not_arr, @dbResult_esc_arr );
 
         debug("To be notified: ".Dumper(@dbResult_arr), 3);
 

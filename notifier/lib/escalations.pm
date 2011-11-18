@@ -167,7 +167,7 @@ sub escalate
     # retrieve all incidents where an escalation exists in the stati table but no alerts are active, using time (UTC epoch, not local!)
     $query = 'select distinct id from escalation_stati where incident_id not in (select external_id from tmp_commands as c inner join tmp_active as a on a.command_id=c.id) and (time_string+(counter*'.$wait.'))<'.time();
     $query .= ' and time_string>('.time().'-'.$maxwait.')' if ($wait > 0);
-    debug('Escalate query: '.$query,3);
+    # debug('Escalate query: '.$query,3);
     @dbResult = queryDB($query, 1, 1);
 
     foreach my $res (@dbResult)
@@ -267,6 +267,9 @@ sub getHandledRules
 }
 
 
+# given a notification rule, this will return the next method for an active alert.  Used for notifications where the method
+# is "Voice + E-Mail fallback" etc.
+#
 sub getNextMethod
 {
 

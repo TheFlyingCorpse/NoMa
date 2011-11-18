@@ -204,4 +204,11 @@ sub arrayToHash
 
 }
 
+sub pushUnique
+{
+    my ( $array_ref, $to_push ) = @_;
+    push( @$array_ref, $to_push ) if ( !grep( /^$to_push$/, @$array_ref ) );
+    return @$array_ref;
+}
+
 1;

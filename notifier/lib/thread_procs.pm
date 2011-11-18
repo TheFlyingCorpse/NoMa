@@ -174,6 +174,13 @@ sub spawnCommandSocketThread
 		Reuse	=> 1
 	);
 
+	if (!defined($sock))
+	{
+		debug("Failed to bind to TCP port $port", 1);
+		exit 0;
+	}
+
+
     my $bitmask = pack("C", 2**fileno($sock));
 
     while (1==1)
