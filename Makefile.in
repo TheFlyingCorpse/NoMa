@@ -12,3 +12,9 @@ all clean install:
 		echo descending into $$SUBDIR; \
 		cd @abs_top_builddir@/$$SUBDIR && $(MAKE) $@ ; \
 	done
+
+test: all
+	for TEST in t/*.t; \
+	do \
+		perl $$TEST; \
+	done
