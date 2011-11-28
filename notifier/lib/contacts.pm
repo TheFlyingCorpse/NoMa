@@ -101,6 +101,11 @@ sub generateNotificationList
 	$res->{services_include} = '*' if !$res->{services_include};
 	$res->{hostgroups_include} = '*' if !$res->{hostgroups_include};
 	$res->{hosts_include} = '*' if !$res->{hosts_include};
+	$res->{recipients_exclude} = '' if !$res->{recipients_exclude};
+	$res->{servicegroups_exclude} = '' if !$res->{servicegroups_exclude};
+	$res->{services_exclude} = '' if !$res->{services_exclude};
+	$res->{hostgroups_exclude} = '' if !$res->{hostgroups_exclude};
+	$res->{hosts_exclude} = '' if !$res->{hosts_exclude};
 
 	# generate recipients list
 	foreach my $recipient(@recipients) {

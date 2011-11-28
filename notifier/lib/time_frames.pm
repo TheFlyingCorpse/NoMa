@@ -351,6 +351,9 @@ sub TimeFrameOnHoliday
 {
 	my ($timeframe_id,$timezone) = @_;
 
+	# function disabled
+	return 0;
+
 	# Fetch the TimeFrame Holidays and return 0 if in office or 1 if on holiday.
 	my $query = 'SELECT tf.timeframe_name, h.id, h.holiday_name, h.holiday_start, h.holiday_end
 			FROM holidays h
