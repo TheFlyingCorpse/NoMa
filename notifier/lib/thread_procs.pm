@@ -158,6 +158,7 @@ sub spawnCommandSocketThread
 	my ( $queue, $config ) = @_;
 	my $input;
 	my $port = $$config{socketPort};
+	my $address = $$config{socketAddress};
     my $pool = Thread::Queue->new;
     my $closedConn = Thread::Queue->new;
     my %openConnections;
@@ -171,7 +172,8 @@ sub spawnCommandSocketThread
 		Proto	=> 'tcp',
 		LocalPort	=> $port,
 		Listen	=> 1,
-		Reuse	=> 1
+		Reuse	=> 1,
+		LocalAddr => $address
 	);
 
 	if (!defined($sock))
