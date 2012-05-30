@@ -1,0 +1,53 @@
+<table cellpadding="2" cellspacing="0" border="0">
+<tr>
+<td>{$NOTIFY_RECOVERY}</td>
+<td valign="top">
+<!-- <input type="checkbox" name="notify_on_type_recovery{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_RECOVERY}/>RECOVERY -->
+<input type="checkbox" name="notify_on_host_up{$ARRAY_ITEM}" {$CHECKED_NOTIFY_HOST_UP}/>{$NOTIFY_UP}
+<input type="checkbox" name="notify_on_ok{$ARRAY_ITEM}" {$CHECKED_NOTIFY_OK}/>{$NOTIFY_OK}
+</td>
+</tr>
+<tr><td colspan="2"><hr></td></tr>
+<tr>
+<td>{$NOTIFY_PROBLEM}</td>
+<td valign="top">
+<!-- <input type="checkbox" name="notify_on_type_problem{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_PROBLEM}/>PROBLEM -->
+<input type="checkbox" name="notify_on_warning{$ARRAY_ITEM}" {$CHECKED_NOTIFY_WARNING}/>{$NOTIFY_WARNING}
+<input type="checkbox" name="notify_on_unknown{$ARRAY_ITEM}" {$CHECKED_NOTIFY_UNKNOWN}/>{$NOTIFY_UNKNOWN}
+<input type="checkbox" name="notify_on_critical{$ARRAY_ITEM}" {$CHECKED_NOTIFY_CRITICAL}/>{$NOTIFY_CRITICAL}
+</br>
+<input type="checkbox" name="notify_on_host_unreachable{$ARRAY_ITEM}" {$CHECKED_NOTIFY_HOST_UNREACHABLE}/>{$NOTIFY_UNREACHABLE}
+<input type="checkbox" name="notify_on_host_down{$ARRAY_ITEM}" {$CHECKED_NOTIFY_HOST_DOWN}/>{$NOTIFY_DOWN}
+</td>
+</tr>
+<tr><td colspan="2"><hr></td></tr>
+<tr>
+<td>{$NOTIFY_ADVANCED}</td>
+<td valign="top">
+<input type="checkbox" name="notify_on_warning_to_critical{$ARRAY_ITEM}" {$CHECKED_NOTIFY_WARNING_TO_CRITICAL}/>{$NOTIFY_WARNING_TO_CRITICAL}
+<input type="checkbox" name="notify_on_warning_to_unknown{$ARRAY_ITEM}" {$CHECKED_NOTIFY_WARNING_TO_UNKNOWN}/>{$NOTIFY_WARNING_TO_UNKNOWN}
+</br>
+<input type="checkbox" name="notify_on_critical_to_warning{$ARRAY_ITEM}" {$CHECKED_NOTIFY_CRITICAL_TO_WARNING}/>{$NOTIFY_CRITICAL_TO_WARNING}
+<input type="checkbox" name="notify_on_critical_to_unknown{$ARRAY_ITEM}" {$CHECKED_NOTIFY_CRITICAL_TO_UNKNOWN}/>{$NOTIFY_CRITICAL_TO_UNKNOWN}
+</br>
+<input type="checkbox" name="notify_on_unknown_to_warning{$ARRAY_ITEM}" {$CHECKED_NOTIFY_UNKNOWN_TO_WARNING}/>{$NOTIFY_UNKNOWN_TO_WARNING}
+<input type="checkbox" name="notify_on_unknown_to_critical{$ARRAY_ITEM}" {$CHECKED_NOTIFY_UNKNOWN_TO_CRITICAL}/>{$NOTIFY_UNKNOWN_TO_CRITICAL}
+</td>
+</tr>
+<tr><td colspan="2"><hr></td></tr>
+<tr>
+<td>{$NOTIFY_SPECIAL}</td>
+<td valign="top">
+<input type="checkbox" name="notify_on_type_flappingstart{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_FLAPPINGSTART}/>{$NOTIFY_FLAPPING_START}
+<input type="checkbox" name="notify_on_type_flappingstop{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_FLAPPINGSTOP}/>{$NOTIFY_FLAPPING_STOP}
+<input type="checkbox" name="notify_on_type_flappingdisabled{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_FLAPPINGDISABLED}/>{$NOTIFY_FLAPPING_DISABLED}
+</br>
+<input type="checkbox" name="notify_on_type_downtimestart{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_DOWNTIMESTART}/>{$NOTIFY_DOWNTIME_START}
+<input type="checkbox" name="notify_on_type_downtimeend{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_DOWNTIMEEND}/>{$NOTIFY_DOWNTIME_END}
+<input type="checkbox" name="notify_on_type_downtimecancelled{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_DOWNTIMECANCELLED}/>{$NOTIFY_DOWNTIME_CANCELLED}
+</br>
+<input type="checkbox" name="notify_on_type_acknowledgement{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_ACKNOWLEDGEMENT}/>{$NOTIFY_ACKNOWLEDGEMENT}
+<input type="checkbox" name="notify_on_type_custom{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_CUSTOM}/>{$NOTIFY_CUSTOM}
+</td>
+</tr>
+</table>

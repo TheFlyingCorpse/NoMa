@@ -212,7 +212,7 @@ function getContent () {
 	if (!empty($id)) {
 		// get escalations
 		$query = sprintf(
-			'select id,on_ok,on_warning,on_critical,on_unknown,on_host_up,on_host_unreachable,on_host_down,on_type_problem,on_type_recovery,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,notify_after_tries
+			'select id,notify_after_tries
 				from escalations_contacts
 				where notification_id=\'%s\'
 				order by notify_after_tries asc',
@@ -247,7 +247,36 @@ function getContent () {
 		// assign 'let notifier handle'
 		if (!$x) {
 			$templateSubSubContent = new nwTemplate(TEMPLATE_ADD_EDIT_LET_NOTIFIER_HANDLE);
+		    $templateSubContentTypes = new nwTemplate(TEMPLATE_ADD_EDIT_TYPES);
+			$templateSubContentTypes->assign('NOTIFY_PROBLEM', NOTIFY_PROBLEM);
+			$templateSubContentTypes->assign('NOTIFY_RECOVERY', NOTIFY_RECOVERY);
+			$templateSubContentTypes->assign('NOTIFY_SPECIAL', NOTIFY_SPECIAL);
+			$templateSubContentTypes->assign('NOTIFY_OK', NOTIFY_OK);
+			$templateSubContentTypes->assign('NOTIFY_WARNING', NOTIFY_WARNING);
+			$templateSubContentTypes->assign('NOTIFY_CRITICAL', NOTIFY_CRITICAL);
+			$templateSubContentTypes->assign('NOTIFY_UNKNOWN', NOTIFY_UNKNOWN);
+			$templateSubContentTypes->assign('NOTIFY_UP', NOTIFY_UP);
+			$templateSubContentTypes->assign('NOTIFY_UNREACHABLE', NOTIFY_UNREACHABLE);
+			$templateSubContentTypes->assign('NOTIFY_DOWN', NOTIFY_DOWN);
+			$templateSubContentTypes->assign('NOTIFY_FLAPPING_START', NOTIFY_FLAPPING_START);
+			$templateSubContentTypes->assign('NOTIFY_FLAPPING_STOP', NOTIFY_FLAPPING_STOP);
+			$templateSubContentTypes->assign('NOTIFY_FLAPPING_DISABLED', NOTIFY_FLAPPING_DISABLED);
+			$templateSubContentTypes->assign('NOTIFY_DOWNTIME_START', NOTIFY_DOWNTIME_START);
+			$templateSubContentTypes->assign('NOTIFY_DOWNTIME_END', NOTIFY_DOWNTIME_END);
+			$templateSubContentTypes->assign('NOTIFY_DOWNTIME_CANCELLED', NOTIFY_DOWNTIME_CANCELLED);
+			$templateSubContentTypes->assign('NOTIFY_ACKNOWLEDGEMENT', NOTIFY_ACKNOWLEDGEMENT);
+			$templateSubContentTypes->assign('NOTIFY_CUSTOM', NOTIFY_CUSTOM);
+
+			$templateSubContentTypes->assign('NOTIFY_ADVANCED', NOTIFY_ADVANCED);
+			$templateSubContentTypes->assign('NOTIFY_WARNING_TO_CRITICAL', NOTIFY_WARNING_TO_CRITICAL);
+			$templateSubContentTypes->assign('NOTIFY_WARNING_TO_UNKNOWN', NOTIFY_WARNING_TO_UNKNOWN);
+			$templateSubContentTypes->assign('NOTIFY_CRITICAL_TO_WARNING', NOTIFY_CRITICAL_TO_WARNING);
+			$templateSubContentTypes->assign('NOTIFY_CRITICAL_TO_UNKNOWN', NOTIFY_CRITICAL_TO_UNKNOWN);
+			$templateSubContentTypes->assign('NOTIFY_UNKNOWN_TO_CRITICAL', NOTIFY_UNKNOWN_TO_CRITICAL);
+			$templateSubContentTypes->assign('NOTIFY_UNKNOWN_TO_WARNING', NOTIFY_UNKNOWN_TO_WARNING);
+
 			$templateSubSubContent->assign('ADD_EDIT_LET_NOTIFIER_HANDLE', ADD_EDIT_LET_NOTIFIER_HANDLE);
+			$templateSubContentTypes->assign('ADD_EDIT_NOTIFY_ON_TABLE', ADD_EDIT_NOTIFY_ON_TABLE);
 			// $templateSubSubContent->assign('ADD_EDIT_RELOOP_DELAY', ADD_EDIT_RELOOP_DELAY);
 			$templateSubSubContent->assign('ADD_EDIT_ROLLOVER', ADD_EDIT_ROLLOVER);
 			$templateSubSubContent->assign('CHECKED_LET_NOTIFIER_HANDLE', ($dbResult[0]['let_notifier_handle']==1)?' checked="checked" ':'');
@@ -354,31 +383,49 @@ function getContent () {
 		$templateSubContent->assign('ADD_EDIT_NOTIFY_USERS', ADD_EDIT_NOTIFY_USERS);
 		$templateSubContent->assign('ADD_EDIT_NOTIFY_GROUPS', ADD_EDIT_NOTIFY_GROUPS);
 		$templateSubContent->assign('ADD_EDIT_NOTIFY_BY', ADD_EDIT_NOTIFY_BY);
-		$templateSubContent->assign('ADD_EDIT_NOTIFY_ON', ADD_EDIT_NOTIFY_ON);
+        if (!$x) {
+            $templateSubContent->assign('ADD_EDIT_NOTIFY_ON', ADD_EDIT_NOTIFY_ON);
+        }
 
                 $templateSubContent->assign('NOTIFY_USERS_SELECT', htmlSelect('notify_users' . $formArray . '[]', getContacts(), $notify_users, 'size="5" multiple="multiple"'));
 		$templateSubContent->assign('NOTIFY_GROUPS_SELECT', htmlSelect('notify_groups' . $formArray . '[]', getContactGroups(), $notify_groups, 'size="5" multiple="multiple"'));
 
 		$templateSubContent->assign('NOTIFY_BY_SELECT', htmlSelect('notify_by' . $formArray . '[]', getNotificationMethods(), $notify_by, 'size="5" multiple="multiple"'));
 
-		$templateSubContent->assign('CHECKED_NOTIFY_OK', ($dbResult[$x]['on_ok']=='1') ? ' checked="checked"' : '' );
-		$templateSubContent->assign('CHECKED_NOTIFY_WARNING', ($dbResult[$x]['on_warning']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_UNKNOWN', ($dbResult[$x]['on_unknown']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_HOST_UNREACHABLE', ($dbResult[$x]['on_host_unreachable']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_CRITICAL', ($dbResult[$x]['on_critical']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_HOST_UP', ($dbResult[$x]['on_host_up']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_HOST_DOWN', ($dbResult[$x]['on_host_down']=='1') ? ' checked="checked"' : '' );
+        if (!$x) {
+            // only show the check boxes for the base rule, not notifications
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_OK', ($dbResult[$x]['on_ok']==1) ? ' checked="checked"' : '' );
 
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_PROBLEM', ($dbResult[$x]['on_type_problem']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_RECOVERY', ($dbResult[$x]['on_type_recovery']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_FLAPPINGSTART', ($dbResult[$x]['on_type_flappingstart']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_FLAPPINGSTOP', ($dbResult[$x]['on_type_flappingstop']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_FLAPPINGDISABLED', ($dbResult[$x]['on_type_flappingdisabled']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_DOWNTIMESTART', ($dbResult[$x]['on_type_downtimestart']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_DOWNTIMEEND', ($dbResult[$x]['on_type_downtimeend']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_DOWNTIMECANCELLED', ($dbResult[$x]['on_type_downtimecancelled']=='1') ? ' checked="checked"' : '' );
-                $templateSubContent->assign('CHECKED_NOTIFY_TYPE_ACKNOWLEDGEMENT', ($dbResult[$x]['on_type_acknowledgement']=='1') ? ' checked="checked"' : '' );
-		$templateSubContent->assign('CHECKED_NOTIFY_TYPE_CUSTOM', ($dbResult[$x]['on_type_custom']==1)?' checked="checked" ':'');
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_WARNING', (($dbResult[$x]['on_warning'] & 1) == 1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_CRITICAL_TO_WARNING', (($dbResult[$x]['on_warning'] & 8) == 8) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_UNKNOWN_TO_WARNING', (($dbResult[$x]['on_warning'] & 16) == 16) ? ' checked="checked"' : '' );
+
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_CRITICAL', (($dbResult[$x]['on_critical'] & 1) == 1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_WARNING_TO_CRITICAL', (($dbResult[$x]['on_critical'] & 4) == 4) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_UNKNOWN_TO_CRITICAL', (($dbResult[$x]['on_critical'] & 16) == 16) ? ' checked="checked"' : '' );
+
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_UNKNOWN', (($dbResult[$x]['on_unknown'] & 1) == 1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_WARNING_TO_UNKNOWN', (($dbResult[$x]['on_unknown'] & 4) == 4) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_CRITICAL_TO_UNKNOWN', (($dbResult[$x]['on_unknown'] & 8) == 8) ? ' checked="checked"' : '' );
+
+
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_HOST_UP', ($dbResult[$x]['on_host_up']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_HOST_DOWN', ($dbResult[$x]['on_host_down']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_HOST_UNREACHABLE', ($dbResult[$x]['on_host_unreachable']==1) ? ' checked="checked"' : '' );
+
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_PROBLEM', ($dbResult[$x]['on_type_problem']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_RECOVERY', ($dbResult[$x]['on_type_recovery']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_FLAPPINGSTART', ($dbResult[$x]['on_type_flappingstart']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_FLAPPINGSTOP', ($dbResult[$x]['on_type_flappingstop']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_FLAPPINGDISABLED', ($dbResult[$x]['on_type_flappingdisabled']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_DOWNTIMESTART', ($dbResult[$x]['on_type_downtimestart']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_DOWNTIMEEND', ($dbResult[$x]['on_type_downtimeend']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_DOWNTIMECANCELLED', ($dbResult[$x]['on_type_downtimecancelled']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_ACKNOWLEDGEMENT', ($dbResult[$x]['on_type_acknowledgement']==1) ? ' checked="checked"' : '' );
+            $templateSubContentTypes->assign('CHECKED_NOTIFY_TYPE_CUSTOM', ($dbResult[$x]['on_type_custom']==1)?' checked="checked" ':'');
+            $templateSubContentTypes->assign('ARRAY_ITEM', $formArray);
+            $templateSubContent->assign('NOTIFY_ON_TABLE', $templateSubContentTypes->getHTML());
+        }
 
 		$templateSubContent->assign('ARRAY_ITEM', $formArray);
 

@@ -5,24 +5,24 @@
 <tr style="padding-top:0px;"><td colspan="3"><hr/></td></tr>
 <tr>
 <td colspan="3">
-<table cellpadding="0" cellspacing="0" border="0" width="900">
+<table cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td valign="top" width="50%" colspan="3">
 <input type="hidden" name="escalation_count[]" value="{$ESCALATION_COUNT}"/>
 <table cellpadding="2" cellspacing="0" border="0">
 <tr>
 <td>{$ADD_EDIT_NOTIFY_AFTER_TRIES}</td>
-<td width="20">&nbsp;</td>
+<td>&nbsp;</td>
 <td><input class="text" name="notify_after_tries{$ARRAY_ITEM}" size="5" value="{$NOTIFY_AFTER_TRIES}"/>&nbsp;&nbsp;&nbsp;{$ADD_EDIT_NUM_NOTIFICATIONS}</td>
 </tr>{$LET_NOTIFIER_HANDLE}
 <tr>
 <td>{$ADD_EDIT_NOTIFY_USERS}</td>
-<td width="20">&nbsp;</td>
+<td>&nbsp;</td>
 <td>{$NOTIFY_USERS_SELECT}</td>
 </tr>
 <tr>
 <td>{$ADD_EDIT_NOTIFY_GROUPS}</td>
-<td width="20">&nbsp;</td>
+<td>&nbsp;</td>
 <td>{$NOTIFY_GROUPS_SELECT}</td>
 </tr>
 </table>
@@ -31,41 +31,12 @@
 <table cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td>{$ADD_EDIT_NOTIFY_BY}</td>
-<td rowspan="2" width="20">&nbsp;</td>
+<td rowspan="2">&nbsp;</td>
 <td>{$NOTIFY_BY_SELECT}</td>
 </tr>
 <tr>
 <td>{$ADD_EDIT_NOTIFY_ON}</td>
-<td>
-<table cellpadding="2" cellspacing="0" border="0">
-<tr>
-<td valign="top">
-<input type="checkbox" name="notify_on_ok{$ARRAY_ITEM}" {$CHECKED_NOTIFY_OK}/>OK<br/>
-<input type="checkbox" name="notify_on_warning{$ARRAY_ITEM}" {$CHECKED_NOTIFY_WARNING}/>WARNING<br/>
-<input type="checkbox" name="notify_on_unknown{$ARRAY_ITEM}" {$CHECKED_NOTIFY_UNKNOWN}/>UNKNOWN<br/>
-<input type="checkbox" name="notify_on_critical{$ARRAY_ITEM}" {$CHECKED_NOTIFY_CRITICAL}/>CRITICAL<br/>
-</td>
-<td width="20"></td>
-<td valign="top">
-<input type="checkbox" name="notify_on_host_up{$ARRAY_ITEM}" {$CHECKED_NOTIFY_HOST_UP}/>HOST UP<br/>
-<input type="checkbox" name="notify_on_host_unreachable{$ARRAY_ITEM}" {$CHECKED_NOTIFY_HOST_UNREACHABLE}/>HOST UNREACHABLE<br/>
-<input type="checkbox" name="notify_on_host_down{$ARRAY_ITEM}" {$CHECKED_NOTIFY_HOST_DOWN}/>HOST DOWN<br/>
-</td>
-<td valign="top">
-<input type="checkbox" name="notify_on_type_problem{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_PROBLEM}/>PROBLEM<br/>
-<input type="checkbox" name="notify_on_type_recovery{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_RECOVERY}/>RECOVERY<br/>
-<input type="checkbox" name="notify_on_type_flappingstart{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_FLAPPINGSTART}/>FLAPPING START<br/>
-<input type="checkbox" name="notify_on_type_flappingstop{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_FLAPPINGSTOP}/>FLAPPING STOP<br/>
-<input type="checkbox" name="notify_on_type_flappingdisabled{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_FLAPPINGDISABLED}/>FLAPPING DISABLED<br/>
-<input type="checkbox" name="notify_on_type_downtimestart{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_DOWNTIMESTART}/>DOWNTIME START<br/>
-<input type="checkbox" name="notify_on_type_downtimeend{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_DOWNTIMEEND}/>DOWNTIME END<br/>
-<input type="checkbox" name="notify_on_type_downtimecancelled{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_DOWNTIMECANCELLED}/>DOWNTIME CANCELLED<br/>
-<input type="checkbox" name="notify_on_type_acknowledgement{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_ACKNOWLEDGEMENT}/>ACKNOWLEDGEMENT<br/>
-<input type="checkbox" name="notify_on_type_custom{$ARRAY_ITEM}" {$CHECKED_NOTIFY_TYPE_CUSTOM}/>CUSTOM<br/>
-</td>
-</tr>
-</table>
-</td>
+<td>{$NOTIFY_ON_TABLE}</td>
 </tr>
 </table>
 </td>

@@ -57,6 +57,7 @@ Table of Contents
     5.3.2 Modifying notifications
     5.3.3 Deleting notifications
     5.3.4 Filtering of notification rules
+    5.3.5 Filtering by notification type
 
   5.4 Viewing logs
 
@@ -780,7 +781,7 @@ may not take account of changes made after they are started.
       Starting with version 2.0.2, the logic has been altered to more closely
       mirror expectations.  It should be noted that any "include" fields that are
       empty are assigned an implicit '*', i.e. they automatically match all
-      possibilities.  The filter logic is defined as follows;
+      possibilities.  The filter logic for a service is defined as follows;
 
       recipients is empty OR
         (
@@ -814,6 +815,8 @@ may not take account of changes made after they are started.
           AND
           the servicedesc doesn't match the "Exclude services" pattern list
         )
+
+      Host checks use the same filter logic but ignore the service / servicegroup fields.
 
       Below is an example illustrating how the filters now work.
 
@@ -849,6 +852,40 @@ may not take account of changes made after they are started.
 
       Based on this logic, we believe that you can make quite flexible, 
       yet strong rules for handling your notifications.
+
+5.3.5 Filtering by notification type
+      Alerts can be restricted to react to particular types of problem (e.g. Warning, Unknown)
+      using the "Filter on" field of the method.  It is not possible to mix problem types within
+      a single rule.
+
+      Starting with version 2.0.3 it is possible to also filter on transitions.  These will activate
+      every time the transition occurs and are very useful for notifying worsening problems.o
+
+      Example Rules:
+      - Rule 1
+        * Notify after: 1-3
+        * Filter on: Warning
+        * Notify by: E-Mail
+
+      - Rule 2
+        * Notify after: 1
+        * Filter on: Warning to critical
+        * Rollover: enabled
+        * Notify by: SMS
+
+      - Notifications:
+        1. WARNING
+        2. WARNING
+        3. WARNING
+        4. WARNING
+        5. WARNING
+        6. CRITICAL
+        7-99. CRITICAL
+      - Result:
+        Notifications 1-3 will generate an email.
+        Notification 6 will generate an SMS.
+        No further alerts will be generated.
+      
 
 
 5.4 Viewing logs

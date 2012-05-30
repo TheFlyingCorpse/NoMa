@@ -130,6 +130,14 @@ my %stati_service = (
     'CRITICAL' => 'on_critical',
     'UNKNOWN'  => 'on_unknown'
 );
+
+# Used for state transitins
+my %stati_previous = (
+    'OK'       => 2,
+    'WARNING'  => 4,
+    'CRITICAL' => 8,
+    'UNKNOWN'  => 16
+);
 my %stati_host = (
     'UP'          => 'on_host_up',
     'UNREACHABLE' => 'on_host_unreachable',
@@ -382,6 +390,9 @@ do
 
 
 
+            # retrieve the previous check result to allow for transition notifications
+            # e.g. WARNING -> CRITICAL
+            my $last_state = getLastState($cmdh{host}, $cmdh{service});
 
             # generate query and get list of possible users to notify
             my $query =
@@ -389,9 +400,13 @@ do
             if ( $cmdh{check_type} eq 'h' )
             {
                 $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\' and ' . $stati_type{$cmdh{notification_type}} . '=\'1\'';
+            } elsif ( $cmdh{notification_type} eq 'PROBLEM' || $cmdh{notification_type} eq 'RECOVERY')
+            {
+                $query .= ' where (' . $stati_service{$cmdh{status}} . ' & 1) = 1';
+                $query .= ' OR (' . $stati_service{$cmdh{status}} . ' & ' .$stati_previous{$last_state} .') = ' .$stati_previous{$last_state};
             } else
             {
-                $query .= ' where ' . $stati_service{$cmdh{status}} . '=\'1\' and ' . $stati_type{$cmdh{notification_type}} . '=\'1\'';
+                $query .= ' where (' . $stati_service{$cmdh{status}} . ' & 1) = 1 and ' . $stati_type{$cmdh{notification_type}} . '=\'1\'';
             }
 
             # only active rules!
@@ -508,7 +523,7 @@ do
                         if (counterExceededMax(\@id_arr, $notificationCounter))
                         {
                             debug('No more alerts possible, rolling over the counter', 2);
-                            $notificationCounter = resetNotificationCounter($cmdh{host}, $cmdh{service});
+                            $notificationCounter = 1;
                         }
 
                         # get contact data
@@ -945,6 +960,37 @@ sub getNotificationCounter
 
 
 }
+
+# returns UP or OK if the state is not in the table already, otherwise returns the last known state
+sub getLastState
+{
+    my ($host, $svc) = @_;
+    my $check_result;
+
+
+    my $query = 'select check_result from notification_stati where host=\''.$host.'\'';
+
+    if (defined($svc) and $svc ne '')
+    {
+        # service alert
+        $query .= ' and service=\''.$svc.'\'';
+        $check_result = "OK";
+    }
+    else
+    {
+        $query .= ' and check_type=\'h\'';
+        $check_result = "UP";
+    }
+
+    my %dbResult = queryDB($query);
+
+    $check_result = $dbResult{0}->{check_result}
+      if ( defined( $dbResult{0}->{check_result} ) );
+
+    return $check_result;
+
+
+}
 sub prepareNotification
 {
 	my ($incident_id, $user, $method, $short_cmd, $dest, $sender, $id,
@@ -1353,9 +1399,9 @@ sub counterExceededMax
 {
     my ($ids, $counter) = @_;
 
-    my $query = 'select notify_after_tries from notifications where id in ('.join(',',@$ids).') and rollover=1';
+    my $query = 'select notify_after_tries from notifications where id in ('.join(',',@$ids).') and rollover=1 and active=1';
     $query .= ' union select e.notify_after_tries from escalations_contacts as e';
-    $query .= ' left join notifications as n on e.notification_id=n.id where notification_id in ('.join(',',@$ids).') and rollover=1';
+    $query .= ' left join notifications as n on e.notification_id=n.id where notification_id in ('.join(',',@$ids).') and rollover=1 and active=1';
 
 	my @dbResult = queryDB($query, '1');
 

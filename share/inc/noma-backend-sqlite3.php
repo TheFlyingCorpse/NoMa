@@ -77,7 +77,7 @@ function querySQLite3DB ($query, $return_count = false, $ndo = false) {
 	
 	$result = $db->query($query);
     if ($result === FALSE) {
-        die(print_r($db->errorInfo()).'<br><br>Query: '.$query.'<br>');
+        die(print_r($db->errorInfo()).'<br><br>Query: '.$query.'<br>'.print_r(debug_backtrace()));
     }
 
 
