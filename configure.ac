@@ -59,7 +59,7 @@ AC_SUBST(NAGIOSPIPE)
 AC_SUBST(NAGIOSLIBEXEC)
 AC_SUBST(VERSION)
 
-AX_PROG_PERL_MODULES([YAML::Syck Getopt::Long Pod::Usage Digest::MD5 POSIX Data::Dumper Thread::Queue IO::Select IO::Socket Fcntl FindBin DBI DateTime::TimeZone DateTime::Format::Strptime Date::Calc], , AC_MSG_ERROR([Missing perl modules]))
+AX_PROG_PERL_MODULES([YAML::Syck Getopt::Long Pod::Usage Digest::MD5 POSIX Data::Dumper Thread::Queue IO::Select IO::Socket Fcntl FindBin DBI DateTime::TimeZone DateTime::Format::Strptime Date::Calc Hash::Merge::Simple], , AC_MSG_ERROR([Missing perl modules]))
 AX_PROG_PERL_MODULES([DBD::SQLite], HAVESQLITE="yes", HAVESQLITE="no")
 AX_PROG_PERL_MODULES([DBD::mysql], HAVEMYSQL="yes", HAVEMYSQL="no")
 
