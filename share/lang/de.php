@@ -372,7 +372,7 @@ define('NOTIFY_DOWNTIME_END', 'Geplante Ausfallzeit beendet');
 define('NOTIFY_DOWNTIME_CANCELLED', 'Geplante Ausfallzeit abgebrochen');
 define('NOTIFY_ACKNOWLEDGEMENT', 'Best&auml;tigung');
 define('NOTIFY_CUSTOM', 'Benutzerdefiniert');
-define('NOTIFY_ADVANCED', 'Umwandlungen des Problems'
+define('NOTIFY_ADVANCED', 'Umwandlungen des Problems');
 define('NOTIFY_WARNING_TO_CRITICAL', 'Warnung auf kritisch');
 define('NOTIFY_WARNING_TO_UNKNOWN', 'Warnung auf Unbekannt');
 define('NOTIFY_CRITICAL_TO_WARNING', 'Kritisch auf Warnung');
