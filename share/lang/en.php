@@ -357,7 +357,7 @@ define('CONTACTGROUPS_TITLE_TIMEFRAME_NAME', 'Timeframe name');
 define('NOTIFY_PROBLEM', 'Problem');
 define('NOTIFY_RECOVERY', 'Recovery');
 define('NOTIFY_SPECIAL', 'Other');
-define('NOTIFY_OK', 'OK');
+define('NOTIFY_OK', 'Service OK');
 define('NOTIFY_WARNING', 'Warning');
 define('NOTIFY_CRITICAL', 'Critical');
 define('NOTIFY_UNKNOWN', 'Unknown');
