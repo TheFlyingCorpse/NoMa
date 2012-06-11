@@ -619,6 +619,9 @@ sub getMaxValue
     # e.g. 1-4,7-8,12
 	my ($range) = @_;
 
+    my $min;
+    my $max;
+
 	$range =~ s/[^0-9,;-]//g;
 
     return $range unless ($range =~ /[,;-]+/);
@@ -626,22 +629,28 @@ sub getMaxValue
     my $newmax = 1;
     foreach my $crange (split(/[,;]/, $range))
     {
-        debug("Expanding $crange", 2);
-        $crange =~ /(\d*)-(\d*)/;
+		if ($crange =~ /-/)
+		{
+			debug("Expanding $crange", 3);
+			$crange =~ /(\d*)-(\d*)/;
 
-        my $min = $1;
-        my $max = $2;
+			$min = $1;
+			$max = $2;
 
-        if ((not defined($min)) or ($min < 1))
-        {
-            debug("Invalid minimum value in range \"$crange\" - setting to 1", 3);
-            $min = 1;
-        }
+			if ((not defined($min)) or ($min < 1))
+			{
+				debug("Invalid minimum value in range \"$crange\" - setting to 1", 1);
+				$min = 1;
+			}
 
-        if ((not defined($max)) or ($max < $min))
-        {
-            debug("Invalid maximum value in range \"$crange\" - setting to 99999", 3);
-            $max = 99999;
+			if ((not defined($max)) or ($max < $min))
+			{
+				debug("Invalid maximum value in range \"$crange\" - setting to 99999", 1);
+				$max = 99999;
+			}
+		} else {
+            debug("Testing $crange", 3);
+            $max = $crange;
         }
 
 

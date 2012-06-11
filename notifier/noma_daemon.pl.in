@@ -399,14 +399,14 @@ do
             'SELECT id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude FROM notifications';
             if ( $cmdh{check_type} eq 'h' )
             {
-                $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\' and ' . $stati_type{$cmdh{notification_type}} . '=\'1\'';
+                $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\'';
             } elsif ( $cmdh{notification_type} eq 'PROBLEM' || $cmdh{notification_type} eq 'RECOVERY')
             {
                 $query .= ' where (' . $stati_service{$cmdh{status}} . ' & 1) = 1';
                 $query .= ' OR (' . $stati_service{$cmdh{status}} . ' & ' .$stati_previous{$last_state} .') = ' .$stati_previous{$last_state};
             } else
             {
-                $query .= ' where (' . $stati_service{$cmdh{status}} . ' & 1) = 1 and ' . $stati_type{$cmdh{notification_type}} . '=\'1\'';
+                $query .= ' where (' . $stati_service{$cmdh{status}} . ' & 1) = 1';
             }
 
             # only active rules!
