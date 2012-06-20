@@ -124,7 +124,7 @@ our $processStart = time();
 our %suppressionHash;
 my $versionStr = 'current (@VERSION@)';
 
-my %stati_service = (
+our %stati_service = (
     'OK'       => 'on_ok',
     'WARNING'  => 'on_warning',
     'CRITICAL' => 'on_critical',
@@ -132,18 +132,18 @@ my %stati_service = (
 );
 
 # Used for state transitins
-my %stati_previous = (
+our %stati_previous = (
     'OK'       => 2,
     'WARNING'  => 4,
     'CRITICAL' => 8,
     'UNKNOWN'  => 16
 );
-my %stati_host = (
+our %stati_host = (
     'UP'          => 'on_host_up',
     'UNREACHABLE' => 'on_host_unreachable',
     'DOWN'        => 'on_host_down'
 );
-my %stati_type = (
+our %stati_type = (
     'PROBLEM'   	=> 'on_type_problem',
     'RECOVERY'		=> 'on_type_recovery',
     'DOWNTIMESTART'     => 'on_type_downtimestart',
@@ -155,7 +155,7 @@ my %stati_type = (
     'ACKNOWLEDGEMENT'   => 'on_type_acknowledgement',
     'CUSTOM'            => 'on_type_custom'
 );
-my %check_type_str = (
+our %check_type_str = (
     'h' => 'Host',
     's' => 'Service',
     ''  => '',
@@ -394,24 +394,7 @@ do
             # e.g. WARNING -> CRITICAL
             my $last_state = getLastState($cmdh{host}, $cmdh{service});
 
-            # generate query and get list of possible users to notify
-            my $query =
-            'SELECT id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude FROM notifications';
-            if ( $cmdh{check_type} eq 'h' )
-            {
-                $query .= ' where ' . $stati_host{$cmdh{status}} . '=\'1\'';
-            } elsif ( $cmdh{notification_type} eq 'PROBLEM' || $cmdh{notification_type} eq 'RECOVERY')
-            {
-                $query .= ' where (' . $stati_service{$cmdh{status}} . ' & 1) = 1';
-                $query .= ' OR (' . $stati_service{$cmdh{status}} . ' & ' .$stati_previous{$last_state} .') = ' .$stati_previous{$last_state};
-            } else
-            {
-                $query .= ' where (' . $stati_service{$cmdh{status}} . ' & 1) = 1';
-            }
-
-            # only active rules!
-            $query .= ' and active=\'1\'';
-            my %dbResult = queryDB($query);
+			my %dbResult = getRuleList($last_state, \%cmdh);
 
             # Suppress double of same method to same contact
             my %sentList = ();
@@ -435,228 +418,33 @@ do
             #
 
             my @ids =();
-            my @contactsArr = ();
 
             # first handle normal rules
             debug("now handling normal rules", 2);
             ############ NORMAL RULES ####################
 
-            # only consider "real" alerts
-            if ($cmdh{operation} eq 'notification')
-            {
-                @ids = getUnhandledRules(\@ids_all);
-                debug( 'Unhandled(normal) rule IDs (unfiltered): ' . join( '|', @ids ), 2 );
 
+            my @contactsArr = handleNormalRules(\@ids_all, \%cmdh);
 
-                $notificationCounter = getNotificationCounter($cmdh{host}, $cmdh{service});
-                debug("Counter from notification_stati for $cmdh{host} / $cmdh{service} is $notificationCounter", 2);
-
-                if ($notificationCounter > 0)
-                {
-                    # notification already active
-                    debug('-> already active', 2);
-
-                    ## TODO: escalation handled internally - ignore it here
-
-                    if ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
-                    {
-                        # clear counter
-                        #
-                        debug('  -> Clearing counter', 2);
-                        clearNotificationCounter($cmdh{host}, $cmdh{service});
-                        clearEscalationCounter($cmdh{host}, $cmdh{service});
-                        deleteFromActiveByName($cmdh{host}, $cmdh{service});
-                    }
-                    elsif ($cmdh{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh{notification_type} eq 'CUSTOM')
-                    {
-                        # clear counter
-                        #
-                        debug('  -> Acknowledgement or custom notification, Clear counters', 2);
-                        clearNotificationCounter($cmdh{host}, $cmdh{service});
-                        clearEscalationCounter($cmdh{host}, $cmdh{service});
-                        deleteFromActiveByName($cmdh{host}, $cmdh{service});
-                    }
-                    else
-                    {
-                        # increment counter
-                        debug('  -> Incrementing counter', 2);
-                        $notificationCounter =
-                            incrementNotificationCounter( $cmdh{status}, $cmdh{host}, $cmdh{service},$cmdh{check_type});
-                    }
-                } else {
-                    # notification returned 0
-                    if ($cmdh{status} eq 'OK' || $cmdh{status} eq 'UP')
-                    {
-                        debug('Received recovery for a problem we never saw - will try to match against notification no. 1', 2);
-                        $notificationCounter = 1;
-                    }
-                    elsif ($cmdh{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh{notification_type} eq 'CUSTOM')
-                    {
-                        debug('Acknowledgement or custom notification for a problem we never saw - will try to match against notification no. 1', 2);
-                        $notificationCounter = 1;
-                    }
-                    else
-                    {
-                        debug('-> setting to active', 2);
-                        $notificationCounter =
-                            incrementNotificationCounter( $cmdh{status}, $cmdh{host}, $cmdh{service},$cmdh{check_type});
-                    }
-                }
-                # no matches!?
-                my $idCount = @ids;
-                if ( $idCount < 1 )
-                {
-                    debug('No rule matches!', 2);
-                    # TODO: clear stati??
-                }
-                else
-                {
-                    debug($idCount.' rules matched', 2);
-
-                    # do we need to rollover the counter?
-                    # the various rules may rollover at different times, so handle them individually
-                    foreach my $ruleid (@ids)
-                    {
-                        my @id_arr;
-                        push @id_arr, $ruleid;
-                        # - this is a local check
-                        if (counterExceededMax(\@id_arr, $notificationCounter))
-                        {
-                            debug('No more alerts possible, rolling over the counter', 2);
-                            $notificationCounter = 1;
-                        }
-
-                        # get contact data
-                        @contactsArr = (@contactsArr, getContacts(\@id_arr, $notificationCounter, $cmdh{status}, $cmdh{notification_type}, $cmdh{external_id}));
-                    }
-                }
-            }
             # now handle escalation rules
             debug("now handling internal escalation rules", 2);
             ############ ESCALATION RULES ####################
 
-            @ids = getHandledRules(\@ids_all);
-            debug( 'Handled by NoMa(internal escalation) rule IDs (unfiltered): ' . join( '|', @ids ), 2);
-
-            # the various rules may be at different stages, so handle them individually
-            foreach my $esc_rule (@ids)
-            {
-                my @esc_arr;
-                push @esc_arr, $esc_rule;
-                debug("looking at rule $esc_rule", 3);
-                $notificationCounter = getEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule);
-
-                if ($notificationCounter > 0)
-                {
-                    # notification already active
-                    debug("rule $esc_rule is currently escalating", 3);
-                    incrementEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule);
-                    $notificationCounter += 1;
-
-                    # is this a faked alert? otherwise ignore it!
-                    if ($cmdh{operation} eq 'escalation')
-                    {
-                        debug("rule $esc_rule is faked - checking for overflow", 3);
-                        # $notificationCounter = resetEscalationCounter($cmdh{host}, $cmdh{service}, $esc_rule)
-                        my $oflo = counterExceededMax(\@esc_arr, $notificationCounter);
-                        $notificationCounter = $oflo
-                            if ($oflo > 0);
-
-                        @contactsArr = (@contactsArr, getContacts(\@esc_arr, $notificationCounter, $cmdh{status}, $cmdh{notification_type}, $cmdh{external_id}));
-                    }
-
-                }
-                elsif ($cmdh{status} ne 'OK' and $cmdh{status} ne 'UP' and $cmdh{notification_type} ne 'ACKNOWLEDGEMENT' and $cmdh{notification_type} ne 'CUSTOM')
-                {
-                    debug("creating a new escalation for rule $esc_rule", 2);
-                    # create status entry
-                    createEscalationCounter($esc_rule, %cmdh);
-#                         $incident_id,  $host,        $host_alias,
-#                         $host_address, $service,     $check_type,
-#                         $status,       $datetime,    $notification_type,
-#                         $output
-#                     );
-                    debug("adding contacts to array", 2);
-                    @contactsArr = (@contactsArr, getContacts(\@esc_arr, 1, $cmdh{status}, $cmdh{notification_type}, $cmdh{external_id}));
-                }
-
-            }
+            @contactsArr = (@contactsArr, handleEscalationRules(\@ids_all, \%cmdh));
 
 
 ##############################################################################
             # SEND COMMANDS
 ##############################################################################
             # loop through list of contacts
+			debug('contact dump: '.Dumper(@contactsArr),3);
             for my $contact (@contactsArr)
             {
-		debug('contact dump: '.Dumper(@contactsArr),3);
-                my $user   = $contact->{username};
-                my $method = $contact->{method};
-                my $cmd    = $contact->{command};
-                my $dest   = $contact->{ $contact->{contact_field} };
-                my $sender = $contact->{sender};
-                my $id    = unique_id();
-                my $flag  = 0;
-                my $notifyUnique = 1;
+				notifyContact(\%sentList, $contact, \%cmdh);
+			}
 
-		# Create a string thats unique to a user, method and notification.
-		my $userAndMethod = "$user.$method.$cmdh{external_id}";
-
-                # insert into DB
-                createLog(
-                    '1', $id, $cmdh{external_id}, $contact->{rule},
-                    $check_type_str{$cmdh{check_type}},          $cmdh{status},$cmdh{notification_type},
-                    $cmdh{host},                $cmdh{service},
-                    $method,           $contact->{mid}, $user,
-                    'processing notification'
-                );
-
-                # Fgure out if the user has got a notification from the same method and external_ID already.
-                foreach my $userNotification (keys %sentList) {
-                    if ( $sentList{$userNotification} eq $userAndMethod ){
-                        updateLog($id, ', already sent in previous notification');
-                        debug('User and method already notified: ' . $user . ' and ' .  $method, 2);
-                        $flag++;
-                        $notifyUnique = 0;
-                    }
-                }
-                # Should be unique by now, update log
-                unless ($flag) {
-                        #updateLog($id, ' uniq2user&method');
-                        debug('User and method unique: ' . $user . ' ,' . $method, 2);
-                }
- 
-                # Exit if its not unique!
-                if ($notifyUnique == 0){
-                        debug('Unique, next!', 3);
-                        next;
-                }
- 
-                # Save the method the user is notified with to the hashlist.
-                $sentList{$userAndMethod} = $userAndMethod;
-
-                # TODO consider using timezones and converting time to user configurable format e.g. 
-                # M/D/YY for USA
-                # DD/MM/YYYY or DD.MM.YYYY for most of the World
-                # until this is implemented we just use what we were given
-		        # TODO do not queue here -> this is the job of the bundler thread
-                #$queue{$cmd}->enqueue(prepareNotification($user, $method, $cmd, $dest, $from, $id, $datetime, $check_type, $status,
-                #        $notification_type, $host, $host_alias, $host_address, $service, $output));
-                if (suppressionIsActive($cmd, $conf->{$cmd}->{suppression}))
-                {
-                    updateLog($id, ' was suppressed');
-                } else {
-# TODO: pass hashes?
-                    prepareNotification($cmdh{external_id}, $user, $method, 
-			$cmd, $dest, $sender, $id, $cmdh{stime}, $cmdh{check_type}, $cmdh{status},
-                        $cmdh{notification_type}, $cmdh{host}, $cmdh{host_alias}, $cmdh{host_address}, 
-			$cmdh{hostgroups}, $cmdh{service}, $cmdh{servicegroups}, $cmdh{authors}, $cmdh{comments}, $cmdh{output}, 
-			$contact->{rule});
-                }
-            }
-
-       # Clear the list over notifications, so the same external ID can be notified again if it is escalated to same users with the same methods.
-       %sentList = ();
+		   # Clear the list over notifications, so the same external ID can be notified again if it is escalated to same users with the same methods.
+		   %sentList = ();
         }
     }
 
@@ -823,6 +611,277 @@ exit 0;
 # SUBROUTINES START HERE
 ##############################################################################
 
+# get list of possible rules for a notification
+# Stage 1
+sub getRuleList
+{
+	my $last_state = shift;
+	my $cmdh = shift;
+	
+
+	# generate query and get list of possible users to notify
+	my $query =
+	'SELECT id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude FROM notifications';
+	if ( $cmdh->{check_type} eq 'h' )
+	{
+		$query .= ' where ' . $stati_host{$cmdh->{status}} . '=\'1\'';
+	} elsif ( $cmdh->{notification_type} eq 'PROBLEM' || $cmdh->{notification_type} eq 'RECOVERY')
+	{
+		$query .= ' where (' . $stati_service{$cmdh->{status}} . ' & 1) = 1';
+		$query .= ' OR (' . $stati_service{$cmdh->{status}} . ' & ' .$stati_previous{$last_state} .') = ' .$stati_previous{$last_state};
+	} else
+	{
+		$query .= ' where (' . $stati_service{$cmdh->{status}} . ' & 1) = 1';
+	}
+
+	# only active rules!
+	$query .= ' and active=\'1\'';
+	my %dbResult = queryDB($query);
+	return %dbResult;
+
+}
+
+
+# Check normal rules
+sub handleNormalRules
+{
+
+	my $ids_all = shift;
+	my $cmdh = shift;
+	my @ids;
+	my @contactsArr = ();
+
+
+
+	# only consider "real" alerts
+	if (lc($cmdh->{operation}) eq 'notification')
+	{
+		@ids = getUnhandledRules($ids_all);
+		debug( 'Unhandled(normal) rule IDs (unfiltered): ' . join( '|', @ids ), 2 );
+
+
+		$notificationCounter = getNotificationCounter($cmdh->{host}, $cmdh->{service});
+		debug("Counter from notification_stati for $cmdh->{host} / $cmdh->{service} is $notificationCounter", 2);
+
+		if ($notificationCounter > 0)
+		{
+			# notification already active
+			debug('-> already active', 2);
+
+			## TODO: escalation handled internally - ignore it here
+
+			if ($cmdh->{status} eq 'OK' || $cmdh->{status} eq 'UP')
+			{
+				# clear counter
+				#
+				debug('  -> Clearing counter', 2);
+				clearNotificationCounter($cmdh->{host}, $cmdh->{service});
+				clearEscalationCounter($cmdh->{host}, $cmdh->{service});
+				deleteFromActiveByName($cmdh->{host}, $cmdh->{service});
+			}
+			elsif ($cmdh->{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh->{notification_type} eq 'CUSTOM')
+			{
+				# clear counter
+				#
+				debug('  -> Acknowledgement or custom notification, Clear counters', 2);
+				clearNotificationCounter($cmdh->{host}, $cmdh->{service});
+				clearEscalationCounter($cmdh->{host}, $cmdh->{service});
+				deleteFromActiveByName($cmdh->{host}, $cmdh->{service});
+			}
+			else
+			{
+				# increment counter
+				debug('  -> Incrementing counter', 2);
+				$notificationCounter =
+					incrementNotificationCounter( $cmdh->{status}, $cmdh->{host}, $cmdh->{service},$cmdh->{check_type});
+			}
+		} else {
+			# notification returned 0
+			if ($cmdh->{status} eq 'OK' || $cmdh->{status} eq 'UP')
+			{
+				debug('Received recovery for a problem we never saw - will try to match against notification no. 1', 2);
+				$notificationCounter = 1;
+			}
+			elsif ($cmdh->{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh->{notification_type} eq 'CUSTOM')
+			{
+				debug('Acknowledgement or custom notification for a problem we never saw - will try to match against notification no. 1', 2);
+				$notificationCounter = 1;
+			}
+			else
+			{
+				debug('-> setting to active', 2);
+				$notificationCounter =
+					incrementNotificationCounter( $cmdh->{status}, $cmdh->{host}, $cmdh->{service},$cmdh->{check_type});
+			}
+		}
+		# no matches!?
+		my $idCount = @ids;
+		if ( $idCount < 1 )
+		{
+			debug('No rule matches!', 2);
+			# TODO: clear stati??
+		}
+		else
+		{
+			debug($idCount.' rules matched', 2);
+
+			# do we need to rollover the counter?
+			# the various rules may rollover at different times, so handle them individually
+			foreach my $ruleid (@ids)
+			{
+				my @id_arr;
+				push @id_arr, $ruleid;
+				# - this is a local check
+				if (counterExceededMax(\@id_arr, $notificationCounter))
+				{
+					debug('No more alerts possible, rolling over the counter', 2);
+					$notificationCounter = 1;
+				}
+
+				# get contact data
+				@contactsArr = getContacts(\@id_arr, $notificationCounter, $cmdh->{status}, $cmdh->{notification_type}, $cmdh->{external_id});
+			}
+		}
+	}
+
+	return @contactsArr;
+
+}
+
+
+
+# Check escalation rules
+sub handleEscalationRules
+{
+
+	my $ids_all = shift;
+	my $cmdh = shift;
+	my @ids;
+	my @contactsArr = ();
+
+
+
+	@ids = getHandledRules($ids_all);
+	debug( 'Handled by NoMa(internal escalation) rule IDs (unfiltered): ' . join( '|', @ids ), 2);
+
+	# the various rules may be at different stages, so handle them individually
+	foreach my $esc_rule (@ids)
+	{
+		my @esc_arr;
+		push @esc_arr, $esc_rule;
+		debug("looking at rule $esc_rule", 3);
+		$notificationCounter = getEscalationCounter($cmdh->{host}, $cmdh->{service}, $esc_rule);
+
+		if ($notificationCounter > 0)
+		{
+			# notification already active
+			debug("rule $esc_rule is currently escalating", 3);
+			incrementEscalationCounter($cmdh->{host}, $cmdh->{service}, $esc_rule);
+			$notificationCounter += 1;
+
+			# is this a faked alert? otherwise ignore it!
+			if ($cmdh->{operation} eq 'escalation')
+			{
+				debug("rule $esc_rule is faked - checking for overflow", 3);
+				# $notificationCounter = resetEscalationCounter($cmdh->{host}, $cmdh->{service}, $esc_rule)
+				my $oflo = counterExceededMax(\@esc_arr, $notificationCounter);
+				$notificationCounter = $oflo
+					if ($oflo > 0);
+
+				@contactsArr = getContacts(\@esc_arr, $notificationCounter, $cmdh->{status}, $cmdh->{notification_type}, $cmdh->{external_id});
+			}
+
+		}
+		elsif ($cmdh->{status} ne 'OK' and $cmdh->{status} ne 'UP' and $cmdh->{notification_type} ne 'ACKNOWLEDGEMENT' and $cmdh->{notification_type} ne 'CUSTOM')
+		{
+			debug("creating a new escalation for rule $esc_rule", 2);
+			# create status entry
+			createEscalationCounter($esc_rule, %$cmdh);
+			debug("adding contacts to array", 2);
+			@contactsArr = getContacts(\@esc_arr, 1, $cmdh->{status}, $cmdh->{notification_type}, $cmdh->{external_id});
+		}
+
+	}
+
+	return @contactsArr;
+}
+
+# notify a contact
+#  checks that they have not already been notified for a specific method (to avoid
+#  email/SMS floods)
+sub notifyContact
+{
+	my $sentList = shift;
+	my $contact = shift;
+	my $cmdh = shift;
+	
+
+	my $user   = $contact->{username};
+	my $method = $contact->{method};
+	my $cmd    = $contact->{command};
+	my $dest   = $contact->{ $contact->{contact_field} };
+	my $sender = $contact->{sender};
+	my $id    = unique_id();
+	my $flag  = 0;
+	my $notifyUnique = 1;
+
+	# Create a string thats unique to a user, method and notification.
+	my $userAndMethod = "$user.$method.$cmdh->{external_id}";
+
+	# insert into DB
+	createLog(
+		'1', $id, $cmdh->{external_id}, $contact->{rule},
+		$check_type_str{$cmdh->{check_type}},          $cmdh->{status},$cmdh->{notification_type},
+		$cmdh->{host},                $cmdh->{service},
+		$method,           $contact->{mid}, $user,
+		'processing notification'
+	);
+
+	# Fgure out if the user has got a notification from the same method and external_ID already.
+	foreach my $userNotification (keys %$sentList) {
+		if ( $sentList->{$userNotification} eq $userAndMethod ){
+			updateLog($id, ', already sent in previous notification');
+			debug('User and method already notified: ' . $user . ' and ' .  $method, 2);
+			$flag++;
+			$notifyUnique = 0;
+		}
+	}
+	# Should be unique by now, update log
+	unless ($flag) {
+			#updateLog($id, ' uniq2user&method');
+			debug('User and method unique: ' . $user . ' ,' . $method, 2);
+	}
+
+	# Exit if its not unique!
+	if ($notifyUnique == 0){
+			debug('Unique, next!', 3);
+			return;
+	}
+
+	# Save the method the user is notified with to the hashlist.
+	$sentList->{$userAndMethod} = $userAndMethod;
+
+	# TODO consider using timezones and converting time to user configurable format e.g. 
+	# M/D/YY for USA
+	# DD/MM/YYYY or DD.MM.YYYY for most of the World
+	# until this is implemented we just use what we were given
+	# TODO do not queue here -> this is the job of the bundler thread
+	#$queue{$cmd}->enqueue(prepareNotification($user, $method, $cmd, $dest, $from, $id, $datetime, $check_type, $status,
+	#        $notification_type, $host, $host_alias, $host_address, $service, $output));
+	if (suppressionIsActive($cmd, $conf->{$cmd}->{suppression}))
+	{
+		updateLog($id, ' was suppressed');
+	} else {
+		# TODO: pass hashes?
+		prepareNotification($cmdh->{external_id}, $user, $method, 
+			$cmd, $dest, $sender, $id, $cmdh->{stime}, $cmdh->{check_type}, $cmdh->{status},
+			$cmdh->{notification_type}, $cmdh->{host}, $cmdh->{host_alias}, $cmdh->{host_address}, 
+			$cmdh->{hostgroups}, $cmdh->{service}, $cmdh->{servicegroups}, $cmdh->{authors}, $cmdh->{comments}, $cmdh->{output}, 
+			$contact->{rule});
+	}
+}
+
+
 # parse a command into host array
 sub parseCommand
 {
@@ -985,7 +1044,7 @@ sub getLastState
     my %dbResult = queryDB($query);
 
     $check_result = $dbResult{0}->{check_result}
-      if ( defined( $dbResult{0}->{check_result} ) );
+      if ( defined( $dbResult{0}->{check_result} and $dbResult{0}->{check_result} ne "" ) );
 
     return $check_result;
 
