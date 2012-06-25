@@ -233,9 +233,8 @@ use IO::Socket;
 use lib '@NAGIOSLIBEXEC@';
 use lib '/usr/local/nagios/libexec/';
 use lib '/usr/lib/nagios/plugins/';
-use utils qw(%ERRORS &print_revision);
 
-
+%ERRORS=('OK'=>0,'WARNING'=>1,'CRITICAL'=>2,'UNKNOWN'=>3,'DEPENDENT'=>4);
 
 sub nagexit($$);
 sub connect_am($$$$);
@@ -313,7 +312,7 @@ pod2usage(1) if $help;
 if ($version)
 {
 		# N.B. this script is versioned independently of NoMa
-        print_revision($scriptname, '1.5') if $version;
+        print "$scriptname  v1.5\n"
         exit 0;
 }
 
