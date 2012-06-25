@@ -312,7 +312,7 @@ pod2usage(1) if $help;
 if ($version)
 {
 		# N.B. this script is versioned independently of NoMa
-        print "$scriptname  v1.5\n"
+        print "$scriptname  v1.5\n";
         exit 0;
 }
 
