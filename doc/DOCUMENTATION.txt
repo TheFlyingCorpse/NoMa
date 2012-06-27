@@ -649,6 +649,10 @@ bundled_message     - the message to use for bundled alerts. The variable $count
 message         - the texts to be spoken by the Text-to-Speech engine.  "header" is always
               read out at the beginning of the message.  Variable substitution is similar
               to that for sendEmail.pl
+all_notification_types - normally only problems will be sent via voice
+              (to avoid annoying calls for acknowledgements of problems that require acknowledging, that
+              generate calls, that require acknowledging, etc.).  You can disable this feature with 1
+              if your voice alarm can handle this.
 
 
 5. The Frontend

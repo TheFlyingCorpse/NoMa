@@ -370,7 +370,6 @@ do
             my %cmdh = parseCommand($cmd);
             if (!%cmdh)
             {
-                debug("Ignoring invalid command $cmd", 2);
                 next;
             }
             next if ( !defined $cmdh{host} or $cmdh{host} eq '');
@@ -868,7 +867,7 @@ sub notifyContact
 	# TODO do not queue here -> this is the job of the bundler thread
 	#$queue{$cmd}->enqueue(prepareNotification($user, $method, $cmd, $dest, $from, $id, $datetime, $check_type, $status,
 	#        $notification_type, $host, $host_alias, $host_address, $service, $output));
-	if (suppressionIsActive($cmd, $conf->{$cmd}->{suppression}))
+	if (suppressionIsActive($cmd, $conf->{methods}->{$cmd}->{suppression}))
 	{
 		updateLog($id, ' was suppressed');
 	} else {

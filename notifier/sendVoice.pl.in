@@ -108,7 +108,13 @@ $int_prefix =  $conf->{methods}->{voicecall}->{international_prefix} if (defined
 $to =~ s/\+/$int_prefix/g;
 $to =~ s/[^\d]//g;
 
-debugLog("$to\t$host\t$service\t$check_type\t$status\n");
+	debugLog("$to\t$host\t$service\t$check_type\t$status\n");
+
+if (!(defined($conf->{methods}->{voicecall}->{all_notification_types}) and $conf->{methods}->{voicecall}->{all_notification_types} == 1))
+{
+	# do not call for recoveries, acknowledgements etc.
+	exit(0) if ($notification_type ne 'PROBLEM');
+}
 
 my $unique_id = md5_hex ( $host . "_" . $service . "_" . $datetimes . "_" . $to );
 my $ret_str;
