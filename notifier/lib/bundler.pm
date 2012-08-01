@@ -51,7 +51,7 @@ sub sendNotifications
         push @ids, $dbResult{$index}{notify_id};
     }
 
-    if ( 1 == 1)
+    if ($bundle) 
     {
 
 
