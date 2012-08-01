@@ -635,10 +635,10 @@ In a similar way to the options for sendemail, the following are supported:
 return_ack      - feeds acknowledgements back to Nagios or Icinga (the Asterisk normally
               takes care of this, but bundled alerts have to be handled by NoMa)
 suppression     - a value in minutes - if NoMa receives the suppression command in the
-              format SUPPRESSION;method;name_to_log it will suppress any alerts for
+              format suppress;method;name_to_log it will suppress any alerts for
               the method for this number of minutes.  Typically this is used to prevent
               excessive numbers of voicecalls/smses (e.g. the Asterisk/Starface could
-              be configured to send SUPPRESSION;voicecall;username)
+              be configured to send suppress;voicecall;username)
 server          - the PBX (if an array is given then it will try the servers sequentially
 callerID        - outgoing callerid (usually 0 uses the default)
 channel         - the outgoing channel (varies depending on the hardware)

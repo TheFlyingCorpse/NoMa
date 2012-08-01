@@ -51,7 +51,7 @@ sub sendNotifications
         push @ids, $dbResult{$index}{notify_id};
     }
 
-    if ($bundle)
+    if ( 1 == 1)
     {
 
 
@@ -93,7 +93,7 @@ sub sendNotifications
             if (defined($recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{count}))
             {
                 # 
-                # updateLog($dbResult{$item}{notify_id}, ", bundling");
+                updateLog($dbResult{$item}{notify_id}, ", bundling");
                 $recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{count}++;
                 push @{ $recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{ids} }, $res{$index}{notify_id};
 
@@ -189,10 +189,10 @@ sub sendNotifications
                     "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                     $recipients{$user}{$cmd}{from_user},
                     $user,
-                    'PROBLEM',
+                    's',
                     $now,
                     'WARNING', # TODO this may be wrong
-                    's',
+                    'PROBLEM',
                     'multiple alerts',
                     'multiple alerts',
                     '127.0.0.1',
@@ -322,8 +322,8 @@ sub suppressionIsActive
 {
     # check that the notification method isn't currently being suppressed
     my ($cmd, $length) = @_;
-    # debug("Suppression hash is ".Dumper(%suppressionHash));
-    # debug("Suppression cmd: $cmd, len: $length");
+    debug("Suppression hash is ".Dumper(%suppressionHash));
+    debug("Suppression cmd: $cmd, len: $length");
 
     return 0 unless (defined($length) and ($length > 0));
 

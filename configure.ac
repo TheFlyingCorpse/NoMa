@@ -11,7 +11,9 @@ if test "$SENDMAIL" = "no"; then
     AC_MSG_ERROR(Sendmail not found)
 fi
 
-AC_CONFIG_MACRO_DIR([m4])
+m4_include([m4/ax_check_group.m4])
+m4_include([m4/ax_check_user.m4])
+m4_include([m4/ax_prog_perl_modules.m4])
 
 dnl look for icinga user or fall back to nagios user
 AX_CHECK_USER(USER, [icinga nagios], no)
