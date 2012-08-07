@@ -125,7 +125,8 @@ my $scriptParams = "--number $to --callid $unique_id --host \"$host\" $asterisk"
 if ($host eq 'multiple alerts') {
 	# bundled alerts
         $message .= $conf->{methods}->{voicecall}->{bundled_message}->{host};
-	$count = $service;
+	$count = $output;
+	$output = $comments;
 } elsif ($service eq '') {
         $message .= $conf->{methods}->{voicecall}->{message}->{host};
 } else {
