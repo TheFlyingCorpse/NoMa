@@ -1106,7 +1106,7 @@ sub prepareNotification
     $delay = 0 unless (defined($delay) and not defined($nodelay));
 
 	# insert the command into our active notification list
-	my $query = sprintf('SELECT \'%s\' AS user,\'%s\' AS method,\'%s\' AS notify_cmd, \'%s\' AS time_string,\'%s\' AS notify_id,\'%s\' AS dest, \'%s\' AS from_user, \'%s\' AS rule, id,(stime+\'%s\') AS stime FROM tmp_commands WHERE external_id = \'%s\'',
+	my $query = sprintf('SELECT \'%s\' AS user,\'%s\' AS method,\'%s\' AS notify_cmd, \'%s\' AS time_string,\'%s\' AS notify_id,\'%s\' AS dest, \'%s\' AS from_user, \'%s\' AS rule, id,(stime+\'%s\') AS stime FROM tmp_commands WHERE external_id = \'%s\' ORDER BY id DESC',
 		$user, $method, $short_cmd, $datetime, $id, $dest, $sender, $rule, $delay, $incident_id);
 	my %dbResult = queryDB($query);
 	
