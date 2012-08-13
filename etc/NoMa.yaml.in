@@ -9,7 +9,7 @@ command:
 db:
   type: sqlite3
   automatic_db_upgrade: yes
-  clean_on_start: yes
+  clean_on_start: no
   db_example_dir: @prefix@/sql
   mysql:
    type: mysql

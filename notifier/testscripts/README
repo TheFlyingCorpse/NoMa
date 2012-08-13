@@ -1,0 +1,11 @@
+#
+# Rudimentary scripts for testing noma voicecall
+#
+# Author: Jannis Moßhammer (c) 2012 NETWAYS GmbH
+
+- call voicecall_dummy.pl in Noma instead of voicecall
+- launch voicecall_dummui.pl in seperate Terminal
+
+Voicecall_dummyui now listens on a socket and voicecall_dummy sends voice notifications to
+the socket. This allows you to test voicecalls without setting up an asterisk server.
+ 
