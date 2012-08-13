@@ -300,6 +300,13 @@ if (dbVersion($expecteddbversion,0) ne $expecteddbversion){
 }
 
 
+
+if($conf->{'db'}->{'clean_on_start'}) {
+    debug('Cleaning database',1);
+    deleteAllFromActive();
+    deleteAllFromCommands();
+}
+
 ##############################################################################
 # THREAD CREATION
 ##############################################################################
@@ -698,13 +705,13 @@ sub handleNormalRules
 			# notification returned 0
 			if ($cmdh->{status} eq 'OK' || $cmdh->{status} eq 'UP')
 			{
-				debug('Received recovery for a problem we never saw - will try to match against notification no. 1', 2);
-				$notificationCounter = 1;
+				debug('Received recovery for a problem we never saw - ignoring', 2);
+				return @contactsArr;
 			}
 			elsif ($cmdh->{notification_type} eq 'ACKNOWLEDGEMENT' || $cmdh->{notification_type} eq 'CUSTOM')
 			{
-				debug('Acknowledgement or custom notification for a problem we never saw - will try to match against notification no. 1', 2);
-				$notificationCounter = 1;
+				debug('Acknowledgement or custom notification for a problem we never saw - ignoring', 2);
+				return @contactsArr;
 			}
 			else
 			{
