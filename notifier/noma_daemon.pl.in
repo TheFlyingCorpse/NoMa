@@ -722,6 +722,7 @@ sub handleNormalRules
 		}
 		# no matches!?
 		my $idCount = @ids;
+		my @id_arr;
 		if ( $idCount < 1 )
 		{
 			debug('No rule matches!', 2);
@@ -735,7 +736,7 @@ sub handleNormalRules
 			# the various rules may rollover at different times, so handle them individually
 			foreach my $ruleid (@ids)
 			{
-				my @id_arr;
+			
 				push @id_arr, $ruleid;
 				# - this is a local check
 				if (counterExceededMax(\@id_arr, $notificationCounter))
@@ -745,9 +746,9 @@ sub handleNormalRules
 				}
 
 				# get contact data
-				@contactsArr = getContacts(\@id_arr, $notificationCounter, $cmdh->{status}, $cmdh->{notification_type}, $cmdh->{external_id});
 			}
 		}
+		@contactsArr = getContacts(\@id_arr, $notificationCounter, $cmdh->{status}, $cmdh->{notification_type}, $cmdh->{external_id});
 	}
 
 	return @contactsArr;
