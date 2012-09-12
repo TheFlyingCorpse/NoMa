@@ -13,15 +13,12 @@
 # see noma_daemon.pl in parent directory for full details.
 # Please do not distribute without the above file!
 
-
 # DB query
 # TODO: implement cacheing
-# TODO: graceful recovery on SQL errors
 
 
 sub queryDB
 {
-
 
     my ( $queryStr, $array, $nolog ) = @_;
     my $debug_queries = $conf->{debug}->{queries};
@@ -46,7 +43,9 @@ sub queryDB
     } else {
 	debug(' Invalid database set: '.$database_type.' Fix your configuration!',1);
     }
-
+    if ( !defined($dbh)) {
+        return undef;
+    }
     debug("QUERY: " . $queryStr, 2) if (defined($debug_queries) and ($debug_queries != 0) and not defined($nolog));
     my $query = $dbh->prepare($queryStr) or return undef;
     $query->execute or return undef;
@@ -169,7 +168,7 @@ sub dbVersion
                                 elsif ($expecteddbversion > $dbversion){
                                         # its just outdated, update.
                                         debug('The expected dbversion is higher than the actual db version, will upgrade schema',1);
-					if(dbchemaUpdate('update') eq 1){
+					if(dbSchemaUpdate('update') eq 1){
 						exit;}; # failed to update schema.
                                 } else {
                                         debug('The database is empty, please create it and update credentials to it accordingly.',1);

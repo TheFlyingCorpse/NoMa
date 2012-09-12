@@ -51,7 +51,7 @@ sub sendNotifications
         push @ids, $dbResult{$index}{notify_id};
     }
 
-    if ($bundle) 
+    if ( 1 == 1)
     {
 
 
@@ -84,8 +84,10 @@ sub sendNotifications
         # now repeat the query without the time restriction to fetch any other notifications that have been queued
 
         my $query2 = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comments,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled <= \'0\'';
+        debugLog("Query  : ".$query2);
         my %res = queryDB($query2, undef, 1);
-
+        return unless (keys(%res));
+        debugLog("Dumping ".Dumper(%res),1);
         foreach my $index (keys %res)
         {
 
@@ -142,6 +144,7 @@ sub sendNotifications
                     # queue notification "host + service is output"
                     my @tmp = ($recipients{$user}{$cmd}{notify_id});
                     setProgressFlag(\@tmp);
+                    next unless defined $queue->{$cmd};
                     $queue->{$cmd}->enqueue($recipients{$user}{$cmd}{notify_id}.';'.$recipients{$user}{$cmd}{stime}.';1;'.$param);
                 }
                 else
@@ -161,7 +164,7 @@ sub sendNotifications
 
                 my $now = time();
                 # create a fake command
-		$sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+                $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                     'NOTIFICATION',
                     $notify_id,
                     'multiple alerts',
@@ -181,7 +184,7 @@ sub sendNotifications
                 
                 # add the bundled command to the tmp_active table as a new notification WITHOUT delay
                 prepareNotification($notify_id, '(bundler)', 'Bundled', $cmd, $user, $recipients{$user}{$cmd}{from_user}, $notify_id, $now,
-'h', 'WARNING','PROBLEM', 'multiple alerts',     'multiple alerts', '127.0.0.1', 'nosvc','','', $recipients{$user}{$cmd}{multi_message}, '0', 1);
+'h', 'WARNING','PROBLEM', 'multiple alerts',     'multiple alerts', '127.0.0.1', 'nosvc','','','', $recipients{$user}{$cmd}{multi_message}, '0', 1);
 
                 # now create the actual alert
                 
