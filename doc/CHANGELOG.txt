@@ -127,3 +127,9 @@ Extra:
 * UTF-8 issue with Opera (Ticket: #1097)
 * SQLite friendly method to insert contactgroup members
 
+2.0.3
+-----------------
+* Bugfix in notification bundling
+* NoMa can now recover from db outtakes
+* Bugfix in rule/contact selection
+

@@ -1,3 +1,4 @@
+Jannis Mosshammer <jannis.mosshammer@netways.de>
 Rune "TheFlyingCorpse" Darrud <theflyingcorpse@gmail.com>
 Christian Doebler <christian.doebler@netways.de>
 Wiliam Preston <william.preston@netways.de>
