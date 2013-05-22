@@ -84,10 +84,8 @@ sub sendNotifications
         # now repeat the query without the time restriction to fetch any other notifications that have been queued
 
         my $query2 = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comments,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled <= \'0\'';
-        debugLog("Query  : ".$query2);
         my %res = queryDB($query2, undef, 1);
         return unless (keys(%res));
-        debugLog("Dumping ".Dumper(%res),1);
         foreach my $index (keys %res)
         {
 
