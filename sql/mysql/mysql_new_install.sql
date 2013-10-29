@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `information` (
 
 CREATE TABLE IF NOT EXISTS `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `notification_name` varchar(40) NULL,
+  `notification_name` varchar(255) NULL,
   `notification_description` varchar(1024) NULL,
   `active` tinyint(1) NOT NULL,
   `username` varchar(255) NOT NULL,
