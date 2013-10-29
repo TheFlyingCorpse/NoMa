@@ -1,0 +1,13 @@
+.idea/
+Makefile
+config.log
+config.status
+contrib/Makefile
+doc/Makefile
+etc/Makefile
+notifier/Makefile
+share/Makefile
+share/config/Makefile
+sql/Makefile
+subst.sh
+var/Makefile
