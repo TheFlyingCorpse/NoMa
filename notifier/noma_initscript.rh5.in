@@ -27,6 +27,10 @@ stop() {
 	echo -n $"Stopping $prog: "
 	killproc $nagios_bin/$prog 2>/dev/null
 	RETVAL=$?
+	if [ $RETVAL == 0 ]; then
+		rm -f $PIDFILE
+	fi
+	echo
 	return $RETVAL
 }
 
