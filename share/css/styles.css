@@ -30,9 +30,9 @@ td {
 }
 
 #main-container {
-	width: 1000px;
-	margin-left: auto;
-	margin-right: auto;
+	min-width: 1000px;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 #header {
