@@ -80,6 +80,8 @@ function getContent () {
 	$templateContent->assign('ADD_EDIT_EXCLUDE_HOSTS', ADD_EDIT_EXCLUDE_HOSTS);
 	$templateContent->assign('ADD_EDIT_INCLUDE_SERVICES', ADD_EDIT_INCLUDE_SERVICES);
 	$templateContent->assign('ADD_EDIT_EXCLUDE_SERVICES', ADD_EDIT_EXCLUDE_SERVICES);
+	$templateContent->assign('ADD_EDIT_INCLUDE_CUSTOMVARIABLES', ADD_EDIT_INCLUDE_CUSTOMVARIABLES);
+        $templateContent->assign('ADD_EDIT_EXCLUDE_CUSTOMVARIABLES', ADD_EDIT_EXCLUDE_CUSTOMVARIABLES);
         $templateContent->assign('ADD_EDIT_NOTIFICATION_NAME', ADD_EDIT_NOTIFICATION_NAME);
         $templateContent->assign('ADD_EDIT_NOTIFICATION_DESC', ADD_EDIT_NOTIFICATION_DESC);
 	$templateContent->assign('ADD_EDIT_TIMEZONE', ADD_EDIT_TIMEZONE);
@@ -150,6 +152,9 @@ function getContent () {
 
 		$templateContent->assign('INCLUDE_SERVICES', $dbResult[0]['services_include']);
 		$templateContent->assign('EXCLUDE_SERVICES', $dbResult[0]['services_exclude']);
+
+		$templateContent->assign('INCLUDE_CUSTOMVARIABLES', $dbResult[0]['customvariables_include']);
+		$templateContent->assign('EXCLUDE_CUSTOMVARIABLES', $dbResult[0]['customvariables_exclude']);
 
                 $templateContent->assign('NOTIFICATION_NAME', $dbResult[0]['notification_name']);
                 $templateContent->assign('NOTIFICATION_DESCRIPTION', $dbResult[0]['notification_description']);
@@ -454,6 +459,8 @@ function getContent () {
 
 		$templateContent->assign('ONCHANGE_SERVICES_INCLUDE', ' onkeyup="update_preview(\'s\',\'i\');"');
 		$templateContent->assign('ONCHANGE_SERVICES_EXCLUDE', ' onkeyup="update_preview(\'s\',\'e\');"');
+
+		/* ToDo - Preview feature for custom variables?! */
 
 	}
 	// END - generate content for asynchronous-preview call

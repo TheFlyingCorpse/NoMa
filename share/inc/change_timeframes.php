@@ -216,34 +216,26 @@ function addTimeFrame () {
         );
         queryDB($query);
 
-		
         // get timframe's ID and set to edit.
         $query = sprintf(
-                'select id from timeframes where timeframe_name=\'%s\' and dt_validFrom=\'%s\' and dt_validTo=\'%s\' and time_monday_start=\'%s\' and time_monday_stop=\'%s\' and time_tuesday_start=\'%s\' and time_tuesday_stop=\'%s\' and time_wednesday_start=\'%s\' and time_wednesday_stop=\'%s\' and time_thursday_start=\'%s\' and time_thursday_stop=\'%s\' and time_friday_start=\'%s\' and time_friday_stop=\'%s\' and time_saturday_start=\'%s\' and time_saturday_stop=\'%s\' and time_sunday_start=\'%s\' and time_sunday_stop=\'%s\' and time_monday_invert=\'%s\' and time_tuesday_invert=\'%s\' and time_wednesday_invert=\'%s\' and time_thursday_invert=\'%s\' and time_friday_invert=\'%s\' and time_saturday_invert=\'%s\' and time_sunday_invert=\'%s\' and day_monday_1st=\'%s\' and day_monday_2nd=\'%s\' and day_monday_3rd=\'%s\' and day_monday_4th=\'%s\' and day_monday_5th=\'%s\' and day_monday_last=\'%s\' and day_tuesday_1st=\'%s\' and day_tuesday_2nd=\'%s\' and day_tuesday_3rd=\'%s\' and day_tuesday_4th=\'%s\' and day_tuesday_5th=\'%s\' and day_tuesday_last=\'%s\' and day_wednesday_1st=\'%s\' and day_wednesday_2nd=\'%s\' and day_wednesday_3rd=\'%s\' and day_wednesday_4th=\'%s\' and day_wednesday_5th=\'%s\' and day_wednesday_last=\'%s\' and day_thursday_1st=\'%s\' and day_thursday_2nd=\'%s\' and day_thursday_3rd=\'%s\' and day_thursday_4th=\'%s\' and day_thursday_5th=\'%s\' and day_thursday_last=\'%s\' and day_friday_1st=\'%s\' and day_friday_2nd=\'%s\' and day_friday_3rd=\'%s\' and day_friday_4th=\'%s\' and day_friday_5th=\'%s\' and day_friday_last=\'%s\' and day_saturday_1st=\'%s\' and day_saturday_2nd=\'%s\' and day_saturday_3rd=\'%s\' and day_saturday_4th=\'%s\' and day_saturday_5th=\'%s\' and day_saturday_last=\'%s\' and day_sunday_all=\'%s\' and day_sunday_1st=\'%s\' and day_sunday_2nd=\'%s\' and day_sundaY_3rd=\'%s\' and day_sunday_4th=\'%s\' and day_sunday_5th=\'%s\' and day_sunday_last=\'%s\'',
+                'select id from timeframes where timeframe_name=\'%s\' and dt_validFrom=\'%s\' and dt_validTo=\'%s\' and
+                        day_monday_all=\'%s\' and day_monday_1st=\'%s\' and day_monday_2nd=\'%s\' and day_monday_3rd=\'%s\' and day_monday_4th=\'%s\' and day_monday_5th=\'%s\' and day_monday_last=\'%s\' and
+                        day_tuesday_all=\'%s\' and day_tuesday_1st=\'%s\' and day_tuesday_2nd=\'%s\' and day_tuesday_3rd=\'%s\' and day_tuesday_4th=\'%s\' and day_tuesday_5th=\'%s\' and day_tuesday_last=\'%s\' and
+                        day_wednesday_all=\'%s\' and day_wednesday_1st=\'%s\' and day_wednesday_2nd=\'%s\' and day_wednesday_3rd=\'%s\' and day_wednesday_4th=\'%s\' and day_wednesday_5th=\'%s\' and day_wednesday_last=\'%s\' and
+                        day_thursday_all=\'%s\' and day_thursday_1st=\'%s\' and day_thursday_2nd=\'%s\' and day_thursday_3rd=\'%s\' and day_thursday_4th=\'%s\' and day_thursday_5th=\'%s\' and day_thursday_last=\'%s\' and
+                        day_friday_all=\'%s\' and day_friday_1st=\'%s\' and day_friday_2nd=\'%s\' and day_friday_3rd=\'%s\' and day_friday_4th=\'%s\' and day_friday_5th=\'%s\' and day_friday_last=\'%s\' and
+                        day_saturday_all=\'%s\' and day_saturday_1st=\'%s\' and day_saturday_2nd=\'%s\' and day_saturday_3rd=\'%s\' and day_saturday_4th=\'%s\' and day_saturday_5th=\'%s\' and day_saturday_last=\'%s\' and
+                        day_sunday_all=\'%s\' and day_sunday_1st=\'%s\' and day_sunday_2nd=\'%s\' and day_sunday_3rd=\'%s\' and day_sunday_4th=\'%s\' and day_sunday_5th=\'%s\' and day_sunday_last=\'%s\' and
+                        time_monday_start=\'%s\' and time_monday_stop=\'%s\' and time_monday_invert=\'%s\' and
+                        time_tuesday_start=\'%s\' and time_tuesday_stop=\'%s\' and time_tuesday_invert=\'%s\' and
+                        time_wednesday_start=\'%s\' and time_wednesday_stop=\'%s\' and time_wednesday_invert=\'%s\' and
+                        time_thursday_start=\'%s\' and time_thursday_stop=\'%s\' and time_thursday_invert=\'%s\' and
+                        time_friday_start=\'%s\' and time_friday_stop=\'%s\' and time_friday_invert=\'%s\' and
+                        time_saturday_start=\'%s\' and time_saturday_stop=\'%s\' and time_saturday_invert=\'%s\' and
+                        time_sunday_start=\'%s\' and time_sunday_stop=\'%s\' and time_sunday_invert=\'%s\'',
                 $timeframe_name,
                 $dt_validFrom,
                 $dt_validTo,
-                $time_monday_start,
-                $time_monday_stop,
-                $time_tuesday_start,
-                $time_tuesday_stop,
-                $time_wednesday_start,
-                $time_wednesday_stop,
-                $time_thursday_start,
-                $time_thursday_stop,
-                $time_friday_start,
-                $time_friday_stop,
-                $time_saturday_start,
-                $time_saturday_stop,
-                $time_sunday_start,
-                $time_sunday_stop,
-                $time_monday_invert,
-                $time_tuesday_invert,
-                $time_wednesday_invert,
-                $time_thursday_invert,
-                $time_friday_invert,
-                $time_saturday_invert,
-                $time_sunday_invert,
                 $day_monday_all,
                 $day_monday_1st,
                 $day_monday_2nd,
@@ -292,13 +284,45 @@ function addTimeFrame () {
                 $day_sunday_3rd,
                 $day_sunday_4th,
                 $day_sunday_5th,
-                $day_sunday_last
+                $day_sunday_last,
+                $time_monday_start,
+                $time_monday_stop,
+                $time_monday_invert,
+                $time_tuesday_start,
+                $time_tuesday_stop,
+                $time_tuesday_invert,
+                $time_wednesday_start,
+                $time_wednesday_stop,
+                $time_wednesday_invert,
+                $time_thursday_start,
+                $time_thursday_stop,
+                $time_thursday_invert,
+                $time_friday_start,
+                $time_friday_stop,
+                $time_friday_invert,
+                $time_saturday_start,
+                $time_saturday_stop,
+                $time_saturday_invert,
+                $time_sunday_start,
+                $time_sunday_stop,
+                $time_sunday_invert
         );
         $dbResult = queryDB($query);
-        if (!empty($dbResult[0]['id'])) return TIMEFRAME_ADD_ADDED_BUT_NOT_IN_DB;
-	//if (!is_array($dbResult)) return false;
-	//if(!count($dbResult)) return false;
-	//$p['timeframe'] = $dbResult[0]['id'];
+        if (empty($dbResult[0]['id'])) return TIMEFRAME_ADD_ADDED_BUT_NOT_IN_DB;
+        if (!is_array($dbResult)) return false;
+        if(!count($dbResult)) return false;
+        $p['timeframe'] = $dbResult[0]['id'];
+
+        /* AUDIT TRAIL NEW TIMEFRAME */
+        $audit = sprintf (
+                'INSERT INTO audit_log_timeframes
+                        (changed_by_username, db_operation, id, timeframe_name, dt_validFrom, dt_validTo, day_monday_all, day_monday_1st, day_monday_2nd, day_monday_3rd, day_monday_4th, day_monday_5th, day_monday_last, day_tuesday_all, day_tuesday_1st, day_tuesday_2nd, day_tuesday_3rd, day_tuesday_4th, day_tuesday_5th, day_tuesday_last, day_wednesday_all, day_wednesday_1st, day_wednesday_2nd, day_wednesday_3rd, day_wednesday_4th, day_wednesday_5th, day_wednesday_last, day_thursday_all, day_thursday_1st, day_thursday_2nd, day_thursday_3rd, day_thursday_4th, day_thursday_5th, day_thursday_last, day_friday_all, day_friday_1st, day_friday_2nd, day_friday_3rd, day_friday_4th, day_friday_5th, day_friday_last, day_saturday_all, day_saturday_1st, day_saturday_2nd, day_saturday_3rd, day_saturday_4th, day_saturday_5th, day_saturday_last, day_sunday_all, day_sunday_1st, day_sunday_2nd, day_sunday_3rd, day_sunday_4th, day_sunday_5th, day_sunday_last, time_monday_start, time_monday_stop, time_monday_invert, time_tuesday_start, time_tuesday_stop, time_tuesday_invert, time_wednesday_start, time_wednesday_stop, time_wednesday_invert, time_thursday_start, time_thursday_stop, time_thursday_invert, time_friday_start, time_friday_stop, time_friday_invert, time_saturday_start, time_saturday_stop, time_saturday_invert, time_sunday_start, time_sunday_stop, time_sunday_invert)
+                SELECT "\'%s\'", "INSERT-new", id, timeframe_name, dt_validFrom, dt_validTo, day_monday_all, day_monday_1st, day_monday_2nd, day_monday_3rd, day_monday_4th, day_monday_5th, day_monday_last, day_tuesday_all, day_tuesday_1st, day_tuesday_2nd, day_tuesday_3rd, day_tuesday_4th, day_tuesday_5th, day_tuesday_last, day_wednesday_all, day_wednesday_1st, day_wednesday_2nd, day_wednesday_3rd, day_wednesday_4th, day_wednesday_5th, day_wednesday_last, day_thursday_all, day_thursday_1st, day_thursday_2nd, day_thursday_3rd, day_thursday_4th, day_thursday_5th, day_thursday_last, day_friday_all, day_friday_1st, day_friday_2nd, day_friday_3rd, day_friday_4th, day_friday_5th, day_friday_last, day_saturday_all, day_saturday_1st, day_saturday_2nd, day_saturday_3rd, day_saturday_4th, day_saturday_5th, day_saturday_last, day_sunday_all, day_sunday_1st, day_sunday_2nd, day_sunday_3rd, day_sunday_4th, day_sunday_5th, day_sunday_last, time_monday_start, time_monday_stop, time_monday_invert, time_tuesday_start, time_tuesday_stop, time_tuesday_invert, time_wednesday_start, time_wednesday_stop, time_wednesday_invert, time_thursday_start, time_thursday_stop, time_thursday_invert, time_friday_start, time_friday_stop, time_friday_invert, time_saturday_start, time_saturday_stop, time_saturday_invert, time_sunday_start, time_sunday_stop, time_sunday_invert
+                FROM timeframes where id=\'%s\'',
+                $_SESSION['user'],
+                $dbResult[0]['id']
+        );
+        $auditResult = queryDB($audit);
 
         // add holidays
         if (!empty($p['holiday_start']) && !empty($p['holiday_start']) && !empty($p['holiday_end'])) {
@@ -501,10 +525,32 @@ function updateTimeFrame () {
 	);
 	queryDB($query);
 
+        /* AUDIT TRAIL NEW TIMEFRAME */
+        $audit = sprintf (
+                'INSERT INTO audit_log_timeframes
+                        (changed_by_username, db_operation, id, timeframe_name, dt_validFrom, dt_validTo, day_monday_all, day_monday_1st, day_monday_2nd, day_monday_3rd, day_monday_4th, day_monday_5th, day_monday_last, day_tuesday_all, day_tuesday_1st, day_tuesday_2nd, day_tuesday_3rd, day_tuesday_4th, day_tuesday_5th, day_tuesday_last, day_wednesday_all, day_wednesday_1st, day_wednesday_2nd, day_wednesday_3rd, day_wednesday_4th, day_wednesday_5th, day_wednesday_last, day_thursday_all, day_thursday_1st, day_thursday_2nd, day_thursday_3rd, day_thursday_4th, day_thursday_5th, day_thursday_last, day_friday_all, day_friday_1st, day_friday_2nd, day_friday_3rd, day_friday_4th, day_friday_5th, day_friday_last, day_saturday_all, day_saturday_1st, day_saturday_2nd, day_saturday_3rd, day_saturday_4th, day_saturday_5th, day_saturday_last, day_sunday_all, day_sunday_1st, day_sunday_2nd, day_sunday_3rd, day_sunday_4th, day_sunday_5th, day_sunday_last, time_monday_start, time_monday_stop, time_monday_invert, time_tuesday_start, time_tuesday_stop, time_tuesday_invert, time_wednesday_start, time_wednesday_stop, time_wednesday_invert, time_thursday_start, time_thursday_stop, time_thursday_invert, time_friday_start, time_friday_stop, time_friday_invert, time_saturday_start, time_saturday_stop, time_saturday_invert, time_sunday_start, time_sunday_stop, time_sunday_invert)
+                SELECT "\'%s\'", "UPDATE", id, timeframe_name, dt_validFrom, dt_validTo, day_monday_all, day_monday_1st, day_monday_2nd, day_monday_3rd, day_monday_4th, day_monday_5th, day_monday_last, day_tuesday_all, day_tuesday_1st, day_tuesday_2nd, day_tuesday_3rd, day_tuesday_4th, day_tuesday_5th, day_tuesday_last, day_wednesday_all, day_wednesday_1st, day_wednesday_2nd, day_wednesday_3rd, day_wednesday_4th, day_wednesday_5th, day_wednesday_last, day_thursday_all, day_thursday_1st, day_thursday_2nd, day_thursday_3rd, day_thursday_4th, day_thursday_5th, day_thursday_last, day_friday_all, day_friday_1st, day_friday_2nd, day_friday_3rd, day_friday_4th, day_friday_5th, day_friday_last, day_saturday_all, day_saturday_1st, day_saturday_2nd, day_saturday_3rd, day_saturday_4th, day_saturday_5th, day_saturday_last, day_sunday_all, day_sunday_1st, day_sunday_2nd, day_sunday_3rd, day_sunday_4th, day_sunday_5th, day_sunday_last, time_monday_start, time_monday_stop, time_monday_invert, time_tuesday_start, time_tuesday_stop, time_tuesday_invert, time_wednesday_start, time_wednesday_stop, time_wednesday_invert, time_thursday_start, time_thursday_stop, time_thursday_invert, time_friday_start, time_friday_stop, time_friday_invert, time_saturday_start, time_saturday_stop, time_saturday_invert, time_sunday_start, time_sunday_stop, time_sunday_invert
+                FROM timeframes where id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
+
         // delete holidays
         if (isset($p['del_holiday']) && is_array($p['del_holiday'])) {
 
                 foreach ($p['del_holiday'] as $key => $value) {
+                        /* AUDIT TRAIL */
+                        $audit = sprintf(
+                              'INSERT INTO audit_log_holidays (changed_by_username, db_operation, timeframe_id, holiday_name, holiday_start, holiday_end, id)
+                               SELECT "\'%s\'", "DELETE-update", timeframe_id, holiday_name, holiday_start, holiday_end, id
+                               FROM holidays where timeframe_id=\'%s\' and id=\'%s\'',
+                               $_SESSION['user'],
+                               $id,
+ 	                       prepareDBValue($key)
+                        );
+                        $auditResult = queryDB($audit);
+
 			$query = 'delete from holidays where id=\''. prepareDBValue($key) . '\' and timeframe_id=\'' . $id . '\'';
 			queryDB($query);
                 }
@@ -538,14 +584,55 @@ function deleteTimeFrame () {
 	$id = prepareDBValue($id);
 
 
-	// set all notifications using this timeframe to the inactive schedule.
-	$query = sprintf(
-		'UPDATE notifications SET timeframe_id=0 WHERE timeframe_id=\'%s\'',
-		$id
-	);
-	queryDB($query);
+        // set all notifications using this timeframe to the inactive schedule.
+        /* AUDIT TRAIL */
+        $dbResultCount = queryDB('select id from notifications where timeframe_id=\'' . $id . '\'');
+
+        if (count($dbResultCount)) {
+
+                foreach($dbResultCount as $row) {
+
+                        $audit = sprintf(
+                                'INSERT INTO audit_log_notifications (changed_by_username, db_operation, id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id)
+                                        SELECT "\'%s\'", "DELETE-tf", id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, "0"
+                                        FROM notifications WHERE id=\'%s\' and timeframe_id=\'%s\'',
+	                        $_SESSION['user'],
+				$row['id'],
+                        	$id
+                        );
+			$auditResult = queryDB($audit);
+
+                }
+
+        }
+
+        $query = sprintf(
+                'UPDATE notifications SET timeframe_id=0 WHERE timeframe_id=\'%s\'',
+                $id
+        );
+        queryDB($query);
 
         // set all contacts using this timeframe to the inactive schedule.
+        /* AUDIT TRAIL */
+        $dbResultCount = queryDB('select id from contacts where timeframe_id=\'' . $id . '\'');
+
+        if (count($dbResultCount)) {
+
+                foreach($dbResultCount as $row) {
+
+	                $audit = sprintf(
+                                'INSERT INTO audit_log_contacts (changed_by_username, db_operation, admin, full_name, email, phone, mobile, growladdress, timeframe_id,  timezone_id, restrict_alerts, username, password, section, id)
+                                 SELECT "\'%s\'", "DELETE-tf", admin, full_name, email, phone, mobile, growladdress, "0", timezone_id, restrict_alerts, username, password, section, id
+                                 FROM contacts WHERE timeframe_id=\'%s\' and id=\'%s\'',
+                                $_SESSION['user'],
+                                $id,
+                                $row['id']
+        	        );
+                	$auditResult = queryDB($audit);
+
+                }
+
+        }
         $query = sprintf(
                 'UPDATE contacts SET timeframe_id=0 WHERE timeframe_id=\'%s\'',
                 $id
@@ -553,11 +640,42 @@ function deleteTimeFrame () {
         queryDB($query);
 
         // set all contacgroups using this timeframe to the inactive schedule.
+	/* AUDIT TRAIL */
+        $dbResultCount = queryDB('select id from contactgroups where timeframe_id=\'' . $id . '\'');
+
+        if (count($dbResultCount)) {
+
+                foreach($dbResultCount as $row) {
+
+                        $audit = sprintf(
+                                'INSERT INTO audit_log_contactgroups (changed_by_username, db_operation, id, name_short, name, view_only, timeframe_id, timezone_id)
+                                 SELECT "\'%s\'", "DELETE-tf", id, name_short, name, view_only, "0", timezone_id
+                                 FROM contactgroups WHERE timeframe_id=\'%s\' and id=\'%s\'',
+                                $_SESSION['user'],
+                                $id,
+                                $row['id']
+                        );
+                        $auditResult = queryDB($audit);
+
+                }
+
+        }
         $query = sprintf(
                 'UPDATE contactgroups SET timeframe_id=0 WHERE timeframe_id=\'%s\'',
                 $id
         );
         queryDB($query);
+
+        /* AUDIT TRAIL DELETE TIMEFRAME */
+        $audit = sprintf (
+                'INSERT INTO audit_log_timeframes
+                        (changed_by_username, db_operation, id, timeframe_name, dt_validFrom, dt_validTo, day_monday_all, day_monday_1st, day_monday_2nd, day_monday_3rd, day_monday_4th, day_monday_5th, day_monday_last, day_tuesday_all, day_tuesday_1st, day_tuesday_2nd, day_tuesday_3rd, day_tuesday_4th, day_tuesday_5th, day_tuesday_last, day_wednesday_all, day_wednesday_1st, day_wednesday_2nd, day_wednesday_3rd, day_wednesday_4th, day_wednesday_5th, day_wednesday_last, day_thursday_all, day_thursday_1st, day_thursday_2nd, day_thursday_3rd, day_thursday_4th, day_thursday_5th, day_thursday_last, day_friday_all, day_friday_1st, day_friday_2nd, day_friday_3rd, day_friday_4th, day_friday_5th, day_friday_last, day_saturday_all, day_saturday_1st, day_saturday_2nd, day_saturday_3rd, day_saturday_4th, day_saturday_5th, day_saturday_last, day_sunday_all, day_sunday_1st, day_sunday_2nd, day_sunday_3rd, day_sunday_4th, day_sunday_5th, day_sunday_last, time_monday_start, time_monday_stop, time_monday_invert, time_tuesday_start, time_tuesday_stop, time_tuesday_invert, time_wednesday_start, time_wednesday_stop, time_wednesday_invert, time_thursday_start, time_thursday_stop, time_thursday_invert, time_friday_start, time_friday_stop, time_friday_invert, time_saturday_start, time_saturday_stop, time_saturday_invert, time_sunday_start, time_sunday_stop, time_sunday_invert)
+                SELECT "\'%s\'", "DELETE", id, timeframe_name, dt_validFrom, dt_validTo, day_monday_all, day_monday_1st, day_monday_2nd, day_monday_3rd, day_monday_4th, day_monday_5th, day_monday_last, day_tuesday_all, day_tuesday_1st, day_tuesday_2nd, day_tuesday_3rd, day_tuesday_4th, day_tuesday_5th, day_tuesday_last, day_wednesday_all, day_wednesday_1st, day_wednesday_2nd, day_wednesday_3rd, day_wednesday_4th, day_wednesday_5th, day_wednesday_last, day_thursday_all, day_thursday_1st, day_thursday_2nd, day_thursday_3rd, day_thursday_4th, day_thursday_5th, day_thursday_last, day_friday_all, day_friday_1st, day_friday_2nd, day_friday_3rd, day_friday_4th, day_friday_5th, day_friday_last, day_saturday_all, day_saturday_1st, day_saturday_2nd, day_saturday_3rd, day_saturday_4th, day_saturday_5th, day_saturday_last, day_sunday_all, day_sunday_1st, day_sunday_2nd, day_sunday_3rd, day_sunday_4th, day_sunday_5th, day_sunday_last, time_monday_start, time_monday_stop, time_monday_invert, time_tuesday_start, time_tuesday_stop, time_tuesday_invert, time_wednesday_start, time_wednesday_stop, time_wednesday_invert, time_thursday_start, time_thursday_stop, time_thursday_invert, time_friday_start, time_friday_stop, time_friday_invert, time_saturday_start, time_saturday_stop, time_saturday_invert, time_sunday_start, time_sunday_stop, time_sunday_invert
+                FROM timeframes where id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
 
         // delete timeframe
         $query = sprintf(
@@ -571,7 +689,7 @@ function deleteTimeFrame () {
 }
 
 /**
- * addTFHolidays - adds holidays for a certain contact
+ * addTFHolidays - adds holidays for a certain timeframe
  *
  * @param               integer                 $timeframe_id    timeframe id
  * @param               string                  $holiday_start   start of holidays
@@ -610,6 +728,17 @@ function addTFHolidays ($timeframe_id, $holiday_name, $holiday_start, $holiday_e
                 $holiday_end
         );
         queryDB($query);
+
+        /* AUDIT TRAIL */
+        $audit = sprintf(
+                        'INSERT INTO audit_log_holidays (changed_by_username, db_operation, timeframe_id, holiday_name, holiday_start, holiday_end)
+                         SELECT "\'%s\'", "INSERT-new", timeframe_id, holiday_name, holiday_start, holiday_end
+                         FROM holidays where timeframe_id=\'%s\'',
+                        $_SESSION['user'],
+                        $timeframe_id
+        );
+        $auditResult = queryDB($audit);
+
 
         return true;
 

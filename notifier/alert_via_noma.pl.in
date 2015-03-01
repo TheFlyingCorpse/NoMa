@@ -62,6 +62,8 @@ alert_via_noma.pl  -  NETWAYS Notification Manager - notification plugin
              -S|--service=<service description>
              -c|--check-type=<check type (h|s)>
              -s|--status=<check status>
+             -k|--customvariables="CUSTOMVAR1=customvarvalue1,CUSTOMVAR2=customvarvalue2"
+             -I|--impact="$_HOST_IMPACT"
              -t|--datetime=<date time>
              -a|--host-alias=<host alias>
              -i|--host-address=<host ip>
@@ -103,6 +105,18 @@ Type of check: h for host, s for service
 =item -s|--status=<status>
 
 Textual status of check. (= OK, WARNING etc.)
+
+=item -k|--customvariables="CUSTOMVAR1=customvarvalue1,CUSTOMVAR2=customvarvalue2"
+
+CUSTOMVAR1 name equals the Macro from Icinga for the specific custom variable, like $_HOSTMAC_ADDRESS$ or $_SERVICESNMP_COMMUNITY$. 
+Example where you want to pass multiple for a service alert, you can name it whatever you want to, for easier debugging its advisable to have the same name both in Icinga and NoMa:
+-k="_SERVICE_BUSINESS_IMPACT=$_SERVICE_BUSINESS_IMPACT$;_SERVICE_IS_24x7=$_SERVICE_IS_24x7$"
+
+=item -I|--impact="some macro containing a description of impact"
+
+This is an optional argument you can provide to include in outgoing notifications to let the recievers of information get more information. 
+Example: -i="$_SERVICE_IMPACT_DESC"
+... This service impacts mail in and out of the internal network
 
 =item -t|--datetime=<date time>
 
@@ -147,10 +161,10 @@ Print help message and exit.
 Can be integrated into nagios with the following
 
 For services;
-  command_line    /path_to_noma/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -G "$HOSTGROUPNAMES$" -E "$SERVICEGROUPNAMES$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t "$SHORTDATETIME$" -u "$SERVICENOTIFICATIONID$" -A "$NOTIFICATIONAUTHORALIAS$" -C "$NOTIFICATIONCOMMENT$" -R "$NOTIFICATIONRECIPIENTS$"
+  command_line    /path_to_noma/alert_via_noma.pl -c s -s "$SERVICESTATE$" -H "$HOSTNAME$" -G "$HOSTGROUPNAMES$" -E "$SERVICEGROUPNAMES$" -k "CUSTOMVAR1=$_HOST_CUSTOMVAR1$,CUSTOMVAR2=$_SERVICE_CUSTOMVAR2$" -S "$SERVICEDESC$" -o "$SERVICEOUTPUT$" -n "$NOTIFICATIONTYPE$" -a "$HOSTALIAS$" -i "$HOSTADDRESS$" -t "$SHORTDATETIME$" -u "$SERVICENOTIFICATIONID$" -A "$NOTIFICATIONAUTHORALIAS$" -C "$NOTIFICATIONCOMMENT$" -R "$NOTIFICATIONRECIPIENTS$" -I "$_HOST_IMPACT"
 
 For hosts;
-  command_line    /path_to_noma/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$"  -G "$HOSTGROUPNAMES$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t "$SHORTDATETIME$" -u "$HOSTNOTIFICATIONID$" -A "$NOTIFICATIONAUTHORALIAS$" -C "$NOTIFICATIONCOMMENT$" -R "$NOTIFICATIONRECIPIENTS$"
+  command_line    /path_to_noma/alert_via_noma.pl -c h -s "$HOSTSTATE$" -H "$HOSTNAME$"  -G "$HOSTGROUPNAMES$" -k "CUSTOMVAR1=$_HOST_CUSTOMVAR1$,CUSTOMVAR2=$_HOST_CUSTOMVAR2$" -n "$NOTIFICATIONTYPE$" -i "$HOSTADDRESS$" -o "$HOSTOUTPUT$" -t "$SHORTDATETIME$" -u "$HOSTNOTIFICATIONID$" -A "$NOTIFICATIONAUTHORALIAS$" -C "$NOTIFICATIONCOMMENT$" -R "$NOTIFICATIONRECIPIENTS$" -I "$_SERVICE_IMPACT"
 
 
 =cut
@@ -189,6 +203,7 @@ my $host_address        = '';
 my @hostgroups		= ();
 my $service             = '';
 my @servicegroups	= ();
+my $customvariables	= '';
 my $check_type          = '';
 my $status              = '';
 my $datetime            = '';
@@ -196,6 +211,7 @@ my $output              = '';
 my $notification_type   = '';
 my $authors		= '';
 my $comments		= '';
+my $impact 		= '';
 my $verbose             = undef;
 my $version             = undef;
 my $help                = undef;
@@ -252,6 +268,8 @@ my $clps = GetOptions(
     "H|host=s"              => \$host,
     "G|hostgroups=s"	    => \@hostgroups,
     "E|servicegroups=s"     => \@servicegroups,
+    "k|customvariables=s"   => \$customvariables,
+    "I|impact=s"            => \$impact,
     "u|unique-id=s"         => \$id,
     "a|host-alias=s"        => \$host_alias,
     "i|host-address=s"      => \$host_address,
@@ -297,10 +315,8 @@ if ( !defined $id or $id eq '' or $id < 1 )
 my $hostgroups_str = join ",", @hostgroups;
 my $servicegroups_str = join ",", @servicegroups;
 
-$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
-    $id, $recipients, $host, $host_alias, $host_address, $hostgroups_str, $service, $servicegroups_str, $check_type, $status, $datetime, $notification_type, $authors, $comments, $output);
-
-#debug($cmd);
+$cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
+    $id, $recipients, $host, $host_alias, $host_address, $hostgroups_str, $service, $servicegroups_str, $check_type, $customvariables, $status, $datetime, $notification_type, $authors, $comments, $impact, $output);
 
 if ($usefifo)
 {

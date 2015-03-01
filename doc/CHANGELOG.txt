@@ -1,5 +1,17 @@
 # NoMa Changelog
 
+## 2.2.0
+* BREAKING Feature #2869: Added impact as optional description text that can be included in notifications, breaks existing notification scripts if not added to these as well.
+
+* Feature #428:  Added customvariables to filter notifications
+* Feature #2827: Audit log trail of changes made to notifications, timeframes, contactgroups and contacts
+* Feature #2861: Added confirm popup to enable / disable notification rules
+* Feature: Added host- and servicegroups to Logviewer pages.
+
+* Bug #2867: Contactgroup is not deleted from notification rule on deletion
+* Bug #2865: User is not deleted from escaltion rules on deletion
+* Bug #2863: Contact is not deleted from contactgroups on deletetion
+
 ## 2.1.0
 
 * Feature #1394: Notification rules - host vs. service notifications
@@ -148,7 +160,4 @@
 * fixed admin checkbox in contact manager
 * fixed update of modifications regarding empty contacts, contact groups and methods
 * added host and service previews to notification manager
-
-
-
 

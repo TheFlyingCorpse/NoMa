@@ -64,9 +64,9 @@ sub getContacts
 sub generateNotificationList
 {
 
-    my ( $check_type, $notificationRecipients, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, %dbResult ) = @_;
+    my ( $check_type, $notificationRecipients, $notificationHost, $notificationService, $notificationHostgroups, $notificationServicegroups, $notificationCustomvariables, %dbResult ) = @_;
 
-    debug(' notificationRecipients: '. $notificationRecipients . ' notificationHost: '.$notificationHost.' notificationService: '.$notificationService.' notificationHostgroups: '.$notificationHostgroups.' notificationServicegroups: '.$notificationServicegroups, 2);
+    debug(' notificationRecipients: '. $notificationRecipients . ' notificationHost: '.$notificationHost.' notificationService: '.$notificationService.' notificationHostgroups: '.$notificationHostgroups.' notificationServicegroups: '.$notificationServicegroups.' notificationCustomvariables: '.$notificationCustomvariables, 2);
 
 	# debugging for test suite
 	debug('Testdata: '.Dumper({checktype => $check_type, recipients => $notificationRecipients, host => $notificationHost, svc => $notificationService, hgs => $notificationHostgroups, sgs => $notificationServicegroups, dbresult => \%dbResult}), 3);
@@ -76,6 +76,7 @@ sub generateNotificationList
     my @recipients = split(",",$notificationRecipients);
     my @hostgroups = split(",",$notificationHostgroups);
     my @servicegroups = split(",",$notificationServicegroups);
+    my @customvariables = split(",",$notificationCustomvariables);
     my $rCount = @recipients;
     if ($rCount < 1) {
         $recipients[0] = "__NONE";
@@ -88,6 +89,11 @@ sub generateNotificationList
     if($sgCount < 1) {
         $servicegroups[0] = "__NONE";
     }
+    my $cvCount = @customvariables;
+    if($cvCount < 1) {
+        $customvariables[0] = "__NONE";
+    }
+
     # BEGIN - generate include and exclude lists for hosts and services
 
     while ( my $res = $dbResult{$cnt++})
@@ -95,7 +101,7 @@ sub generateNotificationList
 
 	my $matched;
 
-	# Implicit include means that we match if the include field is blank
+	# Implicit include means that we match if the include field is blank, except for customvariables!
 	$res->{recipients_include} = '*' if !$res->{recipients_include};
 	$res->{servicegroups_include} = '*' if !$res->{servicegroups_include};
 	$res->{services_include} = '*' if !$res->{services_include};
@@ -106,6 +112,8 @@ sub generateNotificationList
 	$res->{services_exclude} = '' if !$res->{services_exclude};
 	$res->{hostgroups_exclude} = '' if !$res->{hostgroups_exclude};
 	$res->{hosts_exclude} = '' if !$res->{hosts_exclude};
+	$res->{customvariables_include} = '' if !$res->{customvariables_include};
+	$res->{customvariables_exclude} = '' if !$res->{customvariables_exclude};
 
 	# generate recipients list
 	foreach my $recipient(@recipients) {
@@ -119,6 +127,24 @@ sub generateNotificationList
 
 	}
 	next unless $matched;
+
+	# If there is a customvariable to process 
+	if ($cvCount > 0){
+		$matched = 0;
+            # generate customvariable list
+            foreach my $customvariable(@customvariables) {
+                if (!$customvariable or ($customvariable eq '__NONE')
+                                        or (matchString($res->{customvariables_include}, $customvariable)
+                                                and !matchString($res->{customvariables_exclude}, $customvariable)))
+                {
+                    debug( "Step1: CstVars: $customvariable\t" . $res->{id}, 2);
+                    $matched = 1;
+                }
+
+            }
+                        next unless $matched;
+
+	}
 
 	# If its a service(group) check.
         if ( $check_type eq 's' )

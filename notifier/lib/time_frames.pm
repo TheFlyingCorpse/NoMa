@@ -93,6 +93,12 @@ sub objectInTimeFrame
 	# Get the timeframe_id from parent function.
         my ($timeframe_id,$objectType) = @_;
 
+        # Check if TimeFrame is deactivated / inactive
+        if($timeframe_id == '0'){
+                debug ("Timeframe is Deactivated", 2);
+                return 0;
+        }
+
         # Create a bunch of variables to be filled.
         my (@today,$current_dow,$current_dow_en,$dt_validFrom,$dt_validTo,$dt_timeFrom,$dt_timeTo,$notify_status,@notify_date,$day_today_all,$day_today_1st,$day_today_2nd,$day_today_3rd,$day_today_4th,$day_today_5th,$day_today_last,$time_today_start,$time_today_stop,$time_today_invert,$tf_timezone);
 
@@ -382,7 +388,7 @@ sub TimeFrameOnHoliday
 
 	}
 
-	#debug( 'No registered holidays for TimeFrame: '.$dbResult{$key}{timeframe_name}, 2); # NOTHING TO PRINT BECAUSE ITS EMPTY IF NONE FOUND
+	debug( 'No registered holidays for TimeFrame: '.$dbResult{$key}{timeframe_name}, 2); # NOTHING TO PRINT BECAUSE ITS EMPTY IF NONE FOUND
 	
 	# Not on holiday
 	return 0;

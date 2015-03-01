@@ -2,7 +2,7 @@
 <td>{$NOTIFICATION_RULE}</td>
 <td nowrap="nowrap">{$NOTIFICATION_NAME}</td>
 <td nowrap="nowrap">
-<img src="{$OVERVIEW_TOGGLE_ACTIVE_IMAGE}" border="0" {$OVERVIEW_TOGGLE_ACTIVE_JS}alt="{$OVERVIEW_TOGGLE_ACTIVE_ALT}" title="{$OVERVIEW_TOGGLE_ACTIVE_TOOLTIP}"/>
+<img src="{$OVERVIEW_TOGGLE_ACTIVE_IMAGE}" border="0" alt="{$OVERVIEW_TOGGLE_ACTIVE_ALT}" onclick="javascript:if(confirm('{$OVERVIEW_TOGGLE_ACTIVE_CONFIRM}')) {$OVERVIEW_TOGGLE_ACTIVE_JS}; " title="{$OVERVIEW_TOGGLE_ACTIVE_TOOLTIP}"/>
 <img src="{$OVERVIEW_EDIT_ENTRY_IMG}" border="0" {$OVERVIEW_EDIT_ENTRY_JS}alt="{$OVERVIEW_EDIT_ENTRY_ALT_TOOLTIP}" title="{$OVERVIEW_EDIT_ENTRY_ALT_TOOLTIP}"/>
 <img src="{$OVERVIEW_DELETE_ENTRY_IMG}" border="0" onclick="javascript:if(confirm('{$OVERVIEW_DELETE_ENTRY_CONFIRM}')) window.location.href='index.php?action=del&id={$ID}'; " alt="{$OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP}" title="{$OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP}"/>
 </td>
@@ -11,6 +11,7 @@
 <td nowrap="nowrap"{$HOSTGROUPS_MOUSEOVER}>{$HOSTGROUPS}</td>
 <td nowrap="nowrap"{$HOSTS_MOUSEOVER}>{$HOSTS}</td>
 <td nowrap="nowrap"{$SERVICES_MOUSEOVER}>{$SERVICES}</td>
+<td nowrap="norwap"{$CUSTOMVARIABLES_MOUSEOVER}>{$CUSTOMVARIABLES}</td>
 <td onmouseover="showLong('{$FULL_NAME}')" onmouseout="hideLong()">{$OWNER}</td>
 <td>{$NOTIFY_ON}</td>
 <td>{$NOTIFY_BY}</td>

@@ -192,9 +192,11 @@ sub dbSchemaUpdate
         my $database_upgrade = $conf->{db}->{automatic_db_upgrade};
 	my $database_example_dir = $conf->{db}->{db_example_dir};
 	my %dbSchemaFiles = (
-                'sqlite_new_install_structure'  => 'sqlite3/install/default_schema.sql',
-                'sqlite_new_install_data'	=> 'sqlite3/install/default_data.sql',
-		'mysql_upgrade_200'		=> ''
+                'sqlite_new_install_structure'  	=> 'sqlite3/install/default_schema.sql',
+                'sqlite_new_install_data'		=> 'sqlite3/install/default_data.sql',
+		'sqlite_upgrade_2000_2200_schema'	=> 'sqlite3/upgrade/upgrade_2000-2200_schema.sql',
+		'sqlite_upgrade_2000_2200_data'		=> 'sqlite3/upgrade/upgrade_2000-2200_data.sql',
+		'mysql_upgrade_2000-2200'		=> 'mysql/upgradedb_2000-2200.sql',
  	);
 
 	if ($database_upgrade eq 'no'){ debug('Automatic upgrade is turned off, no automatic schema update!',1);return 1;}; # Its NO to automatic in configuration, this a safety measure.
@@ -257,16 +259,54 @@ sub dbSchemaUpdate
 
                 }
 		elsif ($operation eq 'update'){
-			# Read file, LINE BY LINE and query.
-			# If loop per version on future updates.
-			#open FILE, "<", "$database_example_dir.$dbSchemaFiles{sqlite_update_sth}" or die $!;
-			#while (my $query = <FILE>){
-			#	my $dbResult = queryDB($query);
-			#}
+                        # start from lowest version and check / update accordingly
+
+			# Get the current dbversion
+			$query = 'select content from information where type=\'dbversion\'';
+		        my %dbResult = queryDB($query);
+		        my $dbversion = $dbResult{0}{content};
+		        if(!$dbversion){
+		        $dbversion=0;};
+
+			# If first version that had SQlite support
+			if ($dbversion == 2000) {
+				debug('dbversion 2000 detected, trying to upgrade to 2200',1);
+				# Schema
+				# Read file, LINE BY LINE and query.
+                                open FILE, "<", "$database_example_dir.$dbSchemaFiles{sqlite_upgrade_2000_2200_schema}" or die $!;
+                                while (my $query = <FILE>){
+                                       my $dbResult = queryDB($query);
+                                }
+
+				# Data
+				open FILE, "<", "$database_example_dir.$dbSchemaFiles{sqlite_upgrade_2000_2200_data}" or die $!;
+				while (my $query = <FILE>){
+                                       my $dbResult = queryDB($query);
+                                }
+
+			}
+
+			# Query for the dbversion, incase another upgrade needed
+                        $query = 'select content from information where type=\'dbversion\'';
+                        %dbResult = queryDB($query);
+                        $dbversion = $dbResult{0}{content};
+                        if(!$dbversion){
+                        $dbversion=0;};
+
+                        # if version YYYY
+                                #do schema + data upgrade
+
+				# Read file, LINE BY LINE and query.
+				# If loop per version on future updates.
+				#open FILE, "<", "$database_example_dir.$dbSchemaFiles{sqlite_update_sth}" or die $!;
+				#while (my $query = <FILE>){
+				#	my $dbResult = queryDB($query);
+				#}
 		}
 	}
 	elsif($database_type eq 'mysql'){
 		# NO UPDATES FOR YOU (-:
+		# Manual steps needed.
 	} else {
 		debug('Unknown backend to create/update!',1);
 	}

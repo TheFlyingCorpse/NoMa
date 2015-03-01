@@ -82,6 +82,7 @@ mysql> describe tmp_commands;
 | notification_type | varchar(255)  | YES  |     | NULL    |                |
 | authors           | varchar(255)  | YES  |     | NULL    |                |
 | comments          | varchar(255)  | YES  |     | NULL    |                |
+| impact            | varchar(4096) | YES  |     | NULL    |                |
 | output            | varchar(4096) | YES  |     | NULL    |                |
 +-------------------+---------------+------+-----+---------+----------------+
 

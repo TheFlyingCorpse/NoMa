@@ -71,6 +71,8 @@ function addNotification ($p) {
 	$hosts_exclude = prepareDBValue($p['hosts_exclude']);
 	$services_include = prepareDBValue($p['services_include']);
 	$services_exclude = prepareDBValue($p['services_exclude']);
+	$customvariables_include = prepareDBValue($p['customvariables_include']);
+	$customvariables_exclude = prepareDBValue($p['customvariables_exclude']);
         $notification_name = prepareDBValue($p['notification_name']);
         $notification_description = prepareDBValue($p['notification_description']);
 	$notify_after_tries = prepareDBValue($p['notify_after_tries']);
@@ -117,7 +119,7 @@ function addNotification ($p) {
 	// check whether notification exists
 	$query = sprintf(
 		'select id from notifications
-			where active=0 and username=\'%s\' and notification_name=\'%s\' and notification_description=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\'  and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=%d and on_warning=%d and on_unknown=%d and on_host_unreachable=%d and on_critical=%d and on_host_up=%d and on_host_down=%d and on_type_flappingstart=%d and on_type_flappingstop=%d and on_type_flappingdisabled=%d and on_type_downtimestart=%d and on_type_downtimeend=%d and on_type_downtimecancelled=%d and on_type_acknowledgement=%d and on_type_custom=%d and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+			where active=0 and username=\'%s\' and notification_name=\'%s\' and notification_description=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and hosts_include=\'%s\' and hosts_exclude=\'%s\'  and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and customvariables_include=\'%s\' and customvariables_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=%d and on_warning=%d and on_unknown=%d and on_host_unreachable=%d and on_critical=%d and on_host_up=%d and on_host_down=%d and on_type_flappingstart=%d and on_type_flappingstop=%d and on_type_flappingdisabled=%d and on_type_downtimestart=%d and on_type_downtimeend=%d and on_type_downtimecancelled=%d and on_type_acknowledgement=%d and on_type_custom=%d and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$owner,
 		$notification_name,
 		$notification_description,
@@ -131,6 +133,8 @@ function addNotification ($p) {
 		$servicegroups_exclude,
 		$services_include,
 		$services_exclude,
+		$customvariables_include,
+		$customvariables_exclude,
 		$notify_after_tries,
 		$notify_on_ok,
 		$notify_on_warning,
@@ -157,8 +161,8 @@ function addNotification ($p) {
 	// add notification
 	$query = sprintf(
 		'INSERT INTO notifications 
-		(active,username,notification_name,notification_description,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude,notify_after_tries,let_notifier_handle,rollover,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,timezone_id,timeframe_id)
-VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,\'%s\',\'%s\')',
+		(active,username,notification_name,notification_description,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude,customvariables_include,customvariables_exclude,notify_after_tries,let_notifier_handle,rollover,on_ok,on_warning,on_unknown,on_host_unreachable,on_critical,on_host_up,on_host_down,on_type_flappingstart,on_type_flappingstop,on_type_flappingdisabled,on_type_downtimestart,on_type_downtimeend,on_type_downtimecancelled,on_type_acknowledgement,on_type_custom,timezone_id,timeframe_id)
+VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,\'%s\',\'%s\')',
                 0,
                 $owner,
 		$notification_name,
@@ -173,6 +177,8 @@ VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'
                 $services_exclude,
                 $servicegroups_include,
                 $servicegroups_exclude,
+		$customvariables_include,
+		$customvariables_exclude,
                 $notify_after_tries,
                 $let_notifier_handle,
                 $rollover,
@@ -199,7 +205,7 @@ VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'
 	// get new id
 	$query = sprintf(
 		'SELECT id FROM notifications
-			WHERE active=0 and username=\'%s\' and notification_name=\'%s\' and notification_description=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and  hosts_include=\'%s\' and hosts_exclude=\'%s\' and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and notify_after_tries=\'%s\' and on_ok=%d and on_warning=%d and on_unknown=%d and on_host_unreachable=%d and on_critical=%d and on_host_up=%d and on_host_down=%d and on_type_flappingstart=%d and on_type_flappingstop=%d and on_type_flappingdisabled=%d and on_type_downtimestart=%d and on_type_downtimeend=%d and on_type_downtimecancelled=%d and on_type_acknowledgement=%d and on_type_custom=%d and timeframe_id=\'%s\' and timezone_id=\'%s\'',
+			WHERE active=0 and username=\'%s\' and notification_name=\'%s\' and notification_description=\'%s\' and recipients_include=\'%s\' and recipients_exclude=\'%s\' and hostgroups_include=\'%s\' and hostgroups_exclude=\'%s\' and  hosts_include=\'%s\' and hosts_exclude=\'%s\' and servicegroups_include=\'%s\' and servicegroups_exclude=\'%s\' and services_include=\'%s\' and services_exclude=\'%s\' and customvariables_include=\'%s\' and customvariables_exlude=\'%s\' and notify_after_tries=\'%s\' and on_ok=%d and on_warning=%d and on_unknown=%d and on_host_unreachable=%d and on_critical=%d and on_host_up=%d and on_host_down=%d and on_type_flappingstart=%d and on_type_flappingstop=%d and on_type_flappingdisabled=%d and on_type_downtimestart=%d and on_type_downtimeend=%d and on_type_downtimecancelled=%d and on_type_acknowledgement=%d and on_type_custom=%d and timeframe_id=\'%s\' and timezone_id=\'%s\'',
 		$owner,
 		$notification_name,
 		$notification_description,
@@ -213,6 +219,8 @@ VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'
                 $servicegroups_exclude,
 		$services_include,
 		$services_exclude,
+		$customvariables_include,
+		$customvariables_exclude,
 		$notify_after_tries,
 		$notify_on_ok,
 		$notify_on_warning,
@@ -237,8 +245,18 @@ VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'
 
 	if (!$id) return false;
 
+	/* AUDIT THE NEW NOTIFICATION */
+	$audit = sprintf(
+                'INSERT INTO audit_log_notifications (changed_by_username, db_operation, id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id)
+                        SELECT "\'%s\'", "INSERT-new", id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id
+                        FROM notifications WHERE id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
 
         // add owner to notifications list, if configured
+
         if ($notifications['add_owner'] === true) {
 
 	        $owner_id = getContactID($owner);
@@ -263,6 +281,17 @@ VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'
                                 $query = sprintf('INSERT INTO notifications_to_contacts (notification_id,contact_id) VALUES (\'%s\',\'%s\');', $id, getContactID($user));
                                 queryDB($query);
 
+				/* AUDIT TRAIL */
+                                $audit = sprintf(
+                                  'INSERT INTO audit_log_notifications_to_contacts(changed_by_username, db_operation, notification_id, contact_id)
+                                   SELECT "\'%s\'", "INSERT-new", notification_id, contact_id
+                                   FROM notifications_to_contacts WHERE notification_id=\'%s\' and contact_id=\'%s\'',
+                                   $_SESSION['user'],
+                                   $id,
+                                   getContactID($user)
+                                );
+                                $auditResult = queryDB($audit);
+
 			}
 
                 }
@@ -278,6 +307,18 @@ VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'
                          if (!empty($group)){
                                 $query = sprintf('INSERT INTO notifications_to_contactgroups (notification_id,contactgroup_id) VALUES (\'%s\',\'%s\');', $id, prepareDBValue($group));
                                 queryDB($query);
+
+				/* AUDIT TRAIL */
+                                $audit = sprintf(
+                                  'INSERT INTO audit_log_notifications_to_contactgroups(changed_by_username, db_operation, notification_id, contactgroup_id)
+                                   SELECT "\'%s\'", "INSERT-new", notification_id, contactgroup_id
+                                   FROM notifications_to_contactgroups WHERE notification_id=\'%s\' and contactgroup_id=\'%s\'',
+                                   $_SESSION['user'],
+                                   $id,
+                                   prepareDBValue($group)
+                                );
+                                $auditResult = queryDB($audit);
+
                          }
 
                 }
@@ -293,6 +334,18 @@ VALUES (%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\'
                          if (!empty($methodID)){
                                 $query = 'INSERT INTO notifications_to_methods (notification_id,method_id) VALUES (\''.$id.'\',\''.prepareDBValue($methodID).'\')';
                                 queryDB($query);
+
+				/* AUDIT TRAIL */
+                                $audit = sprintf(
+                                  'INSERT INTO audit_log_notifications_to_methods(changed_by_username, db_operation, notification_id, method_id)
+                                   SELECT "\'%s\'", "INSERT-new", notification_id, method_id
+                                   FROM notifications_to_methods WHERE notification_id=\'%s\' and method_id=\'%s\'',
+                                   $_SESSION['user'],
+                                   $id,
+                                   prepareDBValue($methodID)
+                                );
+                                $auditResult = queryDB($audit);
+
                          }
 
                 }
@@ -333,6 +386,8 @@ function updateNotification ($p) {
 	$hosts_exclude = prepareDBValue($p['hosts_exclude']);
 	$services_include = prepareDBValue($p['services_include']);
 	$services_exclude = prepareDBValue($p['services_exclude']);
+	$customvariables_include = prepareDBValue($p['customvariables_include']);
+	$customvariables_exclude = prepareDBValue($p['customvariables_exclude']);
         $notification_name = prepareDBValue($p['notification_name']);
         $notification_description = prepareDBValue($p['notification_description']);
 	$notify_after_tries = prepareDBValue($p['notify_after_tries'][0]);
@@ -378,7 +433,7 @@ function updateNotification ($p) {
 
 	// update notification
 	$query = sprintf(
-		'UPDATE notifications SET username=\'%s\', notification_name=\'%s\', notification_description=\'%s\', recipients_include=\'%s\', recipients_exclude=\'%s\', hostgroups_include=\'%s\', hostgroups_exclude=\'%s\', hosts_include=\'%s\', hosts_exclude=\'%s\', servicegroups_include=\'%s\', servicegroups_exclude=\'%s\', services_include=\'%s\', services_exclude=\'%s\', notify_after_tries=\'%s\',on_ok=%d, on_warning=%d, on_unknown=%d, on_host_unreachable=%d, on_critical=%d, on_host_up=%d, on_host_down=%d, on_type_flappingstart=%d, on_type_flappingstop=%d, on_type_flappingdisabled=%d, on_type_downtimestart=%d, on_type_downtimeend=%d, on_type_downtimecancelled=%d, on_type_acknowledgement=%d, on_type_custom=%d, let_notifier_handle=%d, rollover=%d, timeframe_id=\'%s\', timezone_id=\'%s\' WHERE id=\'%s\';',
+		'UPDATE notifications SET username=\'%s\', notification_name=\'%s\', notification_description=\'%s\', recipients_include=\'%s\', recipients_exclude=\'%s\', hostgroups_include=\'%s\', hostgroups_exclude=\'%s\', hosts_include=\'%s\', hosts_exclude=\'%s\', servicegroups_include=\'%s\', servicegroups_exclude=\'%s\', services_include=\'%s\', services_exclude=\'%s\', customvariables_include=\'%s\', customvariables_exclude=\'%s\', notify_after_tries=\'%s\',on_ok=%d, on_warning=%d, on_unknown=%d, on_host_unreachable=%d, on_critical=%d, on_host_up=%d, on_host_down=%d, on_type_flappingstart=%d, on_type_flappingstop=%d, on_type_flappingdisabled=%d, on_type_downtimestart=%d, on_type_downtimeend=%d, on_type_downtimecancelled=%d, on_type_acknowledgement=%d, on_type_custom=%d, let_notifier_handle=%d, rollover=%d, timeframe_id=\'%s\', timezone_id=\'%s\' WHERE id=\'%s\';',
 		$owner,
 		$notification_name,
 		$notification_description,
@@ -392,6 +447,8 @@ function updateNotification ($p) {
                 $servicegroups_exclude,
 		$services_include,
 		$services_exclude,
+		$customvariables_include,
+		$customvariables_exclude,
 		$notify_after_tries,
 		$notify_on_ok,
 		$notify_on_warning,
@@ -416,7 +473,27 @@ function updateNotification ($p) {
 	);
 	queryDB($query);
 
+        /* AUDIT TRAIL OF UPDATE ABOVE */
+        $audit = sprintf(
+                'INSERT INTO audit_log_notifications (changed_by_username, db_operation, id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id)
+                        SELECT "\'%s\'", "UPDATE-rule", id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id
+                        FROM notifications WHERE id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
+
 	// delete old notification users
+	/* AUDIT TRAIL */
+        $audit = sprintf(
+          'INSERT INTO audit_log_notifications_to_contacts(changed_by_username, db_operation, notification_id, contact_id)
+           SELECT "\'%s\'", "DELETE-update", notification_id, contact_id
+           FROM notifications_to_contacts WHERE notification_id=\'%s\' ',
+           $_SESSION['user'],
+           $id
+        );
+        $auditResult = queryDB($audit);
+
 	queryDB('delete from notifications_to_contacts where notification_id=\'' . $id . '\'');	
 
 	// add owner to notifications list, if configured
@@ -446,6 +523,17 @@ function updateNotification ($p) {
                                         $query = sprintf('insert into notifications_to_contacts (notification_id,contact_id) values(\'%s\',\'%s\')', $id, getContactID($user));
                                         queryDB($query);
 
+                                        /* AUDIT TRAIL */
+                                        $audit = sprintf(
+                                          'INSERT INTO audit_log_notifications_to_contacts (changed_by_username, db_operation, notification_id, contact_id)
+                                           SELECT "\'%s\'", "INSERT-update", notification_id, contact_id
+                                           FROM notifications_to_contacts WHERE notification_id=\'%s\' and contact_id=\'%s\'',
+                                           $_SESSION['user'],
+                                           $id,
+                                           getContactID($user)
+                                        );
+                                        $auditResult = queryDB($audit);
+
                                 }
 
                         }
@@ -456,6 +544,16 @@ function updateNotification ($p) {
 
 
 	// delete old notitication groups
+	/* AUDIT TRAIL */
+        $audit = sprintf(
+          'INSERT INTO audit_log_notifications_to_contactgroups(changed_by_username, db_operation, notification_id, contactgroup_id)
+           SELECT "\'%s\'", "DELETE-update", notification_id, contactgroup_id
+           FROM notifications_to_contactgroups WHERE notification_id=\'%s\'',
+           $_SESSION['user'],
+           $id
+        );
+        $auditResult = queryDB($audit);
+
 	queryDB('delete from notifications_to_contactgroups where notification_id=\'' . $id . '\'');
 
 	// add new groups
@@ -466,8 +564,20 @@ function updateNotification ($p) {
                         // Because of SQLite3, this needs to be split into several transactions.
                         foreach ($p['notify_groups'][0] as $group) {
                                 if (!empty($group)){
+					/* AUDIT TRAIL */
                                         $query = sprintf('insert into notifications_to_contactgroups (notification_id,contactgroup_id) values(\'%s\',\'%s\')', $id, prepareDBValue($group));
                                         queryDB($query);
+
+                                        /* AUDIT TRAIL */
+                                        $audit = sprintf(
+                                          'INSERT INTO audit_log_notifications_to_contactgroups(changed_by_username, db_operation, notification_id, contactgroup_id)
+                                           SELECT "\'%s\'", "INSERT-update", notification_id, contactgroup_id
+                                           FROM notifications_to_contactgroups WHERE notification_id=\'%s\' and contactgroup_id=\'%s\'',
+                                           $_SESSION['user'],
+                                           $id,
+                                           prepareDBValue($group)
+                                        );
+                                        $auditResult = queryDB($audit);
 
                                 }
 
@@ -479,6 +589,16 @@ function updateNotification ($p) {
 
 
 	// delete old notification methods
+        /* AUDIT TRAIL */
+        $audit = sprintf(
+          'INSERT INTO audit_log_notifications_to_methods(changed_by_username, db_operation, notification_id, method_id)
+           SELECT "\'%s\'", "DELETE-update", notification_id, method_id
+           FROM notifications_to_methods WHERE notification_id=\'%s\'',
+           $_SESSION['user'],
+           $id
+        );
+        $auditResult = queryDB($audit);
+
 	queryDB('delete from notifications_to_methods where notification_id=\'' . $id . '\'');
 
 	// add notification methods
@@ -489,8 +609,20 @@ function updateNotification ($p) {
 			// Because of SQLite3, this has been split into several transactions.
 			foreach ($p['notify_by'][0] as $methodID) {
 				if (!empty($methodID)) {
+					/* AUDIT TRAIL */
 					$query = sprintf('insert into notifications_to_methods (notification_id,method_id) values(\'%s\',\'%s\')', $id, prepareDBValue($methodID));
 		                        queryDB($query);
+
+                                        /* AUDIT TRAIL */
+                                        $audit = sprintf(
+                                          'INSERT INTO audit_log_notifications_to_methods(changed_by_username, db_operation, notification_id, method_id)
+                                           SELECT "\'%s\'", "INSERT-update", notification_id, method_id
+                                           FROM notifications_to_methods WHERE notification_id=\'%s\' and method_id=\'%s\'',
+                                           $_SESSION['user'],
+                                           $id,
+                                           prepareDBValue($methodID)
+                                        );
+                                        $auditResult = queryDB($audit);
 
 				}
 
@@ -504,7 +636,8 @@ function updateNotification ($p) {
 	// BEGIN - handle escalations
 
 	// delete escalations
-	deleteEscalationsByNotificationId($id);
+	/* AUDIT TRAIL INSIDE FUNCTION */
+	deleteEscalationsByNotificationId($id, 'update');
 
 	// insert new escalations
 	if (isset($p['escalation_count']) && is_array($p['escalation_count'])) {
@@ -526,6 +659,16 @@ function updateNotification ($p) {
 			);
 			queryDB($query);
 
+			/* AUDIT TRAIL */
+			$audit = sprintf(
+				'INSERT INTO audit_log_escalations_contacts
+                                        (changed_by_username, db_operation, notification_id, on_ok, on_warning, on_critical, on_unknown, on_host_up, on_host_unreachable, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, notify_after_tries)
+				SELECT "\'%s\'", "INSERT-update", notification_id, on_ok, on_warning, on_critical, on_unknown, on_host_up, on_host_unreachable, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, notify_after_tries
+				FROM escalations_contacts WHERE notification_id=\'%s\'',
+				$_SESSION['user'],
+                                $id
+			);
+			$auditResult = queryDB($audit);
 
 			// get escalation id
 			$query = sprintf(
@@ -551,8 +694,21 @@ function updateNotification ($p) {
 			                foreach ($p['notify_users'][$x] as $notify_contact) {
 
 				                if (!empty($notify_contact) and (prepareDBValue($notify_contact) != '')){
-				                                $query = sprintf('INSERT INTO escalations_contacts_to_contacts (escalation_contacts_id,contacts_id) VALUES (\'%s\',\'%s\');', $eid, getContactID($notify_contact));
-				                                queryDB($query);
+
+			                                $query = sprintf('INSERT INTO escalations_contacts_to_contacts (escalation_contacts_id,contacts_id) VALUES (\'%s\',\'%s\');', $eid, getContactID($notify_contact));
+			                                queryDB($query);
+
+                                                        /* AUDIT TRAIL */
+                                                        $audit = sprintf(
+                                                          'INSERT INTO audit_log_escalations_contacts_to_contacts(changed_by_username, db_operation, escalation_contacts_id, contacts_id)
+                                                           SELECT "\'%s\'", "INSERT-update", escalation_contacts_id, contacts_id
+                                                           FROM escalations_contacts_to_contacts WHERE escalation_contacts_id=\'%s\' and contacts_id=\'%s\'',
+                                                           $_SESSION['user'],
+                                                           $eid,
+                                                           getContactID($notify_contact)
+                                                        );
+                                                        $auditResult = queryDB($audit);
+
 						}
 
 			                }
@@ -576,6 +732,17 @@ function updateNotification ($p) {
 
 		                                        queryDB($query);
 
+							/* AUDIT TRAIL */
+                                                        $audit = sprintf(
+                                                          'INSERT INTO audit_log_escalations_contacts_to_contactgroups(changed_by_username, db_operation, escalation_contacts_id, contactgroup_id)
+                                                           SELECT "\'%s\'", "INSERT-update", escalation_contacts_id, contactgroup_id
+                                                           FROM escalations_contacts_to_contactgroups WHERE escalation_contacts_id=\'%s\' and contactgroup_id=\'%s\'',
+                                                           $_SESSION['user'],
+                                                           $eid,
+                                                           prepareDBValue($groupID)
+                                                        );
+                                                        $auditResult = queryDB($audit);
+
 		       	                        }
 
 		                        }
@@ -598,6 +765,17 @@ function updateNotification ($p) {
                                                         $query = sprintf('INSERT INTO escalations_contacts_to_methods (escalation_contacts_id,method_id) VALUES (\'%s\',\'%s\')', $eid, prepareDBValue($methodID));
 
                                                         queryDB($query);
+
+							/* AUDIT TRAIL */
+                                                        $audit = sprintf(
+                                                          'INSERT INTO audit_log_escalations_contacts_to_methods(changed_by_username, db_operation, escalation_contacts_id, method_id)
+                                                           SELECT "\'%s\'", "INSERT-update", escalation_contacts_id, method_id
+                                                           FROM escalations_contacts_to_methods WHERE escalation_contacts_id=\'%s\' and method_id=\'%s\'',
+                                                           $_SESSION['user'],
+                                                           $eid,
+                                                           prepareDBValue($methodID)
+                                                        );
+                                                        $auditResult = queryDB($audit);
 
                                                 }
 
@@ -634,6 +812,17 @@ function toggleActive ($id) {
 	if (isset($dbResult[0]['username'])) {
 		// deactivate
 		queryDB('UPDATE notifications SET active=\'0\' WHERE id=\'' . $id . '\'');
+
+                        /* AUDIT TRAIL OF UPDATE ABOVE */
+                        $audit = sprintf(
+                                'INSERT INTO audit_log_notifications (changed_by_username, db_operation, id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id)
+                                        SELECT "\'%s\'", "UPDATE-active", id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id
+                                        FROM notifications WHERE id=\'%s\'',
+                                $_SESSION['user'],
+                                $id
+                        );
+                        $auditResult = queryDB($audit);
+
 		return false;
 	}
 
@@ -642,6 +831,16 @@ function toggleActive ($id) {
 	$active = '0';
 	if ($dbResult[0]['active'] == '0') $active = '1';
 	queryDB('UPDATE notifications SET active=\'' . $active . '\' WHERE id=\'' . $id . '\'');
+
+        /* AUDIT TRAIL OF UPDATE ABOVE */
+        $audit = sprintf(
+                'INSERT INTO audit_log_notifications (changed_by_username, db_operation, id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id)
+                        SELECT "\'%s\'", "UPDATE-active", id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id
+                        FROM notifications WHERE id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
 
 	return true;
 
@@ -660,12 +859,50 @@ function deleteNotification ($id) {
 
 	$id = prepareDBValue($id);
 
+        /* AUDIT TRAIL OF DELETE BELOW */
+        $audit = sprintf(
+                'INSERT INTO audit_log_notifications (changed_by_username, db_operation, id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id)
+                        SELECT "\'%s\'", "DELETE-rule", id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id
+                        FROM notifications WHERE id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
+
+        /* AUDIT TRAIL ON EVERY */
+        $audit = sprintf(
+                'INSERT INTO audit_log_notifications_to_methods (changed_by_username, db_operation, notification_id)
+                 SELECT "\'%s\'", "DELETE-rule", notification_id
+                 FROM notifications_to_methods where notification_id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
+
+        $audit = sprintf(
+                'INSERT INTO audit_log_notifications_to_contacts (changed_by_username, db_operation, notification_id)
+                 SELECT "\'%s\'", "DELETE-rule", notification_id
+                 FROM notifications_to_contacts where notification_id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
+
+        $audit = sprintf(
+                'INSERT INTO audit_log_notifications_to_contactgroups (changed_by_username, db_operation, notification_id)
+                 SELECT "\'%s\'", "DELETE-rule", notification_id
+                 FROM notifications_to_contactgroups where notification_id=\'%s\'',
+                $_SESSION['user'],
+                $id
+        );
+        $auditResult = queryDB($audit);
+
 	queryDB('DELETE FROM notifications WHERE id=\'' . $id . '\'');
 	queryDB('DELETE FROM notifications_to_methods WHERE notification_id=\'' . $id . '\'');
 	queryDB('DELETE FROM notifications_to_contacts WHERE notification_id=\'' . $id . '\'');
 	queryDB('DELETE FROM notifications_to_contactgroups WHERE notification_id=\'' . $id . '\'');
 
-	deleteEscalationsByNotificationId($id);
+	deleteEscalationsByNotificationId($id, 'rule');
 
 }
 
@@ -676,9 +913,10 @@ function deleteNotification ($id) {
  * deleteEscalationsByNotificationId - deletes escalations related to a notification
  *
  * @param		integer		$id		related notification id
+ * @param               string          $operation      what type of operation that calls it (update rule or delete rule)
  * @return		none
  */
-function deleteEscalationsByNotificationId ($id) {
+function deleteEscalationsByNotificationId ($id, $operation) {
 
 	// get escalation_ids
 	$dbResult = queryDB('SELECT id FROM escalations_contacts WHERE notification_id=\'' . $id . '\'');
@@ -691,6 +929,38 @@ function deleteEscalationsByNotificationId ($id) {
 		foreach($dbResult as $row) {
 			$where .= $sep . 'escalation_contacts_id=\'' . $row['id'] . '\'';
 			if (!$sep) $sep = ' or ';
+
+			/* AUDIT TRAIL ON EVERY ID TO BE DELETED */
+                        $audit = sprintf(
+                                'INSERT INTO audit_log_escalations_contacts_to_methods (changed_by_username, db_operation, escalation_contacts_id)
+                                 SELECT "\'%s\'", "DELETE-%s", escalation_contacts_id
+                                 FROM escalations_contacts_to_methods where escalation_contacts_id=\'%s\'',
+                                $_SESSION['user'],
+				$operation,
+                                $row['id']
+                        );
+                        $auditResult = queryDB($audit);
+
+                        $audit = sprintf(
+                                'INSERT INTO audit_log_escalations_contacts_to_contacts (changed_by_username, db_operation, escalation_contacts_id)
+                                 SELECT "\'%s\'", "DELETE-%s", escalation_contacts_id
+                                 FROM escalations_contacts_to_contacts where escalation_contacts_id=\'%s\'',
+                                $_SESSION['user'],
+				$operation,
+                                $row['id']
+                        );
+                        $auditResult = queryDB($audit);
+
+                        $audit = sprintf(
+                                'INSERT INTO audit_log_escalations_contacts_to_contactgroups (changed_by_username, db_operation, escalation_contacts_id)
+                                 SELECT "\'%s\'", "DELETE-%s", escalation_contacts_id
+                                 FROM escalations_contacts_to_contactgroups where escalation_contacts_id=\'%s\'',
+                                $_SESSION['user'],
+				$operation,
+                                $row['id']
+                        );
+                        $auditResult = queryDB($audit);
+
 		}
 
 		// clear old escalations and relations
@@ -729,6 +999,44 @@ function deleteEscalationByEscalationId ($eid) {
 		$dbResult = queryDB($query);
 		if ($dbResult[0]['cnt'] != '1') return false;
 	}
+
+	/* AUDIT TRAIL ON ID TO BE DELETED */
+	$audit = sprintf(
+                'INSERT INTO audit_log_escalations_contacts
+                 (changed_by_username, db_operation, notification_id, on_ok, on_warning, on_critical, on_unknown, on_host_up, on_host_unreachable, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, notify_after_tries)
+                 SELECT "\'%s\'", "DELETE-esc", notification_id, on_ok, on_warning, on_critical, on_unknown, on_host_up, on_host_unreachable, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, notify_after_tries
+                 FROM escalations_contacts WHERE notification_id=\'%s\'',
+                $_SESSION['user'],
+	        $eid
+        );
+        $auditResult = queryDB($audit);
+
+	$audit = sprintf(
+			'INSERT INTO audit_log_escalations_contacts_to_methods (changed_by_username, db_operation, escalation_contacts_id)
+			 SELECT "\'%s\'", "DELETE-esc", escalation_contacts_id
+			 FROM escalations_contacts_to_methods where escalation_contacts_id=\'%s\'',
+			$_SESSION['user'],
+			$eid
+	);
+	$auditResult = queryDB($audit);
+
+	$audit = sprintf(
+			'INSERT INTO audit_log_escalations_contacts_to_contacts (changed_by_username, db_operation, escalation_contacts_id)
+			 SELECT "\'%s\'", "DELETE-esc", escalation_contacts_id
+			 FROM escalations_contacts_to_contacts where escalation_contacts_id=\'%s\'',
+			$_SESSION['user'],
+			$eid
+	);
+	$auditResult = queryDB($audit);
+
+	$audit = sprintf(
+			'INSERT INTO audit_log_escalations_contacts_to_contactgroups (changed_by_username, db_operation, escalation_contacts_id)
+			 SELECT "\'%s\'", "DELETE-esc", escalation_contacts_id
+			 FROM escalations_contacts_to_contactgroups where escalation_contacts_id=\'%s\'',
+			$_SESSION['user'],
+			$eid
+	);
+	$auditResult = queryDB($audit);
 
 	queryDB('DELETE FROM escalations_contacts WHERE id=\'' . $eid . '\'');
 	queryDB('DELETE FROM escalations_contacts_to_contacts WHERE escalation_contacts_id=\'' . $eid . '\'');

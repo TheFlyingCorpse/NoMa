@@ -48,7 +48,7 @@
 
 
 #
-# usage: sendVoice.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT>  <OUTPUT> [SERVICE]
+# usage: sendVoice.pl <EMAIL-FROM> <EMAIL-TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT> <IMPACT> <OUTPUT> [SERVICE]
 #
 #
 
@@ -71,7 +71,7 @@ my $scriptName = 'voicecall.pl';
 #debugLog("argv.... ". Dumper(\$ARGV));
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
-if ($numArgs != 13 && $numArgs != 14)
+if ($numArgs != 14 && $numArgs != 15)
 {
 	print "wrong number of parameters ($numArgs)\n";
 	exit 1;
@@ -92,12 +92,13 @@ my $host_address = $ARGV[8];
 my $incident_id = $ARGV[9];
 my $authors = $ARGV[10];
 my $comments = $ARGV[11];
-my $output = $ARGV[12];
+my $impact = $ARGV[12];
+my $output = $ARGV[13];
 my $service = '';
 my $count = '';
 my $datetime = localtime($datetimes);
 
-$service = $ARGV[13] if ($numArgs == 14);
+$service = $ARGV[14] if ($numArgs == 15);
 
 
 my $message = $conf->{methods}->{voicecall}->{message}->{header};

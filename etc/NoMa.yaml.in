@@ -72,6 +72,7 @@ frontend:
    overview_host: 40
    overview_servicegroups: 50
    overview_service: 40
+   overview_customvariables: 40
   debug:
    file: /tmp/NoMa-logfile.log
    logging: false
@@ -116,17 +117,20 @@ methods:
     return_ack: 0
     subject_host: "NoMa - $notification_type: Host $host is $status"
     subject_service: "NoMa - $notification_type: Service $service on host $host is $status"
+    suppression: 0
   sendemail: 
     message: 
       host: 
-        ackmessage: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nHost: $host\nAuthor: $authors\nComment: $comments\nState: $status\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host\nInfo: $output\n\nDate/Time: $datetime"
-        message: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nHost: $host\nHost Alias: $host_alias\nState: $status\nAddress: $host_address\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host\nInfo: $output\n\nDate/Time: $datetime"
+        ackmessage: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nHost: $host\nAuthor: $authors\nComment: $comments\nState: $status\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host\nImpact: $impact\nInfo: $output\n\nDate/Time: $datetime"
+        message: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nHost: $host\nHost Alias: $host_alias\nState: $status\nAddress: $host_address\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=1&host=$host\nImpact: $impact\nInfo: $output\n\nDate/Time: $datetime"
         subject: "NoMa: Host $host is $status"
       service: 
-        ackmessage: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nAuthor: $authors\nComment: $comments\nService: $service\nHost: $host\nState: $status\n\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service\nInfo: $output\n\nDate/Time: $datetime"
-        message: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nService: $service\nHost: $host\nHost Alias: $host_alias\nState: $status\nAddress: $host_address\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service\nInfo: $output\n\nDate/Time: $datetime"
+        ackmessage: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nAuthor: $authors\nComment: $comments\nService: $service\nHost: $host\nState: $status\n\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service\nImpact: $impact\nInfo: $output\n\nDate/Time: $datetime"
+        message: "***** NoMa *****\n\nID: $incident_id\nNotification Type: $notification_type\nService: $service\nHost: $host\nHost Alias: $host_alias\nState: $status\nAddress: $host_address\nLink: http://localhost/nagios/cgi-bin/extinfo.cgi?type=2&host=$host&service=$service\nImpact: $impact\nInfo: $output\n\nDate/Time: $datetime"
         subject: "NoMa: Service $service on host $host is $status"
     sendmail: @SENDMAIL@ -t
+    suppression: 0
+    return_ack: 0
   sendsms: 
     ackmessage: 
       host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Author $authors. Comment $comments. Time: $datetime"
@@ -135,7 +139,10 @@ methods:
     message: 
       host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. $output Time: $datetime"
       service: "$incident_id: $notification_type for service $service on host $host. State is $status. Info: $output Time: $datetime"
+#      host: "$incident_id: $notification_type on host $host. State is $status. Alias: $host_alias. Impact: $impact. $output Time: $datetime"
+#      service: "$incident_id: $notification_type for service $service on host $host. State is $status. Impact: $impact. Info: $output Time: $datetime"
     suppression: 0
+    return_ack: 0
   voicecall: 
     bundled_message: 
       header: "this is a message from nagios "

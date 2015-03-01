@@ -167,6 +167,8 @@ my $host_alias        = '';
 my $host_address      = '';
 my $service           = '';
 my $check_type        = '';
+my $customvariables   = '';
+my $impact            = '';
 my $status            = '';
 my $datetime          = '';
 my $output            = '';
@@ -292,7 +294,7 @@ debug('NoMa '.$versionStr.' starting @ '.localtime, 1);
 # DATABASE VERSION VERIFICATION
 ##############################################################################
 # Check version before anything else connects to the database!
-my $expecteddbversion = '2000'; # Do NOT change this value!
+my $expecteddbversion = '2200'; # Do NOT change this value!
 if (dbVersion($expecteddbversion,0) ne $expecteddbversion){
 	print("Wrong schema version!! Please upgrade DB schema, see documentation and log for more information...");
         debug( ' Schema is wrong version: '.dbVersion($expecteddbversion,0).' expected: '.$expecteddbversion, 1);
@@ -381,7 +383,7 @@ do
             }
             next if ( !defined $cmdh{host} or $cmdh{host} eq '');
             debug(debugHash(%cmdh), 2);
-#                 "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, output = $output"
+#                 "host = $host, incident_id = $incident_id, host_alias = $host_alias, host_address = $host_address, service = $service, check_type = $check_type, status = $status, datetime = $datetime, notification_type = $notification_type, hostgroup = $hostgroup, servicegroup = $servicegroup, recipients = $recipients, customvariables = $customvariables, output = $output"
 
             # hosts and services in lower case
             #$cmdh{host} = lc($cmdh{host});
@@ -407,7 +409,7 @@ do
 
             # filter out unneeded users by using exclude lists
             my @ids_all =
-	    generateNotificationList( $cmdh{check_type}, $cmdh{recipients}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups},
+	    generateNotificationList( $cmdh{check_type}, $cmdh{recipients}, $cmdh{host},  $cmdh{service}, $cmdh{hostgroups}, $cmdh{servicegroups}, $cmdh{customvariables},
                 %dbResult );
             debug( 'Rule IDs collected (unfiltered): ' . join( '|', @ids_all ), 2 );
 
@@ -627,7 +629,7 @@ sub getRuleList
 
 	# generate query and get list of possible users to notify
 	my $query =
-	'SELECT id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude FROM notifications';
+	'SELECT id,recipients_include,recipients_exclude,hosts_include,hosts_exclude,hostgroups_include,hostgroups_exclude,services_include,services_exclude,servicegroups_include,servicegroups_exclude,customvariables_include,customvariables_exclude FROM notifications';
 	if ( $cmdh->{check_type} eq 'h' )
 	{
 		$query .= ' where ' . $stati_host{$cmdh->{status}} . '=\'1\'';
@@ -870,7 +872,7 @@ sub notifyContact
 
 	# TODO consider using timezones and converting time to user configurable format e.g. 
 	# M/D/YY for USA
-	# DD/MM/YYYY or DD.MM.YYYY for most of the World
+	# DD/MM/YYYY or DD.MM.YYYY for most of the World (RFC 8601 FTW!)
 	# until this is implemented we just use what we were given
 	# TODO do not queue here -> this is the job of the bundler thread
 	#$queue{$cmd}->enqueue(prepareNotification($user, $method, $cmd, $dest, $from, $id, $datetime, $check_type, $status,
@@ -883,7 +885,7 @@ sub notifyContact
 		prepareNotification($cmdh->{external_id}, $user, $method, 
 			$cmd, $dest, $sender, $id, $cmdh->{stime}, $cmdh->{check_type}, $cmdh->{status},
 			$cmdh->{notification_type}, $cmdh->{host}, $cmdh->{host_alias}, $cmdh->{host_address}, 
-			$cmdh->{hostgroups}, $cmdh->{service}, $cmdh->{servicegroups}, $cmdh->{authors}, $cmdh->{comments}, $cmdh->{output}, 
+			$cmdh->{hostgroups}, $cmdh->{service}, $cmdh->{servicegroups}, $cmdh->{customvariables}, $cmdh->{authors}, $cmdh->{comments}, $cmdh->{impact}, $cmdh->{output}, 
 			$contact->{rule});
 	}
 }
@@ -910,10 +912,10 @@ sub parseCommand
         (
             	$cmdh{operation},	$cmdh{external_id},	$cmdh{recipients},
 		$cmdh{host},   		$cmdh{host_alias},      $cmdh{host_address}, 	$cmdh{hostgroups}, 
-		$cmdh{service},        	$cmdh{servicegroups},	$cmdh{check_type},
-	        $cmdh{status},    	$cmdh{stime},		$cmdh{notification_type}, 
-                $cmdh{authors},         $cmdh{comments},         $cmdh{output}
-        ) = split( ';', $cmd,16);
+		$cmdh{service},        	$cmdh{servicegroups},	$cmdh{check_type},   	$cmdh{customvariables},
+	        $cmdh{status},    	$cmdh{stime},		$cmdh{notification_type},  $cmdh{authors},
+                $cmdh{comments},        $cmdh{impact},		$cmdh{output}
+        ) = split( ';', $cmd,18);
 
 
 		# sanity checks
@@ -952,12 +954,12 @@ sub parseCommand
 
     if ( $cmd =~ /^notification;/i)
     {
-	$sql = sprintf('insert into tmp_commands (operation, external_id, recipients, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\', \'%s\')',
+	$sql = sprintf('insert into tmp_commands (operation, external_id, recipients, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, customvariables, status, stime, notification_type, authors, comments, impact, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\', \'%s\')',
                 $cmdh{operation},       $cmdh{external_id},	$cmdh{recipients},
 		$cmdh{host},            $cmdh{host_alias},      $cmdh{host_address},    $cmdh{hostgroups},
-                $cmdh{service},         $cmdh{servicegroups},   $cmdh{check_type},
+                $cmdh{service},         $cmdh{servicegroups},   $cmdh{check_type},  	$cmdh{customvariables},
                 $cmdh{status},          $cmdh{stime},           $cmdh{notification_type},
-		$cmdh{authors},		$cmdh{comments},         $cmdh{output});
+		$cmdh{authors},		$cmdh{comments},        $cmdh{impact},		$cmdh{output});
 	  updateDB($sql);
     }
         return %cmdh;
@@ -1061,7 +1063,7 @@ sub prepareNotification
 {
 	my ($incident_id, $user, $method, $short_cmd, $dest, $sender, $id,
 	$datetime, $check_type, $status,
-	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $authors, $comments, $output, $rule, $nodelay) = @_;
+	$notification_type, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $customvariables, $authors, $comments, $impact, $output, $rule, $nodelay) = @_;
 
 	# start of the notification
 	my $start = time();

@@ -37,7 +37,7 @@ sub sendNotifications
 
     # select notifications due to be executed that are not currently in progress and that have not already been bundled
     # N.B. a bundled notification will also appear here as a notification with a separate field.
-    my $query = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comments,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled = \'0\' and a.stime <= \''.time().'\'';
+    my $query = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comments,impact,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled = \'0\' and a.stime <= \''.time().'\'';
     %dbResult = queryDB($query, undef, 1);
 
     return unless (keys(%dbResult));
@@ -60,40 +60,42 @@ sub sendNotifications
         foreach my $item (@toNotify)
         {
 
-            # save all relevant data in case there is no bundling required
-            # N.B. set the count to 0 because we are counting in the next stage
-            $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{count} = 0;
-            $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{from_user} = $dbResult{$item}{from_user};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{dest} = $dbResult{$item}{dest};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{check_type} = $dbResult{$item}{check_type};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{stime} = $dbResult{$item}{stime};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{status} = $dbResult{$item}{status};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{notification_type} = $dbResult{$item}{notification_type};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host} = $dbResult{$item}{host};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{service} = $dbResult{$item}{service};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host_alias} = $dbResult{$item}{host_alias};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host_address} = $dbResult{$item}{host_address};
-                       $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{external_id} = $dbResult{$item}{external_id};
-                       $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{authors} = $dbResult{$item}{authors};
-                       $recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{comments} = $dbResult{$item}{comments};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{output} = $dbResult{$item}{output};
-			$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{notify_id} = $dbResult{$item}{notify_id};
+		# save all relevant data in case there is no bundling required
+		# N.B. set the count to 0 because we are counting in the next stage
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{count} = 0;
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{from_user} = $dbResult{$item}{from_user};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{dest} = $dbResult{$item}{dest};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{check_type} = $dbResult{$item}{check_type};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{stime} = $dbResult{$item}{stime};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{status} = $dbResult{$item}{status};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{notification_type} = $dbResult{$item}{notification_type};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host} = $dbResult{$item}{host};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{service} = $dbResult{$item}{service};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host_alias} = $dbResult{$item}{host_alias};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{host_address} = $dbResult{$item}{host_address};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{external_id} = $dbResult{$item}{external_id};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{authors} = $dbResult{$item}{authors};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{comments} = $dbResult{$item}{comments};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{impact} = $dbResult{$item}{impact};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{output} = $dbResult{$item}{output};
+		$recipients{$dbResult{$item}{dest}}{$dbResult{$item}{notify_cmd}}{notify_id} = $dbResult{$item}{notify_id};
 
         }
 
         # now repeat the query without the time restriction to fetch any other notifications that have been queued
 
-        my $query2 = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comments,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled <= \'0\'';
+        my $query2 = 'select a.id,notify_id,dest,from_user,time_string,user,method,notify_cmd,retries,rule, external_id,host,host_alias,host_address,service,check_type,status,a.stime,notification_type,authors,comments,impact,output from tmp_active as a left join tmp_commands as c on a.command_id=c.id where progress=\'0\' and bundled <= \'0\'';
         my %res = queryDB($query2, undef, 1);
         return unless (keys(%res));
         foreach my $index (keys %res)
         {
 
             # retrieve anything where the hash is already defined
-            if (defined($recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{count}))
+            if (defined($recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{count}) and defined($recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{notify_id}))
             {
-                # 
-                updateLog($dbResult{$item}{notify_id}, ", bundling");
+
+                #
+                updateLog($recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{notify_id}, ", bundling");
                 $recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{count}++;
                 push @{ $recipients{$res{$index}{dest}}{$res{$index}{notify_cmd}}{ids} }, $res{$index}{notify_id};
 
@@ -121,7 +123,7 @@ sub sendNotifications
                     #
 		    debug(" ---> Single alert ($cmd)\n", 2);
                     $param = sprintf(
-                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                         $recipients{$user}{$cmd}{from_user},
                         $recipients{$user}{$cmd}{dest},
                         $recipients{$user}{$cmd}{check_type},
@@ -134,6 +136,7 @@ sub sendNotifications
                         $recipients{$user}{$cmd}{external_id},
                         $recipients{$user}{$cmd}{authors},
                         $recipients{$user}{$cmd}{comments},
+			$recipients{$user}{$cmd}{impact},
                         $recipients{$user}{$cmd}{output});
 
                     $param .= ' "'.$recipients{$user}{$cmd}{service}.'"' if ( $recipients{$user}{$cmd}{check_type} eq 's' );
@@ -162,7 +165,7 @@ sub sendNotifications
 
                 my $now = time();
                 # create a fake command
-                $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+                $sql = sprintf('insert into tmp_commands (operation, external_id, host, host_alias, host_address, hostgroups, service, servicegroups, check_type, status, stime, notification_type, authors, comments, impact, output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
                     'NOTIFICATION',
                     $notify_id,
                     'multiple alerts',
@@ -217,7 +220,7 @@ sub sendNotifications
         foreach my $item (@toNotify)
         {
             $param = sprintf(
-                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
+                "\"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"",
                 $dbResult{$item}{from_user},
                 $dbResult{$item}{dest},
                 $dbResult{$item}{check_type},
@@ -230,6 +233,7 @@ sub sendNotifications
                 $dbResult{$item}{external_id},
                 $dbResult{$item}{authors},
                 $dbResult{$item}{comments},
+		$dbResult{$item}{impact},
                 $dbResult{$item}{output});
 
             $param .= ' "'.$dbResult{$item}{service}.'"' if ( $dbResult{$item}{check_type} eq 's' );
@@ -323,8 +327,8 @@ sub suppressionIsActive
 {
     # check that the notification method isn't currently being suppressed
     my ($cmd, $length) = @_;
-    debug("Suppression hash is ".Dumper(%suppressionHash));
-    debug("Suppression cmd: $cmd, len: $length");
+    debug("Suppression hash is ".Dumper(%suppressionHash), 3);
+    debug("Suppression cmd: $cmd, len: $length", 3);
 
     return 0 unless (defined($length) and ($length > 0));
 

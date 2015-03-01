@@ -48,7 +48,7 @@
 
 
 #
-# usage: sendToNagios.pl <FROM> <TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT>  <OUTPUT> [SERVICE]
+# usage: sendToNagios.pl <FROM> <TO> <CHECK-TYPE> <DATETIME> <STATUS> <NOTIFICATION-TYPE> <HOST-NAME> <HOST-ALIAS> <HOST-IP> <INCIDENT ID> <AUTHOR> <COMMENT> <IMPACT> <OUTPUT> [SERVICE]
 #
 #
 
@@ -62,7 +62,7 @@ my $conf = LoadFile($notifierConfig);
 
 # check number of command-line parameters
 my $numArgs = $#ARGV + 1;
-exit 1 if ($numArgs != 13 && $numArgs != 14);
+exit 1 if ($numArgs != 14 && $numArgs != 15);
 
 my %statush = (
 	'OK'		=> 0,
@@ -86,14 +86,15 @@ my $host_address = $ARGV[8];
 my $incident_id = $ARGV[9];
 my $authors = $ARGV[10];
 my $comments = $ARGV[11];
-my $output = $ARGV[12];
+my $impact = $ARGV[12];
+my $output = $ARGV[13];
 my $service = '';
 my $filename = '';
 my $file = '';
 my $nagiospipe = "@NAGIOSPIPE@";
 my $command;
 
-$service = $ARGV[13] if ($numArgs == 14);
+$service = $ARGV[14] if ($numArgs == 15);
 
 # Hardcode here
 # $host = "myhost";

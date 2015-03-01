@@ -225,8 +225,9 @@ try {
             'overview_recipients'		=> 40,
             'overview_hostgroups'	        => 50,
             'overview_host'	                => 40,
-            'overview_servicegroups'	=> 50,
-            'overview_service'              => 40,
+            'overview_servicegroups'            => 50,
+            'overview_service'                  => 40,
+            'overview_customvariabless'         => 40,
             );
 
 }

@@ -147,6 +147,16 @@ function addContact ($p) {
 	$dbResult = queryDB($query);
 	if (empty($dbResult[0]['id'])) return CONTACTS_ADD_ADDED_BUT_NOT_IN_DB;
 
+        /* AUDIT TRAIL OF NEW CONTACT */
+        $audit = sprintf(
+                        'INSERT INTO audit_log_contacts (changed_by_username, db_operation, admin, full_name, email, phone, mobile, growladdress, timeframe_id,  timezone_id, restrict_alerts, username, password, section, id)
+                         SELECT "\'%s\'", "INSERT-new", admin, full_name, email, phone, mobile, growladdress, timeframe_id,  timezone_id, restrict_alerts, username, password, section, id
+                         FROM contacts where id=\'%s\'',
+                        $_SESSION['user'],
+                        $dbResult[0]['id']
+        );
+        $auditResult = queryDB($audit);
+
 	// add holidays
 	if (!empty($p['holiday_name']) && !empty($p['holiday_start']) && !empty($p['holiday_end'])) {
 		addCHolidays($dbResult[0]['id'], $p['holiday_name'], $p['holiday_start'], $p['holiday_end']);
@@ -218,6 +228,16 @@ function updateContact ($p) {
 	);
 	queryDB($query);
 
+	/* AUDIT TRAIL OF UPDATED CONTACT */
+        $audit = sprintf(
+                        'INSERT INTO audit_log_contacts (changed_by_username, db_operation, admin, full_name, email, phone, mobile, growladdress, timeframe_id,  timezone_id, restrict_alerts, username, password, section, id)
+                         SELECT "\'%s\'", "UPDATE-contact", admin, full_name, email, phone, mobile, growladdress, timeframe_id,  timezone_id, restrict_alerts, username, password, section, id
+                         FROM contacts where id=\'%s\'',
+                        $_SESSION['user'],
+                        $id
+        );
+        $auditResult = queryDB($audit);
+
 
 	// delete holidays
 	if (isset($p['del_holiday']) && is_array($p['del_holiday'])) {
@@ -227,6 +247,18 @@ function updateContact ($p) {
 		foreach ($p['del_holiday'] as $key => $value) {
 			$query .= $sep . 'id=\'' . prepareDBValue($key) . '\'';
 			if (!$sep) $sep = ' or ';
+
+                        /* AUDIT TRAIL */
+                        $audit = sprintf(
+                                 'INSERT INTO audit_log_holidays (changed_by_username, db_operation, contact_id, holiday_name, holiday_start, holiday_end, id)
+                                  SELECT "\'%s\'", "DELETE-update", contact_id, holiday_name, holiday_start, holiday_end, id
+                                  FROM holidays where contact_id=\'%s\' and id=\'%s\'',
+                                  $_SESSION['user'],
+                                  $id,
+                                  prepareDBValue($key)
+                         );
+                         $auditResult = queryDB($audit);
+
 		}
 		$query .= ') and contact_id=\'' . $id . '\'';
 		queryDB($query);
@@ -269,12 +301,110 @@ function delContact ($p) {
 	$userID = $dbResult[0]['id'];
 
 	// delete all notifications assigned to the posted contact
+
+        /* AUDIT TRAIL */
+        $dbResultCount = queryDB('select notification_id from notifications_to_contacts where contact_id=\'' . $userID . '\'');
+
+        if (count($dbResultCount)) {
+
+                foreach($dbResultCount as $row) {
+
+                        $audit = sprintf(
+                          'INSERT INTO audit_log_notifications_to_contacts(changed_by_username, db_operation, notification_id, contact_id)
+                           SELECT "\'%s\'", "DELETE-contact", notification_id, contact_id
+                           FROM notifications_to_contacts WHERE notification_id=\'%s\' and contact_id=\'%s\'',
+                           $_SESSION['user'],
+                           $row['notification_id'],
+                           $userID
+                        );
+                        $auditResult = queryDB($audit);
+                }
+
+        }
+
 	queryDB('delete from notifications_to_contacts where contact_id=\'' . $userID . '\'');
 
-	// disable all notifications and change usernames of all notifications owned by this user
+        // disable all notifications and change usernames of all notifications owned by this user
+        /* AUDIT TRAIL */
+        $dbResultCount = queryDB('select id from notifications where username=\'' . $userPrep . '\'' );
+
+        if (count($dbResultCount)) {
+
+                foreach($dbResultCount as $row) {
+
+                        /* AUDIT TRAIL OF UPDATE ABOVE */
+                        $audit = sprintf(
+                                'INSERT INTO audit_log_notifications (changed_by_username, db_operation, id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id)
+                                        SELECT "\'%s\'", "UPDATE-owner", id, notification_name, notification_description, active, username, recipients_include, recipients_exclude, hosts_include, hosts_exclude, hostgroups_include, hostgroups_exclude, services_include, services_exclude, servicegroups_include, servicegroups_exclude, customvariables_include, customvariables_exclude, notify_after_tries, let_notifier_handle, rollover, reloop_delay, on_ok, on_warning, on_unknown, on_host_unreachable, on_critical, on_host_up, on_host_down, on_type_problem, on_type_recovery, on_type_flappingstart, on_type_flappingstop, on_type_flappingdisabled, on_type_downtimestart, on_type_downtimeend, on_type_downtimecancelled, on_type_acknowledgement, on_type_custom, timezone_id, timeframe_id
+                                        FROM notifications WHERE id=\'%s\'',
+                                $_SESSION['user'],
+                                $row['id']
+                        );
+                        $auditResult = queryDB($audit);
+
+                }
+
+        }
+
 	queryDB('update notifications set active=\'0\', username=\'' . prepareDBValue('[' . $p['user'] . ']') . '\' where username=\'' . $userPrep . '\'');
 
-	// finally, delete the user
+        // delete the user from escalations_contacts_to_contacts
+        /* AUDIT TRAIL */
+        $dbResultCount = queryDB('select escalation_contacts_id from escalations_contacts_to_contacts where contacts_id=\'' . $userID . '\'');
+
+        if (count($dbResultCount)) {
+
+                foreach($dbResultCount as $row) {
+
+                $audit = sprintf(
+                                'INSERT INTO audit_log_escalations_contacts_to_contacts (changed_by_username, db_operation, escalation_contacts_id, contacts_id)
+                                 SELECT "\'%s\'", "DELETE-contact", escalation_contacts_id, contacts_id
+                                 FROM escalations_contacts_to_contacts WHERE contacts_id=\'%s\' and escalation_contacts_id=\'%s\'',
+                                $_SESSION['user'],
+                                $userID,
+                                $row['escalation_contacts_id']
+                );
+                $auditResult = queryDB($audit);
+
+                }
+
+        }
+        queryDB('delete from escalations_contacts_to_contacts where contacts_id=\'' . $userID . '\'');
+
+
+        // delete the user from contactgroups
+        /* AUDIT TRAIL */
+        $dbResultCount = queryDB('select contactgroup_id from contactgroups_to_contacts where contact_id=\'' . $userID . '\'');
+
+        if (count($dbResultCount)) {
+
+                foreach($dbResultCount as $row) {
+
+                $audit = sprintf(
+                                'INSERT INTO audit_log_contactgroups_to_contacts (changed_by_username, db_operation, contactgroup_id, contact_id)
+                                 SELECT "\'%s\'", "DELETE-contact", contactgroup_id, contact_id
+                                 FROM contactgroups_to_contacts WHERE contact_id=\'%s\' and contactgroup_id=\'%s\'',
+                                $_SESSION['user'],
+                                $userID,
+                                $row['contactgroup_id']
+                );
+                $auditResult = queryDB($audit);
+
+                }
+
+        }
+        queryDB('delete from contactgroups_to_contacts where contact_id=\'' . $userID . '\'');
+
+        // finally, delete the user
+        /* AUDIT TRAIL */
+        $audit = sprintf(
+                        'INSERT INTO audit_log_contacts (changed_by_username, db_operation, admin, full_name, email, phone, mobile, growladdress, timeframe_id,  timezone_id, restrict_alerts, username, password, section, id)
+                         SELECT "\'%s\'", "DELETE-contact", admin, full_name, email, phone, mobile, growladdress, timeframe_id,  timezone_id, restrict_alerts, username, password, section, id
+                         FROM contacts WHERE id=\'%s\'',
+                        $_SESSION['user'],
+                        $userID
+        );
+
 	queryDB('delete from contacts where id=\'' . $userID . '\'');
 
 	return true;
@@ -360,6 +490,16 @@ function addCHolidays ($contact_id, $holiday_name, $holiday_start, $holiday_end)
 		$holiday_end
 	);
 	queryDB($query);
+
+	/* AUDIT TRAIL */
+	$audit = sprintf(
+			'INSERT INTO audit_log_holidays (changed_by_username, db_operation, contact_id, holiday_name, holiday_start, holiday_end)
+			 SELECT "\'%s\'", "INSERT-new", contact_id,holiday_name,holiday_start,holiday_end
+			 FROM holidays where contact_id=\'%s\'',
+			$_SESSION['user'],
+			$contact_id
+	);
+	$auditResult = queryDB($audit);
 
 	return true;
 

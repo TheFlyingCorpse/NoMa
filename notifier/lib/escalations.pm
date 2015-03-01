@@ -125,11 +125,11 @@ sub createEscalationCounter
 #        $output
 
     my $query =
-            sprintf('insert into escalation_stati (notification_rule,starttime,counter,incident_id,recipients,host,host_alias,host_address,hostgroups,service,servicegroups,check_type,status,time_string,type,authors,comments,output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
+            sprintf('insert into escalation_stati (notification_rule,starttime,counter,incident_id,recipients,host,host_alias,host_address,hostgroups,service,servicegroups,check_type,customvariables,status,time_string,type,authors,comments,impact,output) values (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')',
             $esc_rule,time(),
             '1',$eventh{external_id},$eventh{recipients},
             $eventh{host},$eventh{host_alias},$eventh{host_address},$eventh{hostgroups},$eventh{service},$eventh{servicegroups},
-            $eventh{check_type},$eventh{status},$eventh{stime},$eventh{notification_type},$eventh{authors},$eventh{comments},$eventh{output});
+            $eventh{check_type},$eventh{customvariables},$eventh{status},$eventh{stime},$eventh{notification_type},$eventh{authors},$eventh{comments},$eventh{impact},$eventh{output});
 
     updateDB($query);
 
@@ -176,13 +176,13 @@ sub escalate
       # $query = "update escalation_stati set counter=counter+1 where id='".$res->{id}."'";
       # %dbResult = updateDB($query);
 
-      $query = 'select incident_id,recipients,host,host_alias,host_address,hostgroups,service,servicegroups,check_type,status,time_string,type,authors,comments,output from escalation_stati where id=\''.$res->{id}.'\'';
+      $query = 'select incident_id,recipients,host,host_alias,host_address,hostgroups,service,servicegroups,check_type,customvariables,status,time_string,type,authors,comments,impact,output from escalation_stati where id=\''.$res->{id}.'\'';
       %dbResult = queryDB($query);
 
       debug('incident with escalation without alert active, dbResult: '.Dumper(\%dbResult),3);
 
       # Make a command for escalation notification.
-      $cmd = 'escalation;'.$dbResult{0}{incident_id}.';'.$dbResult{0}{recipients}.";".$dbResult{0}{host}.";".$dbResult{0}{host_alias}.';'.$dbResult{0}{host_address}.';'.$dbResult{0}{hostgroups}.';'.$dbResult{0}{service}.';'.$dbResult{0}{servicegroups}.';'.$dbResult{0}{check_type}.';'.$dbResult{0}{status}.';'.$dbResult{0}{time_string}.';'.$dbResult{0}{type}.';'.$dbResult{0}{authors}.';'.$dbResult{0}{comments}.';'.$dbResult{0}->{output};
+      $cmd = 'escalation;'.$dbResult{0}{incident_id}.';'.$dbResult{0}{recipients}.";".$dbResult{0}{host}.";".$dbResult{0}{host_alias}.';'.$dbResult{0}{host_address}.';'.$dbResult{0}{hostgroups}.';'.$dbResult{0}{service}.';'.$dbResult{0}{servicegroups}.';'.$dbResult{0}{check_type}.';'.$dbResult{0}{customvariables}.';'.$dbResult{0}{status}.';'.$dbResult{0}{time_string}.';'.$dbResult{0}{type}.';'.$dbResult{0}{authors}.';'.$dbResult{0}{comments}.';'.$dbResult{0}{impact}.';'.$dbResult{0}->{output};
 
       debug('incident with escalatiion without active alert, $cmd: '.$cmd,2);
 
@@ -372,7 +372,7 @@ sub getNextMethodCmd
 	    $dbResult{0}{timestamp},$dbResult{0}{check_type}, $dbResult{0}{status}, 
 	    $dbResult{0}{type}, $dbResult{0}{host},$dbResult{0}{host_alias}, 
 	    $dbResult{0}{host_address}, $dbResult{0}{hostgroups}, $dbResult{0}{service}, 
-	    $dbResult{0}{servicegroups}, $dbResult{0}{authors},$dbResult{0}{comments}, $dbResult{0}{output});
+	    $dbResult{0}{servicegroups}, $dbResult{0}{customvariables}, $dbResult{0}{authors},$dbResult{0}{comments}, $dbResult{0}{impact}, $dbResult{0}{output});
     return $cline;
 
 }

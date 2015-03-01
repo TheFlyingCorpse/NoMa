@@ -67,6 +67,7 @@ function getContent () {
 		'n.hostgroups_include' => 'HOSTGROUP',
 		'n.hosts_include' => 'HOST',
 		'n.services_include' => 'SERVICE',
+		'n.customvariables_include' => 'CUSTOMVARIABLE',
 		'n.username' => 'OWNER'
 	);
 
@@ -85,6 +86,7 @@ function getContent () {
 	$templateContent->assign('OVERVIEW_HEADING_HOSTGROUPS', OVERVIEW_HEADING_HOSTGROUPS);
 	$templateContent->assign('OVERVIEW_HEADING_HOSTS', OVERVIEW_HEADING_HOSTS);
 	$templateContent->assign('OVERVIEW_HEADING_SERVICES', OVERVIEW_HEADING_SERVICES);
+	$templateContent->assign('OVERVIEW_HEADING_CUSTOMVARIABLES', OVERVIEW_HEADING_CUSTOMVARIABLES);
 	$templateContent->assign('OVERVIEW_HEADING_OWNER', OVERVIEW_HEADING_OWNER);
 	$templateContent->assign('OVERVIEW_HEADING_TIMEZONE', OVERVIEW_HEADING_TIMEZONE);
 	$templateContent->assign('OVERVIEW_HEADING_NOTIFY_ON', OVERVIEW_HEADING_NOTIFY_ON);
@@ -275,21 +277,25 @@ function getContent () {
 			$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_IMAGE', 'images/activate.png');
 			if (!isset($row['cg_id'])) {
 				$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_TOOLTIP', OVERVIEW_ACTIVE_TOOLTIP);
+				$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_CONFIRM', OVERVIEW_ACTIVE_TOOLTIP);
 			} else {
 				$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_TOOLTIP', OVERVIEW_ACTIVE_TOOLTIP_DISABLED);
+				$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_CONFIRM', OVERVIEW_ACTIVE_TOOLTIP_DISABLED);
 			}
 		} else {
 			$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_IMAGE', 'images/deactivate.png');
 			if (!isset($row['cg_id'])) {
 				$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_TOOLTIP', OVERVIEW_INACTIVE_TOOLTIP);
+				$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_CONFIRM', OVERVIEW_INACTIVE_TOOLTIP);
 			} else {
 				$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_TOOLTIP', OVERVIEW_INACTIVE_TOOLTIP_DISABLED);
+				$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_CONFIRM', OVERVIEW_INACTIVE_TOOLTIP_DISABLED);
 			}
 		}
 
 		// toggle usability of button
 		if (!isset($row['cg_id'])) {
-			$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_JS', 'onclick="javascript:toggleActive(\'' . $row['id'] . '\')" ');
+			$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_JS', 'toggleActive(\'' . $row['id'] . '\') ');
 			$templateSubContent->assign('OVERVIEW_EDIT_ENTRY_ALT_TOOLTIP', OVERVIEW_EDIT_ENTRY_ALT_TOOLTIP);
 			$templateSubContent->assign('OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP', OVERVIEW_DELETE_ENTRY_ALT_TOOLTIP);
 			$templateSubContent->assign('OVERVIEW_TOGGLE_ACTIVE_ALT', OVERVIEW_TOGGLE_ACTIVE_ALT);
@@ -343,6 +349,15 @@ function getContent () {
 				' onmouseover="javascript:showLong(\'&lt;b&gt;+&lt;/b&gt;: ' . $row['services_include'] . '&lt;br/&gt;&lt;b&gt;-&lt;/b&gt;: ' . $row['services_exclude'] . '\');" onmouseout="javascript:hideLong();"'
 			);
 		}
+
+		$data = list($long, $value, $short) = shorten($row['customvariables_include'] . ' | ' . $row['customvariables_exclude'], 'overview_customvariables');
+                $templateSubContent->assign('CUSTOMVARIABLES' , $value);
+                if ($short) {
+                        $templateSubContent->assign(
+                                'CUSTOMVARAIBLES_MOUSEOVER',
+                                ' onmouseover="javascript:showLong(\'&lt;b&gt;+&lt;/b&gt;: ' . $row['customvariables_include'] . '&lt;br/&gt;&lt;b&gt;-&lt;/b&gt;: ' . $row['customvariables_exclude'] . '\');" onmouseout="javascript:hideLong();"'
+                        );
+                }
 
 		$templateSubContent->assign('OWNER', $row['username']);
 		$templateSubContent->assign('FULL_NAME', $row['full_name']);

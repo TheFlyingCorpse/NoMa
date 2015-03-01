@@ -212,7 +212,7 @@ function getContent () {
                 $templateSubContent->assign('CHECKED_DAY_SUNDAY_5TH', ($timeframeData['day_sunday_5th']==1)?' checked="checked" ':'');
                 $templateSubContent->assign('CHECKED_DAY_SUNDAY_LAST', ($timeframeData['day_sunday_last']==1)?' checked="checked" ':'');
 
-/*
+
                 $timeframeHolidays = queryDB('SELECT * from holidays WHERE timeframe_id=\'' . $id . '\' ORDER BY holiday_start asc');
                 $timeframeContacts = queryDB('SELECT contacts.username,contacts.full_name,timezones.timezone FROM contacts,timezones WHERE contacts.timezone_id=timezones.id AND contacts.timeframe_id=\'' . $id . '\' order by username asc');
                 $timeframeContactGroups = queryDB('SELECT contactgroups.name, contactgroups.name_short,contactgroups.view_only, timezones.timezone FROM contactgroups,timezones WHERE contactgroups.timezone_id=timezones.id AND timeframe_id=\'' . $id . '\' ORDER BY contactgroups.name asc');
@@ -233,7 +233,7 @@ function getContent () {
 			//var_dump($content);
 	        }
         	$templateSubContent->assign('HOLIDAYS', $content);
-*/
+
 
 		// add timeframe's assigned contacts
 		$content = null;

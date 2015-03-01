@@ -1,6 +1,6 @@
 AC_PREREQ([2.61])
 AC_INIT(noma,1)
-VERSION="2.1.0"
+VERSION="2.2.0-beta"
 AC_PROG_INSTALL
 AC_PATH_PROG(PERL, perl, no)
 AC_PATH_PROG(SED, sed, no)
