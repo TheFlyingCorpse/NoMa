@@ -186,9 +186,9 @@ my $recipients          = '';
 my $host                = '';
 my $host_alias          = '';
 my $host_address        = '';
-my $hostgroups		= '';
+my @hostgroups		= ();
 my $service             = '';
-my $servicegroups	= '';
+my @servicegroups	= ();
 my $check_type          = '';
 my $status              = '';
 my $datetime            = '';
@@ -250,8 +250,8 @@ my $clps = GetOptions(
 
     "R|recipients=s"        => \$recipients,
     "H|host=s"              => \$host,
-    "G|hostgroups=s"	    => \$hostgroups,
-    "E|servicegroups=s"     => \$servicegroups,
+    "G|hostgroups=s"	    => \@hostgroups,
+    "E|servicegroups=s"     => \@servicegroups,
     "u|unique-id=s"         => \$id,
     "a|host-alias=s"        => \$host_alias,
     "i|host-address=s"      => \$host_address,
@@ -294,8 +294,13 @@ if ( !defined $id or $id eq '' or $id < 1 )
     $id = unique_id();
 }
 
+my $hostgroups_str = join ",", @hostgroups;
+my $servicegroups_str = join ",", @servicegroups;
+
 $cmd = sprintf('NOTIFICATION;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s',
-    $id, $recipients, $host, $host_alias, $host_address, $hostgroups, $service, $servicegroups, $check_type, $status, $datetime, $notification_type, $authors, $comments, $output);
+    $id, $recipients, $host, $host_alias, $host_address, $hostgroups_str, $service, $servicegroups_str, $check_type, $status, $datetime, $notification_type, $authors, $comments, $output);
+
+#debug($cmd);
 
 if ($usefifo)
 {
