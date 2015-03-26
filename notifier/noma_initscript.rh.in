@@ -4,6 +4,16 @@
 #
 # description: the NETWAYS NOtification MAnager
 #
+### BEGIN INIT INFO
+# Provides:          noma
+# Required-Start:    icinga
+# Required-Stop:     icinga
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 6
+# Short-Description: the NETWAYS NOtification MAnager
+# Description:       the NETWAYS NOtification MAnager
+### END INIT INFO
+
 
 # source function library
 . /etc/init.d/functions

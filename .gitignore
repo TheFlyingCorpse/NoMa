@@ -18,7 +18,7 @@ etc/apache2-noma.conf
 notifier/alert_via_noma.pl
 notifier/noma_daemon.pl
 notifier/noma_initscript.debian
-notifier/noma_initscript.rh5
+notifier/noma_initscript.rh
 notifier/noma_initscript.suse
 notifier/sendEmail.pl
 notifier/sendGrowl.pl
