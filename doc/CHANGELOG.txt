@@ -1,89 +1,41 @@
-0.0.4
-------
-* fixed admin checkbox in contact manager
-* fixed update of modifications regarding empty contacts, contact groups and methods
-* added host and service previews to notification manager
+# NoMa Changelog
 
-0.0.5
-------
-* added scrolling to host and service previews
-* notifier: fixed false positives of recipient filter
-* added width parameter for host/service preview
-* SWITCHED ACTIVATE AND DEACTIVATE BUTTONS
-* changed source table for preview
-* added sorting to log viewer
+## 2.1.0
 
-0.1.0
-------
-* fixed logout
-* added more session data
-* modified contacts, contactgroups and notifications to allow several empty fields
-* fixed host/service exclusion
-* fixed multiple notifications upon ACKNOWLEDGEMENT
-* fixed UP/OK on auto loops
-* fixed holidays
+* Feature #1394: Notification rules - host vs. service notifications
+* Feature #1444: Clear Structuring of the Notify on Table
+* Feature #2179: Initscript RedHat 6
+* Feature #2893: alert_via_noma.pl: Add support for multiple *group params (Icinga 2)
+* Feature #2895: contrib: Add sample config for icinga2
 
-0.1.1a
-------
-* fixed login bypass for http authentication
-* overview: added display of notifications for users being member of assigned contactgroup(s) (not if CG is defined in escalation(s))
-* reduced massive amount of unused db connections
-* added view-only groups for users who want to have a view on certain notifications whithout being notified
-* made logging of plugin output toggleable via config file notifier
-* added logging of host- and service output (toggleable via config file of notifier)
-* added additional messages to contact manager after adding new users
+* Bug #1251: Noma Installation Process
 
+## 2.0.3
 
-1.0.2
-------
-* major rewrite
-* now runs as a daemon
-* fixed timezone support - daylight saving will be taken into account (but N.B. the DateTime::TimeZone perl library sometimes uses very
-  old timezone information - if necessary recompile it using the latest info)
-* threaded support - requires a bug-free thread implementation
-* each notification method has its own thread - voice calls will be sequential but will not block the other methods
-* status information (send "status" as a command and look in the debug log)
-* notifications queued via pipe or socket (using Nagios notification plugin "alert_via_noma")
-* improved logging
-* simplified method escalation
-* notifications start with 1
-* removed timezone from notifications - we now only care about the timezone that the contact is in
-* working hours can now be specified as multiple periods
-* various bugfixes
-* init scripts for daemon
-* thread pool for tcp connections should prevent memory exhaustion
-* watchdog thread restarts the daemon if there is a memory leak
+* Bugfix in notification bundling
+* NoMa can now recover from db outtakes
+* Bugfix in rule/contact selection
 
-1.0.3
-------
-* updated documentation
+## 2.0.2
 
-1.0.4
-------
-* removed configuration overrides
+* SQLite is now the preferred backend (but MySQL will still be supported)
+* many PHP syntax fixes + code cleanup
+* many perl syntax fixe + code cleanups
+* Unified YAML configuration (Ticket: #1059)
+* Mandatory fields for user creation (Ticket: #1071)
+* Default TZ for user creation (Ticket: #1069)
+* Translations added / hard-coded error messages converted to translateable strings (Ticket: #1067)
+* Basic Perl test suite (Ticket: #1075)
+* an autoconf installer for easier deployment (Ticket: #877)
+* UTF-8 issue with Opera (Ticket: #1097)
+* SQLite friendly method to insert contactgroup members
 
-1.0.5
-----------------
-* added 'filter', 'key_find_user' and 'key_set_user' to ldap authentication and configuration
-* added complex filters which allow filtering by login name
-* fixed delayed filter preview for hosts and services
-* shortened host and service status in overview to reduce height of rows
-* fixed and centered paginator in log view
-* facelift
-* updated documentation
-* fixed some minor php warnings
-* added default password for nagiosadmin
-* removed logout button from setups w/o authentication
+## 2.0.1
 
-1.0.6
-----------------
-* added hostgroup include and exclude filter
-* fixed messages containing ';' being truncated
-* updated documentation
+## 2.0.0
 
-2.0.0 (current) - BETA
-----------------
-New:
+### Features
+
 * new folder structure to make it easier to work with NoMa. (Ticket #813)
 * new configuration file for the daemon. (Ticket: #825)
 * new backend option for NoMa: SQLite3. Requires at least PHP 5.2.6+. (Ticket: #827)
@@ -102,34 +54,101 @@ New:
 * linked objects: one can now see linked objects relevant to the selected type, ie for a contact relevant links are; groups, notifications and escalations. added similar for contactgroups and timeframes. Should be less clicking around to get the information needed now. (Tickets: #845, #847, #849)
 * extended debug function to have several options for filtering. (Ticket: #819)
 
-Fixed:
+### Fixes
+
 * fixed missing hostgroup column in the SQL files for new installations. (Ticket: #479)
 * fixed unique notification logic to sending notifications. A Contact will only get one notification per method, this to make it easier to make notification rules that may overlap, without spamming the contact excessively. (Ticket: #635)
 * notifies if the database version is wrong compared to the expected version. (Ticket #831)
 * updated Debian init script LSB header due to a typo. (Ticket: #811)
 * more configuration is stored in config / database than before, and will increasingly do so. (Ticket: #390)
 
-Extra:
+### Extra
+
 * updated documentation
 
+## 1.0.6
 
-2.0.2
-----------------
-* SQLite is now the preferred backend (but MySQL will still be supported)
-* many PHP syntax fixes + code cleanup
-* many perl syntax fixe + code cleanups
-* Unified YAML configuration (Ticket: #1059)
-* Mandatory fields for user creation (Ticket: #1071)
-* Default TZ for user creation (Ticket: #1069)
-* Translations added / hard-coded error messages converted to translateable strings (Ticket: #1067)
-* Basic Perl test suite (Ticket: #1075)
-* an autoconf installer for easier deployment (Ticket: #877)
-* UTF-8 issue with Opera (Ticket: #1097)
-* SQLite friendly method to insert contactgroup members
+* added hostgroup include and exclude filter
+* fixed messages containing ';' being truncated
+* updated documentation
 
-2.0.3
------------------
-* Bugfix in notification bundling
-* NoMa can now recover from db outtakes
-* Bugfix in rule/contact selection
+## 1.0.5
+
+* added 'filter', 'key_find_user' and 'key_set_user' to ldap authentication and configuration
+* added complex filters which allow filtering by login name
+* fixed delayed filter preview for hosts and services
+* shortened host and service status in overview to reduce height of rows
+* fixed and centered paginator in log view
+* facelift
+* updated documentation
+* fixed some minor php warnings
+* added default password for nagiosadmin
+* removed logout button from setups w/o authentication
+
+## 1.0.4
+
+* removed configuration overrides
+
+## 1.0.3
+
+* updated documentation
+
+## 1.0.2
+
+* major rewrite
+* now runs as a daemon
+* fixed timezone support - daylight saving will be taken into account (but N.B. the DateTime::TimeZone perl library sometimes uses very
+  old timezone information - if necessary recompile it using the latest info)
+* threaded support - requires a bug-free thread implementation
+* each notification method has its own thread - voice calls will be sequential but will not block the other methods
+* status information (send "status" as a command and look in the debug log)
+* notifications queued via pipe or socket (using Nagios notification plugin "alert_via_noma")
+* improved logging
+* simplified method escalation
+* notifications start with 1
+* removed timezone from notifications - we now only care about the timezone that the contact is in
+* working hours can now be specified as multiple periods
+* various bugfixes
+* init scripts for daemon
+* thread pool for tcp connections should prevent memory exhaustion
+* watchdog thread restarts the daemon if there is a memory leak
+
+## 0.1.1-alpha
+
+* fixed login bypass for http authentication
+* overview: added display of notifications for users being member of assigned contactgroup(s) (not if CG is defined in escalation(s))
+* reduced massive amount of unused db connections
+* added view-only groups for users who want to have a view on certain notifications whithout being notified
+* made logging of plugin output toggleable via config file notifier
+* added logging of host- and service output (toggleable via config file of notifier)
+* added additional messages to contact manager after adding new users
+
+## 0.1.0
+
+* fixed logout
+* added more session data
+* modified contacts, contactgroups and notifications to allow several empty fields
+* fixed host/service exclusion
+* fixed multiple notifications upon ACKNOWLEDGEMENT
+* fixed UP/OK on auto loops
+* fixed holidays
+
+## 0.0.5
+
+* added scrolling to host and service previews
+* notifier: fixed false positives of recipient filter
+* added width parameter for host/service preview
+* SWITCHED ACTIVATE AND DEACTIVATE BUTTONS
+* changed source table for preview
+* added sorting to log viewer
+
+
+## 0.0.4
+
+* fixed admin checkbox in contact manager
+* fixed update of modifications regarding empty contacts, contact groups and methods
+* added host and service previews to notification manager
+
+
+
 
